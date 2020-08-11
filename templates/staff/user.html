@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<section id="showcase-inner" class="py-5 text-white">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-12">
+          <h1 class="display-4">{{ looked_up_user.username }}</h1>
+          <p class="lead">Member since ...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+	<br>
+	<section>
+		<div class="container">
+			<div class="row text-center">
+				<div class="col-md-3">
+					<a class="btn-primary btn-block btn-lg" href="{% url 'loan_books' looked_up_user.id %}">Loan books</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<br>
+  <!-- Alerts -->
+  {% include 'partials/_alerts.html' %}
+
+  <section id="dashboard" class="py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          {% if user_reservations %}
+            <p>Reservations:</p>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Book title</th>
+                  <th scope="col">Reserved on</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for reservation in user_reservations %}
+                  <tr>
+                    <td>{{ reservation.book.title }}</td>
+                    <td>{{ reservation.reservation_date }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <p>No current reservations.</p>
+          {% endif %}
+          {% if user_records %}
+          	<p>Records:</p>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Book title</th>
+                  <th scope="col">Date taken out</th>
+                  <th scope="col">Date returned</th>
+                  <th scope="col">
+                  	{% if active_user_records %}
+											<button class="btn btn-secondary btn-block mt-1" data-toggle="modal" data-target="#returnModal">Return all</button>
+										{% endif %}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for record in user_records %}
+                  <tr
+                    {% if record.date_returned == None %}
+                      class="table-success"
+                    {% endif %}
+                  >
+                    <td>{{ record.book_instance_id }}</td>
+                    <td>{{ record.book_title }}</td>
+                    <td>{{ record.date_taken_out }}</td>
+                    <td>
+                    	{% if record.date_returned == None %}
+                    		n/a
+                    	{% else %}
+                    		{{ record.date_returned }}
+                    	{% endif %}
+                    </td>
+                    <td>
+                    	{% if record.date_returned == None %}
+                    		add return button
+                    	{% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+          	<p>No previous records.</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          {% if user_records.has_other_pages %}
+            <ul class="pagination">
+              {% if user_records.has_previous %}
+                <li class="page-item">
+                  <a href="?page={{user_records.previous_page_number}}" class="page-link">&laquo;</a>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <a class="page-link">&laquo;</a>
+                </li>
+              {% endif %}
+              {% for i in user_records.paginator.page_range %}
+                {% if user_records.number == i %}
+                  <li class="page-item active">
+                    <a class="page-link">{{i}}</a>
+                  </li>
+                {% else %}
+                  <li class="page-item">
+                    <a href="?page={{i}}" class="page-link">{{i}}</a>
+                  </li>
+                {% endif %}
+              {% endfor %}
+              {% if user_records.has_next %}
+                <li class="page-item">
+                  <a href="?page={{user_records.next_page_number}}" class="page-link">&raquo;</a>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <a class="page-link">&raquo;</a>
+                </li>
+              {% endif %}
+            </ul>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal fade" id="returnModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="inquiryModalLabel">Return books</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Confirm returning all of the following books:
+          <ul>
+          {% for record in active_user_records %}
+          	<li>
+          		{{ record.book_title }} (id: {{ record.book_instance_id }})
+          	</li>
+          {% endfor %}
+          </ul>
+          <a class="btn btn-secondary btn-block mt-4" href="{% url 'return_books' looked_up_user.id %}">Return all</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

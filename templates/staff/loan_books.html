@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+	<section id="showcase-inner" class="py-5 text-white">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-12">
+          <h1 class="display-4">Loan out books</h1>
+          <p class="lead">User: {{ looked_up_user.username }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+	<br>
+	<!-- Alerts -->
+  {% include 'partials/_alerts.html' %}
+
+	<section id="listing" class="py-4">
+		<div class="container">
+			<div class="row text-center">
+				<div class="col-md-12">
+					<form action="{% url 'execute' %}" method="POST">
+						{% csrf_token %}
+
+						<input type="hidden" name="user_id" value="{{ looked_up_user.id }}">
+
+						<!-- Choice 1 -->
+						<div class="form-row">
+							<div class="col-md-8 mb-3">
+								<select name="option1" class="form-control">
+									<option selected="true" disabled="disabled">Select book instance</option>
+									{% if reserved_instances %}
+										<option disabled>Reserved:</option>
+										{% for instance in reserved_instances %}
+											<option value="{{ instance.id }}" >{{ instance }}</option>
+										{% endfor %}
+										<option disabled>-------</option>
+									{% endif %}
+									{% for instance in available_instances %}
+										<option value="{{ instance.id }}" >{{ instance }}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+
+						<!-- Choice 2 -->
+						<div class="form-row">
+							<div class="col-md-8 mb-3">
+								<select name="option2" class="form-control">
+									<option selected="true" disabled="disabled">Select book instance</option>
+									{% if reserved_instances %}
+										<option disabled>Reserved:</option>
+										{% for instance in reserved_instances %}
+											<option value="{{ instance.id }}" >{{ instance }}</option>
+										{% endfor %}
+										<option disabled>-------</option>
+									{% endif %}
+									{% for instance in available_instances %}
+										<option value="{{ instance.id }}">{{ instance }}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+
+						<!-- Choice 3 -->
+						<div class="form-row">
+							<div class="col-md-8 mb-3">
+								<select name="option3" class="form-control">
+									<option selected="true" disabled="disabled">Select book instance</option>
+									{% if reserved_instances %}
+										<option disabled>Reserved:</option>
+										{% for instance in reserved_instances %}
+											<option value="{{ instance.id }}" >{{ instance }}</option>
+										{% endfor %}
+										<option disabled>-------</option>
+									{% endif %}
+									{% for instance in available_instances %}
+										<option value="{{ instance.id }}">{{ instance }}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+
+						<!-- Choice 4 -->
+						<div class="form-row">
+							<div class="col-md-8 mb-3">
+								<select name="option4" class="form-control">
+									<option selected="true" disabled="disabled">Select book instance</option>
+									{% if reserved_instances %}
+										<option disabled>Reserved:</option>
+										{% for instance in reserved_instances %}
+											<option value="{{ instance.id }}" >{{ instance }}</option>
+										{% endfor %}
+										<option disabled>-------</option>
+									{% endif %}
+									{% for instance in available_instances %}
+										<option value="{{ instance.id }}">{{ instance }}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+
+						<div class="form-row">
+							<div class="col-md-8 mb-3">
+								<label class="sr-only">Length</label>
+									<input type="text" name="length" class="form-control" value="delete later" disabled>
+								</select>
+							</div>
+						</div>
+
+						<button class="btn btn-secondary btn-block mt-4" type="submit">Update selection</button>
+
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  {{ author }} | Authors |
+{% endblock %}
+
+{% block content %}
+	<section id="showcase-inner" class="py-5 text-white">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-12">
+          <h1 class="display-4">{{ author }}</h1>
+        	{% if author.dob %}
+          <p class="lead">
+          	<i class="fas fa-map-marker"></i> {{ author.dob }} - {% if author.dod %}{{ author.dod }}{% endif %}</p>
+        	{% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Breadcrumb -->
+  <section id="bc" class="mt-3">
+    <div class="container">
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'index' %}">Home</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="{% url 'books' %}">Books</a>
+          </li>
+          <li class="breadcrumb-item active">Authors / {{ author }}</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <!-- Listing -->
+  <section id="listing" class="py-4">
+    <div class="container">
+      <a href="{% url 'index' %}" class="btn btn-light mb-4">Back To Home</a>
+      <div class="row">
+      
+        <div class="col-md-4">
+          <!-- Home Main Image -->
+          <img 
+          {% if author.photo %}
+          	src="{{ author.photo.url }}"
+          {% else %}
+          	src="{% static 'img/scribble.jpg' %}"
+          {% endif %}
+					alt="" class="img-main img-fluid mb-3">
+	          {% if author.biography %}
+	          	{{ author.biography }}
+	          {% else %}
+		          Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia recusandae esse reiciendis officia omnis non rerum dicta
+		          cupiditate nostrum molestias deserunt aut minus inventore animi atque, consequuntur ad fugit. Possimus culpa
+		          blanditiis repellendus ipsa similique ullam, natus error dolor harum.
+	          {% endif %}
+        </div>
+
+        <div class="col-md-8">
+	        <div class="row">
+	        	{% if books %}
+	          	{% for book in books %}
+	          		<div class="col-md-4">
+		          		<div class="card text-center mb-3">
+		          			<a href="{{ book.get_absolute_url }}">
+			          			<img class="card-img-top"
+			          				{% if book.photo %}
+			          					src="{{ book.photo.url }}"
+			          				{% else %}
+			          					src="{% static 'img/blank.png' %}"
+			          				{% endif %} alt="" class="img-fluid">
+			          		</a>
+			          		<div class="card-body">
+		              		<!-- <h5 class="card-title">{{ book }}</h5> -->
+		              		<h5 class="text-primary">{{ book }}</h5>
+		              		{% if book.publish_date %}
+		              			<h6 class="text-secondary">{{ book.publish_date }}</h6>
+		              		{% endif %}
+		            		</div>
+		          		</div>
+		          	</div>
+	          	{% endfor %}
+	          {% else %}
+	          	<p>Author has no books in library.</p>
+	          {% endif %}
+	        </div>
+	      </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

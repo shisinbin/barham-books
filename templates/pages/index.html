@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<!-- Showcase -->
+  <section id="showcase">
+    <div class="container text-center">
+      <div class="home-search p-5">
+        <div class="overlay p-5">
+          <h1 class="display-4 mb-4">
+            Search our library of books
+          </h1>
+          <p class="lead">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Recusandae quas, asperiores eveniet vel nostrum magnam
+            voluptatum tempore! Consectetur, id commodi!</p>
+          <div class="search">
+            <form action="{% url 'search' %}">
+              <!-- Form Row 1 -->
+              <div class="form-row">
+                <div class="col-md-6 mb-3">
+                  <label class="sr-only">Book title</label>
+                  <input type="text" name="title" class="form-control" placeholder="Book title">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label class="sr-only">Author surname</label>
+                  <input type="text" name="surname" class="form-control" placeholder="Author surname">
+                </div>
+              </div>
+              <!-- Form Row 2 -->
+              <div class="form-row">
+                <div class="col-md-4 mb-3">
+                  <label class="sr-only">ISBN</label>
+                  <input type="text" name="isbn" class="form-control" placeholder="ISBN">
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="sr-only">Genre</label>
+                  <select name="genre" class="form-control">
+                    <!-- <option selected="true" disabled="disabled">Genre (Any)</option> -->
+                    <option>Genre (Any)</option>
+                    {% for key,value in genre_choices.items %}
+                      <option value="{{ key }}">{{ value }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <select name="language" class="form-control" id="type">
+                    <!-- <option selected="true" disabled="disabled">Language (Any)</option> -->
+                    <option>Language (Any)</option>
+                    {% for key,value in language_choices.items %}
+                      <option value="{{ key }}">{{ value }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <button class="btn btn-secondary btn-block mt-4" type="submit">Submit form</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <br>
+  <!-- Alerts -->
+  {% include 'partials/_alerts.html' %}
+
+  <!-- Listings -->
+  <section id="listings" class="py-5">
+    <div class="container">
+      <h3 class="text-center mb-3">Latest Blog posts</h3>
+      <!-- <div class="row">
+        {% if books %}
+          {% for book in books %}
+            <div class="col-md-6 col-lg-4 mb-4">
+              <div class="card listing-preview">
+                <img class="card-img-top" src="{{ book.photo.url }}" alt="">
+                <div class="card-img-overlay">
+                  <h2>
+                    <span class="badge badge-secondary text-white">{{ book.genre }}</span>
+                  </h2>
+                </div>
+                <div class="card-body">
+                  <div class="listing-heading text-center">
+                    <h4 class="text-primary">{{ book.title }}</h4>
+                    <p>
+                      <i class="fas fa-pen-alt text-secondary"></i> {{ book.author }}</p>
+                  </div>
+                  <hr>
+                  <a href="{{ book.get_absolute_url }}" class="btn btn-primary btn-block">More Info</a>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="col-md-12">
+            <p>No featured books.</p>
+          </div>
+        {% endif %}
+      </div> -->
+      <div class="row">
+          {% for post in latest_posts %}
+            <div class="col-md-6 col-lg-4 mb-4">
+              <div class="card listing-preview">
+                <!-- <img class="card-img-top" src="" alt=""> -->
+                <!-- <div class="card-img-overlay">
+                  <h2>
+                    <span class="badge badge-secondary text-white"></span>
+                  </h2>
+                </div> -->
+                <div class="card-body">
+                  <div class="listing-heading text-center">
+                    <h4 class="text-primary">{{ post.title }}</h4>
+                    <p>
+                      <i class="fas fa-calendar-alt text-secondary"></i> {{ post.publish }}</p>
+                  </div>
+                  <!-- <hr>
+                  <a href="" class="btn btn-primary btn-block">More Info</a> -->
+                </div>
+              </div>
+            </div>
+          {% empty %}
+            <p>No latest posts.</p>
+          {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section id="services" class="py-5 bg-secondary text-white">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-4">
+          <i class="fas fa-walking fa-4x mr-4"></i>
+          <hr>
+          <h3>Activities & hours</h3>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt, debitis nam! Repudiandae, provident iste consequatur
+            hic dignissimos ratione ea quae.</p>
+        </div>
+        <div class="col-md-4">
+          <i class="fas fa-hand-holding-heart fa-4x mr-4"></i>
+          <hr>
+          <h3>Donations and shop</h3>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt, debitis nam! Repudiandae, provident iste consequatur
+            hic dignissimos ratione ea quae.</p>
+        </div>
+        <div class="col-md-4">
+          <i class="fas fa-home fa-4x mr-4"></i>
+          <hr>
+          <h3>Hall bookings</h3>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt, debitis nam! Repudiandae, provident iste consequatur
+            hic dignissimos ratione ea quae.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

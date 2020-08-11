@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  {{ book.title }} | Books | 
+{% endblock %}
+
+{% block content %}
+	<section id="showcase-inner" class="py-5 text-white"
+	{% if genre and genre.photo %}
+		style="background: url({{genre.photo.url}}) no-repeat top center fixed"
+	{% endif %}>
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-12">
+          <h1 class="display-4">{{ book.title }}</h1>
+          <p class="lead">
+            <!-- <i class="fas fa-pen-alt"></i> --> by {{ book.author }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Breadcrumb -->
+  <section id="bc" class="mt-3">
+    <div class="container">
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'index' %}">Home</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="{% url 'books' %}">Books</a>
+          </li>
+          <li class="breadcrumb-item active">{{ book.title }}</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <!-- Alerts -->
+  {% include 'partials/_alerts.html' %}
+
+  <!-- Listing -->
+  <section id="listing" class="py-4">
+    <div class="container">
+      <!-- <a href="{% url 'books' %}" class="btn btn-light mb-4">Back To Books</a> -->
+      <div class="row">
+        <div class="col-md-4">
+
+          <!-- Book image -->
+          <img
+            {% if book.photo %}
+              src="{{ book.photo.url }}"
+            {% else %}
+              src="{% static 'img/blank.png' %}"
+            {% endif %}
+           alt="" class="img-thumbnail">
+
+          <!-- Fields -->
+          <div class="row mb-5 fields">
+            <div class="col-md-12">
+              <ul class="list-group list-group-flush">
+                {% if book.genre %}
+	                <li class="list-group-item text-secondary">
+	                  <i class="fas fa-film"></i> Genre:
+	                  <span class="float-right">{{ book.genre }}</span>
+	                </li>
+	              {% endif %}
+	              {% if book.publish_date %}
+                  <li class="list-group-item text-secondary">
+                    <i class="far fa-calendar-alt"></i> Publish date:
+                    <span class="float-right">{{ book.publish_date }}</span>
+                  </li>
+                {% endif %}
+
+                <!-- This is redundant -->
+                {% if book.isbn %}
+                  <li class="list-group-item text-secondary">
+                    <i class="fas fa-thumbtack"></i> ISBN:
+                    <span class="float-right">{{ book.isbn }}</span>
+                  </li>
+                {% endif %}
+
+                {% if book.tags.all %}
+                  <li class="list-group-item text-secondary">
+                    <i class="fas fa-tag"></i> Tags:
+                      <span class="float-right">
+                        {% for tag in book.tags.all %}
+                          <a href="{% url 'books_by_tag' tag_slug=tag.slug %}">
+                            {{ tag.name }}
+                          </a>
+                          {% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                      </span>
+                  </li>
+                {% endif %}
+              </ul>
+              {% if user.is_staff %}
+                <br>
+                <p><a href="{% url 'book_update' book.id %}" class="btn btn-secondary">Update book</a></p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="col-md-5">
+          {{ book.summary|linebreaks }}
+
+          <!-- Copies -->
+          {% if copies and user.is_authenticated %}
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item text-primary"> <i class="far fa-clone"></i>
+                <strong>Copies ({{copies.count}}):</strong>
+              </li>
+              {% for copy in book.instances.all %}
+                <li 
+                  {% if copy.status == 'a' %}
+                    class="list-group-item text-success"
+                  {% elif copy.status == 'r' %}
+                    class="list-group-item text-warning"
+                  {% else %}
+                    class="list-group-item text-danger"
+                  {% endif %}>
+                    <i class="fas fa-angle-right"></i> {{ copy.get_status_display }}
+                  </p>
+                  {% if copy.status == 'o' %}
+                    Due to be returned: {{ copy.due_back }}
+                    {% if user.is_staff %}
+                      <p>Currently loaned by: <a href="{% url 'user' copy.borrower.id %}">{{ copy.borrower.username }}</a></p>
+                    {% endif %}
+                  {% endif %}
+                  {% if copy.isbn10 or copy.isbn13 %}
+                    <p>
+                      {% if copy.isbn10 %}
+                        ISBN: {{ copy.get_formatted_isbn10 }}
+                          {% if copy.isbn13 %}
+                            | ISBN13: {{ copy.get_formatted_isbn13 }}
+                          {% endif %}
+                      {% endif %}
+                    </p>
+                  {% endif %}
+                  {% if copy.pages %}
+                    <p>Pages: {{ copy.pages }}</p>
+                  {% endif %}
+                  {% if copy.book_type %}
+                    <p>{{ copy.get_book_type_display|title }}</p>
+                  {% endif %}
+                </li>
+              {% endfor %}
+              
+                <button class="btn-primary btn-block btn-lg" data-toggle="modal" data-target="#inquiryModal">
+                  {% if available_copies %}
+                    Reserve book
+                  {% else %}
+                    Join waiting list
+                  {% endif %}
+                </button>
+              
+            </ul>
+          {% endif %}
+        </div>
+
+        <!-- Author -->
+        <div class="col-md-3">
+          <div class="card mb-2">
+            <a href="{{ book.author.get_absolute_url }}">
+            <img class="card-img-top" 
+            {% if book.author.photo %}
+	            src="{{ book.author.photo.url }}"
+            {% else %}
+	            src="{% static 'img/scribble.jpg' %}"
+            {% endif %}
+            alt="Author's picture">
+            </a>
+            <div class="card-body">
+              <h5 class="card-title"><i class="fas fa-pen-alt"></i> {{ book.author }}</h5>
+              <a href="{{ book.author.get_absolute_url }}" class="btn btn-secondary">
+                <h6>See all books &raquo;</h6>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- User reviews -->
+  <section id="listing" class="py-4">
+    <div class="container">
+      <div class="col-md-12">
+        <hr>
+        <div class="row">
+          <div class="col-md-9">
+            <h3>User reviews</h3>
+          </div>
+          {% if has_not_reviewed and user.is_authenticated %}
+          <div class="col-md-3">
+            <a class="btn btn-block btn-secondary" href="{% url 'add_review' book.id %}">Add review</a>
+          </div>
+          {% endif %}
+        </div>
+        {% for review in reviews %}
+          <hr />
+          <h5>{{ review.title }}</h5>
+          {{ review.body|linebreaks }}
+          <small>by {{ review.user.username }}</small>
+        {% empty %}
+          <p>There are no reviews yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Inquiry Modal -->
+  <div class="modal fade" id="inquiryModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="inquiryModalLabel">Reserve Book</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="{% url 'reserve' %}" method="POST">
+            {% csrf_token %}
+            {% if user.is_authenticated %}
+              <input type="hidden" name="user_id" value="{{ user.id }}">
+            {% else %}
+              <input type="hidden" name="user_id" value="0">
+            {% endif %}
+            <input type="hidden" name="book_id" value="{{ book.id }}">
+            <div class="form-group">
+              <label for="property_name" class="col-form-label">Book:</label>
+              <input type="text" name="book_title" class="form-control" value="{{ book.title }}" disabled>
+            </div>
+            <div class="form-group">
+              <label for="email" class="col-form-label">Email:</label>
+              <input type="email" name="email" class="form-control"
+              {% if user.is_authenticated %}
+                value="{{ user.email }}"
+              {% endif %}
+              required>
+            </div>
+            <hr>
+            <input type="submit" value="Reserve" class="btn btn-block btn-secondary">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
