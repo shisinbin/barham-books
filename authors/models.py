@@ -10,7 +10,7 @@ def upload_location(instance, filename):
         new_filename = f"authors/{instance.last_name[:1].upper()}/{instance.last_name.lower()}_{instance.first_name.lower()}.{ext}"
     else:
         new_filename = filename
-    return os.path.join(settings.MEDIA_ROOT, new_filename)
+    return new_filename
 
 
 class Author(models.Model):
