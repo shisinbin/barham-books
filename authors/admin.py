@@ -14,7 +14,7 @@ class BooksInline(admin.TabularInline):
 
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
-	list_display = ('last_name', 'slug', 'first_name', 'dob', 'dod', 'is_featured')
+	list_display = ('last_name', 'slug', 'first_name', 'dob', 'dod')
 	# how and what fields appear in the add author page
 	fields = [('first_name', 'middle_names', 'last_name'), 'biography', ('dob', 'dod'), ('photo', 'is_featured')]
 	inlines = [BooksInline]
