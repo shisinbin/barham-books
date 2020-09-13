@@ -195,3 +195,8 @@ TAGGIT_CASE_INSENSITIVE = True
 # SELECT2_CACHE_BACKEND = "select2"
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
