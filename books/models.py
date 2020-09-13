@@ -1,4 +1,4 @@
-from django.db import models
+ from django.db import models
 from django.contrib.auth.models import User
 
 from datetime import date
@@ -21,7 +21,8 @@ def upload_location(instance, filename):
         new_filename = f"books/{instance.title[:1].upper()}/{instance.title}.{ext}"
     else:
         new_filename = filename
-    return os.path.join(settings.MEDIA_ROOT, new_filename)
+    # return os.path.join(settings.MEDIA_ROOT, new_filename)
+    return new_filename
 
 
 class Series(models.Model):
