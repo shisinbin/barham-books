@@ -33,15 +33,6 @@
           <a class="nav-link" href="{% url 'index' %}">Home</a>
         </li>-->
         <li
-          {% if 'about' in request.path %}
-            class="nav-item active mr-3"
-          {% else %}
-            class="nav-item mr-3"
-          {% endif %}
-        >
-          <a class="nav-link" href="{% url 'about' %}">About</a>
-        </li>
-        <li
           {% if 'books' in request.path %}
             class="nav-item active mr-3"
           {% else %}
@@ -61,6 +52,15 @@
             <a class="nav-link" href="{% url 'post_list' %}">Blog</a>
           </li>
         {% endif %}
+        <li
+          {% if 'about' in request.path %}
+            class="nav-item active mr-3"
+          {% else %}
+            class="nav-item mr-3"
+          {% endif %}
+        >
+          <a class="nav-link" href="{% url 'about' %}">About</a>
+        </li>
       </ul>
 
       <ul class="navbar-nav ml-auto">
