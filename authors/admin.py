@@ -6,8 +6,8 @@ from books.models import Book
 class BooksInline(admin.TabularInline):
 	model = Book
 	#exclude = ['other_authors', 'summary', 'language', 'isbn', 'photo', 'is_featured']
-	fields = ['title', 'genre', 'publish_date', 'isbn']
-	readonly_fields = ('title', 'genre', 'publish_date')
+	fields = ['title', 'publish_date']
+	readonly_fields = ('title', 'publish_date')
 	extra = 0
 	show_change_link = True
 	can_delete = False

@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     # 3rd party apps
     'taggit',
     'easy_thumbnails',
+    'crispy_forms',
+    #'django_select2',
 
     # postgres thing to help with search
     'django.contrib.postgres',
@@ -177,3 +179,19 @@ TAGGIT_CASE_INSENSITIVE = True
 # if really want to explore this, search github with 'django google books'
 # the top result i got was: https://github.com/cristianmayco/books/blob/master/core/views.py
 # which was useful.
+
+# CACHES = {
+#     # … default cache config and others
+#     "select2": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379/2",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#         }
+#     }
+# }
+
+# # Tell select2 which cache configuration to use:
+# SELECT2_CACHE_BACKEND = "select2"
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

@@ -84,6 +84,12 @@ p.date {
   font-style: italic; 
 }
 
+p.series {
+  color:#ccc;
+  font-size: 1.25rem;
+  font-weight: 300;
+}
+
 @media (max-width: 768px) {
   #showcase {
     padding-top: 3rem; }

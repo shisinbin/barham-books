@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 import csv
 from collections import Counter
-from books.models import Book, BookInstance2
+from books.models import Book, BookInstance2, Series
 from authors.models import Author
 from datetime import datetime
 from django.core.files.images import ImageFile
@@ -10,6 +10,7 @@ from django.core.files.temp import NamedTemporaryFile
 import os.path
 from urllib import request
 from django.core.files.base import ContentFile
+import os
 
 # class Command(BaseCommand):
 #     help = "Import books"
@@ -104,12 +105,28 @@ class Command(BaseCommand):
 
             if created_book:
                 book.summary = row["description"]
-                book.publish_date = datetime.strptime(row["publish_date"], "%Y-%m-%d").date()
-                book.tags.add('sci-fi')
-                book.user_tags.add('star trek')
+
+                if row["publish_date"]:
+                    book.publish_date = datetime.strptime(row["publish_date"], "%Y-%m-%d").date()
+                
+                if row["tags"]:
+                    tags = row["tags"].split(',')
+                    for tag in tags:
+                        c["tags_added"] +=1
+                        book.tags.add(tag.strip())
 
                 if row["other_authors"]:
                     book.other_authors = row["other_authors"]
+
+                if row["series"]:
+                    series, created_series = Series.objects.get_or_create(
+                        name=row["series"])
+                    if created_series:
+                        c["series_created"] += 1
+                    book.series = series
+                    if row["series_num"]:
+                        book.series_num = row["series_num"]
+                        c["series_added"]
 
                 c["books_created"] += 1
                 book.save() # again adding this here to save on processing
@@ -127,20 +144,23 @@ class Command(BaseCommand):
                 #     pass
 
                 if row["isbn13"]:
-                    isbn = row["isbn13"]
+                    isbn_for_lookup = row["isbn13"]
                 elif row["isbn10"]:
-                    isbn = row["isbn10"]
+                    isbn_for_lookup = row["isbn10"]
                 else:
-                    isbn = None
+                    isbn_for_lookup = None
 
-                if isbn:
-                    image_url = 'http://covers.openlibrary.org/b/isbn/' + isbn + '.jpg'
+                if isbn_for_lookup:
+                    image_url = 'http://covers.openlibrary.org/b/isbn/' + isbn_for_lookup + '.jpg'
                     response = request.urlopen(image_url)
                     try:
-                        book.photo.save('temp.jpg',
-                                    ContentFile(response.read()),
-                                    save=False)
-                        book.save()
+                        image_file = ContentFile(response.read())
+                        if image_file.size > 1000:
+                            book.photo.save('temp.jpg',
+                                        image_file,
+                                        save=False)
+                            c["images"] += 1
+                            book.save()
                     except:
                         print('something went wrong')
 
@@ -148,22 +168,41 @@ class Command(BaseCommand):
             # I think another model where you put all the static info might work.
             # but might be another way - vaguely remember something in django by ex 3 bk
             for i in range(int(row["copies"])):
+                if row["pages"]:
+                    pages = int(row["pages"])
+                else:
+                    pages = None
+
+                if row["isbn13"]:
+                    if len(row["isbn13"]) <14:
+                        isbn13 = row["isbn13"]
+                    else:
+                        isbn13 = None
+                if row["isbn10"]:
+                    if len(row["isbn10"]) <11:
+                        isbn10 = row["isbn10"]
+                    else:
+                        isbn10 = None
                 new_instance = BookInstance2.objects.create(
                                                     book=book,
                                                     publisher=row["publisher"],
-                                                    pages=row["pages"],
-                                                    isbn10=row["isbn10"],
-                                                    isbn13=row["isbn13"],
+                                                    pages=pages,
+                                                    isbn10=isbn10,
+                                                    isbn13=isbn13,
                 )
                 c["instances_created"] += 1
                 new_instance.save()
 
         self.stdout.write(
-            "Books processed=%d (created=%d, images=%d)"
-            % (c["books"], c["books_created"], c["images"])
+            "Books processed=%d (created=%d, images=%d, tags=%d)"
+            % (c["books"], c["books_created"], c["images"], c["tags_added"])
         )
         self.stdout.write(
             "Authors processed=%d (created=%d)"
             % (c["authors"], c["authors_created"])
         )
         self.stdout.write("Instances created=%d" % c["instances_created"])
+        self.stdout.write(
+            "Series created=%d (added=%d)"
+            % (c["series_created"], c["series_added"])
+        )

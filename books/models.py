@@ -23,14 +23,14 @@ def upload_location(instance, filename):
         new_filename = filename
     return os.path.join(settings.MEDIA_ROOT, new_filename)
 
-def upload_genre_location(instance, filename):
-    ext = filename.split('.')[-1]
-    if instance.name:
-        new_filename = f"genres/{instance.name}.{ext}"
-    else:
-        new_filename = filename
-    return os.path.join(settings.MEDIA_ROOT, new_filename)
 
+class Series(models.Model):
+    name = models.CharField(max_length=100, db_index=True)
+    class Meta:
+        ordering = ['name']
+        verbose_name_plural = 'series'
+    def __str__(self):
+        return self.name
 
 class TaggedBook(TaggedItemBase):
     content_object = models.ForeignKey('Book',
@@ -52,42 +52,35 @@ class Book(models.Model):
                                null=True)
     other_authors = models.CharField(max_length=600,
                                      blank=True)
-    title = models.CharField(max_length=250)
+    title = models.CharField(max_length=250, db_index=True)
     summary = models.TextField(max_length=2000,
                                blank=True)
     slug = models.SlugField(max_length=250,
                             default='',
                             editable=False)
-    #primary_genre = models.ForeignKey('Genre', on_delete=models.SET_NULL, null=True, blank=True)
     tags = TaggableManager(through=TaggedBook,
                            blank=True)
     user_tags = TaggableManager(through=UserTaggedBook,
                                 related_name='user_tags',
                                 blank=True)
-    genre = models.ForeignKey('Genre',
-                              on_delete=models.SET_NULL,
-                              null=True,
-                              blank=True)
-    #other_genres = models.ManyToManyField('Genre', blank=True)
     language = models.CharField(max_length=200,
                                 default='English')
-    #language = models.ForeignKey('Language', on_delete=models.SET_NULL, null=True)
     publish_date = models.DateField(blank=True,
                                     null=True)
-
-
-    # the folling field has been set to None for all objects
-    isbn_latest = models.CharField(max_length=13, blank=True, null=True)
-    
-
-
-
+    users_like = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                        related_name='books_liked',
+                                        blank=True)
     photo = models.ImageField(upload_to=upload_location,
                               blank=True)
     is_featured = models.BooleanField(default=False)
-    genre_featured = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    series = models.ForeignKey(Series,
+                               related_name='books',
+                               on_delete=models.SET_NULL,
+                               null=True,
+                               blank=True)
+    series_num = models.PositiveIntegerField(blank=True, null=True)
     class Meta:
         ordering = ('title',)
 
@@ -100,11 +93,6 @@ class Book(models.Model):
         value = self.title
         self.slug = slugify(value, allow_unicode=True)
         super().save(*args, **kwargs)
-    
-    # def display_genre(self):
-    #   return ', '.join(genre.name for genre in self.genres.all()[:])
-
-    # display_genre.short_descriptions = 'Genre'
 
     def __str__(self):
         return self.title
@@ -154,32 +142,14 @@ class Book(models.Model):
 #         return f'{self.id}' # ({self.book.title})'
 # #########################################################
 
-
-class Genre(models.Model):
-    name = models.CharField(max_length=200)
-    photo = models.ImageField(upload_to=upload_genre_location, blank=True)
-    is_featured = models.BooleanField(default=False)
-
-    class Meta:
-        ordering = ['name']
-
-    def __str__(self):
-        return self.name
-
-
-# class Language(models.Model):
-#   name = models.CharField(max_length=200)
-#   def __str__(self):
-#       self.name
-
 class BookInstance2(models.Model):
     book = models.ForeignKey('Book',
                              related_name="instances",
                              on_delete=models.CASCADE,
                              null=True)
-    pages = models.IntegerField(blank=True)
+    pages = models.IntegerField(blank=True, null=True)
     isbn10 = models.CharField(max_length=10, blank=True, null=True)
-    isbn13 = models.CharField(max_length=13, blank=True, null=True)
+    isbn13 = models.CharField(max_length=13, blank=True, null=True, db_index=True)
     publisher = models.CharField(max_length=200, blank=True)
     due_back= models.DateField(null=True, blank=True)
     BOOK_TYPE_CHOICES = (
@@ -241,17 +211,17 @@ class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews")
     title = models.CharField(max_length=50, default='add title')
     body = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated = models.DateTimeField(auto_now=True,)
     active = models.BooleanField(default=True)
-    # RATING_CHOICES = (
-    #   (1, 'Poor'),
-    #   (2, 'Average'),
-    #   (3, 'Good'),
-    #   (4, 'Very Good'),
-    #   (5, 'Excellent'),
-    # )
-    # rating = models.IntegerField(choices=RATING_CHOICES, blank=True, null=True)
+    RATING_CHOICES = (
+      (1, 'Poor'),
+      (2, 'Average'),
+      (3, 'Good'),
+      (4, 'Very Good'),
+      (5, 'Excellent'),
+    )
+    rating = models.IntegerField(choices=RATING_CHOICES, blank=True, null=True)
     class Meta:
         ordering = ('created',)
     def __str__(self):

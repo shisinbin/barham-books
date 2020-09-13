@@ -16,7 +16,7 @@ def upload_location(instance, filename):
 class Author(models.Model):
     first_name = models.CharField(max_length=100)
     middle_names = models.CharField(max_length=100, blank=True)
-    last_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100, db_index=True)
     slug = models.SlugField(max_length=300,
                             default='',
                             editable=False)
@@ -24,7 +24,7 @@ class Author(models.Model):
     dob = models.DateField(null=True, blank=True)
     dod = models.DateField('Died', null=True, blank=True)
     photo = models.ImageField(upload_to=upload_location, blank=True)
-    is_featured = models.BooleanField(default=False)
+    #is_featured = models.BooleanField(default=False)
     class Meta:
         ordering = ['last_name', 'first_name']
     def __str__(self):

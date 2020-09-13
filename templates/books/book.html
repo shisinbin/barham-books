@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load rating_stuff %}
 
 {% block title %}
   {{ book.title }} | Books | 
@@ -7,13 +8,13 @@
 
 {% block content %}
 	<section id="showcase-inner" class="py-5 text-white"
-	{% if genre and genre.photo %}
-		style="background: url({{genre.photo.url}}) no-repeat top center fixed"
-	{% endif %}>
     <div class="container">
       <div class="row text-center">
         <div class="col-md-12">
           <h1 class="display-4">{{ book.title }}</h1>
+          {% if book.series %}
+            <p class="series">({{ book.series }} #{{ book.series_num }})</p>
+          {% endif %}
           <p class="lead">
             <!-- <i class="fas fa-pen-alt"></i> --> by {{ book.author }}</p>
         </div>
@@ -41,11 +42,14 @@
   <!-- Alerts -->
   {% include 'partials/_alerts.html' %}
 
-  <!-- Listing -->
+  <!-- Book -->
   <section id="listing" class="py-4">
     <div class="container">
-      <!-- <a href="{% url 'books' %}" class="btn btn-light mb-4">Back To Books</a> -->
+
+      <!-- First row showing book info -->
       <div class="row">
+
+        <!-- First column -->
         <div class="col-md-4">
 
           <!-- Book image -->
@@ -57,28 +61,14 @@
             {% endif %}
            alt="" class="img-thumbnail">
 
-          <!-- Fields -->
+          <!-- Book deets -->
           <div class="row mb-5 fields">
             <div class="col-md-12">
               <ul class="list-group list-group-flush">
-                {% if book.genre %}
-	                <li class="list-group-item text-secondary">
-	                  <i class="fas fa-film"></i> Genre:
-	                  <span class="float-right">{{ book.genre }}</span>
-	                </li>
-	              {% endif %}
 	              {% if book.publish_date %}
                   <li class="list-group-item text-secondary">
                     <i class="far fa-calendar-alt"></i> Publish date:
                     <span class="float-right">{{ book.publish_date }}</span>
-                  </li>
-                {% endif %}
-
-                <!-- This is redundant -->
-                {% if book.isbn %}
-                  <li class="list-group-item text-secondary">
-                    <i class="fas fa-thumbtack"></i> ISBN:
-                    <span class="float-right">{{ book.isbn }}</span>
                   </li>
                 {% endif %}
 
@@ -87,14 +77,14 @@
                     <i class="fas fa-tag"></i> Tags:
                       <span class="float-right">
                         {% for tag in book.tags.all %}
-                          <a href="{% url 'books_by_tag' tag_slug=tag.slug %}">
-                            {{ tag.name }}
-                          </a>
-                          {% if not forloop.last %}, {% endif %}
+                          <a href="{% url 'books_by_tag' tag_slug=tag.slug %}" class="badge badge-light">
+                            {{ tag.name|title }}
+                          </a>{% if not forloop.last %} {% endif %}
                         {% endfor %}
                       </span>
                   </li>
                 {% endif %}
+
               </ul>
               {% if user.is_staff %}
                 <br>
@@ -104,10 +94,38 @@
           </div>
         </div>
 
-        <!-- Description -->
+        <!-- Second column -->
         <div class="col-md-5">
-          {{ book.summary|linebreaks }}
 
+          <!-- Likes -->
+          {% with total_likes=book.users_like.count users_like=book.users_like.all %}
+            <div class="row ml-1">
+              <h3><span class="count badge badge-pill badge-light">
+                <span class="total">{{ total_likes }}</span>
+                like{{ total_likes|pluralize }}
+              </span></h3>
+
+              {% if user.is_authenticated %}
+                <div class="ml-auto mr-3">
+                  <h3><span class="count">
+                    <a href="#" data-id="{{ book.id }}" data-action="{% if request.user in users_like %}un{% endif %}like" class="like badge badge-pill badge-light">
+                      {% if request.user not in users_like %}
+                        Like
+                      {% else %}
+                        Unlike
+                      {% endif %}
+                    </a>
+                  </span></h3>
+                </div>
+              {% endif %}
+            </div>
+          {% endwith %}
+
+          <!-- Book description -->
+          <p>
+            {{ book.summary|linebreaks }}
+          </p>
+            
           <!-- Copies -->
           {% if copies and user.is_authenticated %}
             <ul class="list-group list-group-flush">
@@ -115,7 +133,7 @@
                 <strong>Copies ({{copies.count}}):</strong>
               </li>
               {% for copy in book.instances.all %}
-                <li 
+                <li
                   {% if copy.status == 'a' %}
                     class="list-group-item text-success"
                   {% elif copy.status == 'r' %}
@@ -124,66 +142,132 @@
                     class="list-group-item text-danger"
                   {% endif %}>
                     <i class="fas fa-angle-right"></i> {{ copy.get_status_display }}
-                  </p>
+                  
                   {% if copy.status == 'o' %}
-                    Due to be returned: {{ copy.due_back }}
+                    <br />Due to be returned: {{ copy.due_back }}
                     {% if user.is_staff %}
-                      <p>Currently loaned by: <a href="{% url 'user' copy.borrower.id %}">{{ copy.borrower.username }}</a></p>
+                      <br />Currently loaned by: <a href="{% url 'user' copy.borrower.id %}">{{ copy.borrower.username }}</a>
                     {% endif %}
                   {% endif %}
-                  {% if copy.isbn10 or copy.isbn13 %}
-                    <p>
-                      {% if copy.isbn10 %}
-                        ISBN: {{ copy.get_formatted_isbn10 }}
-                          {% if copy.isbn13 %}
-                            | ISBN13: {{ copy.get_formatted_isbn13 }}
-                          {% endif %}
-                      {% endif %}
-                    </p>
-                  {% endif %}
-                  {% if copy.pages %}
-                    <p>Pages: {{ copy.pages }}</p>
-                  {% endif %}
-                  {% if copy.book_type %}
-                    <p>{{ copy.get_book_type_display|title }}</p>
-                  {% endif %}
+
+                  <br />
+                  <ul style="list-style-type:none; color:black; margin-left: -30px;">
+                    {% if copy.isbn10 or copy.isbn13 %}
+                      
+                        {% if copy.isbn10 %}
+                          <li>
+                            ISBN: {{ copy.get_formatted_isbn10 }}
+                          </li>
+                            {% if copy.isbn13 %}
+                              <li>
+                                ISBN13: {{ copy.get_formatted_isbn13 }}
+                              </li>
+                            {% endif %}
+                        {% endif %}
+                      
+                    {% endif %}
+                    {% if copy.pages %}
+                        <li>
+                          Pages: {{ copy.pages }}
+                        </li>
+                    {% endif %}
+                    {% if copy.book_type %}
+                        <li>
+                          {{ copy.get_book_type_display|title }}
+                        </li>
+                    {% endif %}
+                  </ul>
                 </li>
               {% endfor %}
               
-                <button class="btn-primary btn-block btn-lg" data-toggle="modal" data-target="#inquiryModal">
-                  {% if available_copies %}
-                    Reserve book
-                  {% else %}
-                    Join waiting list
-                  {% endif %}
-                </button>
+              <button class="btn-primary btn-block btn-lg" data-toggle="modal" data-target="#reserveModal">
+                {% if available_copies %}
+                  Reserve book
+                {% else %}
+                  Join waiting list
+                {% endif %}
+              </button>
               
             </ul>
           {% endif %}
         </div>
 
-        <!-- Author -->
+        <!-- Third column -->
         <div class="col-md-3">
-          <div class="card mb-2">
-            <a href="{{ book.author.get_absolute_url }}">
-            <img class="card-img-top" 
+
+          <!-- Author -->
+          <div class="text-center">
             {% if book.author.photo %}
-	            src="{{ book.author.photo.url }}"
-            {% else %}
-	            src="{% static 'img/scribble.jpg' %}"
-            {% endif %}
-            alt="Author's picture">
-            </a>
-            <div class="card-body">
-              <h5 class="card-title"><i class="fas fa-pen-alt"></i> {{ book.author }}</h5>
-              <a href="{{ book.author.get_absolute_url }}" class="btn btn-secondary">
-                <h6>See all books &raquo;</h6>
+              <a href="{{ book.author.get_absolute_url }}">
+                {% load thumbnail %}
+                <img class="img-fluid img-thumbnail" 
+                {% if book.author.photo %}
+    	            src="{% thumbnail book.author.photo 200x0 %}"
+                {% else %}
+    	            src="{% static 'img/scribble.jpg' %}"
+                {% endif %}
+                alt="Author's picture">
               </a>
-            </div>
+            {% endif %}
+            <br>
+              <a href="{{ book.author.get_absolute_url }}">
+                <h5><i class="fas fa-pen-alt"></i> {{ book.author }}</h5>
+              </a>
+              <a href="{{ book.author.get_absolute_url }}" class="btn btn-light">
+                See all books by author &raquo;
+              </a>
+            <br>
           </div>
         </div>
 
       </div>
+
+      <!-- Second row if other books in series -->
+      {% if other_books_in_series %}
+        <h4>Other books in series:</h4>
+        <div class="row">
+          {% for book in other_books_in_series %}
+            <div class="col-sm-2 text-center">
+              <a href="{{ book.get_absolute_url }}">
+                {% if book.photo %}
+                  {% load thumbnail %}
+                  <img src="{% thumbnail book.photo 100x0 %}" class="img-fluid img-thumbnail-edit">
+                {% else %}
+                  <img class="img-fluid img-thumbnail-edit" src="{% static 'img/blank.png' %}" alt="">
+                {% endif %}
+              </a>
+              <p>
+                <a href="{{ book.get_absolute_url }}">
+                  {{ book.title }} (#{{ book.series_num }})
+                </a>
+              </p>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- Third row showing similar books -->
+      {% if similar_books %}
+        <h4>Similar books:</h4>
+        <div class="row">
+          {% for book in similar_books %}
+            <div class="col-sm-2 text-center">
+              <a href="{{ book.get_absolute_url }}">
+                {% if book.photo %}
+                  {% load thumbnail %}
+                  <img src="{% thumbnail book.photo 100x0 %}" class="img-fluid img-thumbnail-edit">
+                {% else %}
+                  <img class="img-fluid img-thumbnail-edit" src="{% static 'img/blank.png' %}" alt="">
+                {% endif %}
+              </a>
+              <p>
+                <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
+              </p>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
     </div>
   </section>
 
@@ -204,8 +288,27 @@
         </div>
         {% for review in reviews %}
           <hr />
+
+          <!-- Rating star stuff - uses custom subtract filter -->
+          {% if review.rating %}
+            {% with ''|center:review.rating as range %}
+              {% for _ in range %}
+                <i class="fas fa-star"></i>
+              {% endfor %}
+            {% endwith %}
+            {% with review.rating|subtract as empty_stars %}
+              {% with ''|center:empty_stars as range %}
+                {% for _ in range %}
+                  <i class="far fa-star"></i>
+                {% endfor %}
+              {% endwith %}
+            {% endwith %}
+          {% endif %}
+
           <h5>{{ review.title }}</h5>
-          {{ review.body|linebreaks }}
+          <p>
+            {{ review.body|linebreaks }}
+          </p>
           <small>by {{ review.user.username }}</small>
         {% empty %}
           <p>There are no reviews yet.</p>
@@ -214,12 +317,12 @@
     </div>
   </section>
 
-  <!-- Inquiry Modal -->
-  <div class="modal fade" id="inquiryModal" role="dialog">
+  <!-- Reserve Modal -->
+  <div class="modal fade" id="reserveModal" role="dialog">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="inquiryModalLabel">Reserve Book</h5>
+          <h5 class="modal-title" id="inquiryModalLabel">Confirm reservation</h5>
           <button type="button" class="close" data-dismiss="modal">
             <span>&times;</span>
           </button>
@@ -237,14 +340,14 @@
               <label for="property_name" class="col-form-label">Book:</label>
               <input type="text" name="book_title" class="form-control" value="{{ book.title }}" disabled>
             </div>
-            <div class="form-group">
+            <!--<div class="form-group">
               <label for="email" class="col-form-label">Email:</label>
               <input type="email" name="email" class="form-control"
               {% if user.is_authenticated %}
                 value="{{ user.email }}"
               {% endif %}
               required>
-            </div>
+            </div>-->
             <hr>
             <input type="submit" value="Reserve" class="btn btn-block btn-secondary">
           </form>
@@ -252,4 +355,32 @@
       </div>
     </div>
   </div>
+{% endblock %}
+
+{% block domready %}
+  $('a.like').click(function(e){
+    e.preventDefault();
+    $.post('{% url "like" %}',
+      {
+        id: $(this).data('id'),
+        action: $(this).data('action')
+      },
+      function(data){
+        if (data['status'] == 'ok')
+        {
+          var previous_action = $('a.like').data('action');
+          // toggle data-action
+          $('a.like').data('action', previous_action == 'like' ?
+          'unlike' : 'like');
+          // toggle link text
+          $('a.like').text(previous_action == 'like' ? 'Unlike' :
+          'Like');
+          // update total likes
+          var previous_likes = parseInt($('span.count .total').text());
+          $('span.count .total').text(previous_action == 'like' ?
+          previous_likes + 1 : previous_likes - 1);
+        }
+      }
+    );
+  });
 {% endblock %}

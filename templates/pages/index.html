@@ -12,7 +12,7 @@
           <p class="lead">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Recusandae quas, asperiores eveniet vel nostrum magnam
             voluptatum tempore! Consectetur, id commodi!</p>
           <div class="search">
-            <form action="{% url 'search' %}">
+            <form action="{% url 'tag_search' %}">
               <!-- Form Row 1 -->
               <div class="form-row">
                 <div class="col-md-6 mb-3">
@@ -32,11 +32,11 @@
                   <input type="text" name="isbn" class="form-control" placeholder="ISBN">
                 </div>
                 <div class="col-md-4 mb-3">
-                  <label class="sr-only">Genre</label>
+                  <label class="sr-only">Genre (but actually language, lol)</label>
                   <select name="genre" class="form-control">
                     <!-- <option selected="true" disabled="disabled">Genre (Any)</option> -->
                     <option>Genre (Any)</option>
-                    {% for key,value in genre_choices.items %}
+                    {% for key,value in language_choices.items %}
                       <option value="{{ key }}">{{ value }}</option>
                     {% endfor %}
                   </select>
@@ -66,35 +66,6 @@
   <section id="listings" class="py-5">
     <div class="container">
       <h3 class="text-center mb-3">Latest Blog posts</h3>
-      <!-- <div class="row">
-        {% if books %}
-          {% for book in books %}
-            <div class="col-md-6 col-lg-4 mb-4">
-              <div class="card listing-preview">
-                <img class="card-img-top" src="{{ book.photo.url }}" alt="">
-                <div class="card-img-overlay">
-                  <h2>
-                    <span class="badge badge-secondary text-white">{{ book.genre }}</span>
-                  </h2>
-                </div>
-                <div class="card-body">
-                  <div class="listing-heading text-center">
-                    <h4 class="text-primary">{{ book.title }}</h4>
-                    <p>
-                      <i class="fas fa-pen-alt text-secondary"></i> {{ book.author }}</p>
-                  </div>
-                  <hr>
-                  <a href="{{ book.get_absolute_url }}" class="btn btn-primary btn-block">More Info</a>
-                </div>
-              </div>
-            </div>
-          {% endfor %}
-        {% else %}
-          <div class="col-md-12">
-            <p>No featured books.</p>
-          </div>
-        {% endif %}
-      </div> -->
       <div class="row">
           {% for post in latest_posts %}
             <div class="col-md-6 col-lg-4 mb-4">

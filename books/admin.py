@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import Book, BookInstance2, Genre, Review
+from .models import Book, BookInstance2, Review, Series
+from taggit.models import Tag
 
 class BookInstance2Inline(admin.TabularInline):
 	model = BookInstance2
@@ -9,12 +10,11 @@ class BookInstance2Inline(admin.TabularInline):
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-	list_display = ('id', 'title', 'slug', 'author', 'genre', 'is_featured')
+	list_display = ('id', 'title', 'slug', 'author', 'tags', 'is_featured')
 	list_display_links = ('id', 'title')
-	list_filter = ('genre',)
-	list_editable = ('is_featured', 'genre')
+	list_editable = ('is_featured',)
 	search_fields = ('title',)
-	list_per_page = 10
+	list_per_page = 50
 	inlines = [BookInstance2Inline]
 
 @admin.register(BookInstance2)
@@ -36,14 +36,18 @@ class BookInstance2Admin(admin.ModelAdmin):
 			}),
 		)
 
-@admin.register(Genre)
-class GenreAdmin(admin.ModelAdmin):
-	list_display = ('name', 'is_featured')
-	list_display_links = ('name',)
-	list_editable = ('is_featured',)
-
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
 	list_display = ('title', 'user', 'book', 'created', 'active')
 	list_filter = ('active', 'created', 'updated')
 	search_fields = ('user', 'book', 'body')
+
+class BookInline(admin.TabularInline):
+	model = Book
+	extra = 0
+	exclude = ['other_authors', 'summary', 'tags', 'user_tags', 'language', 'publish_date', 'isbn_latest', 'photo', 'is_featured']
+	readonly_fields = ('author', 'title')
+
+@admin.register(Series)
+class SeriesAdmin(admin.ModelAdmin):
+	inlines = [BookInline]

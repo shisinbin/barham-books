@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages, auth
 from django.contrib.auth.models import User
-from books.models import BookInstance2
+from books.models import BookInstance2, Review
 from reservations.models import Reservation
 from records2.models import Record
 from django.utils import timezone
@@ -69,23 +69,42 @@ def logout(request):
 		return redirect('index')
 
 from django.contrib.auth.decorators import login_required
+
 @login_required
 def dashboard(request):
-	user_reservations = Reservation.objects.filter(user_id=request.user.id).order_by('-reservation_date')
-	user_records = Record.objects.filter(user_id=request.user.id).order_by('-date_returned')
+	user_reservations = Reservation.objects.filter(user_id=request.user.id)
+	user_records = Record.objects.filter(user_id=request.user.id)[:5]
+	books_liked = request.user.books_liked.all()
 
+	context = {
+		'user_reservations': user_reservations,
+		'user_records': user_records,
+		'books_liked': books_liked,
+	}
+	return render(request, 'accounts/dashboard.html', context)
+
+@login_required
+def view_records(request):
+	user_records = Record.objects.filter(user_id=request.user.id)
+
+	total_num = None
+	if user_records:
+		total_num = len(user_records)
+	else:
+		return redirect('dashboard')
 	# pagination
-	paginator = Paginator(user_records, 8)
+	paginator = Paginator(user_records, 10)
 	page = request.GET.get('page')
 	paged_records = paginator.get_page(page)
 
 	context = {
-		'user_reservations': user_reservations,
 		'user_records': paged_records,
+		'total_num': total_num,
 	}
-	return render(request, 'accounts/dashboard.html', context)
 
-# maybe add a login_required decorator here too
+	return render(request, 'accounts/records.html', context)
+
+@login_required
 def delete_reservation(request):
 	if request.method == 'POST':
 		reservation_id = request.POST.get('del_reservation')
@@ -95,7 +114,7 @@ def delete_reservation(request):
 			# if the reservation was directly reserving a book title
 			if reservation.can_collect:
 
-				waiting_reservations = Reservation.objects.filter(book=reservation.book, can_collect=False).order_by('reservation_date')
+				waiting_reservations = Reservation.objects.filter(book=reservation.book, can_collect=False)
 
 				# if there are other reservations who aren't able to collect yet
 				if waiting_reservations:
@@ -117,17 +136,3 @@ def delete_reservation(request):
 		else:
 			messages.error(request, 'You did not select a reservation to delete')
 			return redirect('dashboard')
-
-
-
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views import generic
-
-class LoanedBooksByUserListView(LoginRequiredMixin,generic.ListView):
-    """Generic class-based view listing books on loan to current user."""
-    model = BookInstance2
-    template_name ='accounts/borrowed.html'
-    paginate_by = 10
-    
-    def get_queryset(self):
-        return BookInstance2.objects.filter(borrower=self.request.user).filter(status__exact='o').order_by('due_back')

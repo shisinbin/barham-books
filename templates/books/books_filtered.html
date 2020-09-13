@@ -16,13 +16,34 @@
     <div class="container">
       <div class="row text-center">
         <div class="col-md-12">
-          <h1 class="display-4">
+          {% if tag %}
+            <h1 class="display-4">
+              {{ tag.name|title }}
+            </h1>
+            <p class="lead">
+              (books tagged with)
+              <a href="#" data-toggle="modal" data-target="#tagModal" class="badge badge-light">
+                <span>
+                  see all tags
+                </span>
+              </a>
+            </p>
+          {% else %}
+            <h1 class="display-4">
+              {{ letter|title }}
+            </h1>
+            <p class="lead">
+              Book A - Z
+            </p>
+          {% endif %}
+          <!-- Old implementation of title for books filtered -->
+          <!--<h1 class="display-4">
             {% if tag %}
               {{ tag.name|title }}
             {% else %}
               Books A-Z
             {% endif %}
-          </h1>
+          </h1>-->
         </div>
       </div>
     </div>
@@ -55,21 +76,7 @@
   <!-- {% include 'partials/_alerts.html' %} -->
 
   {% if not tag %}
-    <!-- <section id="listing" class="py-4">
-      <div class="container">
-        <div class="col-md-12">
-          <div class="row">
-            {% for character in alphabet %}
-              <h4>
-                <a href="{% url 'books_by_alphabet' letter_choice=character %}" class="badge badge-light">
-                  {{ character|title }}
-                </a>
-              </h4>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-    </section> -->
+
     <section id="bc" class="mt-3">
       <div class="container">
         <nav>
@@ -103,28 +110,30 @@
   <section id="dashboard" class="py-4">
     <div class="container">
       {% if books %}
-        <div class="row">
+        
           <div class="col-md-12">
-            {% if letter %}
+            <!--{% if letter %}
               <h2>{{ letter|title }}</h2>
-            {% endif %}
+            {% endif %}-->
             {% if tag %}
-              {% with books|length as total_books %}
-                <p class="date">
-                  {{ total_books }} result{{ total_books|pluralize }} found
+
+                <p style="font-family: georgia, serif; font-style: italic;">
+                  {{ num_results }} result{{ num_results|pluralize }} found
                 </p>
-              {% endwith %}
+
             {% endif %}
-            <ul class="list-group list-group-flush">
-              {% for book in books %}
+            <div id="book-list">
+              {% include 'books/books_filtered_ajax.html' %}
+              <!--{% for book in books %}
                 <li class="list-group-item">
                   <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
                 </li>
-              {% endfor %}
-            </ul>
+              {% endfor %}-->
+            </div>
           </div>
-        </div>
-        <br/>
+        
+        <!-- Bootstrap normal pagination (now not needed) -->
+        <!--<br/>
         <div class="row">
           <div class="col-md-12">
             {% if books.has_other_pages %}
@@ -161,11 +170,57 @@
               </ul>
             {% endif %}
           </div>        
-        </div>
+        </div>-->
       {% else %}
         <p>No books.</p>
       {% endif %}
     </div>
   </section>
 
+  <!-- Inquiry Modal -->
+  <div class="modal fade" id="tagModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="inquiryModalLabel">Select Tag</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {% for a_tag in all_tags %}
+            <a href="{% url 'books_by_tag' tag_slug=a_tag.slug %}" class="badge badge-light">
+              <span>
+                {{ a_tag.name|title }}
+              </span>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
 {% endblock content %}
+
+{% block domready %}
+  var page = 1;
+  var empty_page = false;
+  var block_request = false;
+  $(window).scroll(function() {
+    var margin = $(document).height() - $(window).height() - 200;
+    if($(window).scrollTop() > margin && empty_page == false &&
+    block_request == false) {
+     block_request = true;
+      page += 1;
+      $.get('?page=' + page, function(data) {
+        if(data == '') {
+          empty_page = true;
+        }
+        else {
+          block_request = false;
+          $('#book-list').append(data);
+        }
+      });
+    }
+  });
+{% endblock %}

@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+  Book Search results | 
+{% endblock %}
+
+{% block content %}
+
+  <section id="showcase-inner" class="py-5 text-white">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-12">
+          <h1 class="display-4">Book search results</h1>
+          <br>
+          <form method="get" action="{% url 'book_search' %}">
+            <div class="form-row center">
+              <div class="col-md-9">
+                {{ form|crispy }}
+                <!-- <input type="submit" value="Search"> -->
+              </div>
+              <div class="col-md-3">
+                <button class="btn btn-secondary btn-block" type="submit">Search</button>
+              </div>
+            </div>
+          </form>
+          <!--<p class="lead">Books containing "{{ query }}"</p> -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="bc" class="mt-3">
+    <div class="container">
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'index' %}">Home</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="{% url 'books' %}">Books</a>
+          </li>
+          <li class="breadcrumb-item active">Search results</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+
+  <section id="dashboard" class="py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+  
+          {% if results %}
+            {% with results.count as total_books %}
+              <p style="font-family: georgia, serif; font-style: italic;">
+                {{ total_books }} result{{ total_books|pluralize }} found
+              </p>
+            {% endwith %}
+            <table class="table table-hover">
+              <!-- <thead>
+                <tr>
+                  <th></th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Author</th>
+                  <th scope="col">Tags</th>
+                  <th></th>
+                </tr>
+              </thead> -->
+              <tbody>
+                {% for book in results %}
+                  <tr>
+                    <td>
+                      <a href="{{ book.get_absolute_url }}">
+                        <!-- the updated method of using thumbnails -->
+                        {% if book.photo %}
+                          {% load thumbnail %}
+                          <img src="{% thumbnail book.photo 100x0 %}" class="img-fluid img-thumbnail-edit">
+                        {% else %}
+                          <img class="img-fluid img-thumbnail-edit" src="{% static 'img/blank.png' %}" alt="">
+                        {% endif %}
+
+                        <!-- the alternative approach of getting the image from openlibrary -->
+                        {# <img src="{{ book.get_cover_url }}" alt="OpenLibrary.org" class="img-fluid img-thumbnail-edit"> #}
+
+                        <!-- the original method of pulling images -->
+                        <!-- <img class="img-fluid img-thumbnail-edit"
+                        {% if book.photo %}
+                          src="{{ book.photo.url }}"
+                        {% else %}
+                          src="{% static 'img/blank.png' %}"
+                        {% endif %}
+                        alt=""> -->
+                      </a>
+                    </td>
+                    <td>
+                      <h4><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></h4>
+                      <p>
+                        by {{ book.author }}
+                      </p>
+                      <p class="small">
+                        {% if book.tags %}
+                          {% for tag in book.tags.all %}
+                            {{ tag.name|title }}
+                            {% if not forloop.last %} &middot; {% endif %}
+                          {% endfor %}
+                        {% endif %} 
+                      </p>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <p>There are no results for your query.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- <section id="listings" class="py-4">
+    <div class="container">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-8">
+            <h4>
+              {% with results.count as total_results %}
+                Found {{ total_results }} result{{ total_results|pluralize }}
+              {% endwith %}
+            </h4>
+            {% for book in results %}
+              <h5><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></h5>
+              {{ book.summary|truncatewords:5 }}
+            {% empty %}
+              <p>There are no results for your query.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+
+{% endblock %}
+
+{% block extrascripts %}
+  <!-- Autocomplete -->
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#id_query" ).autocomplete({
+      source: '{% url 'books' %}',
+      minLength: 3
+    });
+  } );
+  </script>
+{% endblock extrascripts %}

@@ -3,7 +3,7 @@ from django.utils import timezone
 from books.models import BookInstance2
 
 class Record(models.Model):
-	user_id = models.IntegerField()
+	user_id = models.IntegerField(db_index=True)
 	book_instance_id = models.IntegerField()
 	book_title = models.CharField(max_length=200, default='title', blank=True)
 	date_taken_out = models.DateField(default=timezone.now)

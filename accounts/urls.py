@@ -7,9 +7,6 @@ urlpatterns = [
 	path('register', views.register, name='register'),
 	path('logout', views.logout, name='logout'),
 	path('dashboard', views.dashboard, name='dashboard'),
+    path('records', views.view_records, name='view_records'),
 	path('delete', views.delete_reservation, name='delete_reservation'),
-]
-
-urlpatterns += [   
-    path('borrowed', views.LoanedBooksByUserListView.as_view(), name='borrowed'),
 ]

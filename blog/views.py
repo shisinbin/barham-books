@@ -4,6 +4,9 @@ from .models import Post
 from taggit.models import Tag
 from .forms import SearchForm
 
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required
 def post_list(request, tag_slug=None):
 	object_list = Post.published.all()
 	tag = None
@@ -35,6 +38,7 @@ def post_list(request, tag_slug=None):
 	}
 	return render(request, 'blog/post_list.html', context)
 
+@staff_member_required
 def post_detail(request, year, month, day, post):
 	post = get_object_or_404(Post, slug=post,
 								   status='published',
@@ -49,7 +53,8 @@ def post_detail(request, year, month, day, post):
 	return render(request, 'blog/post_detail.html', context)
 
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
-# from django.contrib import messages
+
+@staff_member_required
 def post_search(request):
 	form = SearchForm()
 	query = None

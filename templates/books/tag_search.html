@@ -1,14 +1,26 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}
+  Tag Search results | 
+{% endblock %}
+
 {% block content %}
-  <section id="showcase-inner" class="showcase-search text-white py-5">
+
+  <section id="work" class="bg-dark text-white text-center" style="padding: 2rem 0;">
     <div class="container">
       <div class="row text-center">
         <div class="col-md-12">
-          <form action="{% url 'search' %}">
+          <h1 class="display-4">Tag search results</h1>
+          <br>
+          <!-- just checking the path stuff: <p>{{ request.GET }}</p>
+          <p>{{ search_path }}</p>
+          <br> -->
+          <!-- Alerts -->
+          {% include 'partials/_alerts.html' %}
+          <form action="{% url 'tag_search' %}">
             <!-- Form Row 1 -->
-            <div class="form-row">
+            <!-- <div class="form-row">
               <div class="col-md-6 mb-3">
                 <label class="sr-only">Book title</label>
                 <input type="text" name="title" class="form-control" placeholder="Book title" value="{{ values.title }}">
@@ -17,38 +29,24 @@
                 <label class="sr-only">Author surname</label>
                 <input type="text" name="surname" class="form-control" placeholder="Author surname" value="{{ values.surname }}">
               </div>
-            </div>
+            </div> -->
             <!-- Form Row 2 -->
             <div class="form-row">
-              <div class="col-md-4 mb-3">
-                <label class="sr-only">ISBN</label>
-                <input type="text" name="isbn" class="form-control" placeholder="ISBN" value="{{ values.isbn }}">
-              </div>
-              <div class="col-md-4 mb-3">
-                <label class="sr-only">Genre</label>
-                <select name="genre" class="form-control">
-                  <!-- <option selected="true" disabled="disabled">Genre (Any)</option> -->
-                  <option>Genre (Any)</option>
-                  {% for genre in genres %}
-                    <option value="{{ genre.name }}"
-                      {% if genre.name == values.genre %}
-                        selected
+              <div class="col-md-6 mb-3">
+                <label class="sr-only">Tags</label>
+                <select name="tag" id="tag" class="selectpicker" multiple="multiple" data-width="100%" data-container="body">
+                  {% for tag in tags %}
+                    <option value="{{ tag.name }}"
+                      {% if tag.name in tag_strings %}
+                        selected="true"
                       {% endif %}
-                    >{{ genre.name }}</option>
+                    >{{ tag.name|title }}</option>
                   {% endfor %}
-                  <!-- {% for key,value in genre_choices.items %}
-                    <option value="{{ key }}"
-                    {% if key == values.genre %}
-                      selected
-                    {% endif %}
-                    >{{ value }}</option>
-                  {% endfor %} -->
                 </select>
               </div>
-              <div class="col-md-4 mb-3">
+              <div class="col-md-3 mb-3">
                 <select name="language" class="form-control" id="type">
-                  <!-- <option selected="true" disabled="disabled">Language (Any)</option> -->
-                  <option>Language (Any)</option>
+                  <option selected="true" value="any">Language (Any)</option>
                   {% for key,value in language_choices.items %}
                     <option value="{{ key }}"
                     {% if key == values.language %}
@@ -58,8 +56,10 @@
                   {% endfor %}
                 </select>
               </div>
+              <div class="col-md-3 mb-3">
+                <button class="btn btn-secondary btn-block" type="submit">Search</button>
+              </div>
             </div>
-            <button class="btn btn-secondary btn-block mt-4" type="submit">Submit form</button>
           </form>
         </div>
       </div>
@@ -84,87 +84,6 @@
     </div>
   </section>
 
-  <!-- Books -->
-  <!-- <section id="listings" class="py-4">
-    <div class="container">
-      <div class="row">
-        {% if books %}
-          {% for book in books %}
-            <div class="col-md-3">
-              <div class="card listing-preview">
-                <a href="{{ book.get_absolute_url }}">
-                <img class="card-img-top"
-                {% if book.photo %}
-                    src="{{ book.photo.url }}"
-                  {% else %}
-                    src="{% static 'img/blank.png' %}"
-                  {% endif %}
-                alt="">
-                <div class="card-img-overlay">
-                  <h3>
-                    {% if book.genre %}
-                      <span class="badge badge-secondary text-white">{{ book.genre }}</span>
-                    {% endif %}
-                  </h3>
-                </div></a>
-                <div class="card-body">
-                  <div class="listing-heading text-center">
-                    <h4 class="text-primary">{{ book.title }}</h4>
-                    <p>
-                      <i class="fas fa-pen-alt text-secondary"></i> {{ book.author }}</p>
-                  </div>
-                  <hr>
-                  <a href="{{ book.get_absolute_url }}" class="btn btn-primary btn-block">More Info</a>
-                </div>
-              </div>
-            </div>
-          {% endfor %}
-        {% else %}
-          <div class="col-md-12">
-            <p>No Books Available. Try refining your search.</p>
-          </div>
-        {% endif %}
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          {% if books.has_other_pages %}
-            <ul class="pagination">
-              {% if books.has_previous %}
-                <li class="page-item">
-                  <a href="?page={{books.previous_page_number}}" class="page-link">&laquo;</a>
-                </li>
-              {% else %}
-                <li class="page-item disabled">
-                  <a class="page-link">&laquo;</a>
-                </li>
-              {% endif %}
-              {% for i in books.paginator.page_range %}
-                {% if books.number == i %}
-                  <li class="page-item active">
-                    <a class="page-link">{{i}}</a>
-                  </li>
-                {% else %}
-                  <li class="page-item">
-                    <a href="?page={{i}}" class="page-link">{{i}}</a>
-                  </li>
-                {% endif %}
-              {% endfor %}
-              {% if books.has_next %}
-                <li class="page-item">
-                  <a href="?page={{books.next_page_number}}" class="page-link">&raquo;</a>
-                </li>
-              {% else %}
-                <li class="page-item disabled">
-                  <a class="page-link">&raquo;</a>
-                </li>
-              {% endif %}
-            </ul>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-  </section> -->
-
   <!-- Table view -->
   <section id="dashboard" class="py-4">
     <div class="container">
@@ -176,9 +95,18 @@
               <p class="date">
                 {{ total_books }} result{{ total_books|pluralize }} found
               </p>
+              <p>
+                {% if selected_tags %}
+                  {% for tag in selected_tags %}
+                    <a href="{% url 'books_by_tag' tag_slug=tag.slug %}" class="badge badge-light">
+                      {{ tag.name|title }}
+                    </a>
+                  {% endfor %}
+                {% endif %}
+              </p>
             {% endwith %}
             <table class="table table-hover">
-              <thead>
+              <!-- <thead>
                 <tr>
                   <th></th>
                   <th scope="col">Title</th>
@@ -186,7 +114,7 @@
                   <th scope="col">Genre</th>
                   <th></th>
                 </tr>
-              </thead>
+              </thead> -->
               <tbody>
                 {% for book in books %}
                   <tr>
@@ -213,14 +141,28 @@
                         alt=""> -->
                       </a>
                     </td>
-                    <td><h4>
-                      <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
-                    </h4></td>
-                    <td><h5>{{ book.author }}</h5></td>
-                    <td><h5>{% if book.genre %}{{ book.genre }}{% endif %}</h5></td>
                     <td>
-                      <a href="{{ book.get_absolute_url }}" class="btn btn-primary btn-block">More Info &raquo;</a>
+                      <h4><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></h4>
+                      <p>
+                        by {{ book.author }}
+                      </p>
+                      <p class="small">
+                        {% if book.tags %}
+                          {% for tag in book.tags.all %}
+                            {{ tag.name|title }}
+                            {% if not forloop.last %} &bull; {% endif %}
+                          {% endfor %}
+                        {% endif %} 
+                      </p>
                     </td>
+                    <!-- <td>
+                      <p class="small">
+                        {{ book.summary|truncatewords:20 }}
+                      </p>
+                    </td> -->
+                    <!-- <td>
+                      <a href="{{ book.get_absolute_url }}" class="btn btn-primary btn-block">More Info &raquo;</a>
+                    </td> -->
                   </tr>
                 {% endfor %}
               </tbody>
@@ -236,7 +178,7 @@
             <ul class="pagination">
               {% if books.has_previous %}
                 <li class="page-item">
-                  <a href="?page={{books.previous_page_number}}" class="page-link">&laquo;</a>
+                  <a href="{{ search_path }}&page={{books.previous_page_number}}" class="page-link">&laquo;</a>
                 </li>
               {% else %}
                 <li class="page-item disabled">
@@ -250,13 +192,13 @@
                   </li>
                 {% else %}
                   <li class="page-item">
-                    <a href="?page={{i}}" class="page-link">{{i}}</a>
+                    <a href="{{ search_path }}&page={{i}}" class="page-link">{{i}}</a>
                   </li>
                 {% endif %}
               {% endfor %}
               {% if books.has_next %}
                 <li class="page-item">
-                  <a href="?page={{books.next_page_number}}" class="page-link">&raquo;</a>
+                  <a href="{{ search_path }}&page={{books.next_page_number}}" class="page-link">&raquo;</a>
                 </li>
               {% else %}
                 <li class="page-item disabled">

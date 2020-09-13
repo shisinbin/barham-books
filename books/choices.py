@@ -1,15 +1,3 @@
-from .models import Genre
-
-genre_choices = {
-	'Fantasy': 'Fantasy',
-	'Sports': 'Sports',
-	'Coming-of-age': 'Coming-of-age',
-	'Drama': 'Drama',
-	'Thriller': 'Thriller',
-	'Romance': 'Romance',
-	'Non-fiction': 'Non-fiction',
-	}
-
 language_choices = {
 	'English': 'English',
 	'Hindi': 'Hindi',

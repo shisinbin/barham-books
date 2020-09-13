@@ -22,7 +22,8 @@
             <a class="nav-link" href="{% url 'users' %}">Users</a>
           </li>
         {% endif %}
-        <li
+        <!-- Removing link to home page from nav bar below-->
+        <!--<li
         	{% if '/' == request.path %}
             class="nav-item active mr-3"
           {% else %}
@@ -30,7 +31,7 @@
           {% endif %}
         >
           <a class="nav-link" href="{% url 'index' %}">Home</a>
-        </li>
+        </li>-->
         <li
           {% if 'about' in request.path %}
             class="nav-item active mr-3"
@@ -41,15 +42,6 @@
           <a class="nav-link" href="{% url 'about' %}">About</a>
         </li>
         <li
-          {% if 'blog' in request.path %}
-            class="nav-item active mr-3"
-          {% else %}
-            class="nav-item mr-3"
-          {% endif %}
-        >
-          <a class="nav-link" href="{% url 'post_list' %}">Blog</a>
-        </li>
-        <li
           {% if 'books' in request.path %}
             class="nav-item active mr-3"
           {% else %}
@@ -58,15 +50,17 @@
         >
           <a class="nav-link" href="{% url 'books' %}">Books</a>
         </li>
-        <!-- <li
-          {% if 'authors' in request.path %}
-            class="nav-item active mr-3"
-          {% else %}
-            class="nav-item mr-3"
-          {% endif %}
-        >
-          <a class="nav-link" href="{% url 'index' %}">Loan out</a>
-        </li> -->
+        {% if user.is_staff %}
+          <li
+            {% if 'blog' in request.path %}
+              class="nav-item active mr-3"
+            {% else %}
+              class="nav-item mr-3"
+            {% endif %}
+          >
+            <a class="nav-link" href="{% url 'post_list' %}">Blog</a>
+          </li>
+        {% endif %}
       </ul>
 
       <ul class="navbar-nav ml-auto">
