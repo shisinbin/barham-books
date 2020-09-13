@@ -158,27 +158,9 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
-# Email config
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'enthuzimuzzy00@gmail.com'
-EMAIL_HOST_PASSWORD = 'ButterUponBacon847'
-EMAIL_USE_TLS = True
-
 LOGIN_URL = 'login'
 
 TAGGIT_CASE_INSENSITIVE = True
-
-# BOOKS_API_KEY = 'AIzaSyCTDamBo30w9Bfjn19CDYpRWKy_tQIJZTU'
-# this was for the bookmarks app. should delete i think
-
-# GOOGLE_BOOKS_API_BASE = 'https://www.googleapis.com/books/v1/volumes?q='
-# GOOGLE_BOOKS_API_KEY = 'AIzaSyDSSAU8iM0_HSIVACHDe8XFEgoMvUDJYTY'
-
-# can't figure out google books api, maybe need to do a course on it
-# if really want to explore this, search github with 'django google books'
-# the top result i got was: https://github.com/cristianmayco/books/blob/master/core/views.py
-# which was useful.
 
 # CACHES = {
 #     # … default cache config and others
