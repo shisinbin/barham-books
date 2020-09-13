@@ -78,7 +78,9 @@ class Command(BaseCommand):
     help = "Import books"
     def add_arguments(self, parser):
         parser.add_argument("csvfile", type=open)
-        # trying to add an image now
+        # adding another argument for the command where the directory
+        # from where command is run that has images but
+        # as I've gone in a diff direction this is pretty pointless now
         parser.add_argument("image_basedir", type=str)
     def handle(self, *args, **options):
         self.stdout.write("Importing books")
