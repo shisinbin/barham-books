@@ -16,7 +16,7 @@ class BooksInline(admin.TabularInline):
 class AuthorAdmin(admin.ModelAdmin):
 	list_display = ('last_name', 'slug', 'first_name', 'dob', 'dod')
 	# how and what fields appear in the add author page
-	fields = [('first_name', 'middle_names', 'last_name'), 'biography', ('dob', 'dod'), ('photo', 'is_featured')]
+	fields = [('first_name', 'middle_names', 'last_name'), 'biography', ('dob', 'dod'), ('photo',)]
 	inlines = [BooksInline]
 	list_per_page = 10
 	search_fields = ('last_name', 'middle_names', 'first_name')
