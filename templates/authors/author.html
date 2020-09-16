@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-	<section id="showcase-inner" class="py-5 text-white">
+	<section id="showcase-inner" class="py-5 text-white" style="min-height: 100px;">
     <div class="container">
       <div class="row text-center">
         <div class="col-md-12">
@@ -40,63 +40,37 @@
   <!-- Listing -->
   <section id="listing" class="py-4">
     <div class="container">
-      <a href="{% url 'index' %}" class="btn btn-light mb-4">Back To Home</a>
-      <div class="row">
-        {% if author.photo or author.biography %}
-          <div class="col-md-4">
-            <!-- Home Main Image -->
-            <img 
-            {% if author.photo %}
-            	src="{{ author.photo.url }}"
-            {% else %}
-            	src="{% static 'img/scribble.jpg' %}"
-            {% endif %}
-  					alt="" class="img-main img-fluid mb-3">
-  	          {% if author.biography %}
-  	          	{{ author.biography }}
-  	          {% else %}
-  		          Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia recusandae esse reiciendis officia omnis non rerum dicta
-  		          cupiditate nostrum molestias deserunt aut minus inventore animi atque, consequuntur ad fugit. Possimus culpa
-  		          blanditiis repellendus ipsa similique ullam, natus error dolor harum.
-  	          {% endif %}
-          </div>
-        {% endif %}
 
-        <div class=
-          {% if author.biography or author.photo %}
-            "col-md-8"
+      <div class="col-md-12">
+        <div class="row">
+        	{% if books %}
+          	{% for book in books %}
+              <div class="col-sm-2 text-center">
+                <a href="{{ book.get_absolute_url }}">
+                {% if book.photo %}
+                  {% load thumbnail %}
+                  <img src="{% thumbnail book.photo 100x0 %}" class="img-fluid img-thumbnail">
+                {% else %}
+                  <img class="img-fluid img-thumbnail" src="{% static 'img/blank.png' %}" alt="">
+                {% endif %}
+                </a>
+                <div>
+                  <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
+                {% if book.publish_date %}
+                  <p class="text-secondary">
+                    <small>{{ book.publish_date }}</small>
+                  </p>
+                {% endif %}
+              </div>
+              </div>
+
+          	{% endfor %}
           {% else %}
-            "col-md-12"
-          {% endif %}>
-	        <div class="row">
-	        	{% if books %}
-	          	{% for book in books %}
-                <div class="col-sm-2 text-center">
-                  <a href="{{ book.get_absolute_url }}">
-                  {% if book.photo %}
-                    {% load thumbnail %}
-                    <img src="{% thumbnail book.photo 100x0 %}" class="img-fluid img-thumbnail">
-                  {% else %}
-                    <img class="img-fluid img-thumbnail" src="{% static 'img/blank.png' %}" alt="">
-                  {% endif %}
-                  </a>
-                  <div>
-                    <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
-                  {% if book.publish_date %}
-                    <p class="text-secondary">
-                      <small>{{ book.publish_date }}</small>
-                    </p>
-                  {% endif %}
-                </div>
-                </div>
-
-	          	{% endfor %}
-	          {% else %}
-	          	<p>Author has no books in library.</p>
-	          {% endif %}
-	        </div>
-	      </div>
+          	<p>Author has no books in library.</p>
+          {% endif %}
+        </div>
       </div>
+
     </div>
   </section>
 {% endblock %}

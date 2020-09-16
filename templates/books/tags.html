@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Tags | 
+{% endblock %}
+
+{% block content %}
+  <section id="work" class="bg-dark text-white text-center">
+    <div class="container">
+      <div class="col-md-12">
+        <h1 class="display-4">Filter Books By Tags</h1>
+        <p class="lead">
+          <h3 class="mt-2">
+            <a href="#" data-toggle="modal" data-target="#tagModal" class="badge badge-secondary">
+            <span>
+              Select a single tag
+            </span>
+            </a>
+          </h3>
+        </p>
+        <p class="lead">
+          Or select <strong>multiple</strong> tags from the dropdown below
+        </p>
+        
+        <!-- Alerts -->
+        {% include 'partials/_alerts.html' %}
+
+        <!-- Form row -->
+        <form action="{% url 'tag_search' %}">
+          <div class="row no-gutters mb-3">
+            <div class="col">
+              <label class="sr-only">Tags</label>
+              <select name="tag" id="tag" class="selectpicker" multiple="multiple" multiple data-live-search="true" data-width="100%" data-container="body" data-size="10" required="true">
+                {% for tag in tags %}
+                  <option value="{{ tag.name }}">
+                    {{ tag.name|title }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-outline-light border-left-0 rounded-right" type="submit">
+                <i class="fa fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <p class="lead mb-1">Most popular tags</p>
+        {% if tags_popular %}
+          {% for tag in tags_popular %}
+            <a href="{% url 'books_by_tag' tag_slug=tag.slug %}" class="badge badge-light">
+              {{ tag.name|title }} <span class="badge badge-light">{{ tag.num_times }}</span>
+            </a>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Tag Modal -->
+  <div class="modal fade" id="tagModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="inquiryModalLabel">Select Tag</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {% for tag in tags %}
+            <a href="{% url 'books_by_tag' tag_slug=tag.slug %}" class="badge badge-light mr-1">
+              <span>
+                {{ tag.name|title }}
+              </span>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

@@ -18,49 +18,35 @@
           <br> -->
           <!-- Alerts -->
           {% include 'partials/_alerts.html' %}
+
+
+          <!-- Form row -->
           <form action="{% url 'tag_search' %}">
-            <!-- Form Row 1 -->
-            <!-- <div class="form-row">
-              <div class="col-md-6 mb-3">
-                <label class="sr-only">Book title</label>
-                <input type="text" name="title" class="form-control" placeholder="Book title" value="{{ values.title }}">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="sr-only">Author surname</label>
-                <input type="text" name="surname" class="form-control" placeholder="Author surname" value="{{ values.surname }}">
-              </div>
-            </div> -->
-            <!-- Form Row 2 -->
-            <div class="form-row">
-              <div class="col-md-6 mb-3">
+            <div class="row no-gutters mb-3">
+              <div class="col">
                 <label class="sr-only">Tags</label>
-                <select name="tag" id="tag" class="selectpicker" multiple="multiple" data-width="100%" data-container="body" required="true">
+                <select name="tag" id="tag" class="selectpicker" multiple="multiple" multiple data-live-search="true" data-width="100%" data-container="body" data-size="10" required="true">
                   {% for tag in tags %}
                     <option value="{{ tag.name }}"
                       {% if tag.name in tag_strings %}
                         selected="true"
                       {% endif %}
-                    >{{ tag.name|title }}</option>
+                    >
+                      {{ tag.name|title }}
+                    </option>
                   {% endfor %}
                 </select>
               </div>
-              <div class="col-md-3 mb-3">
-                <select name="language" class="form-control" id="type">
-                  <option selected="true" value="any">Language (Any)</option>
-                  {% for key,value in language_choices.items %}
-                    <option value="{{ key }}"
-                    {% if key == values.language %}
-                      selected
-                    {% endif %}
-                    >{{ value }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-              <div class="col-md-3 mb-3">
-                <button class="btn btn-secondary btn-block" type="submit">Search</button>
+              <div class="col-auto">
+                <button class="btn btn-outline-light border-left-0 rounded-right" type="submit">
+                  <i class="fa fa-search"></i>
+                </button>
               </div>
             </div>
           </form>
+
+
+
         </div>
       </div>
     </div>
@@ -92,16 +78,19 @@
   
           {% if books %}
             {% with num_results as total_books %}
-              <p class="date">
-                {{ total_books }} result{{ total_books|pluralize }} found
-              </p>
-              <p>
+              <p><span style="font-family: georgia, serif; font-style: italic;">
+                {{ total_books }} result{{ total_books|pluralize }} found</span>
                 {% if selected_tags %}
-                  {% for tag in selected_tags %}
-                    <a href="{% url 'books_by_tag' tag_slug=tag.slug %}" class="badge badge-light">
-                      {{ tag.name|title }}
-                    </a>
-                  {% endfor %}
+                  {% with selected_tags|length as num_tags %}
+                    <span style="font-family: georgia, serif; font-style: italic;">for books with tag{{ num_tags|pluralize }}: </span>
+                    {% for tag in selected_tags %}
+                      <a href="{% url 'books_by_tag' tag_slug=tag.slug %}" class="badge badge-light">
+                        <span style="font-size:15px;">
+                          {{ tag.name|title }}
+                        </span>
+                      </a>
+                    {% endfor %}
+                  {% endwith %}
                 {% endif %}
               </p>
             {% endwith %}

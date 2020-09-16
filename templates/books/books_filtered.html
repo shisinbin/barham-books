@@ -12,7 +12,13 @@
 {% endblock title %}
 
 {% block content %}
-  <section id="showcase-inner" class="py-5 text-white">
+  <section
+  {% if tag %}
+    id="work" class="bg-dark text-white text-center" style="padding: 2rem 0;"
+  {% else %}
+    id="showcase-inner" class="py-5 text-white" style="min-height: 50px;"
+  {% endif %}
+  >
     <div class="container">
       <div class="row text-center">
         <div class="col-md-12">
@@ -21,12 +27,13 @@
               {{ tag.name|title }}
             </h1>
             <p class="lead">
-              (books tagged with)
-              <a href="#" data-toggle="modal" data-target="#tagModal" class="badge badge-light">
-                <span>
-                  see all tags
-                </span>
-              </a>
+              <h3 class="mt-2">
+                <a href="#" data-toggle="modal" data-target="#tagModal" class="badge badge-secondary">
+                  <span>
+                    See all tags
+                  </span>
+                </a>
+              </h3>
             </p>
           {% else %}
             <h1 class="display-4">
@@ -177,7 +184,7 @@
     </div>
   </section>
 
-  <!-- Inquiry Modal -->
+  <!-- Tag Modal -->
   <div class="modal fade" id="tagModal" role="dialog">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -189,7 +196,7 @@
         </div>
         <div class="modal-body">
           {% for a_tag in all_tags %}
-            <a href="{% url 'books_by_tag' tag_slug=a_tag.slug %}" class="badge badge-light">
+            <a href="{% url 'books_by_tag' tag_slug=a_tag.slug %}" class="badge badge-light mr-1">
               <span>
                 {{ a_tag.name|title }}
               </span>

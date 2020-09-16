@@ -3,7 +3,7 @@
 {% load rating_stuff %}
 
 {% block title %}
-  {{ book.title }} | Books | 
+  {{ book.title }} by {{ book.author }} | Books | 
 {% endblock %}
 
 {% block content %}
@@ -16,7 +16,7 @@
             <p class="series">({{ book.series }} #{{ book.series_num }})</p>
           {% endif %}
           <p class="lead">
-            <!-- <i class="fas fa-pen-alt"></i> --> by {{ book.author }}</p>
+            <!-- <i class="fas fa-pen-alt"></i> --> by <a href="{{ book.author.get_absolute_url }}" style="color:white;">{{ book.author }}</a></p>
         </div>
       </div>
     </div>
@@ -77,8 +77,10 @@
                     <i class="fas fa-tag"></i> Tags:
                       <span class="float-right">
                         {% for tag in book.tags.all %}
-                          <a href="{% url 'books_by_tag' tag_slug=tag.slug %}" class="badge badge-light">
-                            {{ tag.name|title }}
+                          <a href="{% url 'books_by_tag' tag_slug=tag.slug %}" class="badge badge-light mr-1">
+                            <span style="font-size:15px;">
+                              {{ tag.name|title }}
+                            </span>
                           </a>{% if not forloop.last %} {% endif %}
                         {% endfor %}
                       </span>
@@ -196,28 +198,18 @@
         <div class="col-md-3">
 
           <!-- Author -->
-          <div class="text-center">
-            {% if book.author.photo %}
-              <a href="{{ book.author.get_absolute_url }}">
-                {% load thumbnail %}
-                <img class="img-fluid img-thumbnail" 
-                {% if book.author.photo %}
-    	            src="{% thumbnail book.author.photo 200x0 %}"
-                {% else %}
-    	            src="{% static 'img/scribble.jpg' %}"
-                {% endif %}
-                alt="Author's picture">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title">
+                <!--<i class="fas fa-pen-alt"></i>--> {{ book.author }}
+              </h5>
+
+              <a href="{{ book.author.get_absolute_url }}" class="btn btn-dark">
+                See all books &raquo;
               </a>
-            {% endif %}
-            <br>
-              <a href="{{ book.author.get_absolute_url }}">
-                <h5><i class="fas fa-pen-alt"></i> {{ book.author }}</h5>
-              </a>
-              <a href="{{ book.author.get_absolute_url }}" class="btn btn-light">
-                See all books by author &raquo;
-              </a>
-            <br>
+            </div>
           </div>
+
         </div>
 
       </div>

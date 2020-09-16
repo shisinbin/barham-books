@@ -15,4 +15,4 @@ class ReviewForm(forms.ModelForm):
 
 # full text search
 class SearchForm(forms.Form):
-    query = forms.CharField(min_length=4, max_length=60, label='', widget=forms.TextInput(attrs={'placeholder': "e.g. dragon tattoo millenium larsson"}))
+    query = forms.CharField(min_length=3, max_length=60, label='', widget=forms.TextInput(attrs={'placeholder': "Search books"}))

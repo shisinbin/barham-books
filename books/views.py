@@ -14,11 +14,20 @@ def index(request):
 
     # autocomplete
     if 'term' in request.GET:
-        qs = Book.objects.filter(title__icontains=request.GET.get('term'))
-        titles = list()
-        for bk in qs:
-            titles.append(bk.title)
-        return JsonResponse(titles, safe=False)
+        term = request.GET.get('term')
+
+        # dodgy way of overcoming the fact that books that
+        # start with 'the' and 'a' is dodgy with searches
+        if term.startswith('the '):
+            term = term[4:]
+        if term.startswith('a '):
+            term = term[2:]
+        if term != 'the' and len(term)>2:
+            qs = Book.objects.filter(title__icontains=term)[:20]
+            titles = list()
+            for bk in qs:
+                titles.append(bk.title)
+            return JsonResponse(titles, safe=False)
 
     # options are .all(), .order_by('some_field'), or .filter()
     # NOTE: not using this at the moment, maybe later so leaving it
@@ -32,7 +41,7 @@ def index(request):
 
     context = {
         #'featured_books': featured_books,
-        'language_choices': language_choices,
+        # 'language_choices': language_choices,
         'tags': tags,
         'tags_popular': tags_popular,
         'form': form,
@@ -85,6 +94,17 @@ def book(request, book_id, slug):
     }
 
     return render(request, 'books/book.html', context)
+
+def filter_by_tags(request):
+    tags = Book.tags.order_by('name')
+    tags_popular = tags.annotate(
+        num_times=Count('books_taggedbook_items')).order_by('-num_times')[:20]
+    context = {
+        'tags': tags,
+        'tags_popular': tags_popular,
+    }
+
+    return render(request, 'books/tags.html', context)
 
 
 def tag_search(request):
@@ -313,8 +333,16 @@ def book_search(request):
     form = SearchForm()
     query = None
     results = []
-    if 'query' in request.GET:
-        form = SearchForm(request.GET)
+    tags = Book.tags.all()
+
+    # the initial part instantiates the form with either the
+    # query from navbar search or query from regular search
+    if ('navbar_query' in request.GET) or ('query' in request.GET):
+        if 'navbar_query' in request.GET:
+            # for some weird reason needed to set up a dict
+            form = SearchForm({'query': request.GET['navbar_query']})
+        elif 'query' in request.GET:
+            form = SearchForm(request.GET)
         if form.is_valid():
             query = form.cleaned_data['query']
             search_vector = SearchVector('title', weight='A') + \
@@ -326,10 +354,14 @@ def book_search(request):
                 search=search_vector,
                 rank=SearchRank(search_vector, search_query)
                 ).filter(rank__gte=0.3).order_by('-rank')
+
+            tags = tags.filter(name__icontains=query).order_by('name')
+
     context = {
         'form': form,
         'query': query,
         'results': results,
+        'tags': tags,
     }
     return render(request, 'books/book_search.html', context)
 
