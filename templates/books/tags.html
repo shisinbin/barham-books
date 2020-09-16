@@ -61,7 +61,7 @@
   <!-- Tag Modal -->
   <div class="modal fade" id="tagModal" role="dialog">
     <div class="modal-dialog">
-      <div class="modal-content">
+      <div class="modal-content text-center">
         <div class="modal-header">
           <h5 class="modal-title" id="inquiryModalLabel">Select Tag</h5>
           <button type="button" class="close" data-dismiss="modal">
@@ -71,7 +71,7 @@
         <div class="modal-body">
           {% for tag in tags %}
             <a href="{% url 'books_by_tag' tag_slug=tag.slug %}" class="badge badge-light mr-1">
-              <span>
+              <span style="font-size:13px;">
                 {{ tag.name|title }}
               </span>
             </a>

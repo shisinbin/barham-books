@@ -1,34 +1,37 @@
 {% extends 'base.html' %}
 
 {% block content %}
-	<section id="showcase-inner" class="showcase-search text-white py-5">
+	<section id="work" class="bg-dark text-white text-center">
     <div class="container">
       <div class="row text-center">
         <div class="col-md-12">
         	<h1 class="display-4">User lookup</h1>
-        	<br>
+        	<p class="lead">Either select a user from dropdown or search</p>
           <form action="{% url 'users' %}">
-          	{% csrf_token %}
             <div class="form-row">
-            	<div class="col-md-6 mb-3">
+            	<div class="form group col-md-4">
                 <label class="sr-only">User ID</label>
-                <select name="user_id" class="form-control">
-                  <option selected="true" disabled="disabled">User ID</option>
+                <select name="user_id" class="form-control" data-size="10">
+                  <option selected="true" disabled="disabled">All users</option>
                   {% for user in users %}
                     <option value="{{ user.id }}"
                       {% if user.id == values.user_id %}
                         selected
                       {% endif %}
-                    >{{ user.id }} {{ user.username }}</option>
+                    >
+                      {{ user.username }}
+                    </option>
                   {% endfor %}
                 </select>
               </div>
-              <div class="col-md-6 mb-3">
+              <div class="form-group col-md-4">
                 <label class="sr-only">Username</label>
-                <input type="text" name="username" class="form-control" placeholder="Username" value="{{ values.usernames }}">
+                <input type="text" name="username" class="form-control" placeholder="Search users" value="{{ values.usernames }}">
+              </div>
+              <div class="form-group col-md-2">
+                <button class="btn btn-secondary" type="submit">Look up</button>
               </div>
             </div>
-            <button class="btn btn-secondary btn-block mt-4" type="submit">Look up user</button>
           </form>
         </div>
       </div>
@@ -43,6 +46,10 @@
           <li class="breadcrumb-item">
             <a href="{% url 'index' %}">
               <i class="fas fa-home"></i> Home</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="{% url 'staff' %}">
+              Staff</a>
           </li>
           <li class="breadcrumb-item active"> Users</li>
         </ol>

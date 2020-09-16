@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-	<section id="showcase-inner" class="py-5 text-white">
+	<section id="work" class="bg-dark text-white text-center">
     <div class="container">
       <div class="row text-center">
         <div class="col-md-12">
@@ -12,7 +12,31 @@
     </div>
   </section>
 
-	<br>
+  <!-- Breadcrumb -->
+  <section id="bc" class="mt-3">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'index' %}">
+              <i class="fas fa-home"></i> Home</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="{% url 'staff' %}">
+              Staff</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="{% url 'users' %}">
+              Users</a>
+          </li>
+          <li class="breadcrumb-item active"> {{ looked_up_user.username }}</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <br>
+
 	<section>
 		<div class="container">
 			<div class="row text-center">

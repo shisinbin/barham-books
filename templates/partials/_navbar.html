@@ -14,13 +14,13 @@
       <ul class="navbar-nav">
         {% if user.is_staff %}
           <li
-            {% if 'users' in request.path %}
+            {% if 'staff/' in request.path %}
               class="nav-item active mr-3"
             {% else %}
               class="nav-item mr-3"
             {% endif %}
           >
-            <a class="nav-link" href="{% url 'users' %}">Users</a>
+            <a class="nav-link" href="{% url 'staff' %}">Staff</a>
           </li>
         {% endif %}
         <!-- Removing link to home page from nav bar below-->

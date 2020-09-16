@@ -132,7 +132,13 @@ def delete_reservation(request):
 
 			reservation.delete()
 			messages.success(request, 'Reservation successfully deleted')
-			return redirect('dashboard')
+			if request.user.is_staff:
+				return redirect('staff')
+			else:
+				return redirect('dashboard')
 		else:
 			messages.error(request, 'You did not select a reservation to delete')
-			return redirect('dashboard')
+			if request.user.is_staff:
+				return redirect('staff')
+			else:
+				return redirect('dashboard')

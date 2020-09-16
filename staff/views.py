@@ -12,11 +12,16 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 @staff_member_required
 def index(request):
-	return render(request, 'staff/staff_dashboard.html')
+	qs = Reservation.objects.order_by('reservation_expiry')
+	context = {
+		'reservations': qs,
+	}
+
+	return render(request, 'staff/staff_dashboard.html', context)
 
 @staff_member_required
 def users(request):
-	users = User.objects.order_by('id')
+	users = User.objects.order_by('username')
 	if 'user_id' in request.GET:
 		user_id = request.GET['user_id']
 		return redirect('user', user_id)

@@ -1,8 +1,88 @@
 {% extends 'base.html' %}
 
 {% block content %}
-	<h1>Staff Dashboard</h1>
-	<p>
-		<a href="{% url 'loan_books' %}">Loan books</a>
-	</p>
+	
+  <section id="work" class="bg-dark text-white text-center">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-12">
+          <h1 class="display-4">Staff Dashboard</h1>
+          <p class="lead">Do stuff</p>
+          <h3 class="mt-2">
+            <a href="{% url 'users' %}" class="badge badge-secondary">
+              Users
+            </a>
+          </h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Breadcrumb -->
+  <section id="bc" class="mt-3">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'index' %}">
+              <i class="fas fa-home"></i> Home</a>
+          </li>
+          <li class="breadcrumb-item active"> Staff</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <!-- Alerts -->
+  {% include 'partials/_alerts.html' %}
+
+  <section id="dashboard" class="py-4">
+    <div class="container">
+      <div class="row">
+        {% if reservations %}
+          <div class="col-md-12">
+            <h3>Reservations</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Book</th>
+                  <th scope="col">Reserved on</th>
+                  <th scope="col">Expires on</th>
+                  <th scope="col">Reserved by</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for res in reservations %}
+                  <tr>
+                    <td>{{ res.book }}</td>
+                    <td>{{ res.reservation_date }}</td>
+                    <td>
+                      {% if res.reservation_expiry %} {{ res.reservation_expiry }} {% endif %}
+                    </td>
+                    <td scope="col">{{ res.user_id }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+
+            <form class="form-inline" action="{% url 'delete_reservation' %}" method="POST">
+              {% csrf_token %}
+              <div class="form-group mx-sm-3 mb-2">
+                <!-- <label for="del_reservation">Delete reservation:  </label> -->
+                <select name="del_reservation" class="form-control">
+                  <option selected="true" disabled="disabled">Select reservation to delete</option>
+                  {% for res in reservations %}
+                    <option value="{{ res.id }}"> {{ res }} (user: {{ res.user_id }})</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <button class="btn btn-primary mb-2" type="submit">Delete reservation</button>
+            </form>
+
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
 {% endblock %}
