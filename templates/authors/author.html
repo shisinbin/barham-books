@@ -42,33 +42,37 @@
     <div class="container">
 
       <div class="col-md-12">
-        <div class="row">
+        
         	{% if books %}
-          	{% for book in books %}
-              <div class="col-sm-2 text-center">
-                <a href="{{ book.get_absolute_url }}">
-                {% if book.photo %}
-                  {% load thumbnail %}
-                  <img src="{% thumbnail book.photo 100x0 %}" class="img-fluid img-thumbnail">
-                {% else %}
-                  <img class="img-fluid img-thumbnail" src="{% static 'img/blank.png' %}" alt="">
-                {% endif %}
-                </a>
-                <div>
-                  <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
-                {% if book.publish_date %}
-                  <p class="text-secondary">
-                    <small>{{ book.publish_date }}</small>
-                  </p>
-                {% endif %}
-              </div>
-              </div>
+            <div class="container-fluid">
+              <div class="row">
+              	{% for book in books %}
+                  <div class="col-sm-2 text-center">
+                    <a href="{{ book.get_absolute_url }}">
+                    {% if book.photo %}
+                      {% load thumbnail %}
+                      <img src="{% thumbnail book.photo 100x0 %}" class="img-fluid img-thumbnail-edit">
+                    {% else %}
+                      <img class="img-fluid img-thumbnail-edit" src="{% static 'img/blank.png' %}" alt="">
+                    {% endif %}
+                    </a>
+                    <div>
+                      <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
+                    {% if book.publish_date %}
+                      <p class="text-secondary">
+                        <small>{{ book.publish_date }}</small>
+                      </p>
+                    {% endif %}
+                  </div>
+                  </div>
 
-          	{% endfor %}
+              	{% endfor %}
+              </div>
+            </div>
           {% else %}
           	<p>Author has no books in library.</p>
           {% endif %}
-        </div>
+        
       </div>
 
     </div>
