@@ -85,7 +85,7 @@
       <div class="d-flex flex-grow-1 mr-2">
         <form class="mr-2 my-auto w-100 d-inline-block order-1" method="get" action="{% url 'book_search' %}">
           <div class="input-group">
-            <input type="text" pattern=".{3,60}" required title="3-60 characters" class="form-control border border-right-0" name="navbar_query" placeholder="Search books" required>
+            <input type="text" pattern=".{3,60}" required title="3 characters minimum" class="form-control border border-right-0" name="navbar_query" placeholder="Search books" required>
             <span class="input-group-append">
               <button class="btn btn-outline-light border border-left-0" type="submit">
                 <i class="fa fa-search"></i>
