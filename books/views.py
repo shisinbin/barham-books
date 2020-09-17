@@ -141,7 +141,7 @@ def tag_search(request):
 
     num_results = queryset_list.count()
 
-    paginator = Paginator(queryset_list, 20)
+    paginator = Paginator(queryset_list, 30)
     page = request.GET.get('page')
     paged_books = paginator.get_page(page)
 
