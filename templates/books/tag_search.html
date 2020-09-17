@@ -25,7 +25,9 @@
             <div class="row no-gutters mb-3">
               <div class="col">
                 <label class="sr-only">Tags</label>
-                <select name="tag" id="tag" class="selectpicker" multiple="multiple" multiple data-live-search="true" data-width="100%" data-container="body" data-size="10" required="true">
+                <!--  turned off the search thing, which was:
+                multiple data-live-search="true" -->
+                <select name="tag" id="tag" class="selectpicker" multiple="multiple" data-width="100%" data-container="body" data-size="10" required="true">
                   {% for tag in tags %}
                     <option value="{{ tag.name }}"
                       {% if tag.name in tag_strings %}
