@@ -48,7 +48,7 @@
           {% if books_liked %}
             <div class="row">
               {% for book in books_liked %}
-                <div class="col-sm-2 text-center">
+                <div class="col-md-2 col-sm-4 col-xs-6 text-center">
                   <a href="{{ book.get_absolute_url }}">
                     {% if book.photo %}
                       <img src="{% thumbnail book.photo 100x0 %}" class="img-fluid img-thumbnail-edit">

@@ -219,7 +219,7 @@
         <h4>Other books in series:</h4>
         <div class="row">
           {% for book in other_books_in_series %}
-            <div class="col-sm-2 text-center">
+            <div class="col-md-2 col-sm-4 col-xs-6 text-center">
               <a href="{{ book.get_absolute_url }}">
                 {% if book.photo %}
                   {% load thumbnail %}
@@ -243,7 +243,7 @@
         <h4>Similar books:</h4>
         <div class="row">
           {% for book in similar_books %}
-            <div class="col-sm-2 text-center">
+            <div class="col-md-2 col-sm-4 col-xs-6 text-center">
               <a href="{{ book.get_absolute_url }}">
                 {% if book.photo %}
                   {% load thumbnail %}
