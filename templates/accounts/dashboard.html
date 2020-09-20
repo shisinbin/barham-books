@@ -48,7 +48,7 @@
           {% if books_liked %}
             <div class="row">
               {% for book in books_liked %}
-                <div class="col-md-2 col-sm-4 col-xs-6 text-center">
+                <div class="col-lg-2 col-md-3 col-sm-4 col-4 text-center mb-2">
                   <a href="{{ book.get_absolute_url }}">
                     {% if book.photo %}
                       <img src="{% thumbnail book.photo 100x0 %}" class="img-fluid img-thumbnail-edit">
@@ -56,11 +56,11 @@
                       <img class="img-fluid img-thumbnail-edit" src="{% static 'img/blank.png' %}" alt="">
                     {% endif %}
                   </a>
-                  <p>
+                  <div class="d-none d-md-block">
                     <a href="{{ book.get_absolute_url }}">
                       {{ book.title }}
                     </a>
-                  </p>
+                  </div>
                 </div>
               {% endfor %}
             </div>
@@ -188,7 +188,7 @@
                   {% for review in request.user.reviews.all %}
                     <h3>{{ review.book.title }}</h3>
                     <div class="row">
-                      <div class="col-md-2">
+                      <div class="col-md-3 col-lg-2 d-none d-md-block">
                         <a href="{{ review.book.get_absolute_url }}">
                         {% if review.book.photo %}
                           <img src="{% thumbnail review.book.photo 100x0 %}" class="img-fluid img-thumbnail-edit">
@@ -197,7 +197,7 @@
                         {% endif %}
                       </a>
                       </div>
-                      <div class="col-md-10">
+                      <div class="col-md-9 col-lg-10 col-sm-12 col-12">
 
                         <!-- Rating star stuff - uses custom subtract filter -->
                         {% if review.rating %}
@@ -219,13 +219,17 @@
                         <p>
                           {{ review.body|linebreaks }}
                         </p>
-                        <a href="{{ review.book.get_absolute_url }}" class="btn btn-light mr-2">View book</a>
-                        <div class="float-right"><a href="{% url 'del_review' review.id %}" class="btn btn-light">Delete review</a></div>
                         <p class="text-right">
                           <small class="text-muted">
                             Last updated {{ review.updated|timesince }} ago
                           </small>
                         </p>
+                      </div>
+                      <div class="col-md-12">
+                        <a href="{{ review.book.get_absolute_url }}" class="btn btn-light mr-2">View book</a>
+                        <div class="float-right">
+                          <a href="{% url 'del_review' review.id %}" class="btn btn-light">Delete <span class="d-none d-md-inline">review</span></a>
+                        </div>
                       </div>
                     </div>
                   {% endfor %}
