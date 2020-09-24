@@ -133,11 +133,17 @@ class Command(BaseCommand):
                         isbn13 = row["isbn13"]
                     else:
                         isbn13 = None
+                else:
+                    isbn13 = None
+                
                 if row["isbn10"]:
                     if len(row["isbn10"]) <11:
                         isbn10 = row["isbn10"]
                     else:
                         isbn10 = None
+                else:
+                    isbn10 = None
+                    
                 new_instance = BookInstance2.objects.create(
                                                     book=book,
                                                     publisher=row["publisher"],
