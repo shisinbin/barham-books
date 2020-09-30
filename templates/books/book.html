@@ -65,6 +65,14 @@
           <div class="row mb-5 fields">
             <div class="col-md-12">
               <ul class="list-group list-group-flush">
+                {% if book.category %}
+                  <li class="list-group-item text-secondary">
+                    <i class="far fa-list-alt"></i> Category:
+                    <span class="float-right">{{ book.category|title }}</span>
+                  </li>
+                {% endif %}
+
+
 	              {% if book.publish_date %}
                   <li class="list-group-item text-secondary">
                     <i class="far fa-calendar-alt"></i> Publish date:
@@ -72,13 +80,30 @@
                   </li>
                 {% endif %}
 
-                {% if book.tags.all %}
+                <!-- ~~~~ changed 'book.tags.all' to 'book.book_tags.all' -->
+                {% if book.book_tags.all %}
                   <li class="list-group-item text-secondary">
                     <i class="fas fa-tag"></i> Tags:
                       <span class="float-right">
-                        {% for tag in book.tags.all %}
-                          <a href="{% url 'books_by_tag' tag_slug=tag.slug %}" class="badge badge-light mr-1">
-                            <span style="font-size:15px;">
+                        {% for tag in book.book_tags.all %}
+                          <a href="{% url 'books_by_tag' tag_slug=tag.slug %}"
+                            {% if tag.band == 1 %}
+                              class="badge badge-pill badge-primary mr-1"
+                            {% elif tag.band == 2 %}
+                              class="badge badge-pill badge-light mr-1"
+                            {% elif tag.band == 3 %}
+                              class="badge badge-pill badge-info mr-1"
+                            {% elif tag.band == 4 %}
+                              class="badge badge-pill badge-danger mr-1"
+                            {% elif tag.band == 5 %}
+                              class="badge badge-pill badge-secondary mr-1"
+                            {% elif tag.band == 6 %}
+                              class="badge badge-pill badge-warning mr-1"
+                            {% else %}
+                              class="badge badge-pill badge-dark mr-1"
+                            {% endif %}
+                          >
+                            <span>
                               {{ tag.name|title }}
                             </span>
                           </a>{% if not forloop.last %} {% endif %}

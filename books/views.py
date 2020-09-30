@@ -5,7 +5,7 @@ from django.contrib import messages
 from taggit.models import Tag
 from django.db.models import Count
 
-from .models import Book, BookInstance2, Review
+from .models import Book, BookInstance2, Review, Category, BookTags
 from .forms import SearchForm
 
 from django.http import JsonResponse
@@ -33,18 +33,15 @@ def index(request):
     # NOTE: not using this at the moment, maybe later so leaving it
     #featured_books = Book.objects.filter(is_featured=True)[:4]
 
-    tags = Book.tags.order_by('name')
-    tags_popular = tags.annotate(
-        num_times=Count('books_taggedbook_items')).order_by('-num_times')[:20]
+    categories = Category.objects.all()
 
     form = SearchForm()
 
     context = {
         #'featured_books': featured_books,
         # 'language_choices': language_choices,
-        'tags': tags,
-        'tags_popular': tags_popular,
         'form': form,
+        'categories': categories,
     }
 
     return render(request, 'books/books.html', context)
@@ -68,12 +65,27 @@ def book(request, book_id, slug):
     if book.series:
         other_books_in_series = Book.objects.filter(series=book.series).exclude(id=book.id).order_by('series_num')
 
-    # similar books (excludes books in series)
-    similar_books = book.tags.similar_objects()
+    # similar books
+    # ~~~~ changed 'tags' to 'book_tags'
+    similar_books_initial = book.book_tags.similar_objects()
+
+    # exclude other books in series from similar books
     if other_books_in_series:
         for other_book in other_books_in_series:
-            if other_book in similar_books:
-                similar_books.remove(other_book)
+            if other_book in similar_books_initial:
+                similar_books_initial.remove(other_book)
+
+    # build new list only including same category
+    similar_books = []
+    if similar_books_initial:
+        for bk in similar_books_initial:
+            if bk.category == book.category:
+                similar_books.append(bk)
+            if len(similar_books) == 12:
+                break
+    del similar_books_initial
+
+    # redundant code, but doing no harm really
     similar_books = similar_books[:12]
 
     # review stuff
@@ -96,12 +108,17 @@ def book(request, book_id, slug):
     return render(request, 'books/book.html', context)
 
 def filter_by_tags(request):
-    tags = Book.tags.order_by('name')
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    # changed 'books_taggedbook_items' to 'book_tags' - 
+    # which i think is because of the related name used
+    tags = Book.book_tags.all()
+    dropdown_tags = tags.order_by('name')
     tags_popular = tags.annotate(
-        num_times=Count('books_taggedbook_items')).order_by('-num_times')[:20]
+        num_times=Count('book_tags')).order_by('-num_times')[:20]
     context = {
         'tags': tags,
         'tags_popular': tags_popular,
+        'dropdown_tags': dropdown_tags,
     }
 
     return render(request, 'books/tags.html', context)
@@ -127,9 +144,9 @@ def tag_search(request):
 
         for tag_string in tag_strings:
             search_path = search_path + 'tag=' + tag_string + '&'
-            tag = get_object_or_404(Tag, name=tag_string)
+            tag = get_object_or_404(BookTags, name=tag_string)
             selected_tags.append(tag)
-            queryset_list = queryset_list.filter(tags__in=[tag])
+            queryset_list = queryset_list.filter(book_tags__in=[tag])
 
     # language
     if 'language' in request.GET:
@@ -145,7 +162,7 @@ def tag_search(request):
     page = request.GET.get('page')
     paged_books = paginator.get_page(page)
 
-    tags = Book.tags.order_by('name')
+    tags = Book.book_tags.order_by('name')
 
     context = {
         'tags': tags,
@@ -258,8 +275,12 @@ def books_filtered(request, letter_choice=None, tag_slug=None):
 
     # two ways of filtering - tag or letter
     if tag_slug:
-        tag = get_object_or_404(Tag, slug=tag_slug)
-        books = books.filter(tags__in=[tag])
+        #~~~~~~~~~~~~
+        # changed 'Tag' to 'BookTags'
+        tag = get_object_or_404(BookTags, slug=tag_slug)
+        #~~~~~~~~~~~~
+        # changed 'tags__in' to 'book_tags__in'
+        books = books.filter(book_tags__in=[tag])
     else:
         if letter_choice:
             if letter_choice == '0':
@@ -290,7 +311,9 @@ def books_filtered(request, letter_choice=None, tag_slug=None):
         # if page is out of range deliver last page of results
         books = paginator.page(paginator.num_pages)
     
-    all_tags = Book.tags.order_by('name')
+    #~~~~~~~~~~~~~
+    # changed 'tags' to 'book_tags'
+    all_tags = Book.book_tags.all()
 
     context = {
         'tag': tag,
@@ -332,17 +355,22 @@ from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 def book_search(request):
     form = SearchForm()
     query = None
+    category = None
     results = []
-    tags = Book.tags.all()
+    tags = Book.book_tags.all()
+    categories = Category.objects.all() 
 
     # the initial part instantiates the form with either the
     # query from navbar search or query from regular search
-    if ('navbar_query' in request.GET) or ('query' in request.GET):
+    #### new search technique ####
+    if ('navbar_query' in request.GET) or ('keywords' in request.GET): # or ('query' in request.GET)
         if 'navbar_query' in request.GET:
             # for some weird reason needed to set up a dict
             form = SearchForm({'query': request.GET['navbar_query']})
-        elif 'query' in request.GET:
-            form = SearchForm(request.GET)
+        elif 'keywords' in request.GET:
+            form = SearchForm({'query': request.GET['keywords']})
+        # elif 'query' in request.GET:
+        #     form = SearchForm(request.GET)
         if form.is_valid():
             query = form.cleaned_data['query']
             search_vector = SearchVector('title', weight='A') + \
@@ -355,13 +383,22 @@ def book_search(request):
                 rank=SearchRank(search_vector, search_query)
                 ).filter(rank__gte=0.3).order_by('-rank')
 
-            tags = tags.filter(name__icontains=query).order_by('name')
+            ####
+            if 'category' in request.GET:
+                category_id = int(request.GET['category'])
+                if category_id != -1:
+                    category = get_object_or_404(Category, pk=category_id)
+                    results = results.filter(category=category)
+
+            tags = tags.filter(name__icontains=query)
 
     context = {
         'form': form,
         'query': query,
         'results': results,
         'tags': tags,
+        'category': category,
+        'categories': categories,
     }
     return render(request, 'books/book_search.html', context)
 
@@ -396,7 +433,6 @@ def del_review(request, review_id):
     else:
         messages.error(request, 'You cannot delete a review you did not write')
         return redirect('books')
-
 
 
 # too much fiddly shit to get this editing review thing working
@@ -463,3 +499,10 @@ def del_review(request, review_id):
 #             'values': values,
 #         }
 #         return render(request, 'books/edit_review.html', context)
+
+def category(request, category_code):
+    category = get_object_or_404(Category, code=category_code)
+    context = {
+        'category': category,
+    }
+    return render(request, 'books/category.html', context)

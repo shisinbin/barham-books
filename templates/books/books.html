@@ -18,7 +18,39 @@
           <h1 class="display-4 mt-3">Search our library of books</h1>
           <!--<p class="lead">Search by book title, book series or author's name</p>-->
           <br>
+
+          <!-- New form -->
+          <form action="{% url 'book_search' %}">
+            <div class="row no-gutters">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <select name="category" class="custom-select" style="background-color:rgba(32, 134, 107, 0.8); color:#E8E8E8;">
+                    <option selected="true" value="-1">
+                      All categories
+                    </option>
+                    {% for cat in categories %}
+                      <option value="{{ cat.id }}">
+                        {{ cat.short_name }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <input type="text" name="keywords" class="form-control" placeholder="Enter book title, series, author's name..." id="keywords" required minlength="3">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-light" type="submit">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
           
+        </div>
+      </div>
+      <!-- Old form -->
+      <!--<div class="row">
+        <div class="col-md-12">
+
           <form method="get" action="{% url 'book_search' %}">
             <div class="row no-gutters">
               <div class="col">
@@ -31,9 +63,9 @@
               </div>
             </div>
           </form>
-          
+
         </div>
-      </div>
+      </div>-->
       <br>
       <div class="row text-center mt-4">
         <div class="col-md-4">
@@ -58,8 +90,38 @@
           </h3>
         </div>
       </div>
+
+
     </div>
   </section>
+
+  <!-- Categories -->
+  <!--<section id="listing" class="py-4">
+    <div class="container">
+      <div class="row">
+
+        {% for cat in categories %}
+          <div class="col-lg-4 col-md-6 col-sm-12 col-12">
+            <div class="card mb-4" style="width: 100%;">
+              <img class="card-img-top" src="#" alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title">{{ cat.name|title }}</h5>
+                <p class="card-text">
+                  {% if cat.description %}
+                    {{ cat.description|linebreaks }}
+                  {% else %}
+                    Some quick example text to build on the card title and make up the bulk of the card's content.
+                  {% endif %}
+                </p>
+                <a href="{{ cat.get_absolute_url }}" class="btn btn-primary">Go somewhere</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+
+      </div>
+    </div>
+  </section>-->
 
   <!--<section id="showcase" style="min-height: 450px;">
     <div class="container text-center">
@@ -106,6 +168,7 @@
     </div>
   </section>-->
 
+  <!-- The Filtering By Tags Thing Which I've Since Moved -->
   <!--<section id="work" class="bg-dark text-white text-center">
     <div class="container">
       <div class="col-md-12">
@@ -151,34 +214,6 @@
             </a>
           {% endfor %}
         {% endif %}
-      </div>
-    </div>
-  </section>-->
-
-  <!--<section id="team" class="py-5" style="min-height: 100px">
-    <div class="container">
-      <div class="row text-center">
-        <div class="col-md-4">
-          <h3>
-            <a href="{% url 'books_all' %}" class="badge badge-light mb-2">
-              <i class="fas fa-sort-alpha-down mr-2"></i>Book A - Z
-            </a>
-          </h3>
-        </div>
-        <div class="col-md-4">
-          <h3>
-            <a href="{% url 'filter_by_tags' %}" class="badge badge-light mb-2">
-              <i class="fas fa-tags mr-2"></i>Explore Tags
-            </a>
-          </h3>
-        </div>
-        <div class="col-md-4">
-          <h3>
-            <a href="{% url 'about' %}" class="badge badge-light mb-2">
-              <i class="fas fa-question mr-2"></i>About Us
-            </a>
-          </h3>
-        </div>
       </div>
     </div>
   </section>-->
@@ -245,7 +280,7 @@
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script>
   $( function() {
-    $( "#id_query" ).autocomplete({
+    $( "#keywords" ).autocomplete({
       source: '{% url 'books' %}',
       minLength: 3
     });

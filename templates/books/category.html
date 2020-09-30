@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  {{ category.name|title }} | Books | 
+{% endblock %}
+
+{% block content %}
+  <section id="showcase-inner" class="py-5 text-white" style="background-size:cover;">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-12">
+          <h1 class="display-4">{{ category.name|title }}</h1>
+          <p class="lead">
+            lead text
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Breadcrumb -->
+  <section id="bc" class="mt-3">
+    <div class="container">
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'index' %}">Home</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="{% url 'books' %}">Books</a>
+          </li>
+          <li class="breadcrumb-item active">{{ category.name|title }}</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <!-- Alerts -->
+  {% include 'partials/_alerts.html' %}
+
+  <!-- Book -->
+  <section id="listing" class="py-4">
+    <div class="container">
+      <div class="col-md-12">
+
+        <!-- First row showing book info -->
+        <div class="row no-gutters">
+          {% if category.description %}
+            {{ category.description|linebreaks }}
+          {% else %}
+            add a description
+          {% endif %}
+        </div>
+
+        <div class="row no-gutters">
+          insert dynamic content here. such as:
+          <ul>
+            <li>series with most books</li>
+            <li>authors with most books</li>
+            <li>most liked books in category</li>
+            <li>most reviewed (or maybe just any books in category with a review)</li>
+            <li>featured books obv</li>
+            <li>also maybe a search thing that's wired into the particular category</li>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+{% endblock %}
+
+{% block domready %}
+{% endblock %}

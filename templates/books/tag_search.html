@@ -86,7 +86,23 @@
                   {% with selected_tags|length as num_tags %}
                     <span style="font-family: georgia, serif; font-style: italic;">for books with tag{{ num_tags|pluralize }}: </span>
                     {% for tag in selected_tags %}
-                      <a href="{% url 'books_by_tag' tag_slug=tag.slug %}" class="badge badge-light">
+                      <a href="{% url 'books_by_tag' tag_slug=tag.slug %}"
+                      {% if tag.band == 1 %}
+                        class="badge badge-pill badge-primary"
+                      {% elif tag.band == 2 %}
+                        class="badge badge-pill badge-light"
+                      {% elif tag.band == 3 %}
+                        class="badge badge-pill badge-info"
+                      {% elif tag.band == 4 %}
+                        class="badge badge-pill badge-danger"
+                      {% elif tag.band == 5 %}
+                        class="badge badge-pill badge-secondary"
+                      {% elif tag.band == 6 %}
+                        class="badge badge-pill badge-warning"
+                      {% else %}
+                        class="badge badge-pill badge-dark"
+                      {% endif %}
+                      >
                         <span style="font-size:15px;">
                           {{ tag.name|title }}
                         </span>
@@ -138,8 +154,8 @@
                         by {{ book.author }}
                       </p>
                       <p class="small">
-                        {% if book.tags %}
-                          {% for tag in book.tags.all %}
+                        {% if book.book_tags %}
+                          {% for tag in book.book_tags.all %}
                             {{ tag.name|title }}
                             {% if not forloop.last %} &bull; {% endif %}
                           {% endfor %}

@@ -57,7 +57,7 @@ class Command(BaseCommand):
                     tags = row["tags"].split(',')
                     for tag in tags:
                         c["tags_added"] +=1
-                        book.tags.add(tag.strip())
+                        book.book_tags.add(tag.strip())
 
                 if row["other_authors"]:
                     book.other_authors = row["other_authors"]

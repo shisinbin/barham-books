@@ -33,7 +33,7 @@
               <!--  turned off the search thing, which was:
                 multiple data-live-search="true" -->
               <select name="tag" id="tag" class="selectpicker" multiple="multiple" data-width="100%" data-container="body" data-size="10" required="true">
-                {% for tag in tags %}
+                {% for tag in dropdown_tags %}
                   <option value="{{ tag.name }}">
                     {{ tag.name|title }}
                   </option>
@@ -51,7 +51,23 @@
         <p class="lead mb-1">Most popular tags</p>
         {% if tags_popular %}
           {% for tag in tags_popular %}
-            <a href="{% url 'books_by_tag' tag_slug=tag.slug %}" class="badge badge-light">
+            <a href="{% url 'books_by_tag' tag_slug=tag.slug %}"
+            {% if tag.band == 1 %}
+              class="badge badge-pill badge-primary  mb-1"
+            {% elif tag.band == 2 %}
+              class="badge badge-pill badge-light mb-1"
+            {% elif tag.band == 3 %}
+              class="badge badge-pill badge-info mb-1"
+            {% elif tag.band == 4 %}
+              class="badge badge-pill badge-danger mb-1"
+            {% elif tag.band == 5 %}
+              class="badge badge-pill badge-secondary mb-1"
+            {% elif tag.band == 6 %}
+              class="badge badge-pill badge-warning mb-1"
+            {% else %}
+              class="badge badge-pill badge-dark mb-1"
+            {% endif %}
+            >
               {{ tag.name|title }} <span class="badge badge-light">{{ tag.num_times }}</span>
             </a>
           {% endfor %}
@@ -72,10 +88,28 @@
         </div>
         <div class="modal-body">
           {% for tag in tags %}
-            <a href="{% url 'books_by_tag' tag_slug=tag.slug %}" class="badge badge-light mr-1">
-              <span style="font-size:13px;">
+            <a href="{% url 'books_by_tag' tag_slug=tag.slug %}"
+            {% if tag.band == 1 %}
+              class="badge badge-pill badge-primary mb-1"
+            {% elif tag.band == 2 %}
+              class="badge badge-pill badge-light mb-1"
+            {% elif tag.band == 3 %}
+              class="badge badge-pill badge-info mb-1"
+            {% elif tag.band == 4 %}
+              class="badge badge-pill badge-danger mb-1"
+            {% elif tag.band == 5 %}
+              class="badge badge-pill badge-secondary mb-1"
+            {% elif tag.band == 6 %}
+              class="badge badge-pill badge-warning mb-1"
+            {% else %}
+              class="badge badge-pill badge-dark mb-1"
+            {% endif %}
+            >
+              <!--<span style="font-size:14px; font-weight: lighter;">-->
+              <p class="mb-1 mt-1">
                 {{ tag.name|title }}
-              </span>
+              </p>
+              <!--</span>-->
             </a>
           {% endfor %}
         </div>

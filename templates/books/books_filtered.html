@@ -201,10 +201,26 @@
         </div>
         <div class="modal-body">
           {% for a_tag in all_tags %}
-            <a href="{% url 'books_by_tag' tag_slug=a_tag.slug %}" class="badge badge-light mr-1">
-              <span style="font-size:13px;">
+            <a href="{% url 'books_by_tag' tag_slug=a_tag.slug %}"
+            {% if a_tag.band == 1 %}
+              class="badge badge-pill badge-primary mb-1"
+            {% elif a_tag.band == 2 %}
+              class="badge badge-pill badge-light mb-1"
+            {% elif a_tag.band == 3 %}
+              class="badge badge-pill badge-info mb-1"
+            {% elif a_tag.band == 4 %}
+              class="badge badge-pill badge-danger mb-1"
+            {% elif a_tag.band == 5 %}
+              class="badge badge-pill badge-secondary mb-1"
+            {% elif a_tag.band == 6 %}
+              class="badge badge-pill badge-warning mb-1"
+            {% else %}
+              class="badge badge-pill badge-dark mb-1"
+            {% endif %}
+            >
+              <p class="mb-1 mt-1">
                 {{ a_tag.name|title }}
-              </span>
+              </p>
             </a>
           {% endfor %}
         </div>

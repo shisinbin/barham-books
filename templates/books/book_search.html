@@ -14,6 +14,42 @@
         <div class="col-md-12">
           <h1 class="display-4">Book search results</h1>
           <br>
+
+          <!-- New form -->
+          <form action="{% url 'book_search' %}">
+            <div class="row no-gutters">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <select name="category" class="custom-select" style="background-color:rgba(32, 134, 107, 0.8); color:#E8E8E8;">
+                    <option {% if not category %}selected="true"{% endif %} value="-1">
+                      All categories
+                    </option>
+                    {% for cat in categories %}
+                      <option value="{{ cat.id }}"
+                        {% if category.id == cat.id %}
+                          selected="true"
+                        {% endif %}
+                      >
+                        {{ cat.short_name }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <input type="text" name="keywords" class="form-control" placeholder="Enter book title, series, author's name..." id="keywords" {% if query %}value="{{ query }}"{% endif %} required minlength="3">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-light" type="submit">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+      <!--<div class="row">
+        <div class="col-md-12">
+
           <form method="get" action="{% url 'book_search' %}">
             <div class="row no-gutters">
               <div class="col">
@@ -26,9 +62,9 @@
               </div>
             </div>
           </form>
-          <!--<p class="lead">Books containing "{{ query }}"</p> -->
+
         </div>
-      </div>
+      </div>-->
     </div>
   </section>
 
@@ -102,8 +138,8 @@
                         by {{ book.author }}
                       </p>
                       <p class="small">
-                        {% if book.tags %}
-                          {% for tag in book.tags.all %}
+                        {% if book.book_tags %}
+                          {% for tag in book.book_tags.all %}
                             {{ tag.name|title }}
                             {% if not forloop.last %} &middot; {% endif %}
                           {% endfor %}
@@ -124,8 +160,24 @@
             <p>
               <span style="font-family: georgia, serif; font-style: italic;">Did you mean to search for books tagged with:</span>
               {% for tag in tags %}
-                <a href="{% url 'books_by_tag' tag_slug=tag.slug %}" class="badge badge-secondary mr-1">
-                  <span style="font-size:15px;">
+                <a href="{% url 'books_by_tag' tag_slug=tag.slug %}"
+                  {% if tag.band == 1 %}
+                    class="badge badge-pill badge-primary"
+                  {% elif tag.band == 2 %}
+                    class="badge badge-pill badge-light"
+                  {% elif tag.band == 3 %}
+                    class="badge badge-pill badge-info"
+                  {% elif tag.band == 4 %}
+                    class="badge badge-pill badge-danger"
+                  {% elif tag.band == 5 %}
+                    class="badge badge-pill badge-secondary"
+                  {% elif tag.band == 6 %}
+                    class="badge badge-pill badge-warning"
+                  {% else %}
+                    class="badge badge-pill badge-dark"
+                  {% endif %}
+                >
+                  <span>
                     {{ tag.name|title }}
                   </span>
                 </a>
@@ -170,7 +222,7 @@
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script>
   $( function() {
-    $( "#id_query" ).autocomplete({
+    $( "#keywords" ).autocomplete({
       source: '{% url 'books' %}',
       minLength: 3
     });

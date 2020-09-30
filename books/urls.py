@@ -18,6 +18,9 @@ urlpatterns = [
 
     # for likes, uses AJAX
     path('like/', views.book_like, name='like'),
+
+    # category
+    path('category/<str:category_code>/', views.category, name='category'),
 ]
 
 urlpatterns += [

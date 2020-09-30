@@ -14,5 +14,7 @@ class ReviewForm(forms.ModelForm):
 		fields = ('user', 'book', 'title', 'body')
 
 # full text search
+# from .choices import category_choices
 class SearchForm(forms.Form):
     query = forms.CharField(min_length=3, max_length=60, label='', widget=forms.TextInput(attrs={'placeholder': "Search books"}))
+    # category = forms.ChoiceField(choices=category_choices, required=True, label='')
