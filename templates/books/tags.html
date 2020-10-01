@@ -68,7 +68,9 @@
               class="badge badge-pill badge-dark mb-1"
             {% endif %}
             >
-              {{ tag.name|title }} <span class="badge badge-light">{{ tag.num_times }}</span>
+              <p class="mb-1 mt-1">
+                {{ tag.name|title }} <span class="badge badge-light">{{ tag.num_times }}</span>
+              </p>
             </a>
           {% endfor %}
         {% endif %}

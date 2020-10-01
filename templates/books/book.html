@@ -88,24 +88,24 @@
                         {% for tag in book.book_tags.all %}
                           <a href="{% url 'books_by_tag' tag_slug=tag.slug %}"
                             {% if tag.band == 1 %}
-                              class="badge badge-pill badge-primary mr-1"
+                              class="badge badge-pill badge-primary mb-1"
                             {% elif tag.band == 2 %}
-                              class="badge badge-pill badge-light mr-1"
+                              class="badge badge-pill badge-light mb-1"
                             {% elif tag.band == 3 %}
-                              class="badge badge-pill badge-info mr-1"
+                              class="badge badge-pill badge-info mb-1"
                             {% elif tag.band == 4 %}
-                              class="badge badge-pill badge-danger mr-1"
+                              class="badge badge-pill badge-danger mb-1"
                             {% elif tag.band == 5 %}
-                              class="badge badge-pill badge-secondary mr-1"
+                              class="badge badge-pill badge-secondary mb-1"
                             {% elif tag.band == 6 %}
-                              class="badge badge-pill badge-warning mr-1"
+                              class="badge badge-pill badge-warning mb-1"
                             {% else %}
-                              class="badge badge-pill badge-dark mr-1"
+                              class="badge badge-pill badge-dark mb-1"
                             {% endif %}
                           >
-                            <span>
+                            <p class="mb-1 mt-1">
                               {{ tag.name|title }}
-                            </span>
+                            </p>
                           </a>{% if not forloop.last %} {% endif %}
                         {% endfor %}
                       </span>

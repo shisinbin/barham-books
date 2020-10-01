@@ -157,7 +157,7 @@
           <!-- Any book tags similar to query? -->
           {% if tags %}
             <br>
-            <p>
+
               <span style="font-family: georgia, serif; font-style: italic;">Did you mean to search for books tagged with:</span>
               {% for tag in tags %}
                 <a href="{% url 'books_by_tag' tag_slug=tag.slug %}"
@@ -177,13 +177,13 @@
                     class="badge badge-pill badge-dark"
                   {% endif %}
                 >
-                  <span>
+                  <p class="mb-1 mt-1">
                     {{ tag.name|title }}
-                  </span>
+                  </p>
                 </a>
               {% endfor %}
               <span style="font-family: georgia, serif; font-style: italic;">?</span>
-            </p>
+
           {% endif %}
 
         </div>
