@@ -19,7 +19,8 @@
           <form action="{% url 'book_search' %}">
             <div class="row no-gutters">
               <div class="input-group">
-                <div class="input-group-prepend">
+                <input type="text" name="keywords" class="form-control" placeholder="Enter book title, series, author's name..." id="keywords" {% if query %}value="{{ query }}"{% endif %} required minlength="3">
+                <div class="input-group-addon">
                   <select name="category" class="custom-select" style="background-color:rgba(32, 134, 107, 0.8); color:#E8E8E8;">
                     <option {% if not category %}selected="true"{% endif %} value="-1">
                       All categories
@@ -35,7 +36,6 @@
                     {% endfor %}
                   </select>
                 </div>
-                <input type="text" name="keywords" class="form-control" placeholder="Enter book title, series, author's name..." id="keywords" {% if query %}value="{{ query }}"{% endif %} required minlength="3">
                 <div class="input-group-append">
                   <button class="btn btn-outline-light" type="submit">
                     <i class="fa fa-search"></i>
