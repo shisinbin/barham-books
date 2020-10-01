@@ -73,7 +73,7 @@ class Command(BaseCommand):
             ya_cat = Category.objects.create(
                 name='Teen to Young Adult',
                 short_name='Teen & YA',
-                code='YTA',
+                code='TYA',
                 order=5,
                 description='Teen Fiction traces the ins, outs, ups and downs of growing up through the emotional, physical, and social experiences of a teenaged or young adult protagonist with which readers identify. Teen Fiction often takes place within a high school setting and may serve as a “coming-of-age” story, documenting the awkwardness of adolescence and the challenge of coping with difficult social issues.',
                 tags_included=[]

@@ -80,39 +80,39 @@
   
           {% if books %}
             {% with num_results as total_books %}
-              <p><span style="font-family: georgia, serif; font-style: italic;">
-                {{ total_books }} result{{ total_books|pluralize }} found</span>
-                {% if selected_tags %}
-                  {% with selected_tags|length as num_tags %}
-                    <span style="font-family: georgia, serif; font-style: italic;">for books with tag{{ num_tags|pluralize }}: </span>
-                    {% for tag in selected_tags %}
-                      <a href="{% url 'books_by_tag' tag_slug=tag.slug %}"
-                      {% if tag.band == 1 %}
-                        class="badge badge-pill badge-primary"
-                      {% elif tag.band == 2 %}
-                        class="badge badge-pill badge-light"
-                      {% elif tag.band == 3 %}
-                        class="badge badge-pill badge-info"
-                      {% elif tag.band == 4 %}
-                        class="badge badge-pill badge-danger"
-                      {% elif tag.band == 5 %}
-                        class="badge badge-pill badge-secondary"
-                      {% elif tag.band == 6 %}
-                        class="badge badge-pill badge-warning"
-                      {% else %}
-                        class="badge badge-pill badge-dark"
-                      {% endif %}
-                      >
-                        <p class="mb-1 mt-1">
-                          {{ tag.name|title }}
-                        </p>
-                      </a>
-                    {% endfor %}
-                  {% endwith %}
-                {% endif %}
-              </p>
+              <span style="font-family: georgia, serif; font-style: italic;">
+                {{ total_books }} result{{ total_books|pluralize }} found
+              </span>
+              {% if selected_tags %}
+                {% with selected_tags|length as num_tags %}
+                  <span style="font-family: georgia, serif; font-style: italic;">for books with tag{{ num_tags|pluralize }}: </span>
+                  {% for tag in selected_tags %}
+                    <a href="{% url 'books_by_tag' tag_slug=tag.slug %}"
+                    {% if tag.band == 1 %}
+                      class="badge badge-pill badge-primary"
+                    {% elif tag.band == 2 %}
+                      class="badge badge-pill badge-light"
+                    {% elif tag.band == 3 %}
+                      class="badge badge-pill badge-info"
+                    {% elif tag.band == 4 %}
+                      class="badge badge-pill badge-danger"
+                    {% elif tag.band == 5 %}
+                      class="badge badge-pill badge-secondary"
+                    {% elif tag.band == 6 %}
+                      class="badge badge-pill badge-warning"
+                    {% else %}
+                      class="badge badge-pill badge-dark"
+                    {% endif %}
+                    >
+                      <p class="mb-1 mt-1">
+                        {{ tag.name|title }}
+                      </p>
+                    </a>
+                  {% endfor %}
+                {% endwith %}
+              {% endif %}
             {% endwith %}
-            <table class="table table-hover">
+            <table class="table table-hover mt-2">
               <!-- <thead>
                 <tr>
                   <th></th>
