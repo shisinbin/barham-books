@@ -8,7 +8,7 @@
 
 {% block content %}
 	<section id="showcase-inner" class="py-5 text-white" style="min-height: 350px; background-size:cover;">
-    <div class="container">
+    <div class="container" style="overflow:auto;">
       <div class="row text-center">
         <div class="col-md-12">
 
@@ -68,21 +68,35 @@
       </div>-->
       <br>
       <div class="row text-center mt-4">
-        <div class="col-md-4">
+        <div class="col-md-3">
           <h3>
             <a href="{% url 'filter_by_tags' %}" class="btn btn-outline-light mb-3">
               <!--<i class="fas fa-tags mr-2"></i>-->Explore Tags &raquo;
             </a>
           </h3>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
           <h3>
             <a href="{% url 'books_all' %}" class="btn btn-outline-light mb-3">
               <!--<i class="fas fa-sort-alpha-down mr-2"></i>-->Book A - Z &raquo;
             </a>
           </h3>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
+          <div class="btn-group dropup">
+            <button type="button" class="btn btn-outline-light mb-3 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Browse Categories
+            </button>
+            <div class="dropdown-menu">
+              {% for cat in categories %}
+                <a class="dropdown-item" href="{% url 'category' cat.code %}">
+                  {{ cat.name }}
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
           <h3>
             <a href="{% url 'about' %}" class="btn btn-outline-light mb-3">
               <!--<i class="fas fa-question mr-2"></i>-->About Us &raquo;

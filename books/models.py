@@ -47,6 +47,12 @@ class Series(models.Model):
         verbose_name_plural = 'series'
     def __str__(self):
         return self.name
+    def get_all_tags(self):
+        tag_set = set()
+        for book in self.books.all():
+            for tag in book.book_tags.all():
+                tag_set.add(tag)
+        return tag_set
 
 class TaggedBook(TaggedItemBase):
     content_object = models.ForeignKey('Book',

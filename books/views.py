@@ -500,9 +500,29 @@ def del_review(request, review_id):
 #         }
 #         return render(request, 'books/edit_review.html', context)
 
+from authors.models import Author
+from books.models import Series
+from django.db.models import Q
+
 def category(request, category_code):
+    categories = Category.objects.all()
     category = get_object_or_404(Category, code=category_code)
+    category_books = Book.objects.filter(category=category)
+    featured_books = category_books.filter(is_featured=True)
+    
+    # what a tremendous piece of code
+    popular_authors = Author.objects.annotate(
+        num_times=Count('books', filter=Q(books__in=category_books))).order_by('-num_times')[:10]
+
+    series_with_multiple_books = Series.objects.annotate(
+        num_times=Count('books', filter=Q(books__in=category_books))).order_by('-num_times')[:10]
+
     context = {
         'category': category,
+        'categories': categories,
+        'category_books': category_books,
+        'featured_books': featured_books,
+        'popular_authors': popular_authors,
+        'series_with_multiple_books': series_with_multiple_books,
     }
     return render(request, 'books/category.html', context)

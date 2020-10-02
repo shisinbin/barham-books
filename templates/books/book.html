@@ -13,7 +13,11 @@
         <div class="col-md-12">
           <h1 class="display-4">{{ book.title }}</h1>
           {% if book.series %}
-            <p class="series">({{ book.series }} #{{ book.series_num }})</p>
+            <p class="series">{{ book.series }} 
+              {% if book.series_num != 99 %}
+                #{{ book.series_num }}
+              {% endif %}
+            </p>
           {% endif %}
           <p class="lead">
             <!-- <i class="fas fa-pen-alt"></i> --> by <a href="{{ book.author.get_absolute_url }}" style="color:white;">{{ book.author }}</a></p>
@@ -255,7 +259,10 @@
               </a>
               <div class="d-none d-md-block">
                 <a href="{{ book.get_absolute_url }}">
-                  {{ book.title }} (#{{ book.series_num }})
+                  {{ book.title }}
+                  {% if book.series_num != 99 %}
+                    (#{{ book.series_num }})
+                  {% endif %}
                 </a>
               </div>
             </div>

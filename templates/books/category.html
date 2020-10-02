@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load thumbnail %}
 
 {% block title %}
   {{ category.name|title }} | Books | 
@@ -7,13 +8,48 @@
 
 {% block content %}
   <section id="showcase-inner" class="py-5 text-white" style="background-size:cover;">
-    <div class="container">
+    <div class="container" style="overflow:auto;">
       <div class="row text-center">
         <div class="col-md-12">
           <h1 class="display-4">{{ category.name|title }}</h1>
-          <p class="lead">
-            lead text
-          </p>
+          <div class="btn-group dropdown">
+            <button type="button" class="btn btn-outline-light mb-3 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Switch Categories
+            </button>
+            <div class="dropdown-menu">
+              {% for cat in categories %}
+                <a class="dropdown-item" href="{% url 'category' cat.code %}">
+                  {{ cat.name }}
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+          <!-- New form -->
+          <form action="{% url 'book_search' %}">
+            <div class="row no-gutters">
+              <div class="input-group mb-3">
+                <input type="text" name="keywords" class="form-control" placeholder="Enter book title, series, author's name..." id="keywords" required minlength="3">
+                <div class="input-group-addon">
+                  <select name="category" class="custom-select" style="background-color:rgba(32, 134, 107, 0.8); color:#E8E8E8;">
+                    <option value="-1">
+                      All categories
+                    </option>
+                    {% for cat in categories %}
+                      <option value="{{ cat.id }}"
+                      {% if cat.id == category.id %}selected="true"{% endif %}>
+                        {{ cat.short_name }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="input-group-append">
+                  <button class="btn btn-outline-light" type="submit">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -43,32 +79,163 @@
   <section id="listing" class="py-4">
     <div class="container">
       <div class="col-md-12">
+        <div class="row">
+        
+          <div class="col-md-6">
+            {% if category.description %}
+              {{ category.description|linebreaks }}
+            {% else %}
+              add a description
+            {% endif %}
+          </div>
 
-        <!-- First row showing book info -->
-        <div class="row no-gutters">
-          {% if category.description %}
-            {{ category.description|linebreaks }}
-          {% else %}
-            add a description
+          <!--<div class="row no-gutters">
+            insert dynamic content here. such as:
+            <ul>
+              <li>series with most books</li>
+              <li>authors with most books</li>
+              <li>most liked books in category</li>
+              <li>most reviewed (or maybe just any books in category with a review)</li>
+              <li>featured books obv</li>
+              <li>also maybe a search thing that's wired into the particular category</li>
+          </div>-->
+
+          <div class="col-md-6">
+            {% if popular_authors %}
+              <h5 class="text-center">Popular {{ category.short_name }} authors</h5>
+              <div class="list-group">
+                {% for author in popular_authors %}
+                  {% if author.num_times >= 2 %}
+                    <a href="{{ author.get_absolute_url }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                      {{ author }}
+                      <span class="badge badge-primary badge-pill">{{ author.num_times }}</span>
+                    </a>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+        </div>
+
+        {% if featured_books %}
+          <br>
+          <hr>
+          <h3 class="display-4 text-center">Featured Books</h3>
+          <br>
+          <div class="row">
+            {% for book in featured_books %}
+              <div class="col-lg-2 col-md-3 col-sm-4 col-4 text-center mb-2">
+                <a href="{{ book.get_absolute_url }}">
+                  {% if book.photo %}
+                    {% load thumbnail %}
+                    <img src="{% thumbnail book.photo 100x0 %}" class="img-fluid img-thumbnail-edit">
+                  {% else %}
+                    <img class="img-fluid img-thumbnail-edit" src="{% static 'img/blank.png' %}" alt="">
+                  {% endif %}
+                </a>
+                <div class="d-none d-md-block">
+                  <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+
+        {% if series_with_multiple_books %}
+          <br>
+          <hr>
+          <h3 class="display-4 text-center">Popular {{ category.short_name }} series</h3>
+          {% for series in series_with_multiple_books %}
+            {% if series.num_times >= 2 %}
+              <br>
+              <div class="container-fluid">
+                <h4>
+                  {{ series }} ({{ series.num_times }})
+                </h4>
+                {% for tag in series.get_all_tags %}
+                  <a href="{% url 'books_by_tag' tag_slug=tag.slug %}"
+                  {% if tag.band == 1 %}
+                    class="badge badge-pill badge-primary mb-1"
+                  {% elif tag.band == 2 %}
+                    class="badge badge-pill badge-light mb-1"
+                  {% elif tag.band == 3 %}
+                    class="badge badge-pill badge-info mb-1"
+                  {% elif tag.band == 4 %}
+                    class="badge badge-pill badge-danger mb-1"
+                  {% elif tag.band == 5 %}
+                    class="badge badge-pill badge-secondary mb-1"
+                  {% elif tag.band == 6 %}
+                    class="badge badge-pill badge-warning mb-1"
+                  {% else %}
+                    class="badge badge-pill badge-dark mb-1"
+                  {% endif %}
+                  >
+                    <!--<span style="font-size:14px; font-weight: lighter;">-->
+                    <p class="mb-1 mt-1">
+                      {{ tag.name|title }}
+                    </p>
+                    <!--</span>-->
+                  </a>
+                {% endfor %}
+
+                <div class="row mt-1">
+                  {% for book in series.books.all|dictsort:"series_num" %}
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-4 text-center mb-2">
+                      <a href="{{ book.get_absolute_url }}" title="{{ book.title }}">
+                        {% if book.photo %}
+                          <img src="{% thumbnail book.photo 100x0 %}" class="img-fluid img-thumbnail-edit">
+                        {% else %}
+                          <img class="img-fluid img-thumbnail-edit" src="{% static 'img/blank.png' %}" alt="">
+                        {% endif %}
+                        {% if book.series_num and book.series_num != 99 %}
+                          <p class="carousel-caption" style="text-shadow: #000 0px 0px 1px;">#{{ book.series_num }}</p>
+                        {% endif %}
+                      </a>
+                      <!--<div class="d-none d-md-block">
+                        <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
+                        {% if book.series_num %}
+                          (#{{ book.series_num }})
+                        {% endif %}
+                      </div>-->
+                    </div>
+                  {% endfor %}
+                </div>
+
+              </div>
+            {% endif %}
+            {% if forloop.last %}<hr>{% endif %}
+          {% endfor %}
+        {% endif %}
+
+
+
+        <!--<div class="row no-gutters">
+          {% if series_with_multiple_books %}
+            {% for series in series_with_multiple_books %}
+              <div class="col-md-4">
+                {{ series }} - {{ series.num_times }}
+                {% for tag in series.get_all_tags %}
+                  {{ tag.name }}
+                {% endfor %}
+                  <ul>
+                    {% for book in series.books.all|dictsort:"series_num" %}
+                        <li>
+                          {{ book.title }}
+                          {% if book.series_num %}
+                            (#{{ book.series_num }})
+                          {% endif %}
+                        </li>
+                    {% endfor %}
+                  </ul>
+              </div>
+            {% endfor %}
           {% endif %}
-        </div>
-
-        <div class="row no-gutters">
-          insert dynamic content here. such as:
-          <ul>
-            <li>series with most books</li>
-            <li>authors with most books</li>
-            <li>most liked books in category</li>
-            <li>most reviewed (or maybe just any books in category with a review)</li>
-            <li>featured books obv</li>
-            <li>also maybe a search thing that's wired into the particular category</li>
-        </div>
+        </div>-->
 
       </div>
     </div>
   </section>
 
-{% endblock %}
-
-{% block domready %}
 {% endblock %}
