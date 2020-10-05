@@ -73,7 +73,7 @@ class Command(BaseCommand):
             ya_cat = Category.objects.create(
                 name='Teen to Young Adult',
                 short_name='Teen & YA',
-                code='TYA',
+                code='YA',
                 order=5,
                 description='Teen Fiction traces the ins, outs, ups and downs of growing up through the emotional, physical, and social experiences of a teenaged or young adult protagonist with which readers identify. Teen Fiction often takes place within a high school setting and may serve as a “coming-of-age” story, documenting the awkwardness of adolescence and the challenge of coping with difficult social issues.',
                 tags_included=[]
@@ -87,7 +87,7 @@ class Command(BaseCommand):
             self.stdout.write("Fetching all FIVE categories")
             sleep(1)
             childrens_cat = Category.objects.get(code='CHI')
-            ya_cat = Category.objects.get(code='TYA')
+            ya_cat = Category.objects.get(code='YA')
             sff_cat = Category.objects.get(code='SFF')
             non_cat = Category.objects.get(code='NON')
             gen_cat = Category.objects.get(code='GEN')

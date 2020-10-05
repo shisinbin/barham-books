@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 import csv
 from collections import Counter
-from books.models import Book, BookInstance2, Series
+from books.models import Book, BookInstance2, Series, Category
 from authors.models import Author
 from datetime import datetime
 from django.core.files.images import ImageFile
@@ -74,6 +74,38 @@ class Command(BaseCommand):
 
                 c["books_created"] += 1
                 book.save() # again adding this here to save on processing
+
+
+                ################################################
+                # dealing with adding categories
+                ################################################
+                
+                if book.book_tags.all():
+                    book_tags = []
+                    for tag in book.book_tags.all():
+                        book_tags.append(tag.name)
+                    if any(x in book_tags for x in ["children's", "middle grade"]):
+                        # if book has any teen or middle grade tag
+                        if any(x in book_tags for x in ["teen", "young adult"]):
+                            book.category = Category.objects.get(code='YA')
+                            c["ya_cat"] += 1
+                        else:
+                            book.category = Category.objects.get(code='CHI')
+                            c["chi_cat"] += 1
+                    else:
+                        if any(x in book_tags for x in ["teen", "young adult"]):
+                            book.category = Category.objects.get(code='YA')
+                            c["ya_cat"] += 1
+                        elif any(x in book_tags for x in ["sci-fi", "fantasy"]):
+                            book.category = Category.objects.get(code='SFF')
+                            c["sff_cat"] += 1
+                        elif any(x in book_tags for x in ["non-fiction", "memoir"]):
+                            book.category = Category.objects.get(code='NON')
+                            c["non_cat"] += 1
+                        else:
+                            book.category = Category.objects.get(code='GEN')
+                            c["gen_cat"] += 1
+                    book.save()
 
                 ################################################
                 # Saving images approach where images are saved in
@@ -167,3 +199,8 @@ class Command(BaseCommand):
             "Series created=%d (added=%d)"
             % (c["series_created"], c["series_added"])
         )
+        self.stdout.write("Children's books=%d" % c["chi_cat"])
+        self.stdout.write("Teen/YA books=%d" % c["ya_cat"])
+        self.stdout.write("Sci-fi/Fantasy books=%d" % c["sff_cat"])
+        self.stdout.write("Non-fiction books=%d" % c["non_cat"])
+        self.stdout.write("General fiction books=%d" % c["gen_cat"])
