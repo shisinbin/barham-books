@@ -71,6 +71,7 @@
 	                <!-- <th scope="col">#</th> -->
 	                <th scope="col">#</th>
 	                <th scope="col">Username</th>
+                  <th scope="col">Last login</th>
                   <th></th>
 	              </tr>
 	            </thead>
@@ -79,6 +80,7 @@
 	                <tr>
 	                  <td>{{ user.id }}</td>
 	                  <td>{{ user.username }}</td>
+                    <td>{{ user.last_login }}</td>
 	                  <td>
                       <a class="btn btn-light" href="{% url 'user' user.id %}">View user</a>
                     </td>
