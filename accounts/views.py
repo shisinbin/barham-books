@@ -73,19 +73,45 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def dashboard(request):
 	user_reservations = Reservation.objects.filter(user_id=request.user.id)
-	user_records = Record.objects.filter(user_id=request.user.id)[:5]
+
+	user_records = Record.objects.filter(user_id=request.user.id)
+	# are there active loans not returned?
+	if user_records.filter(date_returned__isnull=True):
+		active = True
+	else:
+		active = False
+	# are there records user can extend?
+	if user_records.filter(date_returned__isnull=True, extended=False):
+		can_extend = True
+	else:
+		can_extend = False
+	# slice the most recent 5
+	user_records = user_records[:5]
+
 	books_liked = request.user.books_liked.all()
 
 	context = {
 		'user_reservations': user_reservations,
 		'user_records': user_records,
 		'books_liked': books_liked,
+		'active': active,
+		'can_extend': can_extend,
 	}
 	return render(request, 'accounts/dashboard.html', context)
 
 @login_required
 def view_records(request):
 	user_records = Record.objects.filter(user_id=request.user.id)
+
+	if user_records.filter(date_returned__isnull=True):
+		active = True
+	else:
+		active = False
+
+	if user_records.filter(date_returned__isnull=True, extended=False):
+		can_extend = True
+	else:
+		can_extend = False
 
 	total_num = None
 	if user_records:
@@ -100,6 +126,8 @@ def view_records(request):
 	context = {
 		'user_records': paged_records,
 		'total_num': total_num,
+		'active': active,
+		'can_extend': can_extend,
 	}
 
 	return render(request, 'accounts/records.html', context)
@@ -142,3 +170,37 @@ def delete_reservation(request):
 				return redirect('staff')
 			else:
 				return redirect('dashboard')
+
+@login_required
+def extend_all_loans(request):
+	if request.method == 'POST':
+		active_records = Record.objects.filter(user_id=request.user.id, date_returned__isnull=True)
+		if active_records:
+			# a count for showing how many of a user's records have been extended
+			count = 0
+			for record in active_records:
+				# if the loan hasn't been extended before
+				if not record.extended:
+					try:
+						bk_instance = BookInstance2.objects.get(id=record.book_instance_id)
+					except:
+						messages.error(request, 'Error: book instance not found. Email for help')
+						return redirect('dashboard')
+					bk_instance.due_back += timezone.timedelta(days=30)
+					bk_instance.save()
+					count += 1
+					record.extended = True
+					record.save()
+			if count == 0:
+				messages.error(request, 'You have already extended all active loans once before')
+				return redirect('dashboard')
+			elif count == len(active_records):
+				messages.success(request, 'You have extended all active loans')
+				return redirect('dashboard')
+			else:
+				messages.success(request, 'You have extended ' + str(count) + ' of your active loans')
+				return redirect('dashboard')
+
+		else:
+			messages.error(request, 'You do not have any active loans')
+			return redirect('dashboard')

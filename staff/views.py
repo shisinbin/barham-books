@@ -12,9 +12,11 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 @staff_member_required
 def index(request):
-	qs = Reservation.objects.order_by('reservation_expiry')
+	reservations = Reservation.objects.order_by('reservation_expiry')
+	active_records = Record.objects.filter(date_returned__isnull=True)
 	context = {
-		'reservations': qs,
+		'reservations': reservations,
+		'active_records': active_records,
 	}
 
 	return render(request, 'staff/staff_dashboard.html', context)
@@ -41,7 +43,7 @@ def user(request, user_id):
 	looked_up_user = User.objects.get(id=user_id)
 	user_reservations = Reservation.objects.filter(user_id=user_id)
 	user_records = Record.objects.filter(user_id=user_id)
-	active_user_records = user_records.filter(date_returned=None)
+	active_user_records = user_records.filter(date_returned__isnull=True)
 	active_user_records_count = active_user_records.count()
 
 	# pagination

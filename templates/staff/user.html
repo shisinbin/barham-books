@@ -81,13 +81,13 @@
             <table class="table">
               <thead>
                 <tr>
-                  <th scope="col">#</th>
                   <th scope="col">Book title</th>
                   <th scope="col">Date taken out</th>
                   <th scope="col">Date returned</th>
+                  <th scope="col">Date due back</th>
                   <th scope="col">
                   	{% if active_user_records %}
-											<button class="btn btn-secondary btn-block mt-1" data-toggle="modal" data-target="#returnModal">Return all</button>
+											<button class="btn btn-primary btn-block mt-1" data-toggle="modal" data-target="#returnModal">Return all</button>
 										{% endif %}
                   </th>
                 </tr>
@@ -96,24 +96,22 @@
                 {% for record in user_records %}
                   <tr
                     {% if record.date_returned == None %}
-                      class="table-success"
+                      {% if record.is_overdue %}
+                        class="table-danger"
+                      {% else %}
+                        class="table-success"
+                      {% endif %}
                     {% endif %}
                   >
-                    <td>{{ record.book_instance_id }}</td>
                     <td>{{ record.book_title }}</td>
                     <td>{{ record.date_taken_out }}</td>
                     <td>
-                    	{% if record.date_returned == None %}
-                    		n/a
-                    	{% else %}
+                    	{% if record.date_returned %}
                     		{{ record.date_returned }}
                     	{% endif %}
                     </td>
-                    <td>
-                    	{% if record.date_returned == None %}
-                    		add return button
-                    	{% endif %}
-                    </td>
+                    <td>{{ record.get_due_back_date }}</td>
+                    <td></td>
                   </tr>
                 {% endfor %}
               </tbody>

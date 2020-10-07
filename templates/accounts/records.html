@@ -40,6 +40,14 @@
         <div class="col-md-12">
 
           {% if user_records %}
+            {% if can_extend %}
+              <form action="{% url 'extend_all_loans' %}" method="POST">
+                {% csrf_token %}
+                <div class="text-center">
+                  <button class="btn btn-primary mb-2" type="submit">Extend all loans by 30 days</button>
+                </div>
+              </form>
+            {% endif %}
             <p style="font-family: georgia, serif; font-style: italic;">{{ total_num }} result{{ total_num|pluralize }} found</p>
             <table class="table">
               <thead>
@@ -48,18 +56,33 @@
                   <th scope="col">Book title</th>
                   <th scope="col">Date taken out</th>
                   <th scope="col">Date returned</th>
+                  {% if active %}
+                    <th scope="col">Date due back</th>
+                  {% endif %}
                 </tr>
               </thead>
               <tbody>
                 {% for record in user_records %}
                   <tr
                     {% if record.date_returned == None %}
-                      class="table-success"
+                      {% if record.is_overdue %}
+                        class="table-danger"
+                      {% else %}
+                        class="table-success"
+                      {% endif %}
                     {% endif %}
                   >
-                    <td>{{ record.book_title }}</td>
+                    <td><a href="{{ record.get_book_link }}">{{ record.book_title }}</a></td>
                     <td>{{ record.date_taken_out }}</td>
-                    <td>{% if record.date_returned %} {{ record.date_returned }}{% endif %}</td>
+                    <td>
+                      {% if record.date_returned %} {{ record.date_returned }}{% endif %}
+                    </td>
+                    {% if active %}
+                      <td>
+                        {{ record.get_due_back_date }}
+                      </td>
+                    {% endif %}
+
                   </tr>
                 {% endfor %}
               </tbody>

@@ -43,37 +43,8 @@
       <div class="row">
         <div class="col-md-12">
 
-          <!-- Liked books -->
-          <h4 class="display-4 text-center">Liked books</h4>
-          {% if books_liked %}
-            <div class="row">
-              {% for book in books_liked %}
-                <div class="col-lg-2 col-md-3 col-sm-4 col-4 text-center mb-2">
-                  <a href="{{ book.get_absolute_url }}">
-                    {% if book.photo %}
-                      <img src="{% thumbnail book.photo 100x0 %}" class="img-fluid img-thumbnail-edit">
-                    {% else %}
-                      <img class="img-fluid img-thumbnail-edit" src="{% static 'img/blank.png' %}" alt="">
-                    {% endif %}
-                  </a>
-                  <div class="d-none d-md-block">
-                    <a href="{{ book.get_absolute_url }}">
-                      {{ book.title }}
-                    </a>
-                  </div>
-                </div>
-              {% endfor %}
-            </div>
-          {% else %}
-            <br>
-            You have no liked books! Start liking some now, by browsing our
-            <a href="{% url 'books' %}" class="badge badge-primary">Book Search</a>
-            <br>
-          {% endif %}
-
           <!-- Reservations -->
           {% if user_reservations %}
-            <br>
             <h4 class="display-4 text-center">Reservations</h4>
             <br>
             <table class="table">
@@ -89,7 +60,11 @@
               <tbody>
                 {% for reservation in user_reservations %}
                 {% with reservation.book as book %}
-                  <tr>
+                  <tr
+                  {% if reservation.can_collect %}
+                    class="table-success"
+                  {% endif %}
+                  >
                     <td><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></td>
                     <td>{{ reservation.reservation_date }}</td>
                     <td>{% if reservation.can_collect == True %} Yes {% else %} No {% endif %}</td>
@@ -114,14 +89,22 @@
               <button class="btn btn-primary mb-2" type="submit">Delete reservation</button>
             </form>
             <!-- <a class="btn-primary btn-block btn-lg" href="{% url 'index' %}">Delete all</a> -->
+            <br>
           {% endif %}
 
           <!-- Records -->
           {% if user_records %}
-            <br>
             <h4 class="display-4 text-center">Records</h4>
             {% if user_records.count == 5 %}
               <p style="font-family: georgia, serif; font-style: italic;" class="text-center">(showing 5 most recent)</p>
+            {% endif %}
+            {% if can_extend %}
+              <form action="{% url 'extend_all_loans' %}" method="POST">
+                {% csrf_token %}
+                <div class="text-center">
+                  <button class="btn btn-primary mb-2" type="submit">Extend all loans by 30 days</button>
+                </div>
+              </form>
             {% endif %}
             <table class="table">
               <thead>
@@ -130,29 +113,80 @@
                   <th scope="col">Book title</th>
                   <th scope="col">Date taken out</th>
                   <th scope="col">Date returned</th>
+                  {% if active %}
+                    <th scope="col">Date due back</th>
+                  {% endif %}
                 </tr>
               </thead>
               <tbody>
                 {% for record in user_records %}
                   <tr
                     {% if record.date_returned == None %}
-                      class="table-success"
+                      {% if record.is_overdue %}
+                        class="table-danger"
+                      {% else %}
+                        class="table-success"
+                      {% endif %}
                     {% endif %}
                   >
-                    <td>{{ record.book_title }}</td>
+                    <td><a href="{{ record.get_book_link }}">{{ record.book_title }}</a></td>
                     <td>{{ record.date_taken_out }}</td>
                     <td>{% if record.date_returned %} {{ record.date_returned }}{% endif %}</td>
+                    {% if active %}
+                      <td>
+                        {{ record.get_due_back_date }}
+                      </td>
+                    {% endif %}
                   </tr>
                 {% endfor %}
               </tbody>
               <tfoot>
-                <tr><td>
-                  <a href="{% url 'view_records' %}" class="btn btn-primary">
-                    See all records &raquo;
-                  </a>
-                </td></tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  {% if active %}
+                    <td></td>
+                  {% endif %}
+                  <td>
+                    <div class="text-right">
+                      <a href="{% url 'view_records' %}" class="btn btn-primary">
+                        See all records &raquo;
+                      </a>
+                    </div>
+                  </td>
+                </tr>
               </tfoot>
             </table>
+            <br>
+          {% endif %}
+
+          <!-- Liked books -->
+          <h4 class="display-4 text-center">Liked books</h4>
+          <br>
+          {% if books_liked %}
+            <div class="row">
+              {% for book in books_liked %}
+                <div class="col-lg-2 col-md-3 col-sm-4 col-4 text-center mb-2">
+                  <a href="{{ book.get_absolute_url }}">
+                    {% if book.photo %}
+                      <img src="{% thumbnail book.photo 100x0 %}" class="img-fluid img-thumbnail-edit">
+                    {% else %}
+                      <img class="img-fluid img-thumbnail-edit" src="{% static 'img/blank.png' %}" alt="">
+                    {% endif %}
+                  </a>
+                  <div class="d-none d-md-block">
+                    <a href="{{ book.get_absolute_url }}">
+                      {{ book.title }}
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <br>
+            You have no liked books! Start liking some now, by browsing our
+            <a href="{% url 'books' %}" class="badge badge-primary">Book Search</a>
+            <br>
           {% endif %}
 
           <!-- Reviews -->

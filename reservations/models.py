@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-
+from django.contrib.auth.models import User
 from books.models import Book
 
 class Reservation(models.Model):
@@ -14,3 +14,9 @@ class Reservation(models.Model):
         ordering = ('-reservation_date',)
     def __str__(self):
         return self.book.title
+    def get_username(self):
+        try:
+            user = User.objects.get(id=self.user_id)
+            return user.username
+        except:
+            return ''
