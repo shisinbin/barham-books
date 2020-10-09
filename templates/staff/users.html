@@ -1,38 +1,14 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block content %}
-	<section id="work" class="bg-dark text-white text-center">
+	<section id="work" class="bg-dark text-white text-center" style="padding: 3rem 0;">
     <div class="container">
       <div class="row text-center">
         <div class="col-md-12">
-        	<h1 class="display-4">User lookup</h1>
-        	<p class="lead">Either select a user from dropdown or search</p>
-          <form action="{% url 'users' %}">
-            <div class="form-row">
-            	<div class="form group col-md-4">
-                <label class="sr-only">User ID</label>
-                <select name="user_id" class="form-control" data-size="10">
-                  <option selected="true" disabled="disabled">All users</option>
-                  {% for user in users %}
-                    <option value="{{ user.id }}"
-                      {% if user.id == values.user_id %}
-                        selected
-                      {% endif %}
-                    >
-                      {{ user.username }}
-                    </option>
-                  {% endfor %}
-                </select>
-              </div>
-              <div class="form-group col-md-4">
-                <label class="sr-only">Username</label>
-                <input type="text" name="username" class="form-control" placeholder="Search users" value="{{ values.usernames }}">
-              </div>
-              <div class="form-group col-md-2">
-                <button class="btn btn-secondary" type="submit">Look up</button>
-              </div>
-            </div>
-          </form>
+        	<h1 class="display-4">Users</h1>
+        	<p class="lead"></p>
+          
         </div>
       </div>
     </div>
@@ -62,34 +38,107 @@
 
   <section id="dashboard" class="py-4">
     <div class="container">
-      <div class="row">
+      <div class="col-md-12">
+
+        <div class="card bg-light mb-5">
+          <div class="card-body">
+            <h4 class="card-title">User look-up</h4>
+
+            <form action="{% url 'users' %}">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col">
+                    <label class="sr-only">User search</label>
+                    <input type="text" name="username" class="form-control" placeholder="Search users by username"
+                    {% if query %}value="{{ query }}"{% endif %}>
+                  </div>
+                  <div class="col">
+                    <button class="form-control btn btn-outline-primary" type="submit">Look up &raquo;</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+          </div>
+        </div>
+
+
+
+
+
       	{% if users %}
 	        <div class="col-md-12">
 	          <table class="table">
 	            <thead>
 	              <tr>
 	                <!-- <th scope="col">#</th> -->
-	                <th scope="col">#</th>
 	                <th scope="col">Username</th>
                   <th scope="col">Last login</th>
+                  <th scope="col">Member since</th>
                   <th></th>
 	              </tr>
 	            </thead>
 	            <tbody>
 	              {% for user in users %}
 	                <tr>
-	                  <td>{{ user.id }}</td>
-	                  <td>{{ user.username }}</td>
+	                  <td><a href="{% url 'user' user.id %}">
+                      {{ user.username }}
+                    </a></td>
                     <td>{{ user.last_login }}</td>
+                    <td>{{ user.date_joined|naturalday }}</td>
 	                  <td>
-                      <a class="btn btn-light" href="{% url 'user' user.id %}">View user</a>
+                      <a class="btn btn-primary" href="{% url 'user' user.id %}">View user &raquo;</a>
                     </td>
 	                </tr>
 	              {% endfor %}
 	            </tbody>
 	          </table>
 	        </div>
+          <div class="row">
+            <div class="col-md-12">
+              {% if users.has_other_pages %}
+                <ul class="pagination">
+                  {% if users.has_previous %}
+                    <li class="page-item">
+                      <a href="?page={{users.previous_page_number}}" class="page-link">&laquo;</a>
+                    </li>
+                  {% else %}
+                    <li class="page-item disabled">
+                      <a class="page-link">&laquo;</a>
+                    </li>
+                  {% endif %}
+                  {% for i in users.paginator.page_range %}
+                    {% if users.number == i %}
+                      <li class="page-item active">
+                        <a class="page-link">{{i}}</a>
+                      </li>
+                    {% else %}
+                      <li class="page-item">
+                        <a href="?page={{i}}" class="page-link">{{i}}</a>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                  {% if users.has_next %}
+                    <li class="page-item">
+                      <a href="?page={{users.next_page_number}}" class="page-link">&raquo;</a>
+                    </li>
+                  {% else %}
+                    <li class="page-item disabled">
+                      <a class="page-link">&raquo;</a>
+                    </li>
+                  {% endif %}
+                </ul>
+              {% endif %}
+            </div>
+          </div>
+        {% else %}
+          <p>No users found matching that query.</p>
         {% endif %}
+
+        {% if query %}
+          <a href="{% url 'users' %}" class="btn btn-light">Show all users</a>
+        {% endif %}
+
       </div>
     </div>
   </section>

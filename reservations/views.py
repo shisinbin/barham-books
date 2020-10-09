@@ -7,6 +7,8 @@ from books.models import BookInstance2, Book
 from .models import Reservation
 from django.core.mail import send_mail
 
+MAX_ALLOWED_RESERVATIONS = 6
+
 def reserve(request):
 	if request.method == 'POST':
 		user_id = request.POST['user_id'] # could instead use request.user
@@ -15,7 +17,7 @@ def reserve(request):
 		user_reservations = Reservation.objects.filter(user_id=user_id)
 
 		# check to see user hasn't made more reservations than allowed
-		if user_reservations.count() >= 4:
+		if user_reservations.count() >= MAX_ALLOWED_RESERVATIONS:
 			messages.error(request, 'You have the maximum number of reservations and cannot make any more')
 			return redirect('book', book.id, book.slug)
 		else:

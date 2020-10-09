@@ -43,10 +43,13 @@
       <div class="row">
         <div class="col-md-12">
 
+          <!--{% if request.user.is_staff %}
+            <p><a href="{% url 'book_create' %}" class="btn btn-secondary">Add new book</a></p>
+          {% endif %}-->
+
           <!-- Reservations -->
+          <h4 class="display-4 text-center">Reservations</h4>
           {% if user_reservations %}
-            <h4 class="display-4 text-center">Reservations</h4>
-            <br>
             <table class="table">
               <thead>
                 <tr>
@@ -66,46 +69,53 @@
                   {% endif %}
                   >
                     <td><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></td>
-                    <td>{{ reservation.reservation_date }}</td>
+                    <td>{{ reservation.reservation_date|naturalday|title }}</td>
                     <td>{% if reservation.can_collect == True %} Yes {% else %} No {% endif %}</td>
-                    <td>{% if reservation.reservation_expiry %} {{ reservation.reservation_expiry }} {% endif %}</td>
+                    <td>{% if reservation.reservation_expiry %} {{ reservation.reservation_expiry|naturalday|title }} {% endif %}</td>
                   </tr>
                 {% endwith %}
                 {% endfor %}
               </tbody>
             </table>
 
-            <form class="form-inline" action="{% url 'delete_reservation' %}" method="POST">
+            <form action="{% url 'delete_reservation' %}" method="POST">
               {% csrf_token %}
-              <div class="form-group mx-sm-3 mb-2">
-                <!-- <label for="del_reservation">Delete reservation:  </label> -->
-                <select name="del_reservation" class="form-control">
-                  <option selected="true" disabled="disabled">Select reservation to delete</option>
-                  {% for reservation in user_reservations %}
-                    <option value="{{ reservation.id }}"> {{ reservation }}</option>
-                  {% endfor %}
-                </select>
+              <div class="form-row">
+                <div class="col-md-4">
+                  <select name="del_reservation" class="form-control mt-2" id="del_reservation">
+                    <option selected="true" disabled="disabled">Select reservation</option>
+                    {% for reservation in user_reservations %}
+                      <option value="{{ reservation.id }}"> {{ reservation }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-8">
+                  <button class="btn btn-primary mt-2" type="submit">Delete reservation</button>
+                </div>
               </div>
-              <button class="btn btn-primary mb-2" type="submit">Delete reservation</button>
             </form>
             <!-- <a class="btn-primary btn-block btn-lg" href="{% url 'index' %}">Delete all</a> -->
+            <br>
+          {% else %}
+            <hr>
+            <p>No current reservations</p>
             <br>
           {% endif %}
 
           <!-- Records -->
           {% if user_records %}
             <h4 class="display-4 text-center">Records</h4>
-            {% if user_records.count == 5 %}
-              <p style="font-family: georgia, serif; font-style: italic;" class="text-center">(showing 5 most recent)</p>
-            {% endif %}
             {% if can_extend %}
               <form action="{% url 'extend_all_loans' %}" method="POST">
                 {% csrf_token %}
-                <div class="text-center">
-                  <button class="btn btn-primary mb-2" type="submit">Extend all loans by 30 days</button>
+                <div class="text-right">
+                  <button class="btn btn-primary mb-2" type="submit">Renew loans by 30 days</button>
                 </div>
               </form>
             {% endif %}
+            <!--{% if user_records.count == 5 %}
+              <p style="font-family: georgia, serif; font-style: italic; text-align:center;">(showing 5 most recent)</p>
+            {% endif %}-->
             <table class="table">
               <thead>
                 <tr>
@@ -130,11 +140,11 @@
                     {% endif %}
                   >
                     <td><a href="{{ record.get_book_link }}">{{ record.book_title }}</a></td>
-                    <td>{{ record.date_taken_out }}</td>
-                    <td>{% if record.date_returned %} {{ record.date_returned }}{% endif %}</td>
+                    <td>{{ record.date_taken_out|naturalday|title }}</td>
+                    <td>{% if record.date_returned %} {{ record.date_returned|naturalday|title }}{% endif %}</td>
                     {% if active %}
                       <td>
-                        {{ record.get_due_back_date }}
+                        {{ record.get_due_back_date|naturalday|title }}
                       </td>
                     {% endif %}
                   </tr>
@@ -149,7 +159,7 @@
                   {% endif %}
                   <td>
                     <div class="text-right">
-                      <a href="{% url 'view_records' %}" class="btn btn-primary">
+                      <a href="{% url 'view_records' %}" class="btn btn-outline-primary">
                         See all records &raquo;
                       </a>
                     </div>
@@ -162,7 +172,7 @@
 
           <!-- Liked books -->
           <h4 class="display-4 text-center">Liked books</h4>
-          <br>
+          <hr>
           {% if books_liked %}
             <div class="row">
               {% for book in books_liked %}
@@ -182,18 +192,18 @@
                 </div>
               {% endfor %}
             </div>
-          {% else %}
             <br>
-            You have no liked books! Start liking some now, by browsing our
-            <a href="{% url 'books' %}" class="badge badge-primary">Book Search</a>
+          {% else %}
+            <p>No liked books. Start liking some now, by using our
+            <a href="{% url 'books' %}" class="badge badge-pill badge-secondary mb-1" style="font-weight:600;">Book Search</a></p>
             <br>
           {% endif %}
 
           <!-- Reviews -->
-          </br>
           <h4 class="display-4 text-center">Reviews</h4>
+          <hr>
           {% if request.user.reviews.all %}
-            <p style="font-family: georgia, serif; font-style: italic;" class="text-center">(in reverse chronological order)</p>
+            <p style="font-family: georgia, serif; font-style: italic; text-align:center;">(in reverse chronological order)</p>
 
             <!-- Accordion -->
             <!--<div id="accordion" class="text-left">
@@ -270,8 +280,10 @@
                 </div>
               </div>
             </div>
+            <br>
           {% else %}
-            You haven't written any reviews yet.
+            <p>You haven't written any reviews yet</p>
+            <br>
           {% endif %}
 
         </div>

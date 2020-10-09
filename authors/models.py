@@ -40,3 +40,9 @@ class Author(models.Model):
         value = self.__str__()
         self.slug = slugify(value, allow_unicode=True)
         super().save(*args, **kwargs)
+
+    def formal(self):
+        if self.middle_names:
+            return f'{self.last_name}, {self.first_name} {self.middle_names}'
+        else:
+            return f'{self.last_name}, {self.first_name}'

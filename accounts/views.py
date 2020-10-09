@@ -192,15 +192,15 @@ def extend_all_loans(request):
 					record.extended = True
 					record.save()
 			if count == 0:
-				messages.error(request, 'You have already extended all active loans once before')
+				messages.error(request, 'You have already renewed all active loans once before')
 				return redirect('dashboard')
 			elif count == len(active_records):
-				messages.success(request, 'You have extended all active loans')
+				messages.success(request, 'You have renewed all active loans')
 				return redirect('dashboard')
 			else:
-				messages.success(request, 'You have extended ' + str(count) + ' of your active loans')
+				messages.success(request, 'You have renewed ' + str(count) + ' of your active loans')
 				return redirect('dashboard')
 
 		else:
-			messages.error(request, 'You do not have any active loans')
+			messages.error(request, 'You do not have any active loans to renew')
 			return redirect('dashboard')

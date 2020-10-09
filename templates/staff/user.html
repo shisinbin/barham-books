@@ -1,12 +1,20 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block content %}
-	<section id="work" class="bg-dark text-white text-center">
+	<section id="work" class="bg-dark text-white text-center" style="padding: 2rem 0;">
     <div class="container">
       <div class="row text-center">
         <div class="col-md-12">
           <h1 class="display-4">{{ looked_up_user.username }}</h1>
-          <p class="lead">Member since ...</p>
+          <p class="lead">Member since {{ user.date_joined|naturalday }}</p>
+          <h3 class="mt-2">
+            <a class="btn btn-outline-secondary mb-1 mr-3" href="{% url 'loan_books' looked_up_user.id %}">Loan books for user &raquo;</a>
+            {% if active_user_records %}
+              <button class="btn btn-outline-secondary mb-1 mr-3" data-toggle="modal" data-target="#returnModal">Return all books &raquo;</button>
+            {% endif %}
+            <a href="mailto:{{ user.email }}" class="btn btn-outline-secondary mb-1 mr-3">Send user email &raquo;</a>
+          </h3>
         </div>
       </div>
     </div>
@@ -35,19 +43,6 @@
     </div>
   </section>
 
-  <br>
-
-	<section>
-		<div class="container">
-			<div class="row text-center">
-				<div class="col-md-3">
-					<a class="btn-primary btn-block btn-lg" href="{% url 'loan_books' looked_up_user.id %}">Loan books</a>
-				</div>
-			</div>
-		</div>
-	</section>
-
-	<br>
   <!-- Alerts -->
   {% include 'partials/_alerts.html' %}
 
@@ -55,29 +50,49 @@
     <div class="container">
       <div class="row">
         <div class="col-md-12">
+          <h3 class="text-center">Reservations</h3>
           {% if user_reservations %}
-            <p>Reservations:</p>
             <table class="table">
               <thead>
                 <tr>
                   <th scope="col">Book title</th>
-                  <th scope="col">Reserved on</th>
+                  <th scope="col">Date reserved</th>
+                  <th scope="col">Date expires</th>
+                  <th scope="col">Can collect?</th>
                 </tr>
               </thead>
               <tbody>
                 {% for reservation in user_reservations %}
-                  <tr>
-                    <td>{{ reservation.book.title }}</td>
-                    <td>{{ reservation.reservation_date }}</td>
+                  <tr
+                    {% if reservation.can_collect %}
+                      class="table-success"
+                    {% else %}
+                      class="table-light"
+                    {% endif %}
+                  >
+                    <td><a href="{{ reservation.book.get_absolute_url }}">
+                      {{ reservation.book.title }}
+                    </a></td>
+                    <td>{{ reservation.reservation_date|naturalday|title }}</td>
+                    <td>{% if reservation.reservation_expiry %} {{ reservation.reservation_expiry|naturalday|title }} {% endif %}</td>
+                    <td>{{ reservation.can_collect }}</td>
                   </tr>
                 {% endfor %}
               </tbody>
             </table>
+            <br>
           {% else %}
-            <p>No current reservations.</p>
+            <hr>
+            <p>No current reservations</p>
+            <br>
           {% endif %}
+
+          <h3 class="text-center">Records</h3>
           {% if user_records %}
-          	<p>Records:</p>
+            {% if active_user_records_count > 0 %}
+              <p style="font-family: georgia, serif; font-style: italic; text-align:center;">({{ active_user_records_count }} active loan{{ active_user_records_count|pluralize }})
+              </p>
+            {% endif %}
             <table class="table">
               <thead>
                 <tr>
@@ -103,21 +118,24 @@
                       {% endif %}
                     {% endif %}
                   >
-                    <td>{{ record.book_title }}</td>
-                    <td>{{ record.date_taken_out }}</td>
+                    <td><a href="{{ record.get_book_link }}">
+                      {{ record.book_title }}
+                    </a></td>
+                    <td>{{ record.date_taken_out|naturalday|title }}</td>
                     <td>
                     	{% if record.date_returned %}
-                    		{{ record.date_returned }}
+                    		{{ record.date_returned|naturalday|title }}
                     	{% endif %}
                     </td>
-                    <td>{{ record.get_due_back_date }}</td>
+                    <td>{{ record.get_due_back_date|naturalday|title }}</td>
                     <td></td>
                   </tr>
                 {% endfor %}
               </tbody>
             </table>
           {% else %}
-          	<p>No previous records.</p>
+            <hr>
+          	<p>No previous records</p>
           {% endif %}
         </div>
       </div>
@@ -175,7 +193,7 @@
           <ul>
           {% for record in active_user_records %}
           	<li>
-          		{{ record.book_title }} (id: {{ record.book_instance_id }})
+          		{{ record.book_title }} (#{{ record.book_instance_id }})
           	</li>
           {% endfor %}
           </ul>

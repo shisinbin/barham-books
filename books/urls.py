@@ -21,8 +21,12 @@ urlpatterns = [
 
     # category
     path('category/<str:category_code>/', views.category, name='category'),
+
+    # custom add new book form
+    path('add/', views.add_book, name='add_book'),
 ]
 
 urlpatterns += [
 	path('books/<int:pk>/update/', views.BookUpdate.as_view(), name='book_update'),
+    path('books/create/', views.BookCreate.as_view(), name='book_create'),
 	]

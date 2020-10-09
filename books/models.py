@@ -53,6 +53,11 @@ class Series(models.Model):
             for tag in book.book_tags.all():
                 tag_set.add(tag)
         return tag_set
+    # def formal(self):
+    #     if self.name.startswith(('the ', 'The ')):
+    #         return self.name[4:] + ', The'
+    #     else:
+    #         return self.name
 
 class TaggedBook(TaggedItemBase):
     content_object = models.ForeignKey('Book',
@@ -204,11 +209,11 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
-    def get_cover_url(self):
-        if self.isbn_latest:
-            return 'http://covers.openlibrary.org/b/isbn/' + self.isbn_latest + '-M.jpg'
-        else:
-            return None
+    # def get_cover_url(self):
+    #     if self.isbn_latest:
+    #         return 'http://covers.openlibrary.org/b/isbn/' + self.isbn_latest + '-M.jpg'
+    #     else:
+    #         return None
 
 
 #import uuid
@@ -282,6 +287,7 @@ class BookInstance2(models.Model):
         choices=LOAN_STATUS,
         blank=True,
         default='a',
+        db_index=True,
     )
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -294,13 +300,13 @@ class BookInstance2(models.Model):
         return False
 
     class Meta:
-        ordering = ['due_back']
+        ordering = ['status', 'book__title']
         verbose_name = 'Book Instance'
         # permissions = (("can_mark_returned", "Set book as returned"),)
 
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.id} ({self.book.title})'
+        return f'{self.book.title} (#{self.id})'
     def get_formatted_isbn10(self):
         i = self.isbn10
         if len(i) == 10:

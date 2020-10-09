@@ -1,18 +1,24 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block content %}
 	
-  <section id="work" class="bg-dark text-white text-center">
+  <section id="work" class="bg-dark text-white text-center" style="padding: 3rem 0;">
     <div class="container">
       <div class="row text-center">
         <div class="col-md-12">
           <h1 class="display-4">Staff Dashboard</h1>
           <p class="lead">Do stuff</p>
+          
           <h3 class="mt-2">
-            <a href="{% url 'users' %}" class="badge badge-secondary">
-              Users
+            <a href="{% url 'users' %}" class="btn btn-outline-secondary mb-1 mr-3">
+              View all users &raquo;
+            </a>
+            <a href="{% url 'add_book' %}" class="btn btn-outline-secondary mb-1">
+              Add book &raquo;
             </a>
           </h3>
+
         </div>
       </div>
     </div>
@@ -48,19 +54,31 @@
               <thead>
                 <tr>
                   <th scope="col">Book</th>
-                  <th scope="col">Reserved on</th>
-                  <th scope="col">Expires on</th>
+                  <th scope="col">Date reserved</th>
+                  <th scope="col">Date expires</th>
+                  <th scope="col">Can collect?</th>
                   <th scope="col">Reserved by</th>
                 </tr>
               </thead>
               <tbody>
                 {% for res in reservations %}
-                  <tr>
+                  <tr
+                    {% if res.can_collect %}
+                      {% if res.expired %}
+                        class="table-danger"
+                      {% else %}
+                        class="table-success"
+                      {% endif %}
+                    {% else %}
+                      class="table-light"
+                    {% endif %}
+                  >
                     <td><a href="{{ res.book.get_absolute_url }}">{{ res.book.title }}</a></td>
-                    <td>{{ res.reservation_date }}</td>
+                    <td>{{ res.reservation_date|naturalday|title }}</td>
                     <td>
-                      {% if res.reservation_expiry %} {{ res.reservation_expiry }} {% endif %}
+                      {% if res.reservation_expiry %} {{ res.reservation_expiry|naturalday|title }} {% endif %}
                     </td>
+                    <td>{{ res.can_collect }}</td>
                     <td scope="col"><a href="{% url 'user' res.user_id %}">{{ res.get_username }}</a></td>
                   </tr>
                 {% endfor %}
@@ -74,21 +92,23 @@
                 <select name="del_reservation" class="form-control">
                   <option selected="true" disabled="disabled">Select reservation to delete</option>
                   {% for res in reservations %}
-                    <option value="{{ res.id }}"> {{ res }} (user: {{ res.user_id }})</option>
+                    <option value="{{ res.id }}"> {{ res }} ({{ res.get_username }})</option>
                   {% endfor %}
                 </select>
               </div>
-              <button class="btn btn-primary mb-2" type="submit">Delete reservation</button>
+              <button class="btn btn-primary mb-2" type="submit">Delete reservation &raquo;</button>
             </form>
+            <br>
           {% else %}
-            <p>No reservations</p>
+            <hr>
+            <p>No current reservations</p>
+            <br>
           {% endif %}
         </div>
 
         <!-- Records -->
         <div class="col-md-12">
-          <br>
-          <h3 class="text-center">Active Records</h3>
+          <h3 class="text-center"> Active records</h3>
           {% if active_records %}
             <table class="table">
               <thead>
@@ -109,29 +129,28 @@
                     class="table-success"
                   {% endif %}
                   >
+                    <td><a href="{{ record.get_book_link }}">
+                      {{ record.book_title }}
+                    </a></td>
                     <td>
-                      <a href="{{ record.get_book_link }}">
-                        {{ record.book_title }}
-                      </a>
+                      {{ record.date_taken_out|naturalday|title }}
                     </td>
                     <td>
-                      {{ record.date_taken_out }}
-                    </td>
-                    <td>
-                      {{ record.get_due_back_date }}
+                      {{ record.get_due_back_date|naturalday|title }}
                     </td>
                     <td>
                       {{ record.is_overdue }}
                     </td>
                     <td>
-                      <a href="{% url 'user' record.user_id %}">{{ record.get_username }}</a>
+                      <a class="btn btn-primary" href="{% url 'user' record.user_id %}">{{ record.get_username }} &raquo;</a>
                     </td>
                   </tr>
                 {% endfor %}
               </tbody>
             </table>
           {% else %}
-            <p>No records</p>
+            <hr>
+            <p>No active records</p>
           {% endif %}
         </div>
 

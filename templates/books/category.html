@@ -102,7 +102,7 @@
 
           <div class="col-md-6">
             {% if popular_authors %}
-              <h5 class="text-center">Popular {{ category.short_name }} authors</h5>
+              <h5 class="text-center">Popular authors</h5>
               <div class="list-group">
                 {% for author in popular_authors %}
                   {% if author.num_times >= 2 %}
@@ -115,14 +115,11 @@
               </div>
             {% endif %}
           </div>
-
         </div>
-
+        <br>
         {% if featured_books %}
-          <br>
+          <h3 class="display-4 text-center">Featured books</h3>
           <hr>
-          <h3 class="display-4 text-center">Featured Books</h3>
-          <br>
           <div class="row">
             {% for book in featured_books %}
               <div class="col-lg-2 col-md-3 col-sm-4 col-4 text-center mb-2">
@@ -140,13 +137,13 @@
               </div>
             {% endfor %}
           </div>
+          <br>
         {% endif %}
 
 
         {% if series_with_multiple_books %}
-          <br>
-          <hr>
           <h3 class="display-4 text-center">Popular {{ category.short_name }} series</h3>
+          <hr>
           {% for series in series_with_multiple_books %}
             {% if series.num_times >= 2 %}
               <br>

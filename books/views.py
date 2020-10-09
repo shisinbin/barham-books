@@ -4,10 +4,10 @@ from .choices import language_choices, a_z
 from django.contrib import messages
 from taggit.models import Tag
 from django.db.models import Count
-
-from .models import Book, BookInstance2, Review, Category, BookTags
+from authors.models import Author
+from .models import Book, BookInstance2, Review, Category, BookTags, Series
 from .forms import SearchForm
-
+from datetime import datetime
 from django.http import JsonResponse
 
 def index(request):
@@ -185,7 +185,209 @@ class BookUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     fields = '__all__'
 
     def test_func(self):
+        return self.request.user.is_superuser
+
+class BookCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Book
+    fields = ['title', 'author', 'other_authors', 'summary', \
+        'book_tags', 'language', 'publish_date', 'photo', \
+        'is_featured', 'series', 'series_num', 'category',
+        ]
+    initial = {'language': 'English',
+               'is_featured': False,}
+
+    def test_func(self):
         return self.request.user.is_staff
+
+from django.contrib.admin.views.decorators import staff_member_required
+from django.core.files.storage import FileSystemStorage
+
+@staff_member_required
+def add_book(request):
+    if request.method == 'POST':
+        if 'title' in request.POST:
+            title = request.POST['title']
+            if title.startswith(('The ', 'the ')):
+                title = title[4:] + ', The'
+            elif title.startswith(('A ', 'a ')):
+                title = title[2:] + ', A'
+            # now we have a title in the correct format
+
+            # if an author has been selected
+            if request.POST['author_select'] != 'ignore':
+                author = get_object_or_404(Author, id=int(request.POST['author_select']))
+                # now we have author
+
+                if Book.objects.filter(title__iexact=title, author=author):
+                    messages.error(request, 'Book already in database')
+                    return redirect('add_book')
+
+            # else if an author has been entered in
+            elif request.POST['author']:
+                names = request.POST['author'].split(' ')
+                if len(names) == 1:
+                    messages.error(request, 'Need to enter a first and last name for author')
+                    return redirect('add_book')
+                else:
+                    first_name = names[0]
+                    del names[0]
+                    last_name = names[-1]
+                    del names[-1]
+                    middle_name = None
+                    if names:
+                        count = 0
+                        middle_name = ''
+                        for name in names:
+                            middle_name += name + ' '
+                            count += 1
+                            if count == len(names):
+                                middle_name = middle_name[:-1]
+                    try:
+                        author = Author.objects.get(first_name=first_name, last_name=last_name)
+                        if Book.objects.filter(title__iexact=title, author=author):
+                            messages.error(request, 'Book already in database')
+                            return redirect('add_book')
+                    except Author.DoesNotExist:
+                        if middle_name:
+                            author = Author(first_name=first_name, middle_names=middle_name, last_name=last_name)
+                        else:
+                            author = Author(first_name=first_name, last_name=last_name)
+                        # haven't saved the author yet
+
+            # else no author has been selected or entered
+            else:
+                messages.error(request, 'No author selected or entered')
+                return redirect('add_book')
+
+            # at this point, we should have a title, and an author
+            # rest is optional so we'll go through them
+
+            other_authors = ''
+            if request.POST['other_authors']:
+                other_authors = request.POST['other_authors']
+
+            category = get_object_or_404(Category, id=int(request.POST['category']))
+            book_type = request.POST['book_type']
+
+            series = None
+            if request.POST['series_select'] != 'ignore':
+                series = get_object_or_404(Series, id=int(request.POST['series_select']))
+            elif request.POST['series']:
+                name = request.POST['series']
+                try:
+                    series = Series.objects.get(name=name)
+                except Series.DoesNotExist:
+                    series = Series(name=name)
+                    # haven't saved series yet
+
+            series_num = None
+            if request.POST['series_num']:
+                num = int(request.POST['series_num'])
+                if num > 0:
+                    series_num = num
+
+            if series and not series_num:
+                series_num = 99
+
+            summary = ''
+            if request.POST['summary']:
+                summary = request.POST['summary']
+                if len(summary) > 2000:
+                    summary = summary[:1997] + '...'
+
+            photo = None
+            if request.FILES.get('photo', False):
+                photo = request.FILES['photo']
+                if photo.size > 1000000:
+                    photo = None
+
+            isbn13 = None
+            if request.POST['isbn13']:
+                isbn13 = request.POST['isbn13']
+
+            isbn10 = None
+            if request.POST['isbn10']:
+                isbn10 = request.POST['isbn10']
+
+            pages = None
+            if request.POST['pages']:
+                pages = int(request.POST['pages'])
+                if pages < 1:
+                    pages = None
+
+            publisher = ''
+            if request.POST['publisher']:
+                publisher = request.POST['publisher']
+
+            publish_date = None
+            if request.POST['publish_date']:
+                publish_date = datetime.strptime(request.POST['publish_date'], "%d/%m/%Y").date()
+
+            book_tags = None
+            if request.POST['book_tags']:
+                book_tags = [x.strip().lower() for x in request.POST['book_tags'].split(',')]
+
+            is_featured = False
+            if request.POST.get('is_featured') == 'clicked':
+                is_featured = True
+
+            # now the adding stuff
+            author.save()
+            if series:
+                series.save()
+
+            book = Book.objects.create(
+                title=title,
+                author=author,
+                other_authors=other_authors,
+                summary=summary,
+                series=series,
+                series_num=series_num,
+                category=category,
+                photo=photo,
+                publish_date=publish_date,
+                is_featured=is_featured,
+            )
+            
+
+            if book_tags:
+                for tag in book_tags:
+                    book.book_tags.add(tag)
+                book.save()
+
+            instance = BookInstance2.objects.create(
+                book=book,
+                pages=pages,
+                isbn10=isbn10,
+                isbn13=isbn13,
+                publisher=publisher,
+                book_type=book_type,
+            )
+
+            messages.success(request, 'Book has been successfully added')
+            return redirect('book', book.id, book.slug)
+        else:
+            messages.error(request, 'No title')
+            return redirect('add_book')
+
+    else:
+        book_types = {
+            'p': 'Paperback',
+            'h': 'Hardcover',
+            'o': 'Oversized',
+        }
+        authors = Author.objects.all()
+        categories = Category.objects.all()
+        series = Series.objects.all()
+        tags = BookTags.objects.all()
+        context = {
+            'authors': authors,
+            'categories': categories,
+            'series': series,
+            'tags': tags,
+            'book_types': book_types,
+        }
+        return render(request, 'books/add_book.html', context)
 
 
 # trying to test out a share book email thing
@@ -500,8 +702,6 @@ def del_review(request, review_id):
 #         }
 #         return render(request, 'books/edit_review.html', context)
 
-from authors.models import Author
-from books.models import Series
 from django.db.models import Q
 
 def category(request, category_code):

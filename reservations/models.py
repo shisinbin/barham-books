@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from books.models import Book
+from datetime import date
 
 class Reservation(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
@@ -20,3 +21,8 @@ class Reservation(models.Model):
             return user.username
         except:
             return ''
+    def expired(self):
+        if self.reservation_expiry and date.today() > self.reservation_expiry.date():
+            return True
+        else:
+            return False

@@ -183,20 +183,17 @@
 
                   <br />
                   <ul style="list-style-type:none; color:black; margin-left: -30px;">
-                    {% if copy.isbn10 or copy.isbn13 %}
-                      
-                        {% if copy.isbn10 %}
-                          <li>
-                            ISBN: {{ copy.get_formatted_isbn10 }}
-                          </li>
-                            {% if copy.isbn13 %}
-                              <li>
-                                ISBN13: {{ copy.get_formatted_isbn13 }}
-                              </li>
-                            {% endif %}
-                        {% endif %}
-                      
+                    {% if copy.isbn10 %}
+                      <li>
+                        ISBN: {{ copy.get_formatted_isbn10 }}
+                      </li>
                     {% endif %}
+                    {% if copy.isbn13 %}
+                      <li>
+                        ISBN13: {{ copy.get_formatted_isbn13 }}
+                      </li>
+                    {% endif %}
+
                     {% if copy.pages %}
                         <li>
                           Pages: {{ copy.pages }}
