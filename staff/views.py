@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import date
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-
+from django.db.models.functions import Lower
 from django.contrib.admin.views.decorators import staff_member_required
 
 MAX_ALLOWED_LOANS = 6
@@ -25,7 +25,7 @@ def index(request):
 
 @staff_member_required
 def users(request):
-    users = User.objects.order_by('username')
+    users = User.objects.order_by(Lower('username'))
     username = None
     if 'username' in request.GET:
         username = request.GET['username']
