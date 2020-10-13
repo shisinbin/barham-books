@@ -48,9 +48,9 @@ def reserve(request):
                         send_mail(
                             f"Reservation: {reservation.book.title}",
                             # f"Hi {request.user.username}.\n\nYour reservation for the book entitled {reservation.book.title}, is now active. A copy of the book is being held in the library and can be collected.\nNote that the reservation will expire in one week's time.\n\nRegards,\nBarham Library",
-                            f"Hello Paul!\n\nA book has been reserved by one of our users on the web app.\n\n'{request.user.username}' has reserved the book: '{reservation.book.title}'. Go online to the Staff area to check out more.\n\nSincerely,\nBarham Bot",
+                            f'Hello Paul!\n\nA book has been reserved on the web app.\n\n{request.user.username} has reserved the book entitled "{reservation.book.title}".\n\nGo online to the Staff area for further info.\n\nSincerely,\nBarham Bot',
                             'enthuzimuzzy00@gmail.com',
-                            ['sb1664@gmail.com'],
+                            ['barhamlibrary@hotmail.co.uk', 'sb1664@gmail.com'],
                             fail_silently=False
                             )
                     else:
