@@ -51,7 +51,7 @@ def reserve(request):
                             f'Hello Paul!\n\nA book has been reserved on the web app.\n\n{request.user.username} has reserved the book entitled "{reservation.book.title}".\n\nGo online to the Staff area for further info.\n\nSincerely,\nBarham Bot',
                             'enthuzimuzzy00@gmail.com',
                             ['barhamlibrary@hotmail.co.uk', 'sb1664@gmail.com'],
-                            fail_silently=False
+                            fail_silently=True
                             )
                     else:
                         reservation = Reservation(book=book, user_id=user_id, reservation_date=timezone.now())
