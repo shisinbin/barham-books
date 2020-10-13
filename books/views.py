@@ -709,7 +709,16 @@ def category(request, category_code):
     category = get_object_or_404(Category, code=category_code)
     category_books = Book.objects.filter(category=category)
     featured_books = category_books.filter(is_featured=True)
+
+    if len(featured_books)%4==0:
+        num_slides = int(len(featured_books)/4)
+    else:
+        num_slides = int(len(featured_books)//4) + 1
     
+    num_slides_string = ''
+    for i in range(num_slides):
+        num_slides_string = num_slides_string + str(i)
+
     # what a tremendous piece of code
     popular_authors = Author.objects.annotate(
         num_times=Count('books', filter=Q(books__in=category_books))).order_by('-num_times')[:10]
@@ -724,5 +733,6 @@ def category(request, category_code):
         'featured_books': featured_books,
         'popular_authors': popular_authors,
         'series_with_multiple_books': series_with_multiple_books,
+        'num_slides_string': num_slides_string,
     }
     return render(request, 'books/category.html', context)

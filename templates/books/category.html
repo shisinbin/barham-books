@@ -87,6 +87,47 @@
             {% else %}
               add a description
             {% endif %}
+
+            <!--{% if featured_books %}
+              <br>
+              <h4>Our picks in {{ category.short_name }}</h4>
+              <div id="featuredCarousel" class="carousel slide w-100" data-ride="carousel" data-interval="10000">
+                <ol class="carousel-indicators">
+                  {% for i in num_slides_string %}
+                    <li data-target="#featuredCarousel" data-slide-to="{{ i }}" style="background-color: gray;" {% if forloop.first %} class="active" {% endif %}></li>
+                  {% endfor %}
+                </ol>
+                <div class="carousel-inner w-100" role="listbox">
+                  <div class="carousel-item row no-gutters active">
+                    {% for book in featured_books %}
+                      {% load thumbnail %}
+                      <div class="col-2 float-left mr-4">
+                        <a href="{{ book.get_absolute_url }}">
+                          <img src="{% thumbnail book.photo 100x0 %}" class="img-fluid">
+                        </a>
+                      <div class="carousel-caption text-dark" style="position: relative; left: 0; top: 10;">
+                        <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
+                      </div>
+                      </div>
+                      {% if not forloop.last %}
+                        {% if forloop.counter|divisibleby:4 %}
+                          </div><div class="carousel-item row no-gutters">
+                        {% endif %}
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+                <a class="carousel-control-prev" href="#featuredCarousel" role="button" data-slide="prev" style="bottom: -200px; filter:invert(100%);">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#featuredCarousel" role="button" data-slide="next" style="bottom: -200px; filter:invert(100%);">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </div>
+            {% endif %}-->
+
           </div>
 
           <!--<div class="row no-gutters">
