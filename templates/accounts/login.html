@@ -27,6 +27,7 @@
                 <div class="form-group">
                   <label for="password2">Password</label>
                   <input type="password" name="password" class="form-control" required>
+                  <p class="text-right"><small><a href="{% url 'password_reset' %}">Forgotten your password?</a></small></p>
                 </div>
                 <!-- <input type="hidden" name="next" value="{{ next }}"> -->
                 <input type="submit" value="Login" class="btn btn-secondary btn-block">

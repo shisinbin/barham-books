@@ -239,6 +239,33 @@ def execute(request):
 #             messages.error(request, 'You have not selected any books')
 #             return redirect('loan_books', user.id)
 
+# helper function for returning a book
+def return_book(record):
+    assert record.date_returned == None
+    record.date_returned = timezone.now()
+    record.save()
+
+    instance = BookInstance2.objects.get(id=record.book_instance_id)
+
+    # check if there are any waiting reservations
+    # if so: change instance status to 'r' and update reservation
+    # otherwise change instance status to 'a' and remove borrower
+    waiting_reservations = Reservation.objects.filter(book=instance.book, can_collect=False).order_by('reservation_date')
+    if waiting_reservations:
+        reservation_to_change = waiting_reservations.first()
+        reservation_to_change.can_collect = True
+        reservation_to_change.reservation_expiry = timezone.now() + timezone.timedelta(days=7)
+        reservation_to_change.save()
+
+        instance.status = 'r'
+        instance.due_back = None
+        instance.save()
+    else:
+        instance.status = 'a'
+        instance.due_back = None
+        instance.borrower = None
+        instance.save()
+
 @staff_member_required
 def return_books(request, user_id):
     looked_up_user = User.objects.get(id=user_id)
@@ -247,32 +274,45 @@ def return_books(request, user_id):
 
     if active_user_records:
         for record in active_user_records:
-            record.date_returned = timezone.now()
-            record.save()
+            return_book(record)
+            # record.date_returned = timezone.now()
+            # record.save()
 
-            instance = BookInstance2.objects.get(id=record.book_instance_id)
+            # instance = BookInstance2.objects.get(id=record.book_instance_id)
 
-            # check if there are any waiting reservations
-            # if so: change instance status to 'r' and update reservation
-            # otherwise change instance status to 'a'
-            waiting_reservations = Reservation.objects.filter(book=instance.book, can_collect=False).order_by('reservation_date')
-            if waiting_reservations:
-                reservation_to_change = waiting_reservations.first()
-                reservation_to_change.can_collect = True
-                reservation_to_change.reservation_expiry = timezone.now() + timezone.timedelta(days=7)
-                reservation_to_change.save()
+            # # check if there are any waiting reservations
+            # # if so: change instance status to 'r' and update reservation
+            # # otherwise change instance status to 'a'
+            # waiting_reservations = Reservation.objects.filter(book=instance.book, can_collect=False).order_by('reservation_date')
+            # if waiting_reservations:
+            #     reservation_to_change = waiting_reservations.first()
+            #     reservation_to_change.can_collect = True
+            #     reservation_to_change.reservation_expiry = timezone.now() + timezone.timedelta(days=7)
+            #     reservation_to_change.save()
 
-                instance.status = 'r'
-                instance.due_back = None
-                instance.save()
-            else:
-                instance.status = 'a'
-                instance.due_back = None
-                instance.borrower = None
-                instance.save()
+            #     instance.status = 'r'
+            #     instance.due_back = None
+            #     instance.save()
+            # else:
+            #     instance.status = 'a'
+            #     instance.due_back = None
+            #     instance.borrower = None
+            #     instance.save()
 
-        messages.success(request, 'Books successfully returned')
+        messages.success(request, 'All books successfully returned')
         return redirect('user', user_id)
     else:
         messages.error(request, 'No active books to return')
         return redirect('user', user_id)
+
+@staff_member_required
+def return_single_book(request, record_id):
+    record = Record.objects.get(id=record_id)
+
+    if record.date_returned:
+        messages.error(request, 'This book has already been returned')
+        return redirect('user', record.user_id)
+    else:
+        return_book(record)
+        messages.success(request, f'{record.book_title} successfully returned')
+        return redirect('user', record.user_id)

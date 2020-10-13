@@ -178,6 +178,8 @@ TAGGIT_CASE_INSENSITIVE = True
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
+
 try:
     from .local_settings import *
 except ImportError:
