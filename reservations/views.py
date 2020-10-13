@@ -48,8 +48,7 @@ def reserve(request):
                         send_mail(
                             f"Reservation: {reservation.book.title}",
                             # f"Hi {request.user.username}.\n\nYour reservation for the book entitled {reservation.book.title}, is now active. A copy of the book is being held in the library and can be collected.\nNote that the reservation will expire in one week's time.\n\nRegards,\nBarham Library",
-                            f"Hello Paul!\n\nA book has been reserved by user: {request.user.username}.\nThe book in question is: {reservation.book.title}.\n\nSincerely,\nBarham Bot\n\n"{% url 'staff' %},
-
+                            f"Hello Paul!\n\nA book has been reserved by one of our users on the web app.\n\n'{request.user.username}' has reserved the book: '{reservation.book.title}'. Go online to the Staff area to check out more.\n\nSincerely,\nBarham Bot",
                             'enthuzimuzzy00@gmail.com',
                             ['sb1664@gmail.com'],
                             fail_silently=False
