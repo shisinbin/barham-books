@@ -67,7 +67,7 @@ def register(request):
                         f"New user: {user.username}",
                         f'Hello Paul!\n\nA new user has just made an account on the web app.\n\nUsername: {user.username}\nEmail: {user.email}\n{email_additional}\nGo to the Staff area to see more and, if possible, verify the account.\n\nSincerely,\nBarham Bot',
                         'enthuzimuzzy00@gmail.com',
-                        ['sb1664@gmail.com',],
+                        ['barhamlibrary@hotmail.co.uk', 'sb1664@gmail.com',],
                         fail_silently=True
                         )
 
