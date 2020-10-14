@@ -26,7 +26,7 @@ def index(request):
 @staff_member_required
 def users(request):
     #users = User.objects.order_by(Lower('username'))
-    users = User.objects.order_by('profile__memb_num')
+    users = User.objects.order_by('profile__memb_num', 'username')
     keyword = None
     if 'keyword' in request.GET:
         keyword = request.GET['keyword']
