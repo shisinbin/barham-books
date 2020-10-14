@@ -13,15 +13,25 @@
     <div class="container">
       <div class="row text-center">
         <div class="col-md-12">
+          {% if user.profile.photo %}
+            <img src="{% thumbnail user.profile.photo 100x0 %}" class="img-fluid img-thumbnail-edit" style="object-fit:cover; border-radius: 50%; height: 100px; width:100px;">
+
+          {% else %}
+            <img class="img-fluid img-thumbnail-edit" src="{% static 'img/avatar.png' %}" style="border-radius: 50%;">
+          {% endif %}
           <h1 class="display-4">{{ user.username }}'s Dashboard</h1>
           <p class="lead">Manage your Barham Library account</p>
+          <!--<p class="date mb-0">
+            <a href="{% url 'edit' %}">Edit profile</a> &bull;
+            <a href="{% url 'change_password' %}">Change password</a>
+          </p>-->
         </div>
       </div>
     </div>
   </section>
 
   <!-- Breadcrumb -->
-  <section id="bc" class="mt-3">
+  <section id="bc" class="mt-3 mb-0">
     <div class="container">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -43,10 +53,12 @@
       <div class="row">
         <div class="col-md-12">
 
-          <!--{% if request.user.is_staff %}
-            <p><a href="{% url 'book_create' %}" class="btn btn-secondary">Add new book</a></p>
-          {% endif %}-->
-          <p><a href="{% url 'change_password' %}">Change password</a></p>
+          
+            <p class="small text-right">
+              <a href="{% url 'edit' %}">Edit profile</a> &bull;
+              <a href="{% url 'change_password' %}">Change password</a>
+            </p>
+          
 
           <!-- Reservations -->
           <h4 class="display-4 text-center">Reservations</h4>

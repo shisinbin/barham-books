@@ -20,7 +20,7 @@ def upload_location(instance, filename):
     if instance.title:
         new_filename = f"books/{instance.title[:1].upper()}/{instance.title}.{ext}"
     else:
-        new_filename = filename
+        new_filename = f"books/{filename}"
     return new_filename
 
 # iterates through all book_tags belonging to a book

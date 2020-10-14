@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+  Edit user info
+{% endblock title %}
+
+{% block content %}
+  <!--<section>
+    <div class="container">
+      <div class="col-md-12">
+        <p>You can edit your account using the following form:</p>
+        <form method="post" enctype="multipart/form-data">
+          {{ user_form|crispy }}
+          {{ profile_form|crispy }}
+          {% csrf_token %}
+          <p><input type="submit" value="Save changes" class="btn btn-primary"></p>
+        </form>
+      </div>
+    </div>
+  </section>-->
+
+
+  <section id="register" class="bg-light py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          <div class="card">
+            <div class="card-header bg-primary text-white">
+              <h4>
+                <i class="fas fa-edit"></i> Edit your details</h4>
+            </div>
+            <div class="card-body">
+              <!-- Alerts -->
+              {% include 'partials/_alerts.html' %}
+              <form method="post" enctype="multipart/form-data">
+                {{ user_form|crispy }}
+                {{ profile_form|crispy }}
+                {% csrf_token %}
+                <p><input type="submit" value="Save changes" class="btn btn-secondary btn-block"></p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

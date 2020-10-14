@@ -49,7 +49,7 @@
                 <div class="row">
                   <div class="col">
                     <label class="sr-only">User search</label>
-                    <input type="text" name="username" class="form-control" placeholder="Search users by username"
+                    <input type="text" name="keyword" class="form-control" placeholder="Enter membership number, surname or username"
                     {% if query %}value="{{ query }}"{% endif %}>
                   </div>
                   <div class="col">
@@ -73,21 +73,36 @@
 	              <tr>
 	                <!-- <th scope="col">#</th> -->
 	                <th scope="col">Username</th>
+                  <th scope="col">#</th>
+                  <th scope="col">Surname</th>
                   <th scope="col">Last login</th>
                   <th scope="col">Member since</th>
-                  <th></th>
+                  <th scope="col">Verified?</th>
 	              </tr>
 	            </thead>
 	            <tbody>
 	              {% for user in users %}
-	                <tr>
-	                  <td><a href="{% url 'user' user.id %}">
-                      {{ user.username }}
+	                <tr
+                  {% if not user.profile.verified %}
+                    class="table-danger"
+                  {% else %}
+                    class="table-light"
+                  {% endif %}
+                  >
+	                  <td><a href="{% url 'user' user.id %}" class="btn btn-outline-primary btn-block btn-sm">
+                      {{ user.username }} &raquo;
                     </a></td>
+                    <td>{% if user.profile.memb_num %}{{ user.profile.memb_num|stringformat:"03d" }}{% endif %}</td>
+                    <td>{% if user.last_name %}{{ user.last_name }}{% endif %}</td>
                     <td>{{ user.last_login }}</td>
                     <td>{{ user.date_joined|naturalday }}</td>
 	                  <td>
-                      <a class="btn btn-primary" href="{% url 'user' user.id %}">View user &raquo;</a>
+                      {% if not user.profile.verified %}
+                        <i class="fas fa-times"></i>
+                      {% else %}
+                        <i class="fas fa-check"></i>
+                      {% endif %}
+                      <!--<a class="btn btn-primary" href="{% url 'user' user.id %}">View user &raquo;</a>-->
                     </td>
 	                </tr>
 	              {% endfor %}
@@ -142,8 +157,4 @@
       </div>
     </div>
   </section>
-
-
-
-
 {% endblock %}

@@ -59,6 +59,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+
+    # this needs to be placed last
+    # it deletes files that are replaced, ie image files
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [

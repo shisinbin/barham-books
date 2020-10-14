@@ -25,11 +25,22 @@ def index(request):
 
 @staff_member_required
 def users(request):
-    users = User.objects.order_by(Lower('username'))
-    username = None
-    if 'username' in request.GET:
-        username = request.GET['username']
-        users = users.filter(username__icontains=username)
+    #users = User.objects.order_by(Lower('username'))
+    users = User.objects.order_by('profile__memb_num')
+    keyword = None
+    if 'keyword' in request.GET:
+        keyword = request.GET['keyword']
+        users_username = users.filter(username__icontains=keyword)
+        users_last_name = users.filter(last_name__icontains=keyword)
+        if keyword.isnumeric():
+            users_memb_num = users.filter(profile__memb_num__icontains=int(keyword))
+        else:
+            users_memb_num = None
+        if users_memb_num:
+            users = (users_username | users_last_name | users_memb_num).distinct()
+        else:
+            users = (users_username | users_last_name).distinct()
+
 
     # pagination
     paginator = Paginator(users, 5)
@@ -38,7 +49,7 @@ def users(request):
 
     context = {
         'users': paged_users,
-        'query': username,
+        'query': keyword,
     }
     
     return render(request, 'staff/users.html', context)
@@ -69,6 +80,11 @@ def user(request, user_id):
 def loan_books(request, user_id):
 
     looked_up_user = User.objects.get(id=user_id)
+
+    # quick check to make sure user is verified
+    if not looked_up_user.profile.verified:
+        messages.error(request, 'User is not verified')
+        return redirect('user', looked_up_user.id)
 
     # check to see if user has more active loans than is allowed
     active_loans_count = Record.objects.filter(user_id=user_id,date_returned=None).count()
@@ -116,6 +132,11 @@ def execute(request):
     if request.method == 'POST':
         user_id = request.POST['user_id']
         user = User.objects.get(id=user_id)
+
+        # quick check to make sure user is verified
+        if not user.profile.verified:
+            messages.error(request, 'User is not verified')
+            return redirect('user', user.id)
 
         instances_to_be_loaned_out = set()
 
@@ -316,3 +337,29 @@ def return_single_book(request, record_id):
         return_book(record)
         messages.success(request, f'{record.book_title} successfully returned')
         return redirect('user', record.user_id)
+
+from .forms import StaffUserEditForm, StaffProfileEditForm
+@staff_member_required
+def staff_edit(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        user_form = StaffUserEditForm(instance=user,
+                                 data=request.POST)
+        profile_form = StaffProfileEditForm(
+                                    instance=user.profile,
+                                    data=request.POST,
+                                    files=request.FILES)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'The profile has been updated')
+            return redirect('user', user_id)
+    else:
+        user_form = StaffUserEditForm(instance=user)
+        profile_form = StaffProfileEditForm(
+                                    instance=user.profile)
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+    }
+    return render(request, 'staff/edit.html', context)

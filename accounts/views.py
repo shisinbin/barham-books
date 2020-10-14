@@ -6,12 +6,12 @@ from reservations.models import Reservation
 from records2.models import Record
 from django.utils import timezone
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from .models import Profile
+from django.core.mail import send_mail
 
 def register(request):
     if request.method == 'POST':
-        # Get form values
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
+        # Get required form values
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
@@ -29,14 +29,48 @@ def register(request):
                     messages.error(request, 'That email is being used')
                     return redirect('register')
                 else:
-                    # Looks good
+                    memb_num = None
+                    if request.POST['memb_num']:
+                        memb_num = int(request.POST['memb_num'])
+                        if memb_num in range(1,1000):
+                            if Profile.objects.filter(memb_num=memb_num).exists():
+                                messages.error(request, f'The membership number {str(memb_num)} is already in use')
+                                return redirect('register')
+                        else:
+                            messages.error(request, 'You have chosen a membership number outside the permitted range (1-999)')
+                            return redirect('register')
+                        # at this point if not redirected should have a valid memb_num and create the user
+
                     user = User.objects.create_user(
                         username=username,
                         password=password,
-                        first_name=first_name,
-                        last_name=last_name,
                         email=email)
+
+                    email_additional = ''
+                    if request.POST['first_name']:
+                        user.first_name = request.POST['first_name']
+                        email_additional = email_additional + f'First name: {user.first_name}\n'
+                    if request.POST['last_name']:
+                        user.last_name = request.POST['last_name']
+                        email_additional = email_additional + f'Surname: {user.last_name}\n'
                     user.save()
+
+                    profile = Profile.objects.create(user=user)
+
+                    if memb_num:
+                        # can just use memb_num
+                        profile.memb_num = memb_num
+                        profile.save()
+                        email_additional = email_additional + f'Membership number: {memb_num}\n'
+
+                    send_mail(
+                        f"New user: {user.username}",
+                        f'Hello Paul!\n\nA new user has just made an account on the web app.\n\nUsername: {user.username}\nEmail: {user.email}\n{email_additional}\nGo to the Staff area to see more and, if possible, verify the account.\n\nSincerely,\nBarham Bot',
+                        'enthuzimuzzy00@gmail.com',
+                        ['sb1664@gmail.com',],
+                        fail_silently=True
+                        )
+
                     messages.success(request, 'You are now registered and can log in')
                     return redirect('login')
         else:
@@ -208,6 +242,7 @@ def extend_all_loans(request):
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 
+@login_required
 def change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
@@ -225,3 +260,28 @@ def change_password(request):
         'form': form,
     }
     return render(request, 'accounts/change_password.html', context)
+
+from .forms import UserEditForm, ProfileEditForm
+@login_required
+def edit(request):
+    if request.method == 'POST':
+        user_form = UserEditForm(instance=request.user,
+                                 data=request.POST)
+        profile_form = ProfileEditForm(
+                                    instance=request.user.profile,
+                                    data=request.POST,
+                                    files=request.FILES)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your profile has been updated')
+            return redirect('dashboard')
+    else:
+        user_form = UserEditForm(instance=request.user)
+        profile_form = ProfileEditForm(
+                                    instance=request.user.profile)
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+    }
+    return render(request, 'accounts/edit.html', context)

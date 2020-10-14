@@ -6,10 +6,19 @@
     <div class="container">
       <div class="row text-center">
         <div class="col-md-12">
-          <h1 class="display-4">{{ looked_up_user.username }}</h1>
+          <h1 class="display-4">{{ looked_up_user.username }}
+            {% if looked_up_user.profile.verified %}
+              <i class="far fa-check-circle"></i>
+            {% else %}
+              <i class="far fa-times-circle"></i>
+            {% endif %}
+          </h1>
           <p class="lead">Member since {{ user.date_joined|naturalday }}</p>
           <h3 class="mt-2">
-            <a class="btn btn-outline-secondary mb-1 mr-3" href="{% url 'loan_books' looked_up_user.id %}">Loan books for user &raquo;</a>
+            <a class="btn btn-outline-secondary mb-1 mr-3" href="{% url 'staff_edit' looked_up_user.id %}">Edit user &raquo;</a>
+            {% if looked_up_user.profile.verified %}
+              <a class="btn btn-outline-secondary mb-1 mr-3" href="{% url 'loan_books' looked_up_user.id %}">Loan books for user &raquo;</a>
+            {% endif %}
             {% if active_user_records %}
               <button class="btn btn-outline-secondary mb-1 mr-3" data-toggle="modal" data-target="#returnModal">Return all books &raquo;</button>
             {% endif %}
