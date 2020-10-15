@@ -94,7 +94,7 @@
                     </a></td>
                     <td>{% if user.profile.memb_num %}{{ user.profile.memb_num|stringformat:"03d" }}{% endif %}</td>
                     <td>{% if user.last_name %}{{ user.last_name }}{% endif %}</td>
-                    <td>{{ user.last_login }}</td>
+                    <td>{{ user.last_login|naturaltime }}</td>
                     <td>{{ user.date_joined|naturalday }}</td>
 	                  <td>
                       {% if not user.profile.verified %}
