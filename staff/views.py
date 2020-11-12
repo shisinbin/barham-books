@@ -43,7 +43,7 @@ def users(request):
 
 
     # pagination
-    paginator = Paginator(users, 5)
+    paginator = Paginator(users, 10)
     page = request.GET.get('page')
     paged_users = paginator.get_page(page)
 
