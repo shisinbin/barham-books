@@ -355,14 +355,21 @@ def add_book(request):
                     book.book_tags.add(tag)
                 book.save()
 
-            instance = BookInstance2.objects.create(
-                book=book,
-                pages=pages,
-                isbn10=isbn10,
-                isbn13=isbn13,
-                publisher=publisher,
-                book_type=book_type,
-            )
+            copies = 1
+            if request.POST['copies']:
+                copies = int(request.POST['copies'])
+                if not (copies > 0) and (copies < 6):
+                    copies = 1
+
+            for i in range(copies):
+                instance = BookInstance2.objects.create(
+                    book=book,
+                    pages=pages,
+                    isbn10=isbn10,
+                    isbn13=isbn13,
+                    publisher=publisher,
+                    book_type=book_type,
+                )
 
             messages.success(request, 'Book has been successfully added')
             return redirect('book', book.id, book.slug)
