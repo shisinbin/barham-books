@@ -10,9 +10,9 @@ class BookInstance2Inline(admin.TabularInline):
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'slug', 'author', 'tags', 'is_featured')
+    list_display = ('id', 'title', 'slug', 'author', 'category',)
     list_display_links = ('id', 'title')
-    list_editable = ('is_featured',)
+    #list_editable = ('is_featured',)
     search_fields = ('title',)
     list_per_page = 50
     inlines = [BookInstance2Inline]
