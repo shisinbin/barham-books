@@ -42,41 +42,43 @@
       <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <h4>Required fields</h4>
-        <hr>
+        <!--<h4>Required fields</h4>
+        <hr>-->
+        <br>
         <div class="form-group">
-          <label for="title">Book title</label>
+          <label for="title">Book title (*)</label>
           <input class="form-control" id="title" name="title" type="text" required pattern=".{3,250}" title="at least 3 characters">
         </div>
 
         <div class="form-group">
           <div class="row">
             <div class="col">
-              <label for="author_select">Choose from existing authors</label>
-              <select class="form-control" name="author_select" id="author_select">
-                <option selected="true" value="ignore">---------</option>
+              <label for="author_select">Choose from existing authors (*)</label>
+              <select name="author_select" id="author_select" class="selectpicker" data-width="100%" multiple data-max-options="1" data-container="body" data-size="7" data-live-search="true" title="Search authors">
+              <!--<select class="form-control" name="author_select" id="author_select">-->
+                <!--<option selected="true" value="ignore"></option>-->
                 {% for author in authors %}
                   <option value="{{ author.id }}">{{ author.formal }}</option>
                 {% endfor %}
               </select>
             </div>
             <div class="col">
-              <label for="author">Or enter new author</label>
+              <label for="author">Or enter new author (*)</label>
               <input class="form-control" id="author" name="author" type="text" aria-describedby="authorHelp" pattern="[a-zA-Z -]{5,300}" title="at least 5 characters, no dots or commas">
               <small id="authorHelp">Don't include dots with initials, i.e. write "JK Rowling" rather than "J.K. Rowling"</small>
             </div>
           </div>
         </div>
 
-        <div class="form-group">
+        <!--<div class="form-group">
           <label for="other_authors">Other authors (if applicable)</label>
           <input class="form-control" name="other_authors" id="other_authors" type="text" pattern="[a-zA-Z, -]{5,300}" title="at least 5 characters, no dots">
-        </div>
+        </div>-->
 
         <div class="form-group">
           <div class="row">
             <div class="col">
-              <label for="category">Category</label>
+              <label for="category">Category (*)</label>
               <select class="form-control" name="category" id="category">
                 {% for cat in categories %}
                   <option value="{{ cat.id }}">{{ cat.short_name }}</option>
@@ -84,7 +86,7 @@
               </select>
             </div>
             <div class="col">
-              <label for="book_type">Book type</label>
+              <label for="book_type">Book type (*)</label>
               <select class="form-control" name="book_type" id="book_type">
                 {% for key,value in book_types.items %}
                   <option value="{{ key }}">{{ value }}</option>
@@ -92,50 +94,56 @@
               </select>
             </div>
             <div class="col">
-              <label for="copies">Copies</label>
+              <label for="copies">Number of Copies (*)</label>
               <input class="form-control" type="number" name="copies" id="copies" min="1" max="5" value="1" required>
             </div>
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-lg btn-block mt-5 mb-5">Add book</button>
-
         <br>
-        <h4>Optional fields</h4>
-        <hr>
-
         <div class="form-group">
           <div class="row">
             <div class="col">
-              <label for="series_select">Select series (if applicable)</label>
-              <select class="form-control" name="series_select" id="series_select">
-                <option selected="true" value="ignore">---------</option>
-                {% for ser in series %}
-                  <option value="{{ ser.id }}">{{ ser }}</option>
+              <label for="main_tags">Select multiple tags for book</label>
+              <select name="main_tags" id="main_tags" class="selectpicker" multiple="multiple" data-width="100%" data-container="body" data-size="20" multiple data-live-search="false">
+                {% for mtag in main_tags %}
+                  <option value="{{ mtag.name }}">{{ mtag.name|title }}</option>
                 {% endfor %}
               </select>
-            </div>
-            <div class="col">
-              <label for="series">Or enter new series</label>
-              <input class="form-control" type="text" name="series" id="series" pattern=".{3,100}" title="at least 3 characters">
-            </div>
-            <div class="col">
-              <label for="series_num"># in series</label>
-              <input class="form-control" type="number" name="series_num" id="series_num" min="1" max="99">
             </div>
           </div>
         </div>
 
+        <!--<button type="submit" class="btn btn-primary btn-lg btn-block mt-5 mb-5">Add book</button>
+
+        <br>
+        <h4>Optional fields</h4>
+        <hr>-->
+
+        <br>
         <div class="form-group">
-          <label for="summary">Book summary</label>
-          <textarea class="form-control" name="summary" id="summary" rows="10"></textarea>
+          <div class="row">
+            <div class="col-md-8">
+              <label for="summary">Book summary</label>
+              <textarea class="form-control" name="summary" id="summary" rows="15" maxlength="1900"></textarea>
+            </div>
+            <div class="col-md-4">
+              <label for="photo">Book cover image</label>
+              <input type="file" class="form-control-file" id="photo" name="photo">
+            </div>
+          </div>
         </div>
 
-        <div class="form-group">
+        <!--<div class="form-group">
           <label for="photo">Book cover image</label>
           <input type="file" class="form-control-file" id="photo" name="photo">
-        </div>
+        </div>-->
 
+        <button type="submit" class="btn btn-primary btn-lg btn-block mt-5 mb-5">Add book</button>
+
+        <br>
+        <h4>Extra stuff</h4>
+        <hr>
         <div class="form-group">
           <div class="row">
             <div class="col">
@@ -167,13 +175,35 @@
         </div>
 
         <div class="form-group">
-          <label for="book_tags">Book tags</label>
-          <input class="form-control" type="text" id="book_tags" name="book_tags" placeholder="e.g. crime, nordic noir, young adult" aria-describedby="bookTagHelp" pattern="[a-z, -]{3,400}" title="lowercase and comma's only">
+          <div class="row">
+            <div class="col">
+              <label for="series_select">Select series (if applicable)</label>
+              <select class="form-control" name="series_select" id="series_select">
+                <option selected="true" value="ignore">---------</option>
+                {% for ser in series %}
+                  <option value="{{ ser.id }}">{{ ser }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col">
+              <label for="series">Or enter new series</label>
+              <input class="form-control" type="text" name="series" id="series" pattern=".{3,100}" title="at least 3 characters">
+            </div>
+            <div class="col">
+              <label for="series_num"># in series</label>
+              <input class="form-control" type="number" name="series_num" id="series_num" min="1" max="99">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="book_tags"><strike>Book tags</strike></label>
+          <input class="form-control" type="text" id="book_tags" name="book_tags" placeholder="disabled" aria-describedby="bookTagHelp" pattern="[a-z, -]{3,400}" title="lowercase and comma's only" disabled="true">
           <small id="bookTagHelp">
-            Enter comma-separated book tags. Have a look below to help you choose what to add.
+            <strike>Enter comma-separated book tags. Have a look below to help you choose what to add.</strike>
           </small>
           <p></p>
-          <div class="card">
+          <!--<div class="card">
             <div class="card-body">
               <h6 class="card-title">Tags to choose from</h6>
               {% for tag in tags %}
@@ -200,13 +230,13 @@
                 </span>
               {% endfor %}
             </div>
-          </div>
+          </div>-->
         </div>
 
 
         <div class="form-check">
           <input type="checkbox" class="form-check-input" value="clicked" id="is_featured" name="is_featured">
-          <label class="form-check-label" for="is_featured">Featured in category</label>
+          <label class="form-check-label" for="is_featured">Check box to make book featured in category</label>
         </div>
 
         <button type="submit" class="btn btn-primary btn-lg btn-block mt-5 mb-5">Add book</button>

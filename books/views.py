@@ -214,13 +214,26 @@ def add_book(request):
             # now we have a title in the correct format
 
             # if an author has been selected
-            if request.POST['author_select'] != 'ignore':
-                author = get_object_or_404(Author, id=int(request.POST['author_select']))
-                # now we have author
+            if 'author_select' in request.POST:
+                author_id = int(request.POST.getlist('author_select')[0])
+                author = get_object_or_404(Author, id=author_id)
 
                 if Book.objects.filter(title__iexact=title, author=author):
                     messages.error(request, 'Book already in database')
                     return redirect('add_book')
+
+
+
+
+
+            # if an author has been selected
+            # if request.POST['author_select'] != 'ignore':
+            #     author = get_object_or_404(Author, id=int(request.POST['author_select']))
+            #     # now we have author
+
+            #     if Book.objects.filter(title__iexact=title, author=author):
+            #         messages.error(request, 'Book already in database')
+            #         return redirect('add_book')
 
             # else if an author has been entered in
             elif request.POST['author']:
@@ -263,8 +276,8 @@ def add_book(request):
             # rest is optional so we'll go through them
 
             other_authors = ''
-            if request.POST['other_authors']:
-                other_authors = request.POST['other_authors']
+            # if request.POST['other_authors']:
+            #     other_authors = request.POST['other_authors']
 
             category = get_object_or_404(Category, id=int(request.POST['category']))
             book_type = request.POST['book_type']
@@ -323,9 +336,10 @@ def add_book(request):
             if request.POST['publish_date']:
                 publish_date = datetime.strptime(request.POST['publish_date'], "%d/%m/%Y").date()
 
-            book_tags = None
-            if request.POST['book_tags']:
-                book_tags = [x.strip().lower() for x in request.POST['book_tags'].split(',')]
+            # I've disabled book tags
+            # book_tags = None
+            # if request.POST['book_tags']:
+            #     book_tags = [x.strip().lower() for x in request.POST['book_tags'].split(',')]
 
             is_featured = False
             if request.POST.get('is_featured') == 'clicked':
@@ -348,11 +362,17 @@ def add_book(request):
                 publish_date=publish_date,
                 is_featured=is_featured,
             )
-            
 
-            if book_tags:
-                for tag in book_tags:
-                    book.book_tags.add(tag)
+            # I've disabled book_tags
+            # if book_tags:
+            #     for tag in book_tags:
+            #         book.book_tags.add(tag)
+            #     book.save()
+
+            if 'main_tags' in request.POST:
+                tag_names = request.POST.getlist('main_tags')
+                for tag_name in tag_names:
+                    book.book_tags.add(tag_name)
                 book.save()
 
             copies = 1
@@ -387,12 +407,14 @@ def add_book(request):
         categories = Category.objects.all()
         series = Series.objects.all()
         tags = BookTags.objects.all()
+        main_tags = BookTags.objects.filter(band=1)
         context = {
             'authors': authors,
             'categories': categories,
             'series': series,
             'tags': tags,
             'book_types': book_types,
+            'main_tags': main_tags,
         }
         return render(request, 'books/add_book.html', context)
 

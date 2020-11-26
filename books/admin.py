@@ -13,6 +13,7 @@ class BookAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'slug', 'author', 'category',)
     list_display_links = ('id', 'title')
     #list_editable = ('is_featured',)
+    exclude = ['tags'] # cos this is redundant - should really remove from model
     search_fields = ('title',)
     list_per_page = 50
     inlines = [BookInstance2Inline]
