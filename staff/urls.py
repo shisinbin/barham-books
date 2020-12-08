@@ -11,4 +11,6 @@ urlpatterns = [
     path('return_single_book/<int:record_id>', views.return_single_book, name="return_single_book"),
 	path('execute', views.execute, name="execute"),
     path('staff_edit/<int:user_id>', views.staff_edit, name='staff_edit'),
+    path('del_copy/<int:book_id>', views.del_copy, name='del_copy'),
+    path('add_copy/<int:book_id>', views.add_copy, name='add_copy'),
 ]

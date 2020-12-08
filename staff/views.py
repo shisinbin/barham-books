@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from books.models import BookInstance2
+from books.models import BookInstance2, Book
 from records2.models import Record
 from reservations.models import Reservation
 from django.contrib.auth.models import User
@@ -363,3 +363,32 @@ def staff_edit(request, user_id):
         'profile_form': profile_form,
     }
     return render(request, 'staff/edit.html', context)
+
+@staff_member_required
+def del_copy(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    if BookInstance2.objects.filter(book=book):
+        # crappy way of deleting a copy
+        BookInstance2.objects.filter(book=book).order_by('-pk')[0].delete()
+        messages.success(request,'A copy was successfully deleted')
+    else:
+        messages.error(request, 'The book already has no copies')
+    return redirect(book)
+
+from .forms import AddBookCopy
+@staff_member_required
+def add_copy(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    if book.instances.count() >= 3:
+        messages.error(request, 'Max number of copies reached')
+        return redirect(book)
+    if request.method=='POST':
+        form_data = AddBookCopy(request.POST)
+        if form_data.is_valid():
+            instance = form_data.save(commit=False)
+            instance.book = book
+            instance.save()
+            messages.success(request, 'A copy has been added')
+        else:
+            messages.error(request,'Something went wrong')
+        return redirect(book)

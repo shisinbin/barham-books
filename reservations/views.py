@@ -19,18 +19,18 @@ def reserve(request):
         # check to see user hasn't made more reservations than allowed
         if user_reservations.count() >= MAX_ALLOWED_RESERVATIONS:
             messages.error(request, 'You have the maximum number of reservations and cannot make any more')
-            return redirect('book', book.id, book.slug)
+            return redirect(book)
         else:
             # check to see if user has book on loan
             record_queryset = Record.objects.filter(user_id=user_id, book_title=book.title, date_returned=None)
             if record_queryset:
                 messages.error(request, 'You already have this book on loan')
-                return redirect('book', book.id, book.slug)
+                return redirect(book)
             else:
                 # check to see if user has an active reservation for the book
                 if user_reservations.filter(book=book):
                     messages.error(request, 'You have already reserved this book')
-                    return redirect('book', book.id, book.slug)
+                    return redirect(book)
                 else:
                     # change status on one of the book instances
                     instances = book.instances.all()
@@ -58,4 +58,4 @@ def reserve(request):
                         reservation.save()
 
                     messages.success(request, 'You have now reserved this book')
-                    return redirect('book', book.id, book.slug) # or /book/+book.id if id was a string
+                    return redirect(book) # or /book/+book.id if id was a string

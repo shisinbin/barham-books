@@ -47,7 +47,7 @@ def index(request):
     return render(request, 'books/books.html', context)
 
 from reservations.models import Reservation
-
+from staff.forms import AddBookCopy
 def book(request, book_id, slug):
     book = get_object_or_404(Book, pk=book_id)
 
@@ -95,6 +95,7 @@ def book(request, book_id, slug):
         if reviews.filter(user=request.user):
             has_not_reviewed = False
 
+    copy_form = AddBookCopy()
     context = {
         'book': book,
         'copies': copies,
@@ -103,6 +104,7 @@ def book(request, book_id, slug):
         'has_not_reviewed': has_not_reviewed,
         'other_books_in_series': other_books_in_series,
         'similar_books': similar_books,
+        'copy_form': copy_form,
     }
 
     return render(request, 'books/book.html', context)
@@ -392,7 +394,7 @@ def add_book(request):
                 )
 
             messages.success(request, 'Book has been successfully added')
-            return redirect('book', book.id, book.slug)
+            return redirect(book)
         else:
             messages.error(request, 'No title')
             return redirect('add_book')
@@ -473,7 +475,7 @@ def add_review(request, book_id, body=None):
                 review.save()
 
                 messages.success(request, 'Your review has been posted')
-                return redirect('book', book.id, book.slug)
+                return redirect(book)
 
             else:
                 messages.error(request, 'You have not entered in a title')
@@ -699,7 +701,7 @@ def del_review(request, review_id):
 #                 if starting_point == 'dashboard':
 #                     return redirect(starting_point)
 #                 else
-#                     return redirect('book', review.book.id, book.slug)
+#                     return redirect(review.book)
 
 #             else:
 #                 messages.error(request, 'You have not entered in a title')

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load rating_stuff %}
+{% load crispy_forms_tags %}
 
 {% block title %}
   {{ book.title }} by {{ book.author }} | Books | 
@@ -117,10 +118,10 @@
                 {% endif %}
 
               </ul>
-              {% if user.is_staff %}
+              <!--{% if user.is_staff %}
                 <br>
                 <p><a href="{% url 'book_update' book.id %}" class="btn btn-secondary">Update book</a></p>
-              {% endif %}
+              {% endif %}-->
             </div>
           </div>
         </div>
@@ -158,65 +159,71 @@
           </p>
             
           <!-- Copies -->
-          {% if copies and user.is_authenticated %}
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item text-primary"> <i class="far fa-clone"></i>
-                <strong>Copies ({{copies.count}}):</strong>
-              </li>
-              {% for copy in book.instances.all %}
-                <li
-                  {% if copy.status == 'a' %}
-                    class="list-group-item text-success"
-                  {% elif copy.status == 'r' %}
-                    class="list-group-item text-warning"
-                  {% else %}
-                    class="list-group-item text-danger"
-                  {% endif %}>
-                    <i class="fas fa-angle-right"></i> {{ copy.get_status_display }}
-                  
-                  {% if copy.status == 'o' %}
-                    <br />Due to be returned: {{ copy.due_back }}
-                    {% if user.is_staff %}
-                      <br />Currently loaned by: <a href="{% url 'user' copy.borrower.id %}">{{ copy.borrower.username }}</a>
-                    {% endif %}
-                  {% endif %}
-
-                  <br />
-                  <ul style="list-style-type:none; color:black; margin-left: -30px;">
-                    {% if copy.isbn10 %}
-                      <li>
-                        ISBN: {{ copy.get_formatted_isbn10 }}
-                      </li>
-                    {% endif %}
-                    {% if copy.isbn13 %}
-                      <li>
-                        ISBN13: {{ copy.get_formatted_isbn13 }}
-                      </li>
-                    {% endif %}
-
-                    {% if copy.pages %}
-                        <li>
-                          Pages: {{ copy.pages }}
-                        </li>
-                    {% endif %}
-                    {% if copy.book_type %}
-                        <li>
-                          {{ copy.get_book_type_display|title }}
-                        </li>
-                    {% endif %}
-                  </ul>
+          {% if copies %}
+            {% if user.is_authenticated %}
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item text-primary"> <i class="far fa-clone"></i>
+                  <strong>Copies ({{copies.count}}):</strong>
                 </li>
-              {% endfor %}
-              
-              <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#reserveModal">
-                {% if available_copies %}
-                  Reserve book
-                {% else %}
-                  Join waiting list
-                {% endif %}
-              </button>
-              
-            </ul>
+                {% for copy in book.instances.all %}
+                  <li
+                    {% if copy.status == 'a' %}
+                      class="list-group-item text-success"
+                    {% elif copy.status == 'r' %}
+                      class="list-group-item text-warning"
+                    {% else %}
+                      class="list-group-item text-danger"
+                    {% endif %}>
+                      <i class="fas fa-angle-right"></i> {{ copy.get_status_display }}
+                    
+                    {% if copy.status == 'o' %}
+                      <br />Due to be returned: {{ copy.due_back }}
+                      {% if user.is_staff %}
+                        <br />Currently loaned by: <a href="{% url 'user' copy.borrower.id %}">{{ copy.borrower.username }}</a>
+                      {% endif %}
+                    {% endif %}
+
+                    <br />
+                    <ul style="list-style-type:none; color:black; margin-left: -30px;">
+                      {% if copy.isbn10 %}
+                        <li>
+                          ISBN: {{ copy.get_formatted_isbn10 }}
+                        </li>
+                      {% endif %}
+                      {% if copy.isbn13 %}
+                        <li>
+                          ISBN13: {{ copy.get_formatted_isbn13 }}
+                        </li>
+                      {% endif %}
+
+                      {% if copy.pages %}
+                          <li>
+                            Pages: {{ copy.pages }}
+                          </li>
+                      {% endif %}
+                      {% if copy.book_type %}
+                          <li>
+                            {{ copy.get_book_type_display|title }}
+                          </li>
+                      {% endif %}
+                    </ul>
+                  </li>
+                {% endfor %}
+                
+                <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#reserveModal">
+                  {% if available_copies %}
+                    Reserve book
+                  {% else %}
+                    Join waiting list
+                  {% endif %}
+                </button>
+                
+              </ul>
+            {% endif %}
+          {% else %}
+            <p class="text-uppercase text-danger">
+              This book is no longer in our collection
+            </p>
           {% endif %}
         </div>
 
@@ -235,6 +242,24 @@
               </a>
             </div>
           </div>
+
+          <!-- Staff tools -->
+          {% if user.is_staff %}
+            <div class="card text-center text-white bg-dark mt-2 mb-4">
+              <div class="card-body">
+                <h5 class="card-title">Staff tools</h5>
+                {% if user.is_superuser %}
+                  <p><a href="{% url 'book_update' book.id %}" class="btn btn-outline-light">Update book &raquo;</a></p>
+                {% endif %}
+                <p><button class="btn btn-outline-light" data-toggle="modal" data-target="#addCopyModal">
+                  Add copy &raquo;
+                </button></p>
+                <p><button class="btn btn-outline-light" data-toggle="modal" data-target="#delCopyModal">
+                  Delete copy &raquo;
+                </button></p>
+              </div>
+            </div>
+          {% endif %}
 
         </div>
 
@@ -372,6 +397,45 @@
             <hr>
             <input type="submit" value="Reserve" class="btn btn-block btn-secondary">
           </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add copy Modal -->
+  <div class="modal fade" id="addCopyModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addCopyModalLabel">Add copy</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="{% url 'add_copy' book.id %}" method="POST">
+            {{ copy_form|crispy }}
+            {% csrf_token %}
+            <p><input type="submit" value="Add copy" class="btn btn-secondary btn-block"></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Del copy Modal -->
+  <div class="modal fade" id="delCopyModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="delCopyModalLabel">Delete copy</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete a copy for this book?</p>
+          <a href="{% url 'del_copy' book.id %}" class="btn btn-secondary btn-block">Confirm</a>
         </div>
       </div>
     </div>
