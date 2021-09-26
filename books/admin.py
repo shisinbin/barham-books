@@ -3,6 +3,47 @@ from django.contrib import admin
 from .models import Book, BookInstance2, Review, Series, Category
 from taggit.models import Tag
 
+########### csv stuff
+import csv
+import datetime
+from django.http import HttpResponse
+
+def export_to_csv(modeladmin, request, queryset):
+    opts = modeladmin.model._meta
+    date = datetime.date.today()
+    content_disposition = f'attachment; filename=selected_books_{date}.csv'
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = content_disposition
+    writer = csv.writer(response)
+
+    fields = [field for field in opts.get_fields() if not field.many_to_many and not field.one_to_many]
+
+    # Write a first row with header information
+    # writer.writerow([field.verbose_name for field in fields])
+    writer.writerow(['title', 'author','isbn10','isbn13'])
+
+    # write data rows
+    for obj in queryset:
+        data_row = []
+
+        data_row.append(obj.book.title)
+        data_row.append(obj.book.author)
+        data_row.append(obj.isbn10)
+        data_row.append(obj.isbn13)
+
+        # for field in fields:
+        #     value = getattr(obj, field.name)
+        #     if isinstance(value, datetime.datetime):
+        #         value = value.strftime('%d/%m/%Y')
+        #     data_row.append(value)
+
+        writer.writerow(data_row)
+    return response
+
+export_to_csv.short_description = 'Export to CSV'
+########### end of csv stuff
+
+
 class BookInstance2Inline(admin.TabularInline):
     model = BookInstance2
     extra = 0
@@ -17,6 +58,7 @@ class BookAdmin(admin.ModelAdmin):
     search_fields = ('title',)
     list_per_page = 50
     inlines = [BookInstance2Inline]
+    #actions = [export_to_csv]
 
 @admin.register(BookInstance2)
 class BookInstance2Admin(admin.ModelAdmin):
@@ -36,6 +78,7 @@ class BookInstance2Admin(admin.ModelAdmin):
             'fields': ('isbn10', 'isbn13', 'book_type')
             }),
         )
+    actions = [export_to_csv]
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
