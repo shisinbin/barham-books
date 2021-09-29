@@ -20,7 +20,7 @@ def export_to_csv(modeladmin, request, queryset):
 
     # Write a first row with header information
     # writer.writerow([field.verbose_name for field in fields])
-    writer.writerow(['title', 'author','isbn10','isbn13'])
+    writer.writerow(['title', 'author','isbn10','isbn13', 'category'])
 
     # write data rows
     for obj in queryset:
