@@ -30,6 +30,7 @@ def export_to_csv(modeladmin, request, queryset):
         data_row.append(obj.book.author)
         data_row.append(obj.isbn10)
         data_row.append(obj.isbn13)
+        data_row.append(obj.book.category)
 
         # for field in fields:
         #     value = getattr(obj, field.name)
