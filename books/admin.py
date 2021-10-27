@@ -18,12 +18,19 @@ def export_to_csv(modeladmin, request, queryset):
 
     fields = [field for field in opts.get_fields() if not field.many_to_many and not field.one_to_many]
 
+
     # Write a first row with header information
     # writer.writerow([field.verbose_name for field in fields])
-    writer.writerow(['title', 'author','isbn10','isbn13', 'category'])
+    writer.writerow(['title', 'author','isbn10','isbn13', 'category','tags'])
 
     # write data rows
     for obj in queryset:
+
+        tags=[]
+        if obj.book.book_tags:
+            for tag in obj.book.book_tags.all():
+                tags.append(str(tag))
+
         data_row = []
 
         data_row.append(obj.book.title)
@@ -31,6 +38,8 @@ def export_to_csv(modeladmin, request, queryset):
         data_row.append(obj.isbn10)
         data_row.append(obj.isbn13)
         data_row.append(obj.book.category)
+        if tags:
+            data_row.append(','.join(tags))
 
         # for field in fields:
         #     value = getattr(obj, field.name)
