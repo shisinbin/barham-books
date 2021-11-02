@@ -58,9 +58,9 @@
                     </a>
                     <div class="d-none d-md-block">
                       <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
-                      {% if book.publish_date %}
+                      {% if book.year %}
                         <p class="text-secondary">
-                          <small>{{ book.publish_date }}</small>
+                          <small>{{ book.year }}</small>
                         </p>
                       {% endif %}
                     </div>

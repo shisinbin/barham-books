@@ -193,6 +193,9 @@ class Book(models.Model):
                                  on_delete=models.SET_NULL,
                                  null=True,
                                  blank=True)
+    year = models.PositiveIntegerField(blank=True,
+                                       null=True,
+                                       verbose_name='original publication year')
     class Meta:
         ordering = ('title',)
 
