@@ -334,9 +334,14 @@ def add_book(request):
             if request.POST['publisher']:
                 publisher = request.POST['publisher']
 
-            publish_date = None
-            if request.POST['publish_date']:
-                publish_date = datetime.strptime(request.POST['publish_date'], "%d/%m/%Y").date()
+            # I'm disabling adding in a full publication date cos of Val (2/11/21)
+            #publish_date = None
+            #if request.POST['publish_date']:
+            #    publish_date = datetime.strptime(request.POST['publish_date'], "%d/%m/%Y").date()
+
+            year = None
+            if request.POST['year']:
+                year = request.POST['year']
 
             # I've disabled book tags
             # book_tags = None
@@ -361,7 +366,8 @@ def add_book(request):
                 series_num=series_num,
                 category=category,
                 photo=photo,
-                publish_date=publish_date,
+                year=year,
+                #publish_date=publish_date,
                 is_featured=is_featured,
             )
 
