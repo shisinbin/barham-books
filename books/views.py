@@ -23,7 +23,7 @@ def index(request):
         if term.startswith('a '):
             term = term[2:]
         if term != 'the' and len(term)>2:
-            qs = Book.objects.filter(title__icontains=term, instances__isnull=False)[:20]
+            qs = Book.objects.filter(title__icontains=term, instances__isnull=False).distinct()[:20]
             titles = list()
             for bk in qs:
                 titles.append(bk.title)
@@ -508,10 +508,12 @@ def add_review(request, book_id, body=None):
 from django.http import HttpResponse
 
 def books_filtered(request, letter_choice=None, tag_slug=None):
+
     #books = Book.objects.all()
     # taken above line out 2/11/21 and replaced it with following
     # which only includes books that have instances
-    books = Book.objects.filter(instances__isnull=False)
+    books = Book.objects.filter(instances__isnull=False).distinct()
+
     tag = None
     letter = None
 
@@ -624,7 +626,7 @@ def book_search(request):
             results = Book.objects.annotate(
                 search=search_vector,
                 rank=SearchRank(search_vector, search_query)
-                ).filter(rank__gte=0.3, instances__isnull=False).order_by('-rank')
+                ).filter(rank__gte=0.3, instances__isnull=False).order_by('-rank').distinct()
 
             ####
             if 'category' in request.GET:
