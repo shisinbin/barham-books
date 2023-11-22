@@ -25,7 +25,7 @@ SECRET_KEY = 'r_omn*+90mh1i!0&#y-_58t%kykf#qfdl7p!=w4boo0t$=3ug*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['161.35.165.213', 'barhamlibrary.xyz','www.barhamlibrary.xyz']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -104,7 +104,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'blibdb',
         'USER': 'postgres',
-        'PASSWORD': 'pango',
+        'PASSWORD': 'cssforjs',
         'HOST': 'localhost',
     }
 }

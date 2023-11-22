@@ -22,14 +22,16 @@
 	<title>{% block title %}{% endblock %} Barham Community Library</title>
 </head>
 <body>
-	<!-- Top bar -->
-  
-	<!-- Nav bar -->
-  {% include 'partials/_navbar.html' %}
-
-	{% block content %} {% endblock %}
-	<!-- Footer -->
-	{% include 'partials/_footer.html' %}
+  <div id="app">
+    <!-- Nav bar -->
+    {% include 'partials/_navbar.html' %}
+    <!-- Main content -->
+    <main>
+      {% block content %} {% endblock %}
+    </main>
+    <!-- Footer -->
+    {% include 'partials/_footer.html' %}
+  </div>
 
 	<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
   <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
