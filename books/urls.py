@@ -27,6 +27,11 @@ urlpatterns = [
 ]
 
 urlpatterns += [
+    #class-based views
 	path('books/<int:pk>/update/', views.BookUpdate.as_view(), name='book_update'),
     path('books/create/', views.BookCreate.as_view(), name='book_create'),
+
+    path('books/<int:pk>/update_super/', views.BookUpdateSuper.as_view(), name='book_update_super'),
+
+    path('books/<int:pk>/update_instance/', views.BookInstanceUpdate.as_view(), name='book_instance_update'),
 	]

@@ -10,6 +10,7 @@ from .forms import SearchForm
 from datetime import datetime, timedelta
 from django.http import JsonResponse
 from django.utils import timezone
+from django.urls import reverse_lazy
 
 def index(request):
 
@@ -185,13 +186,12 @@ def tag_search(request):
     }
     return render(request, 'books/tag_search.html', context)
 
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 class BookUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Book
-    # fields = '__all__'
-    fields = ['title', 'author', 'category', 'summary', 'book_tags', 'photo', 'year']
+    fields = ['title', 'category', 'summary', 'photo', 'year']
 
     def test_func(self):
         # check if user is superuser
@@ -203,6 +203,14 @@ class BookUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         # old check to see if user was just superuser
         # return self.request.user.is_superuser
 
+class BookUpdateSuper(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Book
+    fields = '__all__'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+# I don't think this one is doing anything
 class BookCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Book
     fields = ['title', 'author', 'other_authors', 'summary', \
@@ -214,6 +222,19 @@ class BookCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def test_func(self):
         return self.request.user.is_staff
+
+# To edit an instance. However, functionality already exists to delete/add instances, so fairly redundant. Still leaving it in
+class BookInstanceUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = BookInstance2
+    fields = ['book_type', 'isbn13', 'isbn10', 'pages', 'publisher']
+
+    def test_func(self):
+        if self.request.user.is_superuser:
+            return True
+        if self.request.user.is_staff and self.get_object().created >= timezone.now() - timedelta(weeks=4):
+            return True
+    def get_success_url(self):
+        return reverse_lazy('book', kwargs={'book_id': self.object.book.id, 'slug': self.object.book.slug})
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.files.storage import FileSystemStorage
@@ -253,26 +274,25 @@ def add_book(request):
 
             # else if an author has been entered in
             elif request.POST['author']:
-                names = request.POST['author'].split(' ')
+                names = request.POST['author'].strip().split()
                 if len(names) == 1:
                     messages.error(request, 'Need to enter a first and last name for author')
                     return redirect('add_book')
                 else:
-                    first_name = names[0]
+                    first_name = names[0].capitalize()
                     del names[0]
-                    last_name = names[-1]
+                    last_name = names[-1].capitalize()
                     del names[-1]
-                    middle_name = None
+                    middle_name = ''
                     if names:
                         count = 0
-                        middle_name = ''
                         for name in names:
                             middle_name += name + ' '
                             count += 1
                             if count == len(names):
                                 middle_name = middle_name[:-1]
                     try:
-                        author = Author.objects.get(first_name=first_name, last_name=last_name)
+                        author = Author.objects.get(first_name__iexact=first_name, last_name__iexact=last_name)
                         if Book.objects.filter(title__iexact=title, author=author):
                             messages.error(request, 'Book already in database')
                             return redirect('add_book')

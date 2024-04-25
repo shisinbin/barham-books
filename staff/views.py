@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from books.models import BookInstance2, Book
+from authors.models import Author
 from records2.models import Record
 from reservations.models import Reservation
 from django.contrib.auth.models import User
@@ -391,4 +392,56 @@ def add_copy(request, book_id):
             messages.success(request, 'A copy has been added')
         else:
             messages.error(request,'Something went wrong')
+        return redirect(book)
+
+def capitalize_first_char(s):
+    return s[0].upper() + s[1:]
+
+@staff_member_required
+def amend_author(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    current_author = get_object_or_404(Author, id=book.author.id)
+
+    if request.method == 'POST':
+        full_name = request.POST.get('author', '').strip()
+
+        if not full_name:
+            messages.error(request, 'No author entered')
+            return redirect(book)
+        
+        names = full_name.split()
+        if len(names) < 2:
+            messages.error(request, 'Both a first and last name are required')
+            return redirect(book)
+        
+        first_name = capitalize_first_char(names.pop(0))
+        last_name = capitalize_first_char(names.pop())
+
+        middle_names = ''
+        if names:
+            capitalized_middle_names = [capitalize_first_char(name) for name in names]
+            middle_names = ' '.join(capitalized_middle_names)
+
+
+        # Try to see if new author is already in DB, if not then create new one
+        try:
+            new_author = Author.objects.get(first_name__iexact=first_name, last_name__iexact=last_name)
+
+            # Check to see if author found in DB is not the same as book's current author
+            if current_author == new_author:
+                messages.info(request, 'Author remains unchanged')
+                return redirect(book)
+        except Author.DoesNotExist:
+            new_author = Author.objects.create(first_name=first_name, middle_names=middle_names, last_name=last_name)
+
+        book.author = new_author
+        book.save()
+
+        # Delete the old author if they have no associated books
+        if current_author.books.count() == 0:
+            current_author.delete()
+            messages.success(request, 'Author has been changed and previous author deleted')
+        else:
+            messages.success(request, 'Author has been changed')
+        
         return redirect(book)

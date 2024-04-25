@@ -207,6 +207,9 @@
                           </li>
                       {% endif %}
                     </ul>
+                    {% if user.is_superuser %}
+                      <p><a href="{% url 'book_instance_update' copy.id %}" class="btn btn-sm btn-outline-dark mt-1">Edit &raquo;</a></p>
+                    {% endif %}
                   </li>
                 {% endfor %}
                 
@@ -248,8 +251,16 @@
             <div class="card text-center text-white bg-dark mt-2 mb-4">
               <div class="card-body">
                 <h5 class="card-title">Staff tools</h5>
+                {% if user.is_superuser %}
+                  <p><a href="{% url 'book_update_super' book.id %}" class="btn btn-outline-light">Super update &raquo;</a></p>
+                  <hr style="background-color: #f8f9fa;;"/>
+                {% endif %}
                 {% if user.is_superuser or is_recently_created %}
                   <p><a href="{% url 'book_update' book.id %}" class="btn btn-outline-light">Update book &raquo;</a></p>
+                  <p><button class="btn btn-outline-light" data-toggle="modal" data-target="#amendAuthorModal">
+                    Amend author &raquo;
+                  </button></p>
+                  <hr style="background-color: #f8f9fa;;"/>
                 {% endif %}
                 <p><button class="btn btn-outline-light" data-toggle="modal" data-target="#addCopyModal">
                   Add copy &raquo;
@@ -436,6 +447,27 @@
         <div class="modal-body">
           <p>Are you sure you want to delete a copy for this book?</p>
           <a href="{% url 'del_copy' book.id %}" class="btn btn-secondary btn-block">Confirm</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Amend author Modal -->
+  <div class="modal fade" id="amendAuthorModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="amendAuthorModalLabel">Amend Author for Book</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="{% url 'amend_author' book.id %}">
+            {% csrf_token %}
+            <input type="text" id="author" name="author" value="{{ book.author }}" class="form-control" required>
+            <button type="submit" class="btn btn-secondary btn-block mt-3">Save</button>
+          </form>
         </div>
       </div>
     </div>
