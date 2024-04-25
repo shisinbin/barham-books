@@ -13,3 +13,13 @@ def author(request, author_id, slug):
     return render(request,
                   'authors/author.html',
                   context)
+
+from django.views.generic.edit import UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
+class AuthorUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Author
+    fields = '__all__'
+
+    def test_func(self):
+        return self.request.user.is_staff
