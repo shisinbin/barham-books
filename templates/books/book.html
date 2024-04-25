@@ -248,7 +248,7 @@
             <div class="card text-center text-white bg-dark mt-2 mb-4">
               <div class="card-body">
                 <h5 class="card-title">Staff tools</h5>
-                {% if user.is_superuser %}
+                {% if user.is_superuser or is_recently_created %}
                   <p><a href="{% url 'book_update' book.id %}" class="btn btn-outline-light">Update book &raquo;</a></p>
                 {% endif %}
                 <p><button class="btn btn-outline-light" data-toggle="modal" data-target="#addCopyModal">
