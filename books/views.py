@@ -190,7 +190,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 class BookUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Book
-    fields = '__all__'
+    # fields = '__all__'
+    fields = ['title', 'author', 'category', 'summary', 'book_tags', 'photo', 'year']
 
     def test_func(self):
         # check if user is superuser
