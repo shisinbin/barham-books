@@ -7,8 +7,9 @@ from django.db.models import Count
 from authors.models import Author
 from .models import Book, BookInstance2, Review, Category, BookTags, Series
 from .forms import SearchForm
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.http import JsonResponse
+from django.utils import timezone
 
 def index(request):
 
@@ -96,6 +97,10 @@ def book(request, book_id, slug):
             has_not_reviewed = False
 
     copy_form = AddBookCopy()
+
+    # determine if book was created with last week, for basic staff
+    is_recently_created = book.created >= timezone.now() - timedelta(weeks=4)
+
     context = {
         'book': book,
         'copies': copies,
@@ -105,6 +110,7 @@ def book(request, book_id, slug):
         'other_books_in_series': other_books_in_series,
         'similar_books': similar_books,
         'copy_form': copy_form,
+        'is_recently_created': is_recently_created,
     }
 
     return render(request, 'books/book.html', context)
@@ -187,7 +193,14 @@ class BookUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     fields = '__all__'
 
     def test_func(self):
-        return self.request.user.is_superuser
+        # check if user is superuser
+        if self.request.user.is_superuser:
+            return True
+        # check if user is staff and book was created within one week
+        if self.request.user.is_staff and self.get_object().created >= timezone.now() - timedelta(weeks=4):
+            return True
+        # old check to see if user was just superuser
+        # return self.request.user.is_superuser
 
 class BookCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Book
