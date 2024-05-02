@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from accounts.models import Profile
 from django.utils.translation import ugettext_lazy as _
-from books.models import BookInstance2
+from books.models import BookInstance2, Book
 
 class StaffUserEditForm(forms.ModelForm):
     class Meta:

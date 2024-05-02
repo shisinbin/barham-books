@@ -445,3 +445,215 @@ def amend_author(request, book_id):
             messages.success(request, 'Author has been changed')
         
         return redirect(book)
+
+import requests
+
+def fetch_book_cover(isbn):
+    """
+    Fetches the cover image for a book using its ISBN from the Open Library API.
+
+    Args:
+        isbn (str): The ISBN of the book.
+
+    Returns:
+        bytes: The binary content of the book cover image if found, None otherwise.
+    """
+    url = f'https://openlibrary.org/search.json?isbn={isbn}'
+
+    try:
+        print(f'Fetching book cover for ISBN: {isbn}')
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+
+        book_info = data.get('docs', [])
+        if book_info:
+            first_book = book_info[0]
+            cover_edition_key = first_book.get('cover_edition_key')
+            cover_i = first_book.get('cover_i')
+
+            image_url = None
+            if cover_edition_key:
+                image_url = f'https://covers.openlibrary.org/b/olid/{cover_edition_key}-L.jpg'
+            elif cover_i:
+                image_url = f'https://covers.openlibrary.org/b/id/{cover_i}-L.jpg'
+            
+            if image_url:
+                print(f"Downloading image from URL: {image_url}")
+                response = requests.get(image_url, stream=True)
+                response.raise_for_status()
+                print(f'Size of image is: {len(response.content)}')
+                return response.content
+            else:
+                print("No image URL found.")
+                return None
+        else:
+            print("No book information found.")
+            return None
+    except Exception as e:
+        print(f"Error fetching book data: {e}")
+        return None
+
+import os
+from django.conf import settings
+@staff_member_required
+def lookup_book_cover (request, book_id):
+    """
+    Looks up and displays a temporary cover image for a book based on its ISBN.
+
+    If the book already has a cover image, it redirects with an error message.
+    If the book has no associated ISBNs, it redirects with a warning message.
+    If the fetched image exceeds the maximum file size (1MB), it redirects with an error message.
+    Otherwise, it saves the fetched image temporarily and renders a page with the book and temporary image.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        book_id (int): The ID of the book for which to lookup the cover image.
+
+    Returns:
+        HttpResponse: A rendered HTML page displaying the book and temporary cover image.
+    """
+
+    # Get the book object
+    book = get_object_or_404(Book, id=book_id)
+
+    # Check if the book already has a cover image
+    if book.photo:
+        messages.error(request, 'Book already has a cover image.')
+        return redirect(book)
+    
+    # Create a list of ISBNs from book
+    isbn_list = []
+    for instance in book.instances.all():
+        if instance.isbn10:
+            isbn_list.append(instance.isbn10)
+        if instance.isbn13:
+            isbn_list.append(instance.isbn13)
+    
+    if not isbn_list:
+        messages.warning(request, 'Book does not have an associated ISBN. Please add one.')
+        return redirect(book)
+    
+    # Use ISBN's to find first valid cover image
+    image_content = None
+    for isbn in isbn_list:
+        image_content = fetch_book_cover(isbn)
+        if image_content != None:
+            break
+    
+    # Check to see that an image was fetched from API
+    if image_content == None:
+        messages.error(request, 'Unable to fetch image from API.')
+        return redirect(book)
+    
+    # Check to see that image does not exceed maximum filesize
+    image_size = len(image_content)
+    max_image_size = 1024 * 1024 # 1MB
+    if image_size > max_image_size:
+        messages.error(request, 'Image found, but filesize exceeds maximum. Sorry :(')
+        return redirect(book)
+    
+    print("Image content retrieved successfully.")
+
+    # Add a temporary folder if there is none
+    temp_folder = os.path.join(settings.MEDIA_ROOT, 'temp')
+    if not os.path.exists(temp_folder):
+        print('Temp folder created in Media directory to hold temporary cover image')
+        os.makedirs(temp_folder)
+    
+    # Write the image to temporary folder
+    temp_image_path = os.path.join(settings.MEDIA_ROOT, 'temp', 'cover_image.jpg')
+    with open(temp_image_path, 'wb') as temp_image_file:
+        temp_image_file.write(image_content)
+
+    # For this temporary image, get the url
+    temp_image_url = os.path.join(settings.MEDIA_URL, 'temp', 'cover_image.jpg')
+
+    context = {
+        'book': book,
+        'temp_image_url': temp_image_url
+    }
+
+    return render(request, 'staff/lookup_book_cover.html', context)
+
+
+@staff_member_required
+def associate_book_cover(request, book_id):
+    """
+    Associates a temporary cover image with a book and deletes the temporary image file.
+
+    If the HTTP request method is POST:
+        - Checks if the temporary image file exists.
+        - If it exists, sets the book's photo field to the image file and deletes the temporary file.
+        - Redirects the user to the book detail page with a success message.
+        - If the temporary image file doesn't exist, shows an error message.
+
+    If the HTTP request method is not POST, redirects the user to the book page.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        book_id (int): The ID of the book to associate the cover image with.
+
+    Returns:
+        HttpResponse: Redirects to the book detail page or book page based on the request method.
+    """
+    book = get_object_or_404(Book, id=book_id)
+
+    if request.method == 'POST':
+        # Set the book.photo field to the URL of the temporary image
+        temp_image_path = os.path.join(settings.MEDIA_ROOT, 'temp', 'cover_image.jpg')
+
+        if os.path.exists(temp_image_path):
+            # Open the temporary image file and assign it to book.photo
+            with open(temp_image_path, 'rb') as temp_image_file:
+                book.photo.save('cover_image.jpg', temp_image_file, save=True)
+            
+            # Delete the temporary image file from the server
+            os.remove(temp_image_path)
+
+            # Redirect the user to the book detail page
+            messages.success(request, 'Image successfully associated to book!')
+            return redirect(book)
+        else:
+            # If the temporary image file doesn't exist, show message
+            messages.error(request, 'Temporary image file not found!')
+            return redirect(book)
+
+    # If the request method is not POST, redirect the user to the book page
+    return redirect(book)
+
+# This is for a future implementation
+# @staff_member_required
+# def search_books(request):
+#     if request.method == 'GET':
+#         title = request.GET.get('title', '')
+#         author = request.GET.get('author', '')
+#         isbn = request.GET.get('isbn', '')
+
+#         # Perform the search based on the provided criteria
+#         search_results = []
+#         if title or author or isbn:
+#             api_url = 'https://openlibrary.org/search.json'
+#             params = {
+#                 # 'title': title,
+#                 # 'author': author,
+#                 # 'isbn': isbn,
+#                 'q': title,
+#             }
+
+#             response = requests.get(api_url, params=params)
+
+#             if response.status == 200:
+#                 search_results = response.json()[0]
+#             else:
+#                 # Handle API request errors
+#                 search_results = []
+
+#         context = {
+#             'search_results': search_results
+#         }
+        
+#         return render(request, 'staff/search_books.html', context)
+
+
+#     return render(request, 'staff/search_books.html')

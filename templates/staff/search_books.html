@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Search books</h1>
+
+<form action="{% url 'search_books' %}" method="GET">
+  {% csrf_token %}
+  <label for="title">Title:</label>
+  <input type="text" id="title" name="title">
+  <br>
+  <label for="author">Author:</label>
+  <input type="text" id="author" name="author">
+  <br>
+  <label for="isbn">ISBN:</label>
+  <input type="text" id="isbn" name="isbn">
+  <br>
+  <button type="submit">Search</button>
+</form>
+
+{% endblock %}
