@@ -260,7 +260,10 @@
                   <p><button class="btn btn-outline-light" data-toggle="modal" data-target="#amendAuthorModal">
                     Amend author &raquo;
                   </button></p>
-                  <hr style="background-color: #f8f9fa;;"/>
+                  {% if not book.photo %}
+                    <p><a href="{% url 'lookup_book_cover' book.id %}" class="btn btn-outline-light">Lookup book cover &raquo;</a></p>
+                  {% endif %}
+                  <hr style="background-color: #f8f9fa;"/>
                 {% endif %}
                 <p><button class="btn btn-outline-light" data-toggle="modal" data-target="#addCopyModal">
                   Add copy &raquo;

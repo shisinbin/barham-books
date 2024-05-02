@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <h2 class="mt-4 mb-3">Add Cover Image</h2>
+      <p>Here's a book cover image we found:</p>
+      <div style="width: min-content;" class="mb-4">
+        <img style="display: block; width: 300px" src="{{ temp_image_url }}" alt="Book Cover" />
+      </div>
+      <form action="{% url 'associate_book_cover' book.id %}" method="post">
+        {% csrf_token %}
+        <button class="btn btn-primary mr-3" type="submit">Associate Image To Book</button>
+        <a class="btn btn-secondary" href="{{ book.get_absolute_url }}">Cancel</a>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

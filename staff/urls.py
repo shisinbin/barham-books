@@ -15,3 +15,14 @@ urlpatterns = [
     path('add_copy/<int:book_id>', views.add_copy, name='add_copy'),
     path('amend_author/<int:book_id>', views.amend_author, name='amend_author'),
 ]
+
+# Two paths connected with adding a book image cover for books without a cover
+urlpatterns += [
+  path('lookup_book_cover/<int:book_id>', views.lookup_book_cover, name='lookup_book_cover'),
+  path('associate_book_cover/<int:book_id>', views.associate_book_cover, name='associate_book_cover'),
+]
+
+# This is for a future implementation of adding books
+# urlpatterns += [
+#   path('search', views.search_books, name='search_books'),
+# ]
