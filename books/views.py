@@ -845,7 +845,7 @@ def books_for_sale_list(request, sale_category_code=None):
         books = books.filter(search_conditions)
 
     # Paginate the results (12 per page)
-    paginator = Paginator(books, 6)
+    paginator = Paginator(books, 12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
