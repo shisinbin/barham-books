@@ -813,3 +813,272 @@ def category(request, category_code):
         'num_slides_string': num_slides_string,
     }
     return render(request, 'books/category.html', context)
+
+from .models import BookForSale, SaleCategory
+
+def books_for_sale_list(request, sale_category_code=None):
+    sale_category = None
+    books = BookForSale.objects.filter(is_sold=False)
+    categories = SaleCategory.objects.all()
+
+    # Filter by category if provided
+    if sale_category_code:
+        sale_category = get_object_or_404(SaleCategory, code=sale_category_code)
+        books = books.filter(sale_category=sale_category)
+
+    # Search functionality
+    query = request.GET.get('q', '')
+    if query:
+        # Split the query into terms (e.g., "delia cook" -> ['delia', 'cook'])
+        query_terms = query.split()
+
+        # Create a base Q object
+        search_conditions = Q()
+
+        # Loop through each term and search across title, first_name, middle_names, and last_name
+        for term in query_terms:
+            search_conditions |= Q(title__icontains=term)  # Search in book title
+            search_conditions |= Q(author__first_name__icontains=term)  # Search in author's first name
+            search_conditions |= Q(author__last_name__icontains=term)  # Search in author's last name
+
+        # Apply the search conditions to the books queryset
+        books = books.filter(search_conditions)
+
+    # Paginate the results (12 per page)
+    paginator = Paginator(books, 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'sale_category': sale_category,
+        'books': page_obj,
+        'categories': categories,
+        'query': query,
+    }
+
+    return render(request, 'books/books_for_sale_list.html', context)
+
+def book_for_sale_detail(request, slug):
+    book = get_object_or_404(BookForSale, slug=slug)
+    return render(request, 'books/book_for_sale_detail.html', {'book': book})
+
+from .forms import BookForSaleForm
+# View for creating a book for sale
+class BookForSaleCreateView(UserPassesTestMixin, CreateView):
+    model = BookForSale
+    form_class = BookForSaleForm
+    template_name = 'books/book_for_sale_form.html'
+
+    def form_valid(self, form):
+        if self.request.FILES.get('photo'):
+            photo = self.request.FILES['photo']
+            if photo.size > 1000000:
+                form.add_error('photo', 'Image file size exceeds the maximum limit of 1MB.')
+                return self.form_invalid(form)
+
+        new_author_name = form.cleaned_data.get('new_author')
+        if new_author_name:
+            names = new_author_name.strip().split()
+
+            # Ensure there are at least 2 names
+            if len(names) < 2:
+                form.add_error('new_author', 'Please enter at least a first name and a last name.')
+                return self.form_invalid(form)
+            
+            first_name = names[0].capitalize()
+            last_name = names[-1].capitalize()
+
+            middle_names = ' '.join(name.capitalize() for name in names[1:-1])
+
+            # Create or retrieve the author
+            author, created = Author.objects.get_or_create(
+                first_name=first_name,
+                last_name=last_name,
+                defaults={'middle_names': middle_names}
+            )
+
+            # Associate the author with the form instance
+            form.instance.author = author
+        
+        return super().form_valid(form)
+
+    def test_func(self):
+        return self.request.user.is_staff
+    
+    def get_success_url(self):
+        return reverse_lazy('book_for_sale_detail', kwargs={'slug': self.object.slug})
+    
+# View for editing book for sale
+class BookForSaleUpdateView(UserPassesTestMixin, UpdateView):
+    model = BookForSale
+    form_class = BookForSaleForm
+    template_name = 'books/book_for_sale_form.html'
+
+    def form_valid(self, form):
+        if self.request.FILES.get('photo'):
+            photo = self.request.FILES['photo']
+            if photo.size > 1000000:
+                form.add_error('photo', 'Image file size exceeds the maximum limit of 1MB.')
+                return self.form_invalid(form)
+
+        new_author_name = form.cleaned_data.get('new_author')
+        if new_author_name:
+            names = new_author_name.strip().split()
+
+            # Ensure there are at least 2 names
+            if len(names) < 2:
+                form.add_error('new_author', 'Please enter at least a first name and a last name.')
+                return self.form_invalid(form)
+            
+            first_name = names[0].capitalize()
+            last_name = names[-1].capitalize()
+
+            middle_names = ' '.join(name.capitalize() for name in names[1:-1])
+
+            # Create or retrieve the author
+            author, created = Author.objects.get_or_create(
+                first_name=first_name,
+                last_name=last_name,
+                defaults={'middle_names': middle_names}
+            )
+
+            # Associate the author with the form instance
+            form.instance.author = author
+        
+        return super().form_valid(form)
+
+    def test_func(self):
+        return self.request.user.is_staff
+    
+    def get_success_url(self):
+        return reverse_lazy('book_for_sale_detail', kwargs={'slug': self.object.slug})
+
+
+import requests
+import os
+from django.conf import settings
+def fetch_book_cover(isbn):
+    """
+    Fetches the cover image for a book using its ISBN from the Open Library API.
+
+    Args:
+        isbn (str): The ISBN of the book.
+
+    Returns:
+        bytes: The binary content of the book cover image if found, None otherwise.
+    """
+    url = f'https://openlibrary.org/search.json?isbn={isbn}'
+
+    try:
+        print(f'Fetching book cover for ISBN: {isbn}')
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+
+        book_info = data.get('docs', [])
+        if book_info:
+            first_book = book_info[0]
+            cover_edition_key = first_book.get('cover_edition_key')
+            cover_i = first_book.get('cover_i')
+
+            image_url = None
+            if cover_edition_key:
+                image_url = f'https://covers.openlibrary.org/b/olid/{cover_edition_key}-L.jpg'
+            elif cover_i:
+                image_url = f'https://covers.openlibrary.org/b/id/{cover_i}-L.jpg'
+            
+            if image_url:
+                print(f"Downloading image from URL: {image_url}")
+                response = requests.get(image_url, stream=True)
+                response.raise_for_status()
+                print(f'Size of image is: {len(response.content)}')
+                return response.content
+            else:
+                print("No image URL found.")
+                return None
+        else:
+            print("No book information found.")
+            return None
+    except Exception as e:
+        print(f"Error fetching book data: {e}")
+        return None
+
+@staff_member_required
+def lookup_book_for_sale_cover(request, book_id):
+    """
+    Looks up and displays a temporary cover image for a BookForSale based on its ISBN.
+    """
+
+    # Get the BookForSale object
+    book_for_sale = get_object_or_404(BookForSale, id=book_id)
+
+    # Check if the book already has a cover image
+    if book_for_sale.photo:
+        messages.error(request, 'This book already has a cover image.')
+        return redirect(book_for_sale.get_absolute_url())
+
+    # Check if the book has an ISBN
+    if not book_for_sale.isbn:
+        messages.warning(request, 'This book does not have an ISBN. Please add one.')
+        return redirect(book_for_sale.get_absolute_url())
+
+    # Fetch book cover using the ISBN
+    image_content = fetch_book_cover(book_for_sale.isbn)
+
+    if image_content is None:
+        messages.error(request, 'Unable to fetch image from API.')
+        return redirect(book_for_sale.get_absolute_url())
+
+    # Check the image size
+    image_size = len(image_content)
+    max_image_size = 1024 * 1024  # 1MB
+    if image_size > max_image_size:
+        messages.error(request, 'Image exceeds the maximum allowed size of 1MB.')
+        return redirect(book_for_sale.get_absolute_url())
+
+    # Save the image temporarily
+    temp_folder = os.path.join(settings.MEDIA_ROOT, 'temp')
+    if not os.path.exists(temp_folder):
+        os.makedirs(temp_folder)
+
+    temp_image_path = os.path.join(temp_folder, 'cover_image.jpg')
+    with open(temp_image_path, 'wb') as temp_image_file:
+        temp_image_file.write(image_content)
+
+    # Get the temporary image URL
+    temp_image_url = os.path.join(settings.MEDIA_URL, 'temp', 'cover_image.jpg')
+
+    context = {
+        'book': book_for_sale,
+        'temp_image_url': temp_image_url
+    }
+
+    return render(request, 'books/lookup_book_cover.html', context)
+
+@staff_member_required
+def associate_book_for_sale_cover(request, book_id):
+    """
+    Associates the temporary book cover with the BookForSale object.
+    """
+
+    book_for_sale = get_object_or_404(BookForSale, id=book_id)
+
+    if request.method == 'POST':
+        temp_image_path = os.path.join(settings.MEDIA_ROOT, 'temp', 'cover_image.jpg')
+
+        if os.path.exists(temp_image_path):
+            # Associate the book cover image with the BookForSale model
+            with open(temp_image_path, 'rb') as temp_image_file:
+                book_for_sale.photo.save('cover_image.jpg', temp_image_file, save=True)
+
+            # Remove the temporary image file
+            os.remove(temp_image_path)
+
+            messages.success(request, 'Image successfully associated with the book!')
+            return redirect(book_for_sale.get_absolute_url())
+
+        else:
+            messages.error(request, 'Temporary image file not found!')
+            return redirect(book_for_sale.get_absolute_url())
+
+    return redirect(book_for_sale.get_absolute_url())

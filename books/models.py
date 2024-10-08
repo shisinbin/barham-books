@@ -137,6 +137,65 @@ class BookTag(ItemBase):
             BookTags,
             on_delete=models.CASCADE,
             related_name="book_tags")
+    
+class SaleCategory(models.Model):
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=3, unique=True)  # For URL/slugs or other use
+    description = models.TextField(max_length=1000, blank=True)
+
+    class Meta:
+        verbose_name_plural = 'Sale Categories'
+
+    def __str__(self):
+        return self.name
+    
+class BookForSale(models.Model):
+    title = models.CharField(max_length=250, db_index=True)
+    author = models.ForeignKey(Author,
+                               related_name='books_for_sale',
+                               on_delete=models.SET_NULL,
+                               null=True)
+    summary = models.TextField(max_length=2000, blank=True)
+    isbn = models.CharField(max_length=13, blank=True, null=True)
+    slug = models.SlugField(max_length=250,
+                            null=False,
+                            unique=True)
+    sale_category = models.ForeignKey(SaleCategory,
+                                      related_name='books',
+                                      on_delete=models.SET_NULL,
+                                      null=True,
+                                      blank=True)
+    price = models.DecimalField(max_digits=10,
+                                decimal_places=2,
+                                null=True,
+                                blank=True)
+    is_sold = models.BooleanField(default=False)
+    photo = models.ImageField(upload_to='books_for_sale/', blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('title',)
+        verbose_name_plural = 'books for sale'
+    
+    def __str__(self):
+        return self.title
+    
+    def get_absolute_url(self):
+        return reverse("book_for_sale_detail", kwargs={'slug': self.slug})
+    
+    def save(self, *args, **kwargs):
+        if not self.slug or self.title != BookForSale.objects.get(pk=self.pk).title:
+            original_slug = slugify(self.title, allow_unicode=True)
+            slug = original_slug
+            # Check for conflicts
+            num = 1
+            while BookForSale.objects.filter(slug=slug).exists():
+                slug = f'{original_slug}-{num}'
+                num += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+    
 
 class Book(models.Model):
     author = models.ForeignKey(Author,
@@ -196,6 +255,7 @@ class Book(models.Model):
     year = models.PositiveIntegerField(blank=True,
                                        null=True,
                                        verbose_name='original publication year')
+
     class Meta:
         ordering = ('title',)
 
@@ -356,6 +416,7 @@ class Category(models.Model):
                     models.CharField(max_length=30),
                     blank=True, null=True
                     )
+
     class Meta:
         ordering = ['order']
         verbose_name_plural = 'categories'
@@ -374,3 +435,13 @@ def update_tags_in_cat_globally():
     # could do this for a category instead to save cpu
     for book in Book.objects.all():
         update_tags_in_categories(book)
+
+
+# class SubCategory(models.Model):
+#     name = models.CharField(max_length=100)
+#     code = models.CharField(max_length=3, unique=True)
+
+#     class Meta:
+#         verbose_name_plural = 'subcategories'
+#     def __str__(self):
+#         return self.name

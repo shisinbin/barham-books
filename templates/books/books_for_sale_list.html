@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Books For Sale |
+{% endblock %}
+
+{% block content %}
+  <div class="container my-4 d-flex flex-column flex-grow-1">
+    <!-- Alerts -->
+    {% include 'partials/_alerts.html' %}
+
+    <!-- Page Heading -->
+    <div class="d-flex align-items-center">
+      <h2 class="mb-4">
+        Books for Sale{% if sale_category %}
+          in {{ sale_category.name }}
+        {% endif %}
+      </h2>
+
+      {% if user.is_staff %}
+        <div class="ml-auto">
+          <a href="{% url 'book_for_sale_add' %}" class="btn btn-outline-dark">Add book for sale &raquo;</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Filter by Category -->
+    <div class="mb-3">
+      <h4>Filter by Category:</h4>
+      <div class="btn-group d-flex flex-wrap" role="group">
+        <a href="{% url 'books_for_sale_list' %}" class="btn btn-outline-secondary {% if not sale_category %}active{% endif %}">All Books</a>
+        {% for category in categories %}
+          <a href="{% url 'books_for_sale_by_category' sale_category_code=category.code %}" class="btn btn-outline-secondary {% if sale_category and category == sale_category %}active{% endif %}">{{ category.name }}</a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Search Bar -->
+    <form method="GET" action="{% url 'books_for_sale_list' %}" class="form-inline mb-4">
+      <input type="text" name="q" class="form-control mr-2" placeholder="Search books..." value="{{ query|default_if_none:'' }}" style="min-width: 300px;" />
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <!-- Books Grid -->
+    <div class="row flex-grow-1">
+      {% if books %}
+        {% for book in books %}
+          <div class="col-lg-3 col-md-4 col-sm-12">
+            <a href="{{ book.get_absolute_url }}" style="text-decoration: none;">
+              <article class="card book-for-sale-card mb-4 shadow-sm">
+                <!-- Book Image (set size) -->
+                <div class="book-img-container">
+                  {% if book.photo %}
+                    <img src="{{ book.photo.url }}" class="card-img-top book-img" alt="{{ book.title }}" />
+                  {% else %}
+                    <img src="{% static 'img/blank.png' %}" class="card-img-top book-img" alt="No cover available" />
+                  {% endif %}
+                </div>
+
+                <div class="card-body">
+                  <h5 class="card-title">{{ book.title }}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">by {{ book.author }}</h6>
+                  {% if book.price %}
+                    <p class="card-text text-right text-danger" style="margin-top: -0.5rem;">£{{ book.price|floatformat:2 }}</p>
+                  {% endif %}
+                </div>
+              </article>
+            </a>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12">
+          <p class="text-center text-muted">There are no books in this category.</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Pagination -->
+    {% if books.has_other_pages %}
+      <nav aria-label="Page navigation" class="mt-auto">
+        <ul class="pagination justify-content-center">
+          {% if books.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1">&laquo; First</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ books.previous_page_number }}">Previous</a>
+            </li>
+          {% endif %}
+
+          <li class="page-item disabled">
+            <span class="page-link">Page {{ books.number }} of {{ books.paginator.num_pages }}</span>
+          </li>
+
+          {% if books.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ books.next_page_number }}">Next</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ books.paginator.num_pages }}">Last &raquo;</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+  </div>
+{% endblock %}

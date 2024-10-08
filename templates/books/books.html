@@ -1,133 +1,153 @@
-{% extends 'base.html' %} {% load static %} {% load crispy_forms_tags
-%} {% block title %} Browse books | {% endblock %} {% block content %}
-<section id="search-splash" class="text-white">
-  <div class="container" style="overflow: auto">
-    <div class="row text-center">
-      <div class="col-md-12">
-        <!-- Alerts -->
-        {% include 'partials/_alerts.html' %}
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
 
-        <h1 class="display-4">Search our library of books</h1>
+{% block title %}
+  Browse books |
+{% endblock %}
 
-        <br />
+{% block content %}
+  {% comment %} <section id="search-splash" class="text-white">
+    <div class="container" style="overflow: auto">
+      <div class="row text-center">
+        <div class="col-md-12">
+          <!-- Alerts -->
+          {% include 'partials/_alerts.html' %}
 
-        <!-- New form -->
-        <form action="{% url 'book_search' %}">
-          <div class="row no-gutters">
-            <div class="input-group mb-3">
-              <input
-                type="text"
-                name="keywords"
-                class="form-control"
-                placeholder="Enter book title, series, author's name..."
-                id="keywords"
-                required
-                minlength="3"
-              />
-              <div class="input-group-addon">
-                <select
-                  name="category"
-                  class="custom-select"
-                  style="
+          <h1 class="display-4">Search our library of books</h1>
+
+          <br />
+
+          <!-- New form -->
+          <form action="{% url 'book_search' %}">
+            <div class="row no-gutters">
+              <div class="input-group mb-3">
+                <input type="text" name="keywords" class="form-control" placeholder="Enter book title, series, author's name..." id="keywords" required minlength="3" />
+                <div class="input-group-addon">
+                  <select name="category" class="custom-select" style="
                     background-color: rgba(32, 134, 107, 0.8);
                     color: #e8e8e8;
-                  "
-                >
-                  <option selected="true" value="-1">
-                    All categories
-                  </option>
-                  {% for cat in categories %}
-                  <option value="{{ cat.id }}">
-                    {{ cat.short_name }}
-                  </option>
-                  {% endfor %}
-                </select>
+                  ">
+                    <option selected="true" value="-1">All categories</option>
+                    {% for cat in categories %}
+                      <option value="{{ cat.id }}">{{ cat.short_name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="input-group-append">
+                  <button class="btn btn-outline-light" type="submit"><i class="fa fa-search"></i></button>
+                </div>
               </div>
-              <div class="input-group-append">
-                <button class="btn btn-outline-light" type="submit">
-                  <i class="fa fa-search"></i>
-                </button>
-              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <br />
+
+      <div class="row text-center mt-4">
+        <div class="col-md-3">
+          <h3><a href="{% url 'filter_by_tags' %}" class="btn btn-outline-light mb-3"><!-- <i class="fas fa-tags mr-2"></i> -->Explore Tags &raquo;</a></h3>
+        </div>
+        <div class="col-md-3">
+          <h3><a href="{% url 'books_all' %}" class="btn btn-outline-light mb-3"><!-- <i class="fas fa-sort-alpha-down mr-2"></i> -->Book A - Z &raquo;</a></h3>
+        </div>
+        <div class="col-md-3">
+          <div class="btn-group dropup">
+            <button type="button" class="btn btn-outline-light mb-3 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Browse Categories</button>
+            <div class="dropdown-menu">
+              {% for cat in categories %}
+                <a class="dropdown-item" href="{% url 'category' cat.code %}">{{ cat.name }}</a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <h3><a href="{% url 'about' %}" class="btn btn-outline-light mb-3"><!-- <i class="fas fa-question mr-2"></i> -->About Us &raquo;</a></h3>
+        </div>
+      </div>
+    </div>
+  </section> {% endcomment %}
+
+  <div class="flex-grow-1 py-5 d-flex flex-column" style="background-image: url('{% static 'img/bookshelf2.jpg' %}'); background-size: cover; background-position: center; position: relative;">
+    <div class="overlay" style="background-color: rgba(32, 134, 107, 0.7); position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
+
+    <!-- Hero Section -->
+    <section class="container text-white pb-5">
+      <div class="container text-center position-relative my-5" style="z-index: 1;">
+        <h1 class="display-4" style="text-shadow: 2px 4px 8px hsl(0deg 0% 0% / 0.25);">Search Our Library</h1>
+        <p class="lead my-4" style="text-shadow: 2px 4px 8px hsl(0deg 0% 0% / 0.25);">Find your next favorite book in our extensive library collection.</p>
+
+        <!-- Search Form -->
+        <form action="{% url 'book_search' %}" method="GET" class="mt-4">
+          <!-- Search Input and Button (on the same row) -->
+          <div class="form-row justify-content-center">
+            <div class="col-md-8 col-sm-12">
+              <input type="text" name="keywords" class="form-control form-control-lg" placeholder="Search by title, author, or series..." required minlength="3" id="keywords" />
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-lg btn-primary">Search</button>
+            </div>
+          </div>
+
+          <!-- Category Selector (below the search bar) -->
+          <div class="form-row justify-content-center mt-3">
+            <div class="col-auto d-flex align-items-baseline">
+              <label class="text-light mr-2" for="categorySelect">in:</label>
+              <select name="category" id="categorySelect" class="custom-select custom-select-sm">
+                <option value="-1" selected>All Categories</option>
+                {% for cat in categories %}
+                  <option value="{{ cat.id }}">{{ cat.short_name }}</option>
+                {% endfor %}
+              </select>
             </div>
           </div>
         </form>
       </div>
-    </div>
+    </section>
 
-    <br />
+    <!-- Featured Books for Sale Section -->
+    <section id="book-for-sale-hero" class="py-5 position-relative">
+      <div class="container text-center">
+        <h2 class="mb-4">Books for Sale</h2>
+        <p class="lead">Looking for great deals on books? Check out our selection of books for sale!</p>
+        <a href="{% url 'books_for_sale_list' %}" class="btn btn-primary btn-lg mt-2">View Books for Sale &raquo;</a>
+      </div>
+    </section>
 
-    <div class="row text-center mt-4">
-      <div class="col-md-3">
-        <h3>
-          <a
-            href="{% url 'filter_by_tags' %}"
-            class="btn btn-outline-light mb-3"
-          >
-            <!--<i class="fas fa-tags mr-2"></i>-->Explore Tags
-            &raquo;
-          </a>
-        </h3>
-      </div>
-      <div class="col-md-3">
-        <h3>
-          <a
-            href="{% url 'books_all' %}"
-            class="btn btn-outline-light mb-3"
-          >
-            <!--<i class="fas fa-sort-alpha-down mr-2"></i>-->Book A -
-            Z &raquo;
-          </a>
-        </h3>
-      </div>
-      <div class="col-md-3">
-        <div class="btn-group dropup">
-          <button
-            type="button"
-            class="btn btn-outline-light mb-3 dropdown-toggle"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            Browse Categories
-          </button>
-          <div class="dropdown-menu">
-            {% for cat in categories %}
-            <a
-              class="dropdown-item"
-              href="{% url 'category' cat.code %}"
-            >
-              {{ cat.name }}
-            </a>
-            {% endfor %}
+    <!-- Links Section -->
+    <section class="container pt-5 mt-auto mb-4 position-relative text-white" style="z-index: 1;">
+      <h4 class="text-center" style="text-shadow: 2px 4px 8px hsl(0deg 0% 0% / 0.25);">Library Links:</h4>
+      <div class="row text-center">
+        <div class="col-md-4">
+          <a href="{% url 'books_all' %}" class="btn btn-outline-light btn-lg btn-block mt-2" style="text-shadow: 2px 4px 8px hsl(0deg 0% 0% / 0.25);">Book A-Z &raquo;</a>
+        </div>
+        <div class="col-md-4">
+          <a href="{% url 'filter_by_tags' %}" class="btn btn-outline-light btn-lg btn-block mt-2" style="text-shadow: 2px 4px 8px hsl(0deg 0% 0% / 0.25);">Explore Tags &raquo;</a>
+        </div>
+        <div class="col-md-4">
+          <div class="dropdown dropup">
+            <button class="btn btn-outline-light btn-lg btn-block dropdown-toggle mt-2" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-shadow: 2px 4px 8px hsl(0deg 0% 0% / 0.25);">Browse Categories</button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              {% for cat in categories %}
+                <a class="dropdown-item" href="{% url 'category' cat.code %}">{{ cat.name }}</a>
+              {% endfor %}
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-md-3">
-        <h3>
-          <a
-            href="{% url 'about' %}"
-            class="btn btn-outline-light mb-3"
-          >
-            <!--<i class="fas fa-question mr-2"></i>-->About Us
-            &raquo;
-          </a>
-        </h3>
-      </div>
-    </div>
+    </section>
   </div>
-</section>
-
 {% endblock %} {% block extrascripts %}
-
-<!-- Autocomplete -->
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script>
-  $( function() {
-    $( "#keywords" ).autocomplete({
-      source: '{% url 'books' %}',
-      minLength: 3
-    });
-  } );
-</script>
-{% endblock extrascripts %}
+  <!-- Autocomplete -->
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+    $( function() {
+      $( "#keywords" ).autocomplete({
+        source: '{% url 'books' %}',
+        minLength: 3
+      });
+    } );
+  </script>
+{% endblock %}
