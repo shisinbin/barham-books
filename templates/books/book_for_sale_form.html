@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Add/update book for sale |
+{% endblock %}
+
+{% block content %}
+  <div class="container my-5">
+    <!-- Alerts -->
+    {% include 'partials/_alerts.html' %}
+
+    <!-- Back Button at the Top -->
+
+    <a href="{% if object %}
+        {% url 'book_for_sale_detail' slug=object.slug %}
+      {% else %}
+        {% url 'books_for_sale_list' %}
+      {% endif %}"
+      class="btn btn-outline-primary mb-4">
+      &larr; Back
+    </a>
+
+    <!-- Page Title -->
+    <h1>
+      {% if object %}
+        Edit Book: {{ object.title }}
+      {% else %}
+        Add Book for Sale
+      {% endif %}
+    </h1>
+
+    <!-- Book Form -->
+    <form method="post" enctype="multipart/form-data" class="book-form mt-3">
+      {% csrf_token %}
+
+      <!-- Render the entire form as <p> elements with default Django form layout -->
+      {{ form.as_p }}
+
+      <!-- Button Container (Flex Layout) -->
+      <div class="d-flex mt-4 align-items-baseline">
+        <!-- Submit Button (Left Aligned) -->
+        <button type="submit" class="btn btn-primary btn-lg">
+          {% if object %}
+            Update Book
+          {% else %}
+            Add Book
+          {% endif %}
+        </button>
+
+        <!-- Cancel Button (Right Aligned) -->
+        <a href="{% if object %}
+            {% url 'book_for_sale_detail' slug=object.slug %}
+          {% else %}
+            {% url 'books_for_sale_list' %}
+          {% endif %}"
+          class="btn btn-link ml-5 text-muted">
+          Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

@@ -33,13 +33,22 @@
           <a class="nav-link" href="{% url 'index' %}">Home</a>
         </li>-->
         <li
-          {% if 'books/tags/' not in request.path and 'books/all/' not in request.path and 'books' in request.path %}
+          {% if 'books/tags/' not in request.path and 'books/all/' not in request.path and 'books/books-for-sale/' not in request.path and 'books' in request.path %}
             class="nav-item active mr-3"
           {% else %}
             class="nav-item mr-3"
           {% endif %}
         >
           <a class="nav-link" href="{% url 'books' %}">Books</a>
+        </li>
+        <li
+          {% if 'books/books-for-sale/' in request.path %}
+            class="nav-item active mr-3"
+          {% else %}
+            class="nav-item mr-3"
+          {% endif %}
+        >
+          <a class="nav-link" href="{% url 'books_for_sale_list' %}">Shop</a>
         </li>
         <li
           {% if 'tags/' in request.path %}
@@ -108,9 +117,7 @@
             </a>
           </li>
           <li class="nav-item mr-3">
-            <a href="javascript:{document.getElementById('logout').submit()}" class="nav-link">
-              <!--<i class="fas fa-sign-out-alt"></i>-->Logout
-            </a> 
+            <a href="javascript:{document.getElementById('logout').submit()}" class="nav-link">Logout</a> 
             <form action="{% url 'logout' %}" method="POST" id="logout">
               {% csrf_token %}
               <input type="hidden">
@@ -124,8 +131,7 @@
               class="nav-item mr-3"
             {% endif %}
           >
-            <a class="nav-link" href="{% url 'register' %}">
-              <!--<i class="fas fa-user-plus"></i> -->Register</a>
+            <a class="nav-link" href="{% url 'register' %}">Register</a>
           </li>
           <li
             {% if 'login' in request.path %}

@@ -11,14 +11,18 @@
           <br>
           <!--<p class="lead">Do stuff</p>-->
           
-          <h3 class="mt-2">
+          <div class="mt-2">
             <a href="{% url 'users' %}" class="btn btn-outline-secondary btn-lg mb-1 mr-3">
               View all users &raquo;
             </a>
-            <a href="{% url 'add_book' %}" class="btn btn-outline-secondary btn-lg mb-1">
+            <a href="{% url 'add_book' %}" class="btn btn-outline-secondary btn-lg mb-1 mr-3">
               Add book &raquo;
             </a>
-          </h3>
+            <a href="{% url 'book_for_sale_add' %}" class="btn btn-outline-secondary btn-lg mb-1">
+              Add book for sale &raquo;
+            </a>
+          </div>
+          
 
         </div>
       </div>

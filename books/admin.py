@@ -127,3 +127,16 @@ class CategoryAdmin(admin.ModelAdmin):
 
 from .models import BookTags
 admin.site.register(BookTags)
+
+from .models import BookForSale, SaleCategory
+
+@admin.register(BookForSale)
+class BookForSaleAdmin(admin.ModelAdmin):
+    list_display = ('slug', 'title', 'author')
+    prepopulated_fields = { 'slug': ('title',)}
+    search_fields = ('title', 'author__name')
+
+@admin.register(SaleCategory)
+class SaleCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'code')
+    search_fields = ('name',)
