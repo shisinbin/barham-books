@@ -217,6 +217,21 @@ img {
   );
   display: grid;
   place-content: center;
+  position: relative;
+}
+
+.book-img-container .flag {
+  position: absolute;
+  top: 12px;
+  right: -6px;
+  height: 32px;
+  line-height: 32px;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  background: hsl(300, 30%, 50%);
+  padding: 0 10px;
 }
 
 .book-img {

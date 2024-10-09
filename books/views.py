@@ -818,7 +818,9 @@ from .models import BookForSale, SaleCategory
 
 def books_for_sale_list(request, sale_category_code=None):
     sale_category = None
-    books = BookForSale.objects.filter(is_sold=False)
+    # books = BookForSale.objects.filter(is_sold=False)
+    # books = BookForSale.objects.all()
+    books = BookForSale.objects.order_by('is_sold', 'title')
     categories = SaleCategory.objects.all()
 
     # Filter by category if provided
@@ -1082,3 +1084,12 @@ def associate_book_for_sale_cover(request, book_id):
             return redirect(book_for_sale.get_absolute_url())
 
     return redirect(book_for_sale.get_absolute_url())
+
+@staff_member_required
+def delete_book_for_sale(request, slug):
+    book = get_object_or_404(BookForSale, slug=slug)
+
+    if request.method == 'POST':
+        book.delete()
+        messages.success(request, f'The book "{book.title}" was successfully deleted.')
+        return redirect('books_for_sale_list')

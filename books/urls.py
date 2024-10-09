@@ -49,3 +49,7 @@ urlpatterns += [
     path('books-for-sale/<int:book_id>/lookup_book_cover/', views.lookup_book_for_sale_cover, name='lookup_book_for_sale_cover'),
     path('books-for-sale/<int:book_id>/associate_book_cover/', views.associate_book_for_sale_cover, name='associate_book_for_sale_cover'),
 ]
+
+urlpatterns += [
+  path('books_for_sale/<slug:slug>/delete/', views.delete_book_for_sale, name='book_for_sale_delete'),
+]

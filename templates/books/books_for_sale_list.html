@@ -11,8 +11,8 @@
     {% include 'partials/_alerts.html' %}
 
     <!-- Page Heading -->
-    <div class="d-flex align-items-center">
-      <h2 class="mb-4">
+    <div class="d-flex align-items-baseline mb-2">
+      <h2>
         Books for Sale{% if sale_category %}
           in {{ sale_category.name }}
         {% endif %}
@@ -56,12 +56,15 @@
                   {% else %}
                     <img src="{% static 'img/blank.png' %}" class="card-img-top book-img" alt="No cover available" />
                   {% endif %}
+                  {% if book.is_sold %}
+                    <div class="flag">Sold!</div>
+                  {% endif %}
                 </div>
 
                 <div class="card-body">
                   <h5 class="card-title">{{ book.title }}</h5>
                   <h6 class="card-subtitle mb-2 text-muted">by {{ book.author }}</h6>
-                  {% if book.price %}
+                  {% if book.price and not book.is_sold %}
                     <p class="card-text text-right text-danger" style="margin-top: -0.5rem;">£{{ book.price|floatformat:2 }}</p>
                   {% endif %}
                 </div>
