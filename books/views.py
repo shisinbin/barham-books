@@ -1083,8 +1083,17 @@ def associate_book_for_sale_cover(request, book_id):
 @staff_member_required
 def delete_book_for_sale(request, slug):
     book = get_object_or_404(BookForSale, slug=slug)
+    author = book.author
 
     if request.method == 'POST':
         book.delete()
         messages.success(request, f'The book "{book.title}" was successfully deleted.')
+
+        has_other_books = Book.objects.filter(author=author).exists()
+        has_other_books_for_sale = BookForSale.objects.filter(author=author).exists()
+
+        if not has_other_books and not has_other_books_for_sale:
+            author.delete()
+            messages.info(request, f'Author "{author}" was also deleted because they have no other books.')
+
         return redirect('books_for_sale_list')
