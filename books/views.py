@@ -13,40 +13,39 @@ from django.utils import timezone
 from django.urls import reverse_lazy
 
 def index(request):
+    categories = Category.objects.all()
+    form = SearchForm()
 
-    # autocomplete
+    context = {
+        'form': form,
+        'categories': categories,
+    }
+    return render(request, 'books/books.html', context)
+
+def autocomplete_books(request):
     if 'term' in request.GET:
         term = request.GET.get('term')
 
-        # dodgy way of overcoming the fact that books that
-        # start with 'the' and 'a' is dodgy with searches
+        # Handles articles ('the', 'a') to improve search results
         if term.startswith('the '):
             term = term[4:]
         if term.startswith('a '):
             term = term[2:]
-        if term != 'the' and len(term)>2:
-            qs = Book.objects.filter(title__icontains=term, instances__isnull=False).distinct()[:20]
-            titles = list()
-            for bk in qs:
-                titles.append(bk.title)
-            return JsonResponse(titles, safe=False)
+        
+        if term != 'the' and len(term) > 2:
+            # Get books that match the search term
+            books = Book.objects.filter(title__icontains=term, instances__isnull=False).distinct()[:10]
 
-    # options are .all(), .order_by('some_field'), or .filter()
-    # NOTE: not using this at the moment, maybe later so leaving it
-    #featured_books = Book.objects.filter(is_featured=True)[:4]
+            results = []
+            for book in books:
+                results.append({
+                    'label': book.title,
+                    'url': book.get_absolute_url(),
+                })
 
-    categories = Category.objects.all()
-
-    form = SearchForm()
-
-    context = {
-        #'featured_books': featured_books,
-        # 'language_choices': language_choices,
-        'form': form,
-        'categories': categories,
-    }
-
-    return render(request, 'books/books.html', context)
+            return JsonResponse(results, safe=False)
+        
+        return JsonResponse([], safe=False) # Empty response if no term or no matches
 
 from reservations.models import Reservation
 from staff.forms import AddBookCopy
@@ -651,18 +650,14 @@ def book_search(request):
         #     form = SearchForm(request.GET)
         if form.is_valid():
             query = form.cleaned_data['query']
-            search_vector = SearchVector('title', weight='A') + \
-                            SearchVector('author__last_name', weight='A') + \
-                            SearchVector('author__first_name', weight='B') + \
-                            SearchVector('series__name', weight='B')
-            search_query = SearchQuery(query)
-            # added a instances__isnull=False param to only include books with instances 2/11/21
-            results = Book.objects.annotate(
-                search=search_vector,
-                rank=SearchRank(search_vector, search_query)
-                ).filter(rank__gte=0.3, instances__isnull=False).order_by('-rank').distinct()
+            query_terms = query.split()  # Split query into individual terms
 
-            ####
+            search_conditions = Q()
+            for term in query_terms:
+                search_conditions |= Q(title__icontains=term) | Q(author__first_name__icontains=term) | Q(author__last_name__icontains=term)
+
+            results = Book.objects.filter(search_conditions).filter(instances__isnull=False).distinct()
+
             if 'category' in request.GET:
                 category_id = int(request.GET['category'])
                 if category_id != -1:

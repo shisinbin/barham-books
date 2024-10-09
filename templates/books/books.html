@@ -143,14 +143,37 @@
   </div>
 {% endblock %} {% block extrascripts %}
   <!-- Autocomplete -->
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  {% comment %} <script src="https://code.jquery.com/jquery-1.12.4.js"></script> {% endcomment %}
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  <script>
+  {% comment %} <script>
     $( function() {
       $( "#keywords" ).autocomplete({
         source: '{% url 'books' %}',
         minLength: 3
       });
     } );
+  </script> {% endcomment %}
+  <script>
+    $(function () {
+      $('#keywords').autocomplete({
+        source: function (request, response) {
+          $.ajax({
+            url: "{% url 'autocomplete_books' %}",
+            data: {
+              term: request.term,
+            },
+            success: function (data) {
+              response(data);
+            },
+          });
+        },
+        minLength: 3, // Minimum length for autocomplete to start
+        select: function (event, ui) {
+          if (ui.item.url) {
+            window.location.href = ui.item.url; // Redirect to the book's URL on selection
+          }
+        },
+      });
+    });
   </script>
 {% endblock %}
