@@ -51,15 +51,6 @@
           <a class="nav-link" href="{% url 'books_for_sale_list' %}">Shop</a>
         </li>
         <li
-          {% if 'tags/' in request.path %}
-            class="nav-item active mr-3"
-          {% else %}
-            class="nav-item mr-3"
-          {% endif %}
-        >
-          <a class="nav-link" href="{% url 'filter_by_tags' %}">Tags</a>
-        </li>
-        <li
           {% if 'books/all/' in request.path %}
             class="nav-item active mr-3"
           {% else %}
@@ -68,7 +59,16 @@
         >
           <a class="nav-link" href="{% url 'books_all' %}">A-Z</a>
         </li>
-        {% if user.is_staff %}
+        <li
+          {% if 'tags/' in request.path %}
+            class="nav-item active mr-3"
+          {% else %}
+            class="nav-item mr-3"
+          {% endif %}
+        >
+          <a class="nav-link" href="{% url 'filter_by_tags' %}">Tags</a>
+        </li>
+        {% if user.is_superuser %}
           <li
             {% if 'blog' in request.path %}
               class="nav-item active mr-3"

@@ -1,5 +1,6 @@
 from django import forms
 from .models import BookForSale, Author
+from django.db.models import Count
 
 # can't remember what I was thinking with this
 class EmailPostForm(forms.Form):
@@ -27,9 +28,10 @@ class BookForSaleForm(forms.ModelForm):
         label='Add New Author (if not listed)'
     )
 
-    # Override author to make it not required
+    # Override author so that it's not required
     author = forms.ModelChoiceField(
-        queryset=Author.objects.all(),
+        # queryset=Author.objects.all(),
+        queryset=Author.objects.annotate(book_count=Count('books_for_sale')).filter(book_count__gt=0),  # Filter authors who have books for sale
         required=False,
         label='Select Author'
     )
