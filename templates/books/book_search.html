@@ -133,7 +133,9 @@
                       </a>
                     </td>
                     <td>
-                      <h4><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></h4>
+                      <h4>
+                        <a href="{{ book.get_absolute_url }}" style="{% if not book.instances.exists %}text-decoration: line-through;{% endif %}">{{ book.title }}</a>
+                      </h4>
                       <p>
                         by {{ book.author }}
                       </p>
