@@ -650,13 +650,20 @@ def book_search(request):
         #     form = SearchForm(request.GET)
         if form.is_valid():
             query = form.cleaned_data['query']
-            query_terms = query.split()  # Split query into individual terms
+            search_vector = SearchVector('title', weight='A') + \
+                            SearchVector('author__last_name', weight='A') + \
+                            SearchVector('author__first_name', weight='B')
+            search_query = SearchQuery(query)
+            
+            # Rank search results using Postgres search
+            results = Book.objects.annotate(
+                search=search_vector,
+                rank=SearchRank(search_vector, search_query)
+            ).filter(rank__gte=0.3).order_by('-rank').distinct()
 
-            search_conditions = Q()
-            for term in query_terms:
-                search_conditions |= Q(title__icontains=term) | Q(author__first_name__icontains=term) | Q(author__last_name__icontains=term)
-
-            results = Book.objects.filter(search_conditions).filter(instances__isnull=False).distinct()
+            # For non-staff users, only show books with instances
+            if not request.user.is_staff:
+                results = results.filter(instances__isnull=False)
 
             if 'category' in request.GET:
                 category_id = int(request.GET['category'])
