@@ -238,16 +238,43 @@ class BookInstanceUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.files.storage import FileSystemStorage
 
+def format_book_title(title):
+    # Define minor words to leave in lowercase (except the first word)
+    minor_words = {'the', 'of', 'with', 'a', 'on', 'at', 'for', 'and', 'but', 'in', 'to', 'by', 'or', 'nor', 'as', 'so', 'yet', 'is'}
+
+    words = title.split()
+
+    # Capitalise first word
+    words[0] = words[0].capitalize()
+
+    # Capitalize non-minor words and lowercase minor words
+    for i in range(1, len(words)):
+        if words[i].lower() in minor_words:
+            words[i] = words[i].lower()
+        else:
+            words[i] = words[i].capitalize()
+
+    # Rejoin the words into a single string
+    formatted_title = ' '.join(words)
+
+    # Move starting 'The', 'A', or 'An' to the end
+    if formatted_title.lower().startswith(('the ', 'a ', 'an ')):
+        first_word, rest_of_title = formatted_title.split(' ', 1)
+        formatted_title = f"{rest_of_title}, {first_word}"
+
+    return formatted_title
+
 @staff_member_required
 def add_book(request):
     if request.method == 'POST':
         if 'title' in request.POST:
-            title = request.POST['title']
-            if title.startswith(('The ', 'the ')):
-                title = title[4:] + ', The'
-            elif title.startswith(('A ', 'a ')):
-                title = title[2:] + ', A'
-            # now we have a title in the correct format
+            title = request.POST['title'].strip()
+
+            if title == '':
+                messages.error(request, 'Empty spaces for titles are not accepted')
+                return redirect('add_book')
+            
+            title = format_book_title(title)
 
             # if an author has been selected
             if 'author_select' in request.POST:

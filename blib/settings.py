@@ -184,6 +184,13 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
 
+THUMBNAIL_ALIASES = {
+    '': {
+        'default': {'size': (100, 0), 'crop': False},
+    }
+}
+
+
 try:
     from .local_settings import *
 except ImportError:

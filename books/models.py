@@ -11,16 +11,30 @@ from django.conf import settings
 from django.urls import reverse
 
 from django.utils.text import slugify
+from django.core.files.storage import default_storage
 
 from taggit.managers import TaggableManager
 from taggit.models import TaggedItemBase, TagBase, ItemBase
 
+from easy_thumbnails.files import get_thumbnailer
+
 def upload_location(instance, filename):
-    ext = filename.split('.')[-1]
+    if '.' in filename:
+        ext = filename.split('.')[-1]
+    else:
+        ext = 'jpg' # Default to jpg if no extension provided
+
     if instance.title:
-        new_filename = f"books/{instance.title[:1].upper()}/{instance.title}.{ext}"
+        new_filename = f"books/{instance.title[:1].upper()}/{slugify(instance.title)}-{slugify(instance.author.last_name)}.{ext}"
     else:
         new_filename = f"books/{filename}"
+
+    # Check if we are updating the image - if so, delete the old one
+    full_image_path = os.path.join(settings.MEDIA_ROOT, new_filename)
+    if instance.pk: # Only applicable to updates
+        if os.path.exists(full_image_path):
+            os.remove(full_image_path)
+
     return new_filename
 
 # iterates through all book_tags belonging to a book
@@ -265,10 +279,10 @@ class Book(models.Model):
                        args=[str(self.id),
                              self.slug])
     def save(self, *args, **kwargs):
-        value = self.title
-        self.slug = slugify(value, allow_unicode=True)
+        self.slug = slugify(self.title, allow_unicode=True)
         super().save(*args, **kwargs)
         update_tags_in_categories(self)
+
 
     def __str__(self):
         return self.title
