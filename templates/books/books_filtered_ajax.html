@@ -6,7 +6,7 @@
       <div class="col-lg-2 col-md-3 col-sm-4 col-4 text-center mb-2">
         <a href="{{ book.get_absolute_url }}">
           {% if book.photo %}
-            <img src="{% thumbnail book.photo 100x0 %}" class="img-fluid img-thumbnail-edit">
+            <img src="{{ book.photo|thumbnail_url:'default' }}" class="img-fluid img-thumbnail-edit">
           {% else %}
             <img class="img-fluid img-thumbnail-edit" src="{% static 'img/blank.png' %}" alt="">
           {% endif %}

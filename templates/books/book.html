@@ -291,7 +291,7 @@
               <a href="{{ book.get_absolute_url }}">
                 {% if book.photo %}
                   {% load thumbnail %}
-                  <img src="{% thumbnail book.photo 100x0 %}" class="img-fluid img-thumbnail-edit">
+                  <img src="{{ book.photo|thumbnail_url:'default' }}" class="img-fluid img-thumbnail-edit">
                 {% else %}
                   <img class="img-fluid img-thumbnail-edit" src="{% static 'img/blank.png' %}" alt="">
                 {% endif %}
@@ -318,7 +318,7 @@
               <a href="{{ book.get_absolute_url }}">
                 {% if book.photo %}
                   {% load thumbnail %}
-                  <img src="{% thumbnail book.photo 100x0 %}" class="img-fluid img-thumbnail-edit">
+                  <img src="{{ book.photo|thumbnail_url:'default' }}" class="img-fluid img-thumbnail-edit">
                 {% else %}
                   <img class="img-fluid img-thumbnail-edit" src="{% static 'img/blank.png' %}" alt="">
                 {% endif %}

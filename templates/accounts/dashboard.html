@@ -14,7 +14,7 @@
       <div class="row text-center">
         <div class="col-md-12">
           {% if user.profile.photo %}
-            <img src="{% thumbnail user.profile.photo 100x0 %}" class="img-fluid img-thumbnail-edit" style="object-fit:cover; border-radius: 50%; height: 100px; width:100px;">
+            <img src="{{ user.profile.photo|thumbnail_url:'default' }}" class="img-fluid img-thumbnail-edit" style="object-fit:cover; border-radius: 50%; height: 100px; width:100px;">
 
           {% else %}
             <img class="img-fluid img-thumbnail-edit" src="{% static 'img/avatar.png' %}" style="border-radius: 50%;">
@@ -192,7 +192,7 @@
                 <div class="col-lg-2 col-md-3 col-sm-4 col-4 text-center mb-2">
                   <a href="{{ book.get_absolute_url }}">
                     {% if book.photo %}
-                      <img src="{% thumbnail book.photo 100x0 %}" class="img-fluid img-thumbnail-edit">
+                      <img src="{{ book.photo|thumbnail_url:'default' }}" class="img-fluid img-thumbnail-edit">
                     {% else %}
                       <img class="img-fluid img-thumbnail-edit" src="{% static 'img/blank.png' %}" alt="">
                     {% endif %}
@@ -248,7 +248,7 @@
                       <div class="col-md-3 col-lg-2 d-none d-md-block">
                         <a href="{{ review.book.get_absolute_url }}">
                         {% if review.book.photo %}
-                          <img src="{% thumbnail review.book.photo 100x0 %}" class="img-fluid img-thumbnail-edit">
+                          <img src="{{ review.book.photo|thumbnail_url:'default' }}" class="img-fluid img-thumbnail-edit">
                         {% else %}
                           <img class="img-fluid img-thumbnail-edit" src="{% static 'img/blank.png' %}">
                         {% endif %}
