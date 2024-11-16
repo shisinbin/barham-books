@@ -1,7 +1,11 @@
 import logging
+import os
 from django.core.management.base import BaseCommand
 from books.models import Book
 from books.views import format_book_title
+
+log_dir = 'logs'
+os.makedirs(log_dir, exist_ok=True)
 
 logging.basicConfig(filename='logs/formatted_titles.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
@@ -15,7 +19,7 @@ class Command(BaseCommand):
 
     suffixes = (', The', ', A', ', An')
 
-    for book in Book.objects.all():
+    for book in Book.objects.all()[:100]:
       original_title = book.title
 
       title_to_send_to_helper = original_title

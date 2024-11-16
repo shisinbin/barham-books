@@ -4,6 +4,9 @@ import os
 from django.conf import settings
 from books.models import Book
 
+log_dir = 'logs'
+os.makedirs(log_dir, exist_ok=True)
+
 logging.basicConfig(filename='logs/deleted_unused_images.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 class Command(BaseCommand):
