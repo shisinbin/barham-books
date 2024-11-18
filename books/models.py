@@ -46,6 +46,8 @@ def upload_location(instance, filename):
     if instance.pk: # Only applicable to updates
 
         if instance.photo and instance.photo.name:
+            if instance.photo.url:
+                logging.debug(f"old image url: {instance.photo.url}")
             logging.debug(f"Old image name: {instance.photo.name}")
             old_image_rel_path = f"books/{instance.title[:1].upper()}/{instance.photo.name}"
             old_image_path = os.path.join(settings.MEDIA_ROOT, old_image_rel_path)
