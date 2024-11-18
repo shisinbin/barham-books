@@ -51,7 +51,14 @@ def upload_location(instance, filename):
                 logging.debug(f"old image url: {instance.photo.url}")
             if instance.photo.path:
                 logging.debug(f"Old image path: {instance.photo.path}")
-                
+            
+            if instance._photo:
+                logging.debug(f"Old image name: {instance._photo.name}")
+                if instance._photo.url:
+                    logging.debug(f"old image url: {instance._photo.url}")
+                if instance._photo.path:
+                    logging.debug(f"Old image path: {instance._photo.path}")
+
             old_image_rel_path = f"books/{instance.title[:1].upper()}/{instance.photo.name}"
             old_image_path = os.path.join(settings.MEDIA_ROOT, old_image_rel_path)
             logging.debug(f"Old image full path: {old_image_path}")
