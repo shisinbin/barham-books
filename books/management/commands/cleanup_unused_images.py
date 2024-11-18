@@ -22,12 +22,14 @@ class Command(BaseCommand):
     for book in Book.objects.exclude(photo='').only('photo'):
       used_files.add(book.photo.name)
       total_books_with_images += 1
+    self.stdout.write(f"Used images: {len(used_files)}")
 
     # 2 Collect associated thumbnails
     used_thumbnails = set()
     for file in used_files:
       base, ext = os.path.splitext(file)
       used_thumbnails.add(f"{base}{ext}.100x0_q85{ext}")
+    self.stdout.write(f"Generated thumbnails: {len(used_thumbnails)}")
 
     # Iterate through every books media folder
     media_books_path = os.path.join(settings.MEDIA_ROOT, 'books')
@@ -41,7 +43,7 @@ class Command(BaseCommand):
 
         if relative_path not in used_files and relative_path not in used_thumbnails:
           logging.info(f"Deleted: '{relative_path}'")
-          # os.remove(full_path)
+          os.remove(full_path)
           deleted_files += 1
 
     self.stdout.write(f"Total books with associated images: {total_books_with_images}")
