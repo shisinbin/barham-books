@@ -30,11 +30,23 @@ def upload_location(instance, filename):
     else:
         new_filename = f"books/{filename}"
 
-    # Check if we are updating the image - if so, delete the old one
-    full_image_path = os.path.join(settings.MEDIA_ROOT, new_filename)
+    # Full path for new image
+    new_image_path = os.path.join(settings.MEDIA_ROOT, new_filename)
+
     if instance.pk: # Only applicable to updates
-        if os.path.exists(full_image_path):
-            os.remove(full_image_path)
+        # Legacy thumbnail cleanup
+        old_image_path = instance.photo.path if instance.photo else None
+
+        # If old image exists and differs from new one, handle cleanup
+        if old_image_path and old_image_path != new_image_path:
+            # Check if thumbnail exists and delete it
+            old_thumbnail_path = f"{old_image_path}.100x0_q85.jpg"
+            if os.path.exists(old_thumbnail_path):
+                os.remove(old_thumbnail_path)
+
+        # Remove any file already occupying the new image path
+        if os.path.exists(new_image_path):
+            os.remove(new_image_path)
 
     return new_filename
 
