@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from datetime import date
-from django.utils import timezone
 
 from authors.models import Author
 
@@ -11,21 +10,11 @@ from django.conf import settings
 from django.urls import reverse
 
 from django.utils.text import slugify
-from django.core.files.storage import default_storage
 
 from taggit.managers import TaggableManager
 from taggit.models import TaggedItemBase, TagBase, ItemBase
 
-from easy_thumbnails.files import get_thumbnailer
-
-import logging
-
-logging.basicConfig(
-    filename=os.path.join(settings.BASE_DIR, 'upload_location_debug.log'),
-    level=logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-)
+from django.contrib.postgres.fields import ArrayField
 
 def upload_location(instance, filename):
     if '.' in filename:
@@ -39,44 +28,11 @@ def upload_location(instance, filename):
     else:
         new_filename = f"books/{filename}"
 
-    # Full path for new image
     new_image_path = os.path.join(settings.MEDIA_ROOT, new_filename)
-    logging.debug(f"New image path: {new_image_path}")
-
     if instance.pk: # Only applicable to updates
-
-        if instance.photo and instance.photo.name:
-            logging.debug(f"Old image name: {instance.photo.name}")
-            if instance.photo.url:
-                logging.debug(f"old image url: {instance.photo.url}")
-            if instance.photo.path:
-                logging.debug(f"Old image path: {instance.photo.path}")
-            
-            if instance._photo:
-                logging.debug(f"Old image name: {instance._photo.name}")
-                if instance._photo.url:
-                    logging.debug(f"old image url: {instance._photo.url}")
-                if instance._photo.path:
-                    logging.debug(f"Old image path: {instance._photo.path}")
-
-            old_image_rel_path = f"books/{instance.title[:1].upper()}/{instance.photo.name}"
-            old_image_path = os.path.join(settings.MEDIA_ROOT, old_image_rel_path)
-            logging.debug(f"Old image full path: {old_image_path}")
-
-            if old_image_path != new_image_path:
-                old_thumbnail_path = f"{old_image_path}.100x0_q85.jpg"
-                logging.debug(f"Old thumbnail path: {old_thumbnail_path}")
-
-                if os.path.exists(old_thumbnail_path):
-                    os.remove(old_thumbnail_path)
-                    logging.info(f"Deleted old thumbnail: {old_thumbnail_path}")
-                else:
-                    logging.warning(f"Thumbnail not found: {old_thumbnail_path}")
-
         # Remove any file already occupying the new image path
         if os.path.exists(new_image_path):
             os.remove(new_image_path)
-            logging.info(f"Deleted pre-existing file at new image path: {new_image_path}")
 
     return new_filename
 
@@ -115,60 +71,11 @@ class Series(models.Model):
             for tag in book.book_tags.all():
                 tag_set.add(tag)
         return tag_set
-    # def formal(self):
-    #     if self.name.startswith(('the ', 'The ')):
-    #         return self.name[4:] + ', The'
-    #     else:
-    #         return self.name
 
 class TaggedBook(TaggedItemBase):
     content_object = models.ForeignKey('Book',
                                        on_delete=models.CASCADE)
 
-from django.contrib.postgres.fields import ArrayField
-# class PrimaryTags(TagBase):
-#     # categories = ArrayField(
-#     #                 models.CharField(max_length=3),
-#     #                 blank=True, null=True
-#     #                 )
-#     class Meta:
-#         verbose_name = "Primary Tag"
-#         verbose_name_plural = "Primary Tags"
-
-# class BookPrimaryTag(ItemBase):
-#     content_object = models.ForeignKey('Book',
-#                                        on_delete=models.CASCADE)
-#     tag = models.ForeignKey(
-#             PrimaryTags,
-#             on_delete=models.CASCADE,
-#             related_name="book_primary_tags")
-
-# class SecondaryTags(TagBase):
-#     # categories = ArrayField(
-#     #                 models.CharField(max_length=3),
-#     #                 blank=True, null=True
-#     #                 )
-#     class Meta:
-#         verbose_name = "Secondary Tag"
-#         verbose_name_plural = "Secondary Tags"
-
-# class BookSecondaryTag(ItemBase):
-#     content_object = models.ForeignKey('Book',
-#                                        on_delete=models.CASCADE)
-#     tag = models.ForeignKey(
-#             SecondaryTags,
-#             on_delete=models.CASCADE,
-#             related_name="book_secondary_tags")
-
-
-# class UserTaggedBook(TaggedItemBase):
-#     content_object = models.ForeignKey('Book',
-#                                        on_delete=models.CASCADE)
-#     tagger = models.ForeignKey(User,
-#                                related_name='book_tags',
-#                                on_delete=models.DO_NOTHING,
-#                                null=True,
-#                                blank=True)
 
 class BookTags(TagBase):
 
@@ -274,23 +181,9 @@ class Book(models.Model):
                             editable=False)
     tags = TaggableManager(through=TaggedBook,
                            blank=True)
-
     book_tags = TaggableManager(through=BookTag,
                                 blank=True,
                                 verbose_name='book tags')
-
-    # primary and secondary tags
-    # primary_tags = TaggableManager(through=BookPrimaryTag,
-    #                                blank=True,
-    #                                verbose_name='primary tags')
-    # secondary_tags = TaggableManager(through=BookSecondaryTag,
-    #                                blank=True,
-    #                                verbose_name='secondary tags')
-
-    # user_tags = TaggableManager(through=UserTaggedBook,
-    #                             related_name='user_tags',
-    #                             blank=True,
-    #                             verbose_name="user tags")
     language = models.CharField(max_length=200,
                                 default='English')
     publish_date = models.DateField(blank=True,
@@ -334,11 +227,6 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
-    # def get_cover_url(self):
-    #     if self.isbn_latest:
-    #         return 'http://covers.openlibrary.org/b/isbn/' + self.isbn_latest + '-M.jpg'
-    #     else:
-    #         return None
 
 
 #import uuid
@@ -466,7 +354,6 @@ class Review(models.Model):
     def __str__(self):
         return f"Review by {self.user} on {self.book}"
 
-from django.contrib.postgres.fields import ArrayField
 class Category(models.Model):
     name = models.CharField(max_length=100)
     short_name = models.CharField(max_length=20)
@@ -488,22 +375,12 @@ class Category(models.Model):
         return reverse('category',
                        args=[self.code])
 
-def update_tags_in_cat_globally():
-    # flush the arrayfields
-    for cat in Category.objects.all():
-        cat.tags_included.clear()
-        cat.save()
-    # then grind through every book - 
-    # could do this for a category instead to save cpu
-    for book in Book.objects.all():
-        update_tags_in_categories(book)
-
-
-# class SubCategory(models.Model):
-#     name = models.CharField(max_length=100)
-#     code = models.CharField(max_length=3, unique=True)
-
-#     class Meta:
-#         verbose_name_plural = 'subcategories'
-#     def __str__(self):
-#         return self.name
+# def update_tags_in_cat_globally():
+#     # flush the arrayfields
+#     for cat in Category.objects.all():
+#         cat.tags_included.clear()
+#         cat.save()
+#     # then grind through every book - 
+#     # could do this for a category instead to save cpu
+#     for book in Book.objects.all():
+#         update_tags_in_categories(book)
