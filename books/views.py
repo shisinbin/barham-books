@@ -240,7 +240,7 @@ from django.core.files.storage import FileSystemStorage
 
 def format_book_title(title):
     # Define minor words to leave in lowercase (except the first word)
-    minor_words = {'the', 'of', 'with', 'a', 'an', 'on', 'at', 'for', 'and', 'but', 'in', 'to', 'by', 'or', 'nor', 'as', 'so', 'yet', 'is'}
+    minor_words = {'the', 'of', 'with', 'from', 'a', 'an', 'on', 'at', 'for', 'and', 'but', 'in', 'to', 'by', 'or', 'nor', 'as', 'so', 'yet', 'is'}
 
     words = title.split()
 

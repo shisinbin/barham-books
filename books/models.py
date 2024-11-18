@@ -45,6 +45,11 @@ def upload_location(instance, filename):
 def update_tags_in_categories(book):
     if book.category:
         category = book.category
+
+        # redundant check now that I've changed the default=list on this tags_included field in Category class
+        if category.tags_included is None:
+            category.tags_included = []
+
         if book.book_tags.all():
             for tag in book.book_tags.all():
                 if (tag.name not in category.tags_included) and (len(tag.name) <= 30):
@@ -428,7 +433,7 @@ class Category(models.Model):
                                    blank=True)
     tags_included = ArrayField(
                     models.CharField(max_length=30),
-                    blank=True, null=True
+                    blank=True, default=list
                     )
 
     class Meta:
