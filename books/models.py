@@ -18,6 +18,15 @@ from taggit.models import TaggedItemBase, TagBase, ItemBase
 
 from easy_thumbnails.files import get_thumbnailer
 
+import logging
+
+logging.basicConfig(
+    filename=os.path.join(settings.BASE_DIR, 'upload_location_debug.log'),
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+)
+
 def upload_location(instance, filename):
     if '.' in filename:
         ext = filename.split('.')[-1]
@@ -32,21 +41,28 @@ def upload_location(instance, filename):
 
     # Full path for new image
     new_image_path = os.path.join(settings.MEDIA_ROOT, new_filename)
+    logging.debug(f"New image path: {new_image_path}")
 
     if instance.pk: # Only applicable to updates
         # Legacy thumbnail cleanup
         old_image_path = instance.photo.path if instance.photo else None
+        logging.debug(f"Old image path: {old_image_path}")
 
         # If old image exists and differs from new one, handle cleanup
         if old_image_path and old_image_path != new_image_path:
             # Check if thumbnail exists and delete it
             old_thumbnail_path = f"{old_image_path}.100x0_q85.jpg"
+            logging.debug(f"Old thumbnail path: {old_thumbnail_path}")
             if os.path.exists(old_thumbnail_path):
                 os.remove(old_thumbnail_path)
+                logging.info(f"Deleted old thumbnail: {old_thumbnail_path}")
+            else:
+                logging.warning(f"Thumbnail not found: {old_thumbnail_path}")
 
         # Remove any file already occupying the new image path
         if os.path.exists(new_image_path):
             os.remove(new_image_path)
+            logging.info(f"Deleted pre-existing file at new image path: {new_image_path}")
 
     return new_filename
 
