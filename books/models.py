@@ -44,22 +44,22 @@ def upload_location(instance, filename):
     logging.debug(f"New image path: {new_image_path}")
 
     if instance.pk: # Only applicable to updates
-        # Legacy thumbnail cleanup
-        old_image_rel_path = instance.photo.name if instance.photo else None
-        logging.debug(f"Old image relative path: {old_image_rel_path}")
-        old_image_path = os.path.join(settings.MEDIA_ROOT, old_image_rel_path) if old_image_rel_path else None
-        logging.debug(f"Old image full path: {old_image_path}")
 
-        # If old image exists and differs from new one, handle cleanup
-        if old_image_path and old_image_path != new_image_path:
-            # Check if thumbnail exists and delete it
-            old_thumbnail_path = f"{old_image_path}.100x0_q85.jpg"
-            logging.debug(f"Old thumbnail path: {old_thumbnail_path}")
-            if os.path.exists(old_thumbnail_path):
-                os.remove(old_thumbnail_path)
-                logging.info(f"Deleted old thumbnail: {old_thumbnail_path}")
-            else:
-                logging.warning(f"Thumbnail not found: {old_thumbnail_path}")
+        if instance.photo and instance.photo.name:
+            logging.debug(f"Old image name: {instance.photo.name}")
+            old_image_rel_path = f"books/{instance.title[:1].upper()}/{instance.photo.name}"
+            old_image_path = os.path.join(settings.MEDIA_ROOT, old_image_rel_path)
+            logging.debug(f"Old image full path: {old_image_path}")
+
+            if old_image_path != new_image_path:
+                old_thumbnail_path = f"{old_image_path}.100x0_q85.jpg"
+                logging.debug(f"Old thumbnail path: {old_thumbnail_path}")
+
+                if os.path.exists(old_thumbnail_path):
+                    os.remove(old_thumbnail_path)
+                    logging.info(f"Deleted old thumbnail: {old_thumbnail_path}")
+                else:
+                    logging.warning(f"Thumbnail not found: {old_thumbnail_path}")
 
         # Remove any file already occupying the new image path
         if os.path.exists(new_image_path):
