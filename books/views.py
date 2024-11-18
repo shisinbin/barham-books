@@ -245,17 +245,39 @@ def format_book_title(title):
     words = title.split()
 
     # Capitalise first word
-    words[0] = words[0].capitalize()
+    # words[0] = words[0].capitalize()
 
     # Capitalize non-minor words and lowercase minor words
-    for i in range(1, len(words)):
-        if words[i].lower() in minor_words:
-            words[i] = words[i].lower()
+    for i in range(0, len(words)):
+        word = words[i]
+
+        # Skip words starting with a number
+        if word[0].isdigit():
+            continue
+
+        # Skip words that are entirely uppercase
+        if word.isupper():
+            continue
+
+        # Capitalise the first word if it's not a digit nor all uppercase
+        if i == 0:
+            words[0] = word.capitalize()
+            continue
+
+        # Capitalise non-minor words and lowercase minor words
+        if word.lower() in minor_words:
+            words[i] = word.lower()
         else:
-            words[i] = words[i].capitalize()
+            words[i] = word.capitalize()
 
     # Rejoin the words into a single string
     formatted_title = ' '.join(words)
+
+    # Handle titles with a colon
+    if ': ' in formatted_title:
+        initial, rest = formatted_title.split(': ', 1)
+        if rest and rest[0].isalpha():
+            formatted_title = f"{initial}: {rest[0].upper()}{rest[1:]}"
 
     # Move starting 'The', 'A', or 'An' to the end
     if formatted_title.lower().startswith(('the ', 'a ', 'an ')):
