@@ -19,7 +19,7 @@ class Command(BaseCommand):
 
     suffixes = (', The', ', A', ', An')
 
-    for book in Book.objects.all()[:100]:
+    for book in Book.objects.all():
       original_title = book.title
 
       title_to_send_to_helper = original_title
