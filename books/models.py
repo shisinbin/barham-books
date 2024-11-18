@@ -45,8 +45,10 @@ def upload_location(instance, filename):
 
     if instance.pk: # Only applicable to updates
         # Legacy thumbnail cleanup
-        old_image_path = instance.photo.path if instance.photo else None
-        logging.debug(f"Old image path: {old_image_path}")
+        old_image_rel_path = instance.photo.name if instance.photo else None
+        logging.debug(f"Old image relative path: {old_image_rel_path}")
+        old_image_path = os.path.join(settings.MEDIA_ROOT, old_image_rel_path) if old_image_rel_path else None
+        logging.debug(f"Old image full path: {old_image_path}")
 
         # If old image exists and differs from new one, handle cleanup
         if old_image_path and old_image_path != new_image_path:
