@@ -38,8 +38,8 @@ class Command(BaseCommand):
         # self.stdout.write(f"Skipping this book: {original_title}")
         continue
 
-      # book.title = formatted_title
-      # book.save()
+      book.title = formatted_title
+      book.save()
       # self.stdout.write(f"Making a change here! Old title: {original_title}, new title: {formatted_title}")
       updated_count += 1
 
