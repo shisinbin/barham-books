@@ -25,7 +25,8 @@ def upload_location(instance, filename):
         ext = 'jpg' # Default to jpg if no extension provided
 
     if instance.title:
-        new_filename = f"books/{instance.title[:1].upper()}/{slugify(instance.title)}-{slugify(instance.author.last_name)}.{ext}"
+        truncated_title = slugify(instance.title[:40])
+        new_filename = f"books/{instance.title[:1].upper()}/{truncated_title}-{slugify(instance.author.last_name)}.{ext}"
     else:
         new_filename = f"books/{filename}"
 

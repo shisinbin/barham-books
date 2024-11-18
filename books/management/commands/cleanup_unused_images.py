@@ -18,8 +18,10 @@ class Command(BaseCommand):
 
     # 1 Collect all used filenames
     used_files = set()
+    total_books_with_images = 0
     for book in Book.objects.exclude(photo='').only('photo'):
       used_files.add(book.photo.name)
+      total_books_with_images += 1
 
     # 2 Collect associated thumbnails
     used_thumbnails = set()
@@ -27,18 +29,22 @@ class Command(BaseCommand):
       base, ext = os.path.splitext(file)
       used_thumbnails.add(f"{base}{ext}.100x0_q85{ext}")
 
+    # Iterate through every books media folder
     media_books_path = os.path.join(settings.MEDIA_ROOT, 'books')
+    total_images = 0
     deleted_files = 0
     for root, _, files in os.walk(media_books_path):
       for filename in files:
+        total_images += 1
         full_path = os.path.join(root, filename)
         relative_path = os.path.relpath(full_path, settings.MEDIA_ROOT)
 
         if relative_path not in used_files and relative_path not in used_thumbnails:
-          # self.stdout.write(f"Deleting unused file: {relative_path}")
-
           logging.info(f"Deleted: '{relative_path}'")
           # os.remove(full_path)
           deleted_files += 1
 
-    self.stdout.write(f"Cleanup complete. Total files deleted: {deleted_files}")
+    self.stdout.write(f"Total books with associated images: {total_books_with_images}")
+    self.stdout.write(f"Total images in 'books' folder: {total_images}")
+    self.stdout.write(f"Total unused images deleted: {deleted_files}")
+    self.stdout.write('Cleanup complete.')

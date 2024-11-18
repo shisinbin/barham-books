@@ -259,7 +259,23 @@ def format_book_title(title):
         if word.isupper():
             continue
 
-        # Capitalise the first word if it's not a digit nor all uppercase
+        # Deal with hyphenated word
+        if '-' in word:
+            parts = word.split('-')
+            words[i] = '-'.join(part.capitalize() for part in parts)
+            continue
+
+        # Deal with French d' elision
+        if word.lower().startswith("d'"):
+            words[i] = f"d'{word[2:].capitalize()}"
+            continue
+
+        # Deal with words starting with 'Mc' (could also do 'Mac'?)
+        if word.lower().startswith('mc') and len(word) > 2:
+            words[i] = f"Mc{word[2:].capitalize()}"
+            continue
+
+        # Capitalise the first word of a title regardless
         if i == 0:
             words[0] = word.capitalize()
             continue
@@ -273,11 +289,24 @@ def format_book_title(title):
     # Rejoin the words into a single string
     formatted_title = ' '.join(words)
 
+    def capitalize_after_symbols(title):
+        # List of symbols to check for
+        symbols = [': ', '& ', '/ ']
+        for symbol in symbols:
+            if symbol in title:
+                initial, rest = title.split(symbol, 1)
+                if rest and rest[0].isalpha():
+                    # Rebuild the title with character after symbol capitalised
+                    title = f"{initial}{symbol}{rest[0].upper()}{rest[1:]}"
+        return title
+    
+    formatted_title = capitalize_after_symbols(formatted_title)
+
     # Handle titles with a colon
-    if ': ' in formatted_title:
-        initial, rest = formatted_title.split(': ', 1)
-        if rest and rest[0].isalpha():
-            formatted_title = f"{initial}: {rest[0].upper()}{rest[1:]}"
+    # if ': ' in formatted_title:
+        # initial, rest = formatted_title.split(': ', 1)
+        # if rest and rest[0].isalpha():
+        #     formatted_title = f"{initial}: {rest[0].upper()}{rest[1:]}"
 
     # Move starting 'The', 'A', or 'An' to the end
     if formatted_title.lower().startswith(('the ', 'a ', 'an ')):
