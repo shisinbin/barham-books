@@ -9,6 +9,10 @@
     <meta
       name="description"
       content="Discover a vast collection of books available for loan and sale at Barham Community Library in Wembley, UK. Search by title or author, find your next read, and explore detailed information about each book. Ideal for book enthusiasts looking for their next favourite title or collectors interested in rare finds." />
+    <title>
+      {% block title %}
+      {% endblock %}Barham Community Library
+    </title>
     <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
 
     <!-- Font Awesome -->
@@ -24,10 +28,7 @@
     <!-- Autocomplete -->
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
 
-    <title>
-      {% block title %}
-      {% endblock %}Barham Community Library
-    </title>
+    {% block extra_css %}{% endblock %}
   </head>
   <body>
     <div id="app">

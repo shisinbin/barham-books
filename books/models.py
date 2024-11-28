@@ -15,6 +15,7 @@ from taggit.managers import TaggableManager
 from taggit.models import TaggedItemBase, TagBase, ItemBase
 
 from django.contrib.postgres.fields import ArrayField
+    
 
 def upload_location(instance, filename):
     if '.' in filename:
@@ -26,7 +27,7 @@ def upload_location(instance, filename):
         truncated_title = slugify(instance.title[:40])
         new_filename = f"books/{instance.title[:1].upper()}/{truncated_title}-{slugify(instance.author.last_name)}.{ext}"
     else:
-        new_filename = f"books/{filename}"
+        new_filename = f"books/{filename}.{ext}"
 
     new_image_path = os.path.join(settings.MEDIA_ROOT, new_filename)
     if instance.pk: # Only applicable to updates
@@ -34,6 +35,25 @@ def upload_location(instance, filename):
         if os.path.exists(new_image_path):
             os.remove(new_image_path)
 
+    return new_filename
+
+def upload_book_for_sale_image_location(instance, filename):
+    if '.' in filename:
+        ext = filename.split('.')[-1]
+    else:
+        ext = 'jpg'
+
+    if instance.title:
+        truncated_title = slugify(instance.title[:40])
+        new_filename = f"books_for_sale/{truncated_title}.{ext}"
+    else:
+        new_filename = f"books_for_sale/{filename}.{ext}"
+
+    new_image_path = os.path.join(settings.MEDIA_ROOT, new_filename)
+    if instance.pk:
+        if os.path.exists(new_image_path):
+            os.remove(new_image_path)
+    
     return new_filename
 
 # iterates through all book_tags belonging to a book
@@ -139,7 +159,7 @@ class BookForSale(models.Model):
                                 null=True,
                                 blank=True)
     is_sold = models.BooleanField(default=False)
-    photo = models.ImageField(upload_to='books_for_sale/', blank=True)
+    photo = models.ImageField(upload_to=upload_book_for_sale_image_location, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

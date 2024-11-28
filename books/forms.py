@@ -1,6 +1,45 @@
 from django import forms
 from .models import BookForSale, Author
 from django.db.models import Count
+import os
+from django.utils.translation import gettext_lazy as _
+
+class CustomImageField(forms.ImageField):
+    """
+    Using a custom image field to handle scenario of no filename extension having been added.
+    We also check the file size of the image doesn't exceed a certain amount.
+    """
+    def to_python(self, data):
+        """
+        Custom processing before Django's built-in validation.
+        This is called by clean() and runs before the other validation.
+        """
+        file = super().to_python(data)
+        if file:
+            # Check and handle missing extension
+            ext = os.path.splitext(file.name)[-1]
+            if not ext:
+                file.name += '.jpg'
+        return file
+
+    def clean(self, data, initial=None):
+        """
+        Custom clean method for the image field
+        """
+        file = super().clean(data, initial)
+
+        if file:
+            # Additional size validation
+            max_size_mb = 1
+            if file.size > max_size_mb * 1024 * 1024:
+                raise forms.ValidationError(
+                    _('File size exceeds the maximum limit of %(max_size_mb)sMB.'),
+                    params={'max_size_mb': max_size_mb},
+                    code='file_size_too_large'
+                )
+        
+        return file
+
 
 # can't remember what I was thinking with this
 class EmailPostForm(forms.Form):
@@ -34,6 +73,12 @@ class BookForSaleForm(forms.ModelForm):
         queryset=Author.objects.annotate(book_count=Count('books_for_sale')).filter(book_count__gt=0),  # Filter authors who have books for sale
         required=False,
         label='Select Author'
+    )
+
+    # Use CustomImageField for the photo field
+    photo = CustomImageField(
+        required=False,
+        label='Book cover image'
     )
 
     class Meta:

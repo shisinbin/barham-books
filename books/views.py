@@ -11,6 +11,50 @@ from datetime import datetime, timedelta
 from django.http import JsonResponse
 from django.utils import timezone
 from django.urls import reverse_lazy
+from PIL import Image
+import re
+
+def format_author_name(author_name):
+    """
+    Formats an author's name.
+    For names like 'J.K. Rowling' or 'J R R Tolkien', combines initials into the first name.
+    For regular names like 'John Adam George Smith', processes first, middle, and last names conventionally.
+    """
+    # Remove periods and normalize whitespace
+    author_name = re.sub(r'\.', ' ', author_name).strip()
+    names = author_name.split()
+    
+    if len(names) < 2:
+        raise ValueError("Need to enter a first and last name for the author.")
+
+    # Case 1: Initials-based names (e.g., "J R R Tolkien" -> "JRR Tolkien")
+    if all(len(name) == 1 for name in names[:-1]):  # Check if all but the last are single characters
+        first_name = ''.join(n.upper() for n in names[:-1])  # Combine all initials into the first name
+        middle_name = ''  # No middle name for initials-based names
+        if '-' in names[-1]:
+            partials = names[-1].split('-')
+            last_name = '-'.join(p.capitalize() for p in partials)
+        else:
+            last_name = names[-1].capitalize()
+    else:
+        # Case 2: Regular names (e.g., "John Adam George Alexander Smith")
+        first_name = names[0].capitalize()
+        middle_name = ' '.join(names[1:-1]).title() if len(names) > 2 else ''
+        if '-' in names[-1]:
+            partials = names[-1].split('-')
+            last_name = '-'.join(p.capitalize() for p in partials)
+        else:
+            last_name = names[-1].capitalize()
+
+    return first_name, middle_name, last_name
+
+def is_valid_image(file):
+    try:
+        image = Image.open(file)
+        image.verify()
+        return True
+    except Exception:
+        return False
 
 def index(request):
     categories = Category.objects.all()
@@ -316,207 +360,52 @@ def format_book_title(title):
     return formatted_title
 
 @staff_member_required
-def add_book(request):
-    if request.method == 'POST':
-        if 'title' in request.POST:
-            title = request.POST['title'].strip()
+def process_author(request, title):
+    """
+    Processes the author based on the form input.
+    Returns an Author object or raises a validation error with appropriate messages.
+    """
+    if 'author_select' in request.POST and request.POST['author_select'].strip():
+        # Author selected from the dropwdown
+        author_id = int(request.POST.get('author_select'))
+        author = get_object_or_404(Author, id=author_id)
 
-            if title == '':
-                messages.error(request, 'Empty spaces for titles are not accepted')
-                return redirect('add_book')
+        # Check if the book already exists for the selected author
+        if Book.objects.filter(title__iexact=title, author=author).exists():
+            raise ValueError('Book already in database')
+        
+        return author
+    
+    elif request.POST['author'].strip():
+        # Author entered manually
+        try:
+            first_name, middle_name, last_name = format_author_name(request.POST['author'].strip())
+            author = Author.objects.filter(
+                first_name__iexact=first_name,
+                last_name__iexact=last_name
+            ).first()
+
+            # Check if the book already exists for the entered author
+            if author and Book.objects.filter(title__iexact=title, author=author).exists():
+                raise ValueError('Book already in database')
             
-            title = format_book_title(title)
+            # Create a tentative author object if not found in the database
+            if not author:
+                author = Author(first_name=first_name, middle_names=middle_name, last_name=last_name)
 
-            # if an author has been selected
-            if 'author_select' in request.POST:
-                author_id = int(request.POST.getlist('author_select')[0])
-                author = get_object_or_404(Author, id=author_id)
-
-                if Book.objects.filter(title__iexact=title, author=author):
-                    messages.error(request, 'Book already in database')
-                    return redirect('add_book')
-
-
-
-
-
-            # if an author has been selected
-            # if request.POST['author_select'] != 'ignore':
-            #     author = get_object_or_404(Author, id=int(request.POST['author_select']))
-            #     # now we have author
-
-            #     if Book.objects.filter(title__iexact=title, author=author):
-            #         messages.error(request, 'Book already in database')
-            #         return redirect('add_book')
-
-            # else if an author has been entered in
-            elif request.POST['author']:
-                names = request.POST['author'].strip().split()
-                if len(names) == 1:
-                    messages.error(request, 'Need to enter a first and last name for author')
-                    return redirect('add_book')
-                else:
-                    first_name = names[0].capitalize()
-                    del names[0]
-                    last_name = names[-1].capitalize()
-                    del names[-1]
-                    middle_name = ''
-                    if names:
-                        count = 0
-                        for name in names:
-                            middle_name += name + ' '
-                            count += 1
-                            if count == len(names):
-                                middle_name = middle_name[:-1]
-                    try:
-                        author = Author.objects.get(first_name__iexact=first_name, last_name__iexact=last_name)
-                        if Book.objects.filter(title__iexact=title, author=author):
-                            messages.error(request, 'Book already in database')
-                            return redirect('add_book')
-                    except Author.DoesNotExist:
-                        if middle_name:
-                            author = Author(first_name=first_name, middle_names=middle_name, last_name=last_name)
-                        else:
-                            author = Author(first_name=first_name, last_name=last_name)
-                        # haven't saved the author yet
-
-            # else no author has been selected or entered
-            else:
-                messages.error(request, 'No author selected or entered')
-                return redirect('add_book')
-
-            # at this point, we should have a title, and an author
-            # rest is optional so we'll go through them
-
-            other_authors = ''
-            # if request.POST['other_authors']:
-            #     other_authors = request.POST['other_authors']
-
-            category = get_object_or_404(Category, id=int(request.POST['category']))
-            book_type = request.POST['book_type']
-
-            series = None
-            if request.POST['series_select'] != 'ignore':
-                series = get_object_or_404(Series, id=int(request.POST['series_select']))
-            elif request.POST['series']:
-                name = request.POST['series']
-                try:
-                    series = Series.objects.get(name=name)
-                except Series.DoesNotExist:
-                    series = Series(name=name)
-                    # haven't saved series yet
-
-            series_num = None
-            if request.POST['series_num']:
-                num = int(request.POST['series_num'])
-                if num > 0:
-                    series_num = num
-
-            if series and not series_num:
-                series_num = 99
-
-            summary = ''
-            if request.POST['summary']:
-                summary = request.POST['summary']
-                if len(summary) > 2000:
-                    summary = summary[:1997] + '...'
-
-            photo = None
-            if request.FILES.get('photo', False):
-                photo = request.FILES['photo']
-                if photo.size > 1000000:
-                    photo = None
-
-            isbn13 = None
-            if request.POST['isbn13']:
-                isbn13 = request.POST['isbn13']
-
-            isbn10 = None
-            if request.POST['isbn10']:
-                isbn10 = request.POST['isbn10']
-
-            pages = None
-            if request.POST['pages']:
-                pages = int(request.POST['pages'])
-                if pages < 1:
-                    pages = None
-
-            publisher = ''
-            if request.POST['publisher']:
-                publisher = request.POST['publisher']
-
-            # I'm disabling adding in a full publication date cos of Val (2/11/21)
-            #publish_date = None
-            #if request.POST['publish_date']:
-            #    publish_date = datetime.strptime(request.POST['publish_date'], "%d/%m/%Y").date()
-
-            year = None
-            if request.POST['year']:
-                year = request.POST['year']
-
-            # I've disabled book tags
-            # book_tags = None
-            # if request.POST['book_tags']:
-            #     book_tags = [x.strip().lower() for x in request.POST['book_tags'].split(',')]
-
-            is_featured = False
-            if request.POST.get('is_featured') == 'clicked':
-                is_featured = True
-
-            # now the adding stuff
-            author.save()
-            if series:
-                series.save()
-
-            book = Book.objects.create(
-                title=title,
-                author=author,
-                other_authors=other_authors,
-                summary=summary,
-                series=series,
-                series_num=series_num,
-                category=category,
-                photo=photo,
-                year=year,
-                #publish_date=publish_date,
-                is_featured=is_featured,
-            )
-
-            # I've disabled book_tags
-            # if book_tags:
-            #     for tag in book_tags:
-            #         book.book_tags.add(tag)
-            #     book.save()
-
-            if 'main_tags' in request.POST:
-                tag_names = request.POST.getlist('main_tags')
-                for tag_name in tag_names:
-                    book.book_tags.add(tag_name)
-                book.save()
-
-            copies = 1
-            if request.POST['copies']:
-                copies = int(request.POST['copies'])
-                if not (copies > 0) and (copies < 6):
-                    copies = 1
-
-            for i in range(copies):
-                instance = BookInstance2.objects.create(
-                    book=book,
-                    pages=pages,
-                    isbn10=isbn10,
-                    isbn13=isbn13,
-                    publisher=publisher,
-                    book_type=book_type,
-                )
-
-            messages.success(request, 'Book has been successfully added')
-            return redirect(book)
-        else:
-            messages.error(request, 'No title')
-            return redirect('add_book')
-
+            return author
+        except ValueError as e:
+            raise ValueError(str(e))
+    
     else:
+        # No author selected or entered
+        raise ValueError('Please select or enter an author')
+
+
+@staff_member_required
+def add_book(request):
+    # Common context data for the form
+    def get_context(form_data=None):
         book_types = {
             'p': 'Paperback',
             'h': 'Hardcover',
@@ -525,17 +414,181 @@ def add_book(request):
         authors = Author.objects.all()
         categories = Category.objects.all()
         series = Series.objects.all()
-        tags = BookTags.objects.all()
+        # tags = BookTags.objects.all()
         main_tags = BookTags.objects.filter(band=1)
-        context = {
+
+        selected_tags = []
+        if form_data and 'main_tags' in form_data:
+            selected_tags = form_data.getlist('main_tags')
+
+        return {
             'authors': authors,
             'categories': categories,
             'series': series,
-            'tags': tags,
+            # 'tags': tags,
             'book_types': book_types,
             'main_tags': main_tags,
+            'form_data': form_data,
+            'selected_tags': selected_tags
         }
-        return render(request, 'books/add_book.html', context)
+
+    if request.method == 'POST':
+        print(request.POST)
+        # Get and format the title
+        title = request.POST.get('title', '').strip()
+
+        if not title:
+            messages.error(request, 'Empty spaces for titles are not accepted')
+            return render(request, 'books/add_book.html', get_context(request.POST))
+        
+        title = format_book_title(title)
+
+        # Get an author object using request
+        try:
+            author = process_author(request, title)
+        except ValueError as e:
+            messages.error(request, str(e))
+            return render(request, 'books/add_book.html', get_context(request.POST))
+        
+        # Collect the other form inputs
+
+        category = get_object_or_404(Category, id=int(request.POST['category']))
+        book_type = request.POST['book_type']
+
+        series = None
+        if request.POST['series_select'] != 'ignore':
+            series = get_object_or_404(Series, id=int(request.POST['series_select']))
+        elif request.POST['series']:
+            name = request.POST['series']
+            try:
+                series = Series.objects.get(name=name)
+            except Series.DoesNotExist:
+                series = Series(name=name)
+                # haven't saved series yet
+
+        series_num = None
+        if request.POST['series_num']:
+            num = int(request.POST['series_num'])
+            if num > 0:
+                series_num = num
+
+        if series and not series_num:
+            series_num = 99
+
+        summary = ''
+        if request.POST['summary']:
+            summary = request.POST['summary']
+            if len(summary) > 2000:
+                summary = summary[:1997] + '...'
+
+        # Deal with the image input
+        photo = None
+        max_size_mb = 1
+
+        if request.FILES.get('photo', False):
+            photo = request.FILES['photo']
+
+            # Check file size
+            if photo.size > max_size_mb * 1024 * 1024:
+                messages.error(request, f"Image file size exceeds the maximum limit of {max_size_mb}MB.")
+                return render(request, 'books/add_book.html', get_context(request.POST))
+            
+            # Add a .jpg extension to the file if it doesn't have one
+            if '.' not in photo.name:
+                photo.name += '.jpg'
+
+            # Check the file is an image
+            if not is_valid_image(photo):
+                messages.error(request, "The uploaded file is not a valid image.")
+                return render(request, 'books/add_book.html', get_context(request.POST))
+
+
+        isbn13 = None
+        if request.POST['isbn13']:
+            isbn13 = request.POST['isbn13']
+
+        isbn10 = None
+        if request.POST['isbn10']:
+            isbn10 = request.POST['isbn10']
+
+        pages = None
+        if request.POST['pages']:
+            pages = int(request.POST['pages'])
+            if pages < 1:
+                pages = None
+
+        publisher = ''
+        if request.POST['publisher']:
+            publisher = request.POST['publisher']
+
+        # I'm disabling adding in a full publication date cos of Val (2/11/21)
+        #publish_date = None
+        #if request.POST['publish_date']:
+        #    publish_date = datetime.strptime(request.POST['publish_date'], "%d/%m/%Y").date()
+
+        year = None
+        if request.POST['year']:
+            year = request.POST['year']
+
+        # I've disabled book tags
+        # book_tags = None
+        # if request.POST['book_tags']:
+        #     book_tags = [x.strip().lower() for x in request.POST['book_tags'].split(',')]
+
+        is_featured = 'is_featured' in request.POST
+
+        # now the adding stuff
+        author.save()
+        if series:
+            series.save()
+
+        book = Book.objects.create(
+            title=title,
+            author=author,
+            other_authors='',
+            summary=summary,
+            series=series,
+            series_num=series_num,
+            category=category,
+            photo=photo,
+            year=year,
+            #publish_date=publish_date,
+            is_featured=is_featured,
+        )
+
+        # I've disabled book_tags
+        # if book_tags:
+        #     for tag in book_tags:
+        #         book.book_tags.add(tag)
+        #     book.save()
+
+        if 'main_tags' in request.POST:
+            tag_names = request.POST.getlist('main_tags')
+            for tag_name in tag_names:
+                book.book_tags.add(tag_name)
+            book.save()
+
+        copies = 1
+        if request.POST['copies']:
+            copies = int(request.POST['copies'])
+            if not (copies > 0) and (copies < 6):
+                copies = 1
+
+        for i in range(copies):
+            instance = BookInstance2.objects.create(
+                book=book,
+                pages=pages,
+                isbn10=isbn10,
+                isbn13=isbn13,
+                publisher=publisher,
+                book_type=book_type,
+            )
+
+        messages.success(request, 'Book has been successfully added')
+        return redirect(book)
+            
+    else: # GET request
+        return render(request, 'books/add_book.html', get_context())
 
 
 # trying to test out a share book email thing
@@ -952,12 +1005,6 @@ class BookForSaleCreateView(UserPassesTestMixin, CreateView):
     template_name = 'books/book_for_sale_form.html'
 
     def form_valid(self, form):
-        if self.request.FILES.get('photo'):
-            photo = self.request.FILES['photo']
-            if photo.size > 1000000:
-                form.add_error('photo', 'Image file size exceeds the maximum limit of 1MB.')
-                return self.form_invalid(form)
-
         new_author_name = form.cleaned_data.get('new_author')
         if new_author_name:
             names = new_author_name.strip().split()
@@ -997,12 +1044,6 @@ class BookForSaleUpdateView(UserPassesTestMixin, UpdateView):
     template_name = 'books/book_for_sale_form.html'
 
     def form_valid(self, form):
-        if self.request.FILES.get('photo'):
-            photo = self.request.FILES['photo']
-            if photo.size > 1000000:
-                form.add_error('photo', 'Image file size exceeds the maximum limit of 1MB.')
-                return self.form_invalid(form)
-
         new_author_name = form.cleaned_data.get('new_author')
         if new_author_name:
             names = new_author_name.strip().split()
