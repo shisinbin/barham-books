@@ -6,6 +6,11 @@
   Browse books |
 {% endblock %}
 
+{% block extra_css %}
+  <!-- Autocomplete -->
+  {% comment %} <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" /> {% endcomment %}
+{% endblock %}
+
 {% block content %}
   {% comment %} <section id="search-splash" class="text-white">
     <div class="container" style="overflow: auto">
@@ -86,7 +91,7 @@
           <!-- Search Input and Button (on the same row) -->
           <div class="form-row justify-content-center">
             <div class="col-md-8 col-sm-12">
-              <input type="text" name="keywords" class="form-control form-control-lg" placeholder="Search by title and/or author..." required minlength="3" id="keywords" />
+              <input type="text" name="keywords" class="form-control form-control-lg" placeholder="Search by title and/or author..." required minlength="3" id="keywords" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="autocomplete-list" />
             </div>
             <div class="col-auto">
               <button type="submit" class="btn btn-lg btn-primary">Search</button>
@@ -143,16 +148,7 @@
   </div>
 {% endblock %} {% block extrascripts %}
   <!-- Autocomplete -->
-  {% comment %} <script src="https://code.jquery.com/jquery-1.12.4.js"></script> {% endcomment %}
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  {% comment %} <script>
-    $( function() {
-      $( "#keywords" ).autocomplete({
-        source: '{% url 'books' %}',
-        minLength: 3
-      });
-    } );
-  </script> {% endcomment %}
+  {% comment %} <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script>
     $(function () {
       $('#keywords').autocomplete({
@@ -160,20 +156,21 @@
           $.ajax({
             url: "{% url 'autocomplete_books' %}",
             data: {
-              term: request.term,
+              term: request.term
             },
             success: function (data) {
-              response(data);
-            },
-          });
+              response(data)
+            }
+          })
         },
         minLength: 3, // Minimum length for autocomplete to start
         select: function (event, ui) {
           if (ui.item.url) {
-            window.location.href = ui.item.url; // Redirect to the book's URL on selection
+            window.location.href = ui.item.url // Redirect to the book's URL on selection
           }
-        },
-      });
-    });
-  </script>
+        }
+      })
+    })
+  </script> {% endcomment %}
+  <script src="{% static 'js/autocomplete.js' %}"></script>
 {% endblock %}

@@ -1,0 +1,43 @@
+@layer reset, base, layout, components, pages;
+
+/* base */
+@layer base {
+  body {
+    font-family: system-ui, sans-serif;
+  }
+}
+
+/* layout */
+@layer layout {
+  .page {
+    padding-block: 2rem;
+  }
+}
+
+/* components */
+@layer components {
+  .autocomplete-list {
+    color: black;
+    position: absolute;
+    background: white;
+    /* border: 1px solid transparent; */
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    z-index: 100;
+    text-align: left;
+  }
+
+  .autocomplete-list li {
+    padding: 0.5rem;
+    cursor: pointer;
+  }
+
+  .autocomplete-list li:hover,
+  .autocomplete-list li.active {
+    background: #f0f0f0;
+  }
+}

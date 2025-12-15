@@ -6,6 +6,11 @@
   Book Search results | 
 {% endblock %}
 
+{% block extra_css %}
+  <!-- Autocomplete -->
+  {% comment %} <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" /> {% endcomment %}
+{% endblock %}
+
 {% block content %}
 
   <section id="showcase-inner" class="py-5 text-white" style="background-size:cover;">
@@ -19,7 +24,7 @@
           <form action="{% url 'book_search' %}">
             <div class="row no-gutters">
               <div class="input-group">
-                <input type="text" name="keywords" class="form-control" placeholder="Enter book title, series, author's name..." id="keywords" {% if query %}value="{{ query }}"{% endif %} required minlength="3">
+                <input type="text" name="keywords" class="form-control" placeholder="Enter book title, series, author's name..." id="keywords" required minlength="3" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="autocomplete-list" {% if query %}value="{{ query }}"{% endif %}>
                 <div class="input-group-addon">
                   <select name="category" class="custom-select" style="background-color:rgba(32, 134, 107, 0.8); color:#E8E8E8;">
                     <option {% if not category %}selected="true"{% endif %} value="-1">
@@ -44,27 +49,8 @@
               </div>
             </div>
           </form>
-
         </div>
       </div>
-      <!--<div class="row">
-        <div class="col-md-12">
-
-          <form method="get" action="{% url 'book_search' %}">
-            <div class="row no-gutters">
-              <div class="col">
-                {{ form|crispy }}
-              </div>
-              <div class="col-auto">
-                <button class="btn btn-outline-light border-left-0 rounded-right" type="submit">
-                  <i class="fa fa-search"></i>
-                </button>
-              </div>
-            </div>
-          </form>
-
-        </div>
-      </div>-->
     </div>
   </section>
 
@@ -193,43 +179,11 @@
     </div>
   </section>
 
-  <!-- <section id="listings" class="py-4">
-    <div class="container">
-      <div class="col-md-12">
-        <div class="row">
-          <div class="col-md-8">
-            <h4>
-              {% with results.count as total_results %}
-                Found {{ total_results }} result{{ total_results|pluralize }}
-              {% endwith %}
-            </h4>
-            {% for book in results %}
-              <h5><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></h5>
-              {{ book.summary|truncatewords:5 }}
-            {% empty %}
-              <p>There are no results for your query.</p>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-    </div>
-  </section> -->
-
-
 {% endblock %}
 
 {% block extrascripts %}
   <!-- Autocomplete -->
-  {% comment %} <script src="https://code.jquery.com/jquery-1.12.4.js"></script> {% endcomment %}
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  {% comment %} <script>
-  $( function() {
-    $( "#keywords" ).autocomplete({
-      source: '{% url 'books' %}',
-      minLength: 3
-    });
-  } );
-  </script> {% endcomment %}
+  {% comment %} <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script>
     $(function () {
       $('#keywords').autocomplete({
@@ -252,5 +206,6 @@
         },
       });
     });
-  </script>
+  </script> {% endcomment %}
+  <script src="{% static 'js/autocomplete.js' %}"></script>
 {% endblock extrascripts %}
