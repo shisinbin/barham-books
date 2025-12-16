@@ -702,24 +702,13 @@ def books_filtered(request, letter_choice=None, tag_slug=None):
             books = books.filter(title__istartswith=letter)
 
     # to show number of results
-    num_results = len(books)
+    num_results = books.count()
 
     paginator = Paginator(books, 24)
-    page = request.GET.get('page')
-    try:
-        books = paginator.page(page)
-    except PageNotAnInteger:
-        # if page is not an intehger deliver the first page
-        books = paginator.page(1)
-    except EmptyPage:
-        if request.is_ajax():
-            # if the request is AJAX and the page is out of range
-            # return an empty page
-            return HttpResponse('')
-        # if page is out of range deliver last page of results
-        books = paginator.page(paginator.num_pages)
+    page_number = request.GET.get('page')
+    paged_books = paginator.get_page(page_number)
     
-    #~~~~~~~~~~~~~
+    #~~~~~~~~~~~~
     # changed 'tags' to 'book_tags'
     all_tags = Book.book_tags.all()
 
@@ -727,36 +716,14 @@ def books_filtered(request, letter_choice=None, tag_slug=None):
         'tag': tag,
         'all_tags': all_tags,
         'letter': letter,
-        'books': books,
+        'books': paged_books,
         'alphabet': a_z,
         'num_results': num_results,
     }
 
-    if request.is_ajax():
-        return render(request,
-                      'books/books_filtered_ajax.html',
-                      context)
-
     return render(request,
                   'books/books_filtered.html',
                   context)
-
-
-    # # pagination
-    # paginator = Paginator(books, 20)
-    # page = request.GET.get('page')
-    # paged_books = paginator.get_page(page)
-
-    # context = {
-    #     'tag': tag,
-    #     'letter': letter,
-    #     'books': paged_books,
-    #     'alphabet': a_z,
-    #     'num_results': num_results,
-    # }
-    # return render(request,
-    #               'books/books_filtered.html',
-    #               context)
 
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 # from django.contrib import messages
