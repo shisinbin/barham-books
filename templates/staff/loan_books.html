@@ -1,13 +1,19 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% block extra_css %}
+  <!-- Bootstrap Select -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css" />
+{% endblock %}
 
-	<section id="work" class="bg-dark text-white text-center" style="padding: 3rem 0;">
+{% block content %}
+  <section id="work" class="bg-dark text-white text-center" style="padding: 3rem 0;">
     <div class="container">
       <div class="row text-center">
         <div class="col-md-12">
           <h1 class="display-4">Loan out books</h1>
-          <p class="lead">For user: <a href="{% url 'user' looked_up_user.id %}" class="text-white">{{ looked_up_user.username }}</a></p>
+          <p class="lead">
+            For user: <a href="{% url 'user' looked_up_user.id %}" class="text-white">{{ looked_up_user.username }}</a>
+          </p>
         </div>
       </div>
     </div>
@@ -19,79 +25,70 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="{% url 'index' %}">
-              <i class="fas fa-home"></i> Home</a>
+            <a href="{% url 'index' %}"><i class="fas fa-home"></i> Home</a>
           </li>
           <li class="breadcrumb-item">
-            <a href="{% url 'staff' %}">
-              Staff</a>
+            <a href="{% url 'staff' %}">Staff</a>
           </li>
           <li class="breadcrumb-item">
-            <a href="{% url 'users' %}">
-              Users</a>
+            <a href="{% url 'users' %}">Users</a>
           </li>
           <li class="breadcrumb-item">
-          	<a href="{% url 'user' looked_up_user.id %}">{{ looked_up_user.username }}</a>
+            <a href="{% url 'user' looked_up_user.id %}">{{ looked_up_user.username }}</a>
           </li>
-          <li class="breadcrumb-item active">
-          	Loan books
-          </li>
+          <li class="breadcrumb-item active">Loan books</li>
         </ol>
       </nav>
     </div>
   </section>
 
-	<!-- Alerts -->
+  <!-- Alerts -->
   {% include 'partials/_alerts.html' %}
 
-	<section id="listing" class="py-4">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-12">
-					<p style="font-family: georgia, serif; font-style: italic;">
-						Can make <strong>{{ loans_possible_num }}</strong> loan{{ loans_possible_num|pluralize }} for {{ looked_up_user.username }}
-					</p>
+  <section id="listing" class="py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <p style="font-family: georgia, serif; font-style: italic;">
+            Can make <strong>{{ loans_possible_num }}</strong> loan{{ loans_possible_num|pluralize }} for {{ looked_up_user.username }}
+          </p>
 
-					<!-- Form row -->
-	        <form action="{% url 'execute' %}" method="POST">
-	        	{% csrf_token %}
-	        	<input type="hidden" name="user_id" value="{{ looked_up_user.id }}">
+          <!-- Form row -->
+          <form action="{% url 'execute' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="user_id" value="{{ looked_up_user.id }}" />
 
-	          <div class="row no-gutters mb-3">
-	            <div class="col">
-	              <label class="sr-only">Select books</label>
-	              <!--  turned off the search thing, which was:
-	                multiple data-live-search="true" -->
-	              <select name="books" id="books" class="selectpicker" multiple="multiple" data-width="100%" data-container="body" data-size="10" multiple data-live-search="true" required="true">
+            <div class="row no-gutters mb-3">
+              <div class="col">
+                <label class="sr-only">Select books</label>
+                <!--     turned off the search thing, which was:
+	                multiple data-live-search="true"    -->
+                <select name="books" id="books" class="selectpicker" multiple="multiple" data-width="100%" data-container="body" data-size="10" multiple data-live-search="true" required="true">
+                  {% if reserved_instances %}
+                    {% for instance in reserved_instances %}
+                      <option value="{{ instance.id }}">{{ instance }}</option>
+                    {% endfor %}
+                    <option disabled>------------</option>
+                  {% endif %}
+                  {% if available_instances %}
+                    {% for instance in available_instances %}
+                      <option value="{{ instance.id }}">{{ instance }}</option>
+                    {% endfor %}
+                  {% endif %}
+                </select>
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-outline-primary" type="submit">Loan books &raquo;</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
 
-	              	{% if reserved_instances %}
-	              		{% for instance in reserved_instances %}
-	              			<option value="{{ instance.id }}">
-	              				{{ instance }}
-	              			</option>
-	              		{% endfor %}
-	              		<option disabled>------------</option>
-	              	{% endif %}
-	              	{% if available_instances %}
-	              		{% for instance in available_instances %}
-	              			<option value="{{ instance.id }}">
-	              				{{ instance }}
-	              			</option>
-	              		{% endfor %}
-	              	{% endif %}
-
-	              </select>
-	            </div>
-	            <div class="col-auto">
-	              <button class="btn btn-outline-primary" type="submit">
-	                Loan books &raquo;
-	              </button>
-	            </div>
-	          </div>
-	        </form>
-
-				</div>
-			</div>
-		</div>
-	</section>
+{% block extrascripts %}
+  <!-- Bootstrap select -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 {% endblock %}

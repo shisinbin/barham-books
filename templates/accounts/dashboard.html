@@ -218,28 +218,8 @@
           {% if request.user.reviews.all %}
             <p style="font-family: georgia, serif; font-style: italic; text-align:center;">(in reverse chronological order)</p>
 
-            <!-- Accordion -->
-            <!--<div id="accordion" class="text-left">
-              {% for review in request.user.reviews.all %}
-                <h3>{{ review.book.title }}</h3>
-                <div style="font-family: georgia;">
-                  <h4 >{{ review.title }}</h4>
-                  <p>
-                    {{ review.body|linebreaks }}
-                  </p>
-                  <a href="{{ review.book.get_absolute_url }}" class="btn btn-light mr-2">View book</a>
-                  <div class="float-right"><a href="{% url 'del_review' review.id %}" class="btn btn-light">Delete review</a></div>
-                  <p class="text-right">
-                    <small class="text-muted">
-                      Last updated {{ review.updated|timesince }} ago
-                    </small>
-                  </p>
-                </div>
-              {% endfor %}
-            </div>-->
-
             <!-- Review accordion -->
-            <div class="container">
+            {% comment %} <div class="container">
               <div class="col-md-12">
                 <div id="accordion">
                   {% for review in request.user.reviews.all %}
@@ -292,6 +272,89 @@
                   {% endfor %}
                 </div>
               </div>
+            </div> {% endcomment %}
+
+            <div id="reviewsAccordion">
+              {% for review in request.user.reviews.all %}
+                <div class="card mb-2">
+
+                  <!-- Header -->
+                  <div class="card-header" id="heading-{{ review.id }}">
+                    <h5 class="mb-0">
+                      <button
+                        class="btn btn-link btn-block text-left"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#collapse-{{ review.id }}"
+                        aria-expanded="false"
+                        aria-controls="collapse-{{ review.id }}"
+                      >
+                        {{ review.book.title }}
+                      </button>
+                    </h5>
+                  </div>
+
+                  <!-- Body -->
+                  <div
+                    id="collapse-{{ review.id }}"
+                    class="collapse"
+                    aria-labelledby="heading-{{ review.id }}"
+                    data-parent="#reviewsAccordion"
+                  >
+                    <div class="card-body">
+
+                      <div class="row">
+                        <div class="col-md-3 col-lg-2 d-none d-md-block">
+                          <a href="{{ review.book.get_absolute_url }}">
+                            {% if review.book.photo %}
+                              <img src="{{ review.book.photo|thumbnail_url:'default' }}" class="img-fluid img-thumbnail-edit">
+                            {% else %}
+                              <img src="{% static 'img/blank.png' %}" class="img-fluid img-thumbnail-edit">
+                            {% endif %}
+                          </a>
+                        </div>
+
+                        <div class="col-md-9 col-lg-10">
+                          {% if review.rating %}
+                            {% with ''|center:review.rating as range %}
+                              {% for _ in range %}
+                                <i class="fas fa-star"></i>
+                              {% endfor %}
+                            {% endwith %}
+                            {% with review.rating|subtract as empty_stars %}
+                              {% with ''|center:empty_stars as range %}
+                                {% for _ in range %}
+                                  <i class="far fa-star"></i>
+                                {% endfor %}
+                              {% endwith %}
+                            {% endwith %}
+                          {% endif %}
+
+                          <h5>{{ review.title }}</h5>
+                          <p>{{ review.body|linebreaks }}</p>
+
+                          <p class="text-right">
+                            <small class="text-muted">
+                              Last updated {{ review.updated|timesince }} ago
+                            </small>
+                          </p>
+                        </div>
+
+                        <div class="col-12 mt-2">
+                          <a href="{{ review.book.get_absolute_url }}" class="btn btn-light mr-2">
+                            View book
+                          </a>
+                          <a href="{% url 'del_review' review.id %}" class="btn btn-light float-right">
+                            Delete <span class="d-none d-md-inline">review</span>
+                          </a>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+              {% endfor %}
             </div>
             <br>
           {% else %}
@@ -307,11 +370,11 @@
 
 {% block extrascripts %}
   <!-- This is for the accordion -->
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  {% comment %} <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script>
   $( function() {
     $( "#accordion" ).accordion();
   } );
-  </script>
+  </script> {% endcomment %}
 {% endblock extrascripts %}
