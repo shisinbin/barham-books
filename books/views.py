@@ -1047,50 +1047,79 @@ class BookForSaleUpdateView(UserPassesTestMixin, UpdateView):
 import requests
 import os
 from django.conf import settings
-def fetch_book_cover(isbn):
+
+# def fetch_book_cover(isbn):
+#     """
+#     Fetches the cover image for a book using its ISBN from the Open Library API.
+
+#     Args:
+#         isbn (str): The ISBN of the book.
+
+#     Returns:
+#         bytes: The binary content of the book cover image if found, None otherwise.
+#     """
+#     url = f'https://openlibrary.org/search.json?isbn={isbn}'
+
+#     try:
+#         print(f'Fetching book cover for ISBN: {isbn}')
+#         response = requests.get(url)
+#         response.raise_for_status()
+#         data = response.json()
+
+#         book_info = data.get('docs', [])
+#         if book_info:
+#             first_book = book_info[0]
+#             cover_edition_key = first_book.get('cover_edition_key')
+#             cover_i = first_book.get('cover_i')
+
+#             image_url = None
+#             if cover_edition_key:
+#                 image_url = f'https://covers.openlibrary.org/b/olid/{cover_edition_key}-L.jpg'
+#             elif cover_i:
+#                 image_url = f'https://covers.openlibrary.org/b/id/{cover_i}-L.jpg'
+            
+#             if image_url:
+#                 print(f"Downloading image from URL: {image_url}")
+#                 response = requests.get(image_url, stream=True)
+#                 response.raise_for_status()
+#                 print(f'Size of image is: {len(response.content)}')
+#                 return response.content
+#             else:
+#                 print("No image URL found.")
+#                 return None
+#         else:
+#             print("No book information found.")
+#             return None
+#     except Exception as e:
+#         print(f"Error fetching book data: {e}")
+#         return None
+
+def fetch_book_cover(isbn, size='L'):
     """
-    Fetches the cover image for a book using its ISBN from the Open Library API.
+    Fetches the cover image for a book using its ISBN from the Open Library Covers API.
 
     Args:
         isbn (str): The ISBN of the book.
+        size (str): One of 'S', 'M', 'L'
 
     Returns:
-        bytes: The binary content of the book cover image if found, None otherwise.
+        bytes | None: Image content if found, otherwise None.
     """
-    url = f'https://openlibrary.org/search.json?isbn={isbn}'
+    url = f'https://covers.openlibrary.org/b/isbn/{isbn}-{size}.jpg'
 
     try:
-        print(f'Fetching book cover for ISBN: {isbn}')
-        response = requests.get(url)
-        response.raise_for_status()
-        data = response.json()
+        print(f'Fetching cover from: {url}?default=false')
+        response = requests.get(url, timeout=10)
 
-        book_info = data.get('docs', [])
-        if book_info:
-            first_book = book_info[0]
-            cover_edition_key = first_book.get('cover_edition_key')
-            cover_i = first_book.get('cover_i')
-
-            image_url = None
-            if cover_edition_key:
-                image_url = f'https://covers.openlibrary.org/b/olid/{cover_edition_key}-L.jpg'
-            elif cover_i:
-                image_url = f'https://covers.openlibrary.org/b/id/{cover_i}-L.jpg'
-            
-            if image_url:
-                print(f"Downloading image from URL: {image_url}")
-                response = requests.get(image_url, stream=True)
-                response.raise_for_status()
-                print(f'Size of image is: {len(response.content)}')
-                return response.content
-            else:
-                print("No image URL found.")
-                return None
-        else:
-            print("No book information found.")
+        if response.status_code == 404:
+            print(f'No cover found for ISBN.')
             return None
-    except Exception as e:
-        print(f"Error fetching book data: {e}")
+
+        response.raise_for_status()
+        return response.content
+    
+    except requests.RequestException as e:
+        print(f'Error fetching cover image: {e}')
         return None
 
 @staff_member_required
@@ -1116,7 +1145,7 @@ def lookup_book_for_sale_cover(request, book_id):
     image_content = fetch_book_cover(book_for_sale.isbn)
 
     if image_content is None:
-        messages.error(request, 'Unable to fetch image from API.')
+        messages.warning(request, 'No cover image found on Open Library for this ISBN.')
         return redirect(book_for_sale.get_absolute_url())
 
     # Check the image size
