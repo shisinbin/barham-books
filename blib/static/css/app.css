@@ -5,13 +5,21 @@
   body {
     font-family: system-ui, sans-serif;
   }
+
+  html {
+    /*
+    Reserves space for the scrollbar, regardless if there is one.
+    Helps avoid layout shifts
+  */
+    scrollbar-gutter: stable;
+  }
 }
 
 /* layout */
 @layer layout {
-  .page {
+  /* .page {
     padding-block: 2rem;
-  }
+  } */
 }
 
 /* components */
@@ -29,6 +37,7 @@
     margin: 0;
     z-index: 100;
     text-align: left;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .autocomplete-list li {

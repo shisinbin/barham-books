@@ -131,24 +131,23 @@
 
           <!-- Likes -->
           {% with total_likes=book.users_like.count users_like=book.users_like.all %}
-            <div class="row ml-1">
+            <div class="d-flex justify-content-between align-items-center">
               <h3><span class="count badge badge-pill badge-light">
                 <span class="total">{{ total_likes }}</span>
                 like{{ total_likes|pluralize }}
               </span></h3>
 
               {% if user.is_authenticated %}
-                <div class="ml-auto mr-3">
-                  <h3><span class="count">
-                    <a href="#" data-id="{{ book.id }}" data-action="{% if request.user in users_like %}un{% endif %}like" class="like badge badge-pill badge-light">
-                      {% if request.user not in users_like %}
-                        Like
-                      {% else %}
-                        Unlike
-                      {% endif %}
-                    </a>
-                  </span></h3>
-                </div>
+                <h3><span class="count">
+                  <a href="#" data-id="{{ book.id }}" data-action="{% if request.user in users_like %}un{% endif %}like" class="like badge badge-pill badge-light" data-url={% url 'like' %}>
+                    {% if request.user not in users_like %}
+                      Like
+                    {% else %}
+                      Unlike
+                    {% endif %}
+                  </a>
+                </span></h3>
+
               {% endif %}
             </div>
           {% endwith %}
@@ -480,7 +479,7 @@
   </div>
 {% endblock %}
 
-{% block domready %}
+{% comment %} {% block domready %}
   $('a.like').click(function(e){
     e.preventDefault();
     $.post('{% url "like" %}',
@@ -506,4 +505,7 @@
       }
     );
   });
+{% endblock %} {% endcomment %}
+{% block extrascripts %}
+  <script src="{% static 'js/likes.js' %}"></script>
 {% endblock %}

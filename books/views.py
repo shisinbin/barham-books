@@ -815,13 +815,13 @@ def book_search(request):
     return render(request, 'books/book_search.html', context)
 
 from django.views.decorators.http import require_POST
-from common.decorators import ajax_required
-@ajax_required
+
 @login_required
 @require_POST
 def book_like(request):
     book_id = request.POST.get('id')
     action = request.POST.get('action')
+
     if book_id and action:
         try:
             book = Book.objects.get(id=book_id)
