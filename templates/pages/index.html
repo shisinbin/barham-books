@@ -7,17 +7,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home page</title>
     <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+    <link rel="icon" type="image/png" href="{% static 'img/favicon-96x96.png' %}" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}" />
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}" />
+    <link rel="manifest" href="{% static 'img/site.webmanifest' %}" />
   </head>
   <body>
-    <header>
-      This is a header
-    </header>
-    <main>
-      <h1>Lorem ipsum dolor sit amet.</h1>
-      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi corporis illum dolores reiciendis, placeat possimus nemo architecto assumenda optio dignissimos. At ipsam nulla dolores et iusto consectetur molestias consequuntur, blanditiis officiis, voluptas quidem incidunt culpa eum perferendis a doloremque ullam nemo reiciendis dicta id veritatis eaque numquam delectus accusantium. Eligendi ad debitis officia assumenda obcaecati, nostrum ipsam, odit eos in harum doloremque aspernatur magni quia suscipit alias, voluptatem qui maxime. Doloribus reiciendis provident a rerum quae suscipit. Iure aspernatur ipsam culpa deleniti amet placeat, repellat sint, quibusdam eveniet corrupti officia molestias corporis vel quaerat sit cumque earum eligendi non quidem!</p>
-    </main>
-    <footer>
-      This is a footer.
-    </footer>
+    <div id="app">
+      <header>
+        <div class="wrapper">
+          This is the header
+        </div>
+      </header>
+      <main>
+        <section>
+          <div class="wrapper">
+            <h1>Lorem ipsum dolor sit amet.</h1>
+            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi corporis illum dolores reiciendis, placeat possimus nemo architecto assumenda optio dignissimos. At ipsam nulla dolores et iusto consectetur molestias consequuntur, blanditiis officiis, voluptas quidem incidunt culpa eum perferendis a doloremque ullam nemo reiciendis dicta id veritatis eaque numquam delectus accusantium. Eligendi ad debitis officia assumenda obcaecati, nostrum ipsam, odit eos in harum doloremque aspernatur magni quia suscipit alias, voluptatem qui maxime. Doloribus reiciendis provident a rerum quae suscipit. Iure aspernatur ipsam culpa deleniti amet placeat, repellat sint, quibusdam eveniet corrupti officia molestias corporis vel quaerat sit cumque earum eligendi non quidem!</p>
+          </div>
+        </section>
+        
+      </main>
+      <footer>
+        <div class="wrapper">
+          This is a footer.
+        </div>
+      </footer>
+    </div>
   </body>
 </html>
