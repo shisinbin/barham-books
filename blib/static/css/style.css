@@ -8,6 +8,14 @@ body {
   height: 100%;
 }
 
+html {
+  /*
+    Reserves space for the scrollbar, regardless if there is one.
+    Helps avoid layout shifts
+  */
+  scrollbar-gutter: stable;
+}
+
 body {
   line-height: 1.5;
 }
@@ -246,4 +254,30 @@ img {
   transform: translateY(-5px);
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.autocomplete-list {
+  color: black;
+  position: absolute;
+  background: white;
+  /* border: 1px solid transparent; */
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  z-index: 100;
+  text-align: left;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.autocomplete-list li {
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.autocomplete-list li:hover,
+.autocomplete-list li.active {
+  background: #f0f0f0;
 }

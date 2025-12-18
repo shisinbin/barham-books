@@ -1,52 +1,20 @@
-@layer reset, base, layout, components, pages;
-
-/* base */
-@layer base {
-  body {
-    font-family: system-ui, sans-serif;
-  }
-
-  html {
-    /*
-    Reserves space for the scrollbar, regardless if there is one.
-    Helps avoid layout shifts
-  */
-    scrollbar-gutter: stable;
-  }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-/* layout */
-@layer layout {
-  /* .page {
-    padding-block: 2rem;
-  } */
+* {
+  margin: 0;
 }
 
-/* components */
-@layer components {
-  .autocomplete-list {
-    color: black;
-    position: absolute;
-    background: white;
-    /* border: 1px solid transparent; */
-    width: 100%;
-    max-height: 200px;
-    overflow-y: auto;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    z-index: 100;
-    text-align: left;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+a {
+  text-decoration: none;
+}
 
-  .autocomplete-list li {
-    padding: 0.5rem;
-    cursor: pointer;
-  }
-
-  .autocomplete-list li:hover,
-  .autocomplete-list li.active {
-    background: #f0f0f0;
-  }
+img,
+picture,
+svg {
+  max-width: 100%;
+  display: block;
 }
