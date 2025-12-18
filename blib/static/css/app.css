@@ -84,7 +84,7 @@
   then one for where they'll actually be used
 */
   :root {
-    --c-white: hsl(0, 0%, 100%);
+    --c-white: hsl(0, 0%, 96%);
     --c-gray-dark: hsl(233, 14%, 25%);
     --c-purple: hsl(232, 58%, 55%);
     --c-teal: hsl(180, 100%, 42%);
@@ -94,6 +94,7 @@
     --color-main-bg: var(--c-white);
     --color-text-dark: var(--c-gray-dark);
     --color-text-light: var(--c-white);
+    --color-header-bg: var(--c-purple);
     --color-hero-bg: var(--c-purple);
     --color-button-primary-bg: var(--c-teal);
     --color-button-primary-bg: var(--c-gray-dark);
@@ -207,6 +208,61 @@
 }
 
 @layer component {
+  .topnav {
+    background-color: var(--color-header-bg);
+
+    .topnav__wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      padding-block: 12px;
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        padding-block: 20px;
+      }
+    }
+
+    .topnav__homelink {
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+
+    .topnav__logo {
+      width: calc(40 / 16 * 1rem);
+      border-radius: 4px;
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        width: calc(60 / 16 * 1rem);
+      }
+    }
+
+    .topnav__links {
+      display: flex;
+      gap: 20px;
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        gap: 40px;
+      }
+    }
+
+    .topnav_item {
+    }
+
+    .topnav__link {
+      color: var(--color-text-light);
+      font-size: var(--font-size-topnav);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+
+      &:hover {
+        text-decoration: underline 2px;
+        text-underline-offset: 4px;
+      }
+    }
+  }
 }
 
 @layer utility {

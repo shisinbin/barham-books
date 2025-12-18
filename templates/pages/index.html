@@ -18,25 +18,30 @@
       <a class="visually-hidden skip" href="#main">
         Skip to main content
       </a>
-      <header>
+      <header class="topnav">
         <h2 class="visually-hidden">Header</h2>
 
-        <div class="wrapper">
-          <p>Logo</p>
+        <div class="wrapper topnav__wrapper">
+          <a href="/" class="topnav__homelink">
+            <img src="{% static 'img/logo.svg' %}" alt="Barham homepage" class="topnav__logo" width="40" height="40">
+          </a>
 
           <nav>
-            <ul>
-              <li>
-                <a href="#">Home</a>
+            <ul class="topnav__links">
+              <li class="topnav__item">
+                <a href="#" class="topnav__link">Home</a>
               </li>
-              <li>
-                <a href="#">About</a>
+              <li class="topnav__item">
+                <a href="#" class="topnav__link">About</a>
+              </li>
+              <li class="topnav__item">
+                <a href="#" class="topnav__link">Books</a>
               </li>
             </ul>
           </nav>
         </div>
       </header>
-      <main>
+      <main id="main">
         <section class="hero">
           <div class="wrapper">
             <h1>Barham Community Library</h1>
