@@ -88,6 +88,7 @@
     --c-gray-dark: hsl(233, 14%, 25%);
     --c-purple: hsl(232, 58%, 55%);
     --c-teal: hsl(180, 100%, 42%);
+    --c-teal-dark: hsl(180, 100%, 37%);
     --c-transparent: transparent;
     --c-magenta: hsl(320, 85%, 41%);
 
@@ -97,11 +98,21 @@
     --color-header-bg: var(--c-purple);
     --color-hero-bg: var(--c-purple);
     --color-button-primary-bg: var(--c-teal);
-    --color-button-primary-bg: var(--c-gray-dark);
+    --color-button-primary-bg-hover: var(--c-teal-dark);
+    --color-button-primary-text: var(--c-gray-dark);
     --color-button-secondary-bg: var(--c-transparent);
+    --color-button-secondary-bg-hover: var(--c-white);
     --color-button-secondary-border: var(--c-white);
     --color-button-secondary-text: var(--c-white);
-    --color-fullwidth-bg: var(--c-magenta);
+    --color-button-secondary-text-hover: var(--color-hero-bg);
+    --color-button-tertiary-bg: var(--c-white);
+    --color-button-tertiary-bg-hover: var(--c-teal);
+    --color-button-tertiary-text: var(--c-gray-dark);
+    /* --color-fullwidth-bg: var(--c-magenta);
+    --color-cta-gradient1: var(--c-gray-dark);
+    --color-cta-gradient2: var(--c-purple);
+    --color-cta-gradient3: var(--c-teal);
+    --color-footer-link-hover: var(--c-magenta); */
   }
 
   /* Spacing */
@@ -139,6 +150,13 @@
   h3 {
     font-family: 'Lora', Georgia, Times, 'Times New Roman', serif;
     line-height: 1.1;
+  }
+
+  h1,
+  h2,
+  h3,
+  p {
+    text-wrap: balance;
   }
 
   h1 {
@@ -205,9 +223,56 @@
     min-height: 100vh; /* fallback */
     min-height: 100dvh;
   }
+
+  #padding {
+    height: 50dvh;
+  }
 }
 
 @layer component {
+  .button {
+    display: inline-block;
+    font-size: var(--font-size-button);
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 24px;
+    padding: 10px 14px;
+    border: 2px solid transparent;
+    transition: 150ms ease-in-out;
+    transition-property: background-color, color;
+
+    &.primary {
+      background-color: var(--color-button-primary-bg);
+      color: var(--color-button-primary-text);
+
+      &:hover {
+        background-color: var(--color-button-primary-bg-hover);
+      }
+    }
+
+    &.secondary {
+      background-color: var(--color-button-secondary-bg);
+      color: var(--color-button-secondary-text);
+      border: 2px solid var(--color-button-secondary-border);
+
+      &:hover {
+        background-color: var(--color-button-secondary-bg-hover);
+        color: var(--color-button-secondary-text-hover);
+      }
+    }
+
+    &.tertiary {
+      background-color: var(--color-button-tertiary-bg);
+      color: var(--color-button-tertiary-text);
+
+      &:hover {
+        background-color: var(--color-button-tertiary-bg-hover);
+      }
+    }
+  }
+
   .topnav {
     background-color: var(--color-header-bg);
 
@@ -261,6 +326,67 @@
         text-decoration: underline 2px;
         text-underline-offset: 4px;
       }
+    }
+  }
+
+  .hero {
+    background-color: var(--color-hero-bg);
+    color: var(--color-text-light);
+
+    .hero__wrapper {
+      position: relative;
+      padding-block: 50px 70px;
+      display: grid;
+      grid-template-columns: 1fr;
+
+      @media (width >= 1000px) {
+        grid-template-columns: 1fr 1fr;
+        padding-block: 60px 80px;
+      }
+    }
+
+    /* Decorative backdrop:
+       - Full-bleed on mobile
+       - Right-half emphasis on desktop */
+    .hero__backdrop {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: calc(var(--vertical-padding) * -1);
+      right: calc(var(--vertical-padding) * -1);
+
+      background-image: url('../img/hero-image.jpg');
+      background-size: cover;
+      background-position: center;
+
+      opacity: 0.1;
+      pointer-events: none;
+
+      @media (width >= 1000px) {
+        left: 50%;
+        right: 0;
+        opacity: 0.8;
+      }
+    }
+
+    .hero__content {
+      position: relative;
+
+      @media (width >= 1000px) {
+        grid-column: 1;
+      }
+    }
+
+    .hero__title {
+      margin-block-end: 24px;
+    }
+
+    .hero__subtitle {
+      font-weight: 500;
+      margin-block-end: 40px;
+    }
+
+    .hero__link {
     }
   }
 }
