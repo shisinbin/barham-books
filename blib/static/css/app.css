@@ -86,6 +86,7 @@
   :root {
     --c-white: hsl(0, 0%, 96%);
     --c-gray-dark: hsl(233, 14%, 25%);
+    --c-gray-light: hsl(233, 14%, 85%);
     --c-purple: hsl(232, 58%, 55%);
     --c-teal: hsl(180, 100%, 42%);
     --c-teal-dark: hsl(180, 100%, 37%);
@@ -108,6 +109,7 @@
     --color-button-tertiary-bg: var(--c-white);
     --color-button-tertiary-bg-hover: var(--c-teal);
     --color-button-tertiary-text: var(--c-gray-dark);
+    --color-categories-border: var(--c-gray-light);
     /* --color-fullwidth-bg: var(--c-magenta);
     --color-cta-gradient1: var(--c-gray-dark);
     --color-cta-gradient2: var(--c-purple);
@@ -335,13 +337,16 @@
 
     .hero__wrapper {
       position: relative;
-      padding-block: 50px 70px;
+      padding-block: 60px 80px;
       display: grid;
       grid-template-columns: 1fr;
 
+      @media (width >= 600px) {
+        padding-block: 80px 100px;
+      }
+
       @media (width >= 1000px) {
         grid-template-columns: 1fr 1fr;
-        padding-block: 60px 80px;
       }
     }
 
@@ -387,6 +392,69 @@
     }
 
     .hero__link {
+    }
+  }
+
+  .categories {
+    .categories__wrapper {
+      text-align: center;
+      padding-block: 60px;
+
+      @media (width >= 600px) {
+        padding-block: 80px;
+      }
+    }
+
+    .categories__top-row {
+      margin-block-end: 40px;
+    }
+
+    .categories__title {
+      margin-block-end: 20px;
+    }
+
+    .categories__container {
+      display: grid;
+      gap: 30px;
+      justify-items: center;
+      margin-block-end: 40px;
+
+      @media (width >= 600px) {
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+      }
+
+      @media (width >= 1000px) {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .categories__item {
+      display: grid;
+      place-content: center;
+      min-height: 100px;
+      width: 100%;
+      border: 2px solid var(--color-categories-border);
+      border-radius: 8px;
+      padding: 24px 16px;
+
+      @media (width >= 1000px) {
+        padding-block: 32px;
+      }
+    }
+
+    categories__item-backdrop {
+    }
+
+    .categories__category {
+      /* To fit 'Contemporary Classics' */
+      max-width: 18ch;
+    }
+
+    .categories__cta {
+    }
+
+    .categories__link {
     }
   }
 }
