@@ -51,7 +51,7 @@
 
             <div class="hero__content">
               <h1 class="hero__title">Barham Community Library</h1>
-              <p class="hero__subtitle medium">A volunteer-run library in Wembley, built for readers of all ages.</p>
+              <p class="hero__subtitle medium">A community-run library in Wembley, open to readers of all ages.</p>
               <a href="#" class="button primary hero__link">Browse Books</a>
             </div>
           </div>
@@ -68,80 +68,105 @@
           <div class="wrapper categories__wrapper">
             <div class="categories__top-row">
               <h2 class="categories__title">Discover something new</h2>
-              <p>Not sure what you're looking for? Start with one of these curated collections.</p>
+              <p>Not sure where to begin? Explore one of our curated collections.</p>
             </div>
 
             <div class="categories__container">
-              <article class="categories__item">
-                <div class="categories__item-backdrop"></div>
-                <h3 class="categories__category">Crime, Mystery & Thriller</h3>
-              </article>
-              <article class="categories__item">
-                <div class="categories__item-backdrop"></div>
-                <h3 class="categories__category">Sci-Fi & Fantasy</h3>
-              </article>
-              <article class="categories__item">
-                <div class="categories__item-backdrop"></div>
-                <h3 class="categories__category">Modern & Contemporary Classics</h3>
-              </article>
-              <article class="categories__item">
-                <div class="categories__item-backdrop"></div>
-                <h3 class="categories__category">Young Adult Essentials</h3>
-              </article>
+              <a href="#" class="categories__link">
+                <article class="categories__item">
+                  <h3 class="categories__category">Crime, Mystery & Thriller</h3>
+                </article>
+              </a>
+              <a href="#" class="categories__link">
+                <article class="categories__item">
+                  <h3 class="categories__category">Sci-Fi & Fantasy</h3>
+                </article>
+              </a>
+              <a href="#" class="categories__link">
+                <article class="categories__item">
+                  <h3 class="categories__category">Modern & Contemporary Classics</h3>
+                </article>
+              </a>
+              <a href="#" class="categories__link">
+                <article class="categories__item">
+                  <h3 class="categories__category">Young Adult Essentials</h3>
+                </article>
+              </a>
             </div>
 
-            <div class="categories_cta">
-              <a href="#" class="button primary categories__link">Discover more</a>
+            <div class="categories__cta">
+              <a href="#" class="button secondary categories__cta-link">
+                Discover more
+              </a>
             </div>
 
           </div>
         </section>
 
-        <section class="engage">
-          <div class="wrapper">
-            <h2>Be part of the library</h2>
-            <p>Create an account to manage loans, write reviews, and keep track of books you love.</p>
-            <p>Browsing is always free - an account is only needed to borrow or review.</p>
-            <div>
-              <a href="#">Log in</a>
-              <a href="#">Create an account</a>
+        <section class="fw-about fullwidth">
+          <div class="wrapper fullwidth__wrapper">  
+            <h2 class="fullwidth__title">About the library</h2>
+
+            <p class="fullwidth__text">Barham Community Library is a volunteer-run library in Wembley, built around shared books, shared space, and local people.</p>
+
+            <div class="fw-about__img-wrapper">
+              <img src="{% static 'img/parade.jpg' %}" alt="Local residents posing for photo outside library entrance" height="968" width="1296" class="fw-about__image" />
             </div>
+            
+            <p class="fullwidth__text">Our collection grows through donations, and our space hosts talks, group activities, and small community events.</p>
+
+            <a href="#" class="fw-about__link button primary">Learn more</a>
+          </div>
+        </section>
+
+        <section class="testimonial">
+          <h2 class="visually-hidden">Testimonial</h2>
+
+          <div class="wrapper testimonial__wrapper">
+            <figure class="testimonial__figure">
+              <img
+              src="{% static '/img/quotation-mark-teal.svg' %}"
+              alt=""
+              width="78"
+              height="66"
+              class="testimonial__quotemark"
+              />
+              <blockquote class="testimonial__quote">
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eum mollitia temporibus autem porro. Cumque quos aut repudiandae temporibus animi aliquid consequatur, enim obcaecati.
+              </blockquote>
+              <figcaption class="testimonial__author-wrapper">
+                <img
+                  src="{% static 'img/author-1x.png' %}"
+                  srcset="
+                    {% static 'img/author-1x.png' %} 1x,
+                    {% static 'img/author-2x.png' %} 2x"
+                  alt="Headshot of Paul Lorber"
+                  class="testimonial__author-image"
+                  width="120"
+                  height="120"
+                />
+                <p class="testimonial__author-description medium">
+                  Paul Lorber<br />Trustee and Director, Barham Library
+                </p>
+              </figcaption>
+          </figure>
+          </div>
+        </section>
+
+        <section class="fw-cta fullwidth">
+          <div class="wrapper fullwidth__wrapper">
+            <h2 class="fullwidth__title fw-cta__title">
+              Get in touch
+            </h2>
+            <p class="fullwidth__text large">
+              Have a question, a donation, or an idea for using our space?
+            </p>
+            <a href="#" class="button tertiary">Send a message</a>
           </div>
         </section>
 
         <section id="padding"></section>
 
-        <section class="new-arrivals">
-          <div class="wrapper">
-            <h2>New arrivals</h2>
-            <p>Recently added to the collection</p>
-            <div>
-              <ul>
-                <li>
-                  Book 1
-                </li>
-                <li>
-                  Book 2
-                </li>
-                <li>
-                  Book 3
-                </li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <section class="about">
-          <div class="wrapper">  
-            <h2>About Barham Community Library</h2>
-            <p>We're a community-run library based in Wembley, UK.</p>
-            <p>Our collection is built from donations, and our space is shared for reading groups and local events.</p>
-            <p>Have books to donate? We'd love to hear from you.</p>
-            <a href="#">About the library</a>
-            <a href="#">Contact us</a>
-          </div>
-        </section>
-        
       </main>
       <footer class="footer">
         <h2 class="visually-hidden">Footer</h2>
