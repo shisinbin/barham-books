@@ -1,19 +1,24 @@
 {% extends 'site_base.html' %}
 {% load static %}
 
-{% block content %}
-  <h1>Browse our collections</h1>
+{% block title %}Collections - Barham Community Library{% endblock %}
 
-  <ul>
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages/collections.css' %}" />{% endblock %}
+
+{% block content %}
+  <div class="collections wrapper">
+    <h1 class="collections__title">Browse our collections</h1>
+    
+    <ul>
     {% for slug, collection in collections.items %}
-    <li>
-      <h2>
-        <a href="{% url 'collection_detail' slug=slug %}">
-          {{ collection.title }}
-        </a>
-      </h2>
-    </li>
+      <li>
+        <h2>
+          <a href="{% url 'collection_detail' slug=slug %}">
+            {{ collection.title }}
+          </a>
+        </h2>
+      </li>
     {% endfor %}
   </ul>
-
+  </div>
 {% endblock %}

@@ -336,10 +336,6 @@
         background-color: var(--color-button-tertiary-bg-hover);
       }
     }
-
-    &.blocky {
-      background-color: --;
-    }
   }
 
   .topnav {

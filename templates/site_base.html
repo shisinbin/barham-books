@@ -5,16 +5,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}{% endblock %}Barham Community Library</title>
+    <title>{% block title %}Barham Community Library{% endblock %}</title>
 
-    {% block meta %}{% endblock %}
+    {% block meta %}
+      <meta name="description" content="A volunteer-run community library in Wembley. Discover, browse and explore books for all ages.">
+    {% endblock %}
 
-    <link rel="stylesheet" href="{% static 'css/app.css' %}" />
-    <link rel="icon" type="image/png" href="{% static 'img/favicon-96x96.png' %}" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}" />
-    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" />
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}" />
-    <link rel="manifest" href="{% static 'img/site.webmanifest' %}" />
     <link rel="preload"
       href="{% static 'fonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-mu0SC55I.woff2' %}"
       as="font"
@@ -26,9 +22,18 @@
       type="font/woff2"
       crossorigin>
 
+    <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+
     {% block extra_css %}{% endblock %}
 
+    <link rel="icon" type="image/png" href="{% static 'img/favicon-96x96.png' %}" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}" />
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}" />
+    <link rel="manifest" href="{% static 'img/site.webmanifest' %}" />
+
     <script src="{% static 'js/app.js' %}" defer></script>
+    
     {% block extra_js %}{% endblock %}
   </head>
   <body>
