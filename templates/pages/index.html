@@ -1,280 +1,123 @@
+{% extends 'site_base.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home page</title>
-    <link rel="stylesheet" href="{% static 'css/app.css' %}" />
-    <link rel="icon" type="image/png" href="{% static 'img/favicon-96x96.png' %}" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}" />
-    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" />
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}" />
-    <link rel="manifest" href="{% static 'img/site.webmanifest' %}" />
-  </head>
-  <body>
-    <div id="app">
-      <a class="visually-hidden skip" href="#main">
-        Skip to main content
-      </a>
+{% block meta %}
+  <meta name="description" content="A volunteer-run community library in Wembley. Discover, browse and explore books for all ages.">
+{% endblock %}
 
-      <header class="topnav">
-        <h2 class="visually-hidden">Header</h2>
+{% block content %}
+  <section class="hero">
+    <div class="wrapper hero__wrapper">
+      <div class="hero__backdrop" aria-hidden="true"></div>
 
-        <div class="wrapper topnav__wrapper">
-          <a href="/" class="topnav__homelink">
-            <img src="{% static 'img/logo.svg' %}" alt="Barham homepage" class="topnav__logo" width="40" height="40">
-          </a>
-
-          <nav>
-            <ul class="topnav__links">
-              <li class="topnav__item">
-                <a href="#" class="topnav__link">O</a>
-              </li>
-              <li class="topnav__item">
-                <a href="#" class="topnav__link">Books</a>
-              </li>
-              <li class="topnav__item">
-                <a href="#" class="topnav__link">Categories</a>
-              </li>
-              <li class="topnav__item">
-                <a href="#" class="topnav__link">Contact</a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </header>
-
-      <main id="main">
-
-        <section class="hero">
-          <div class="wrapper hero__wrapper">
-            <div class="hero__backdrop" aria-hidden="true"></div>
-
-            <div class="hero__content">
-              <h1 class="hero__title">Barham Community Library</h1>
-              <p class="hero__subtitle medium">A community-run library in Wembley, open to readers of all ages.</p>
-              <a href="#" class="button primary hero__link">Browse Books</a>
-            </div>
-          </div>
-        </section>
-
-        {% comment %} <section class="browse">
-          <div class="wrapper">
-            <h2>Find a book in our library</h2>
-            <input type="text" placeholder='Search by title, or author...' />
-          </div>
-        </section> {% endcomment %}
-
-        <section class="categories">
-          <div class="wrapper categories__wrapper">
-            <div class="categories__top-row">
-              <h2 class="categories__title">Discover something new</h2>
-              <p>Not sure where to begin? Explore one of our curated collections.</p>
-            </div>
-
-            <div class="categories__container">
-              <a href="#" class="categories__link">
-                <article class="categories__item">
-                  <h3 class="categories__category">Crime, Mystery & Thriller</h3>
-                </article>
-              </a>
-              <a href="#" class="categories__link">
-                <article class="categories__item">
-                  <h3 class="categories__category">Sci-Fi & Fantasy</h3>
-                </article>
-              </a>
-              <a href="#" class="categories__link">
-                <article class="categories__item">
-                  <h3 class="categories__category">Modern & Contemporary Classics</h3>
-                </article>
-              </a>
-              <a href="#" class="categories__link">
-                <article class="categories__item">
-                  <h3 class="categories__category">Young Adult Essentials</h3>
-                </article>
-              </a>
-            </div>
-
-            <div class="categories__cta">
-              <a href="#" class="button secondary categories__cta-link">
-                Discover more
-              </a>
-            </div>
-
-          </div>
-        </section>
-
-        <section class="fw-about fullwidth">
-          <div class="wrapper fullwidth__wrapper">  
-            <h2 class="fullwidth__title">About the library</h2>
-
-            <p class="fullwidth__text">Barham Community Library is a volunteer-run library in Wembley, built around shared books, shared space, and local people.</p>
-
-            <div class="fw-about__img-wrapper">
-              <img src="{% static 'img/parade.jpg' %}" alt="Local residents posing for photo outside library entrance" height="968" width="1296" class="fw-about__image" />
-            </div>
-            
-            <p class="fullwidth__text">Our collection grows through donations, and our space hosts talks, group activities, and small community events.</p>
-
-            <a href="#" class="fw-about__link button primary">Learn more</a>
-          </div>
-        </section>
-
-        <section class="testimonial">
-          <h2 class="visually-hidden">Testimonial</h2>
-
-          <div class="wrapper testimonial__wrapper">
-            <figure class="testimonial__figure">
-              <img
-              src="{% static '/img/quotation-mark-teal.svg' %}"
-              alt=""
-              width="78"
-              height="66"
-              class="testimonial__quotemark"
-              />
-              <blockquote class="testimonial__quote">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eum mollitia temporibus autem porro. Cumque quos aut repudiandae temporibus animi aliquid consequatur, enim obcaecati.
-              </blockquote>
-              <figcaption class="testimonial__author-wrapper">
-                <img
-                  src="{% static 'img/author-1x.png' %}"
-                  srcset="
-                    {% static 'img/author-1x.png' %} 1x,
-                    {% static 'img/author-2x.png' %} 2x"
-                  alt="Headshot of Paul Lorber"
-                  class="testimonial__author-image"
-                  width="120"
-                  height="120"
-                />
-                <p class="testimonial__author-description medium">
-                  Paul Lorber<br />Trustee and Director, Barham Library
-                </p>
-              </figcaption>
-          </figure>
-          </div>
-        </section>
-
-        <section class="fw-cta fullwidth">
-          <div class="wrapper fullwidth__wrapper">
-            <h2 class="fullwidth__title fw-cta__title">
-              Get in touch
-            </h2>
-            <p class="fullwidth__text large">
-              Have a question, a donation, or an idea for using our space?
-            </p>
-            <a href="#" class="button tertiary">Send a message</a>
-          </div>
-        </section>
-
-        {% comment %} <section id="padding"></section> {% endcomment %}
-
-      </main>
-      <footer class="footer">
-        <h2 class="visually-hidden">Footer</h2>
-
-
-        <div class="wrapper">
-          <div class="footer__top-row">
-            <a href="#" class="footer__homelink">
-              <img
-                src="{% static 'img/logo.svg' %}"
-                alt="Barham library logo"
-                width="40"
-                height="40"
-                class="footer__logo"
-              />
-            </a>
-            <p>© <span id="current-year"></span> Barham Community Library</p>
-          </div>
-
-          <div class="footer__main-nav-area">
-            <nav class="footer__nav-item">
-              <h3 class="footer__nav-title">Explore</h3>
-              <ul class="footer__nav-list">
-                <li>
-                  <a href="#" class="footer__link">Books</a>
-                </li>
-                <li>
-                  <a href="#" class="footer__link">Categories</a>
-                </li>
-                <li>
-                  <a href="#" class="footer__link">Browse A-Z</a>
-                </li>
-                <li>
-                  <a href="#" class="footer__link">Search</a>
-                </li>
-              </ul>
-            </nav>
-
-            <nav class="footer__nav-item">
-              <h3 class="footer__nav-title">About</h3>
-              <ul class="footer__nav-list">
-                <li>
-                  <a href="#" class="footer__link">About the library</a>
-                </li>
-                <li>
-                  <a href="#" class="footer__link">Contact us</a>
-                </li>
-                {% comment %} <li>
-                  <a href="#" class="footer__link">Donate books</a>
-                </li>
-                <li>
-                  <a href="#" class="footer__link">Hire our space</a>
-                </li> {% endcomment %}
-              </ul>
-            </nav>
-
-            <nav class="footer__nav-item">
-              <h3 class="footer__nav-title">Account</h3>
-              <ul class="footer__nav-list">
-                <li>
-                  <a href="#" class="footer__link">Log in</a>
-                </li>
-                <li>
-                  <a href="#" class="footer__link">Create account</a>
-                </li>
-                {% comment %} <li>
-                  <a href="#" class="footer__link">Dashboard</a>
-                </li> {% endcomment %}
-              </ul>
-            </nav>
-
-            <nav class="footer__nav-item">
-              <h3 class="footer__nav-title">Follow</h3>
-              <ul class="footer__nav-list">
-
-                <li>
-                  <a href="#" class="footer__link social">
-                    <!-- created by svgstack.com --><svg class="footer__social-svg" width="18" height="18" viewBox="0 0 201 201" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="footer__social-path" d="M132.325 163.576H111.15C92.0791 163.576 77.8691 153.763 77.8691 130.286V92.6887H60.5386V72.3328C79.6091 67.3826 87.5839 50.9611 88.5046 36.7471H108.306V69.0281H131.412V92.6887H108.306V125.43C108.306 135.243 113.255 138.635 121.142 138.635H132.325V163.583V163.576Z" fill="#373949"/></svg>
-                    Tumblr
-                  </a>
-                </li>
-
-                <li>
-                  <a href="#" class="footer__link social">
-                    <!-- created by svgstack.com --><svg class="footer__social-svg" width="18" height="18" viewBox="0 0 201 202" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="footer__social-path" d="M113.59 78.5572V99.6106H139.627L135.504 127.971H113.59V193.312C109.196 193.921 104.701 194.24 100.138 194.24C94.8716 194.24 89.6995 193.82 84.6627 193.007V127.971H60.6503V99.6106H84.6627V73.8508C84.6627 57.8694 97.6133 44.9082 113.597 44.9082V44.9218C113.644 44.9218 113.685 44.9082 113.732 44.9082H139.633V69.4356H122.709C117.679 69.4356 113.597 73.519 113.597 78.5504L113.59 78.5572Z" fill="#373949"/></svg> 
-                    Facebook
-                  </a>
-                </li>
-                
-                <li>
-                  <a href="#" class="footer__link social">
-                    <!-- created by svgstack.com --><svg class="footer__social-svg" width="18" height="18" viewBox="0 0 201 201" fill="none" xmlns="http://www.w3.org/2000/svg"><path class="footer__social-path" d="M43.1646 47.8984L87.7234 107.49L42.8871 155.942H52.9808L92.2389 113.524L123.955 155.942H158.299L111.235 92.9985L152.971 47.8984H142.877L106.726 86.9648L77.5146 47.8984H43.1713H43.1646ZM58.004 55.3338H73.7776L143.446 148.507H127.672L58.004 55.3338Z" fill="#373949"/></svg> 
-                    Twitter</a>
-                </li>
-              </ul>
-            </nav>
-
-
-          </div>
-        </div>
-      </footer>
+      <div class="hero__content">
+        <h1 class="hero__title">Barham Community Library</h1>
+        <p class="hero__subtitle medium">A community-run library in Wembley, open to readers of all ages.</p>
+        <a href="#" class="button primary hero__link">Browse Books</a>
+      </div>
     </div>
+  </section>
 
-    <script>
-      document.getElementById("current-year").textContent = new Date().getFullYear();
-    </script>
-  </body>
-</html>
+  <section class="categories">
+    <div class="wrapper categories__wrapper">
+      <div class="categories__top-row">
+        <h2 class="categories__title">Discover something new</h2>
+        <p>Not sure where to begin? Explore one of our curated collections.</p>
+      </div>
+
+      <div class="categories__container">
+        <a href="#" class="categories__link">
+          <article class="categories__item">
+            <h3 class="categories__category">Crime, Mystery & Thriller</h3>
+          </article>
+        </a>
+        <a href="#" class="categories__link">
+          <article class="categories__item">
+            <h3 class="categories__category">Sci-Fi & Fantasy</h3>
+          </article>
+        </a>
+        <a href="#" class="categories__link">
+          <article class="categories__item">
+            <h3 class="categories__category">Modern & Contemporary Classics</h3>
+          </article>
+        </a>
+        <a href="#" class="categories__link">
+          <article class="categories__item">
+            <h3 class="categories__category">Young Adult Essentials</h3>
+          </article>
+        </a>
+      </div>
+
+      <div class="categories__cta">
+        <a href="#" class="button secondary categories__cta-link">
+          Discover more
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="fw-about fullwidth">
+    <div class="wrapper fullwidth__wrapper">  
+      <h2 class="fullwidth__title">About the library</h2>
+
+      <p class="fullwidth__text">Barham Community Library is a volunteer-run library in Wembley, built around shared books, shared space, and local people.</p>
+
+      <div class="fw-about__img-wrapper">
+        <img src="{% static 'img/parade.jpg' %}" alt="Local residents posing for photo outside library entrance" height="968" width="1296" class="fw-about__image" />
+      </div>
+      
+      <p class="fullwidth__text">Our collection grows through donations, and our space hosts talks, group activities, and small community events.</p>
+
+      <a href="#" class="fw-about__link button primary">Learn more</a>
+    </div>
+  </section>
+
+  <section class="testimonial">
+    <h2 class="visually-hidden">Testimonial</h2>
+
+    <div class="wrapper testimonial__wrapper">
+      <figure class="testimonial__figure">
+        <img
+        src="{% static '/img/quotation-mark-teal.svg' %}"
+        alt=""
+        width="78"
+        height="66"
+        class="testimonial__quotemark"
+        />
+        <blockquote class="testimonial__quote">
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eum mollitia temporibus autem porro. Cumque quos aut repudiandae temporibus animi aliquid consequatur, enim obcaecati.
+        </blockquote>
+        <figcaption class="testimonial__author-wrapper">
+          <img
+            src="{% static 'img/author-1x.png' %}"
+            srcset="
+              {% static 'img/author-1x.png' %} 1x,
+              {% static 'img/author-2x.png' %} 2x"
+            alt="Headshot of Paul Lorber"
+            class="testimonial__author-image"
+            width="120"
+            height="120"
+          />
+          <p class="testimonial__author-description medium">
+            Paul Lorber<br />Trustee and Director, Barham Library
+          </p>
+        </figcaption>
+    </figure>
+    </div>
+  </section>
+
+  <section class="fw-cta fullwidth">
+    <div class="wrapper fullwidth__wrapper">
+      <h2 class="fullwidth__title fw-cta__title">
+        Get in touch
+      </h2>
+      <p class="fullwidth__text large">
+        Have a question, a donation, or an idea for using our space?
+      </p>
+      <a href="#" class="button tertiary">Send a message</a>
+    </div>
+  </section>
+
+  {% comment %} <section id="padding"></section> {% endcomment %}
+{% endblock %}
