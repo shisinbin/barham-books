@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <p>
+    <a href="{% url 'collections' %}">Back to collections</a>
+  </p>
+
+  <h1>{{ collection.title }}</h1>
+  <p>{{ collection.description }}</p>
+
+  <h2>Books in this collection</h2>
+
+  {% if books %}
+    <ul>
+      {% for book in books %}
+        <li>
+          <a href="{{ book.get_absolute_url }}">
+            {{ book.title }}
+          </a>
+          {% if book.author %}
+            - {{ book.author }}
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No books found in this collection.</p>
+  {% endif %}
+
+  <div style="margin-top: 20px;">
+    {% if books.has_previous %}
+      <a href="?page={{ books.previous_page_number }}">Previous</a>
+    {% endif %}
+
+    <span>
+      Page {{ books.number }} of {{ books.paginator.num_pages }}
+    </span>
+
+    {% if books.has_next %}
+      <a href="?page={{ books.next_page_number }}">Next</a>
+    {% endif %}
+  </div>
+
+{% endblock %}

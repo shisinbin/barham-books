@@ -51,9 +51,15 @@ urlpatterns += [
 ]
 
 urlpatterns += [
-  path('books_for_sale/<slug:slug>/delete/', views.delete_book_for_sale, name='book_for_sale_delete'),
+    path('books_for_sale/<slug:slug>/delete/', views.delete_book_for_sale, name='book_for_sale_delete'),
 ]
 
 urlpatterns += [
-  path('autocomplete/', views.autocomplete_books, name='autocomplete_books'),
+    path('autocomplete/', views.autocomplete_books, name='autocomplete_books'),
+]
+
+#collections
+urlpatterns += [
+    path('collections/', views.collections_index, name='collections'),
+    path('collections/<slug:slug>/', views.collection_detail, name='collection_detail'),
 ]

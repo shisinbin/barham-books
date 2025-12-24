@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <h1>Browse our collections</h1>
+
+  <ul>
+    {% for slug, collection in collections.items %}
+    <li>
+      <h2>
+        <a href="{% url 'collection_detail' slug=slug %}">
+          {{ collection.title }}
+        </a>
+      </h2>
+    </li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}

@@ -8,7 +8,7 @@ from authors.models import Author
 from .models import Book, BookInstance2, Review, Category, BookTags, Series
 from .forms import SearchForm
 from datetime import datetime, timedelta
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.utils import timezone
 from django.urls import reverse_lazy
 from PIL import Image
@@ -1219,3 +1219,55 @@ def delete_book_for_sale(request, slug):
             messages.info(request, f'Author "{author}" was also deleted because they have no other books.')
 
         return redirect('books_for_sale_list')
+
+
+from .collections import COLLECTIONS
+
+def collections_index(request):
+    context = {
+        'collections': COLLECTIONS
+    }
+    return render(request, 'books/collections.html', context)
+
+def collection_detail(request, slug):
+    try:
+        collection = COLLECTIONS[slug]
+    except KeyError:
+        raise Http404('Collection not found')
+
+    MIN_MATCH = collection.get('min_match', 1)
+
+    tags = BookTags.objects.filter(name__in=collection['tags'])
+
+    books_qs = (
+        Book.objects
+        .filter(book_tags__in=tags)
+        .annotate(
+            matched_tags=Count(
+                'book_tags',
+                filter=Q(book_tags__in=tags),
+                distinct=True
+            )
+        )
+        .filter(matched_tags__gte=MIN_MATCH)
+    )
+
+    sort = request.GET.get('sort', 'relevance')
+
+    if sort == 'title':
+        books_qs = books_qs.order_by('title')
+    elif sort == 'newest':
+        books_qs = books_qs.order_by('-created')
+    else:
+        books_qs = books_qs.order_by('-matched_tags', 'title')
+
+    paginator = Paginator(books_qs, 30)
+    page = request.GET.get('page')
+    books = paginator.get_page(page)
+
+    context = {
+        'collection': collection,
+        'books': books,
+    }
+
+    return render(request, 'books/collection_detail.html', context)

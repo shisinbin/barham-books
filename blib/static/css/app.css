@@ -540,7 +540,7 @@
     color: var(--color-text-light);
 
     .fw-about__img-wrapper {
-      margin: 30px calc(var(--vertical-padding) * -1);
+      margin: 40px calc(var(--vertical-padding) * -1);
 
       @media (width >= calc(600 / 16 * 1rem)) {
         margin-inline: 0;
@@ -633,7 +633,7 @@
   .footer {
     .footer__top-row {
       display: grid;
-      gap: 10px;
+      gap: 14px;
       margin-block-end: 40px;
     }
 
