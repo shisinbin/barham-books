@@ -2,12 +2,16 @@
   .collections {
     .collections__title {
       margin-block-end: 40px;
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        margin-block-end: 60px;
+      }
     }
 
     .collections__grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      grid-auto-rows: 1fr; /* Each row takes up equal height */
+      grid-auto-rows: 1fr auto; /* Each title/header takes up equal height */
       gap: 20px;
       list-style: none;
       padding: 0;
@@ -19,9 +23,11 @@
 
       position: relative;
       display: grid;
+      grid-template-rows: subgrid;
+      grid-row: span 2;
       align-items: end;
       background-color: var(--card-bg);
-      padding: 48px 16px 32px;
+      padding: 32px 16px;
       border-radius: 16px;
       transition: 150ms ease;
       transition-property: background-color, box-shadow;
@@ -44,25 +50,31 @@
       }
     }
 
-    .collections__card-body {
+    .collections__card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 1em;
+      /* min-height: 100px; */
     }
 
     .collections__card-title {
-      overflow-wrap: normal; /* Not sure about this one */
+      min-width: 0; /* Important to avoid flex text wrapping */
     }
 
     .collections__card-main-link {
       color: inherit;
-      width: fit-content;
+      /* display: inline-block;
+      width: fit-content; */
     }
 
     .collections__arrow {
       transform: translateX(-6px);
       transition: transform 150ms ease;
+    }
+
+    .collections__description {
+      align-self: start;
     }
   }
 }

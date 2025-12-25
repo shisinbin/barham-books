@@ -67,7 +67,7 @@ COLLECTIONS = {
   },
 
   "modern-contemporary": {
-    "title": "Modern & Contemporary Reads",
+    "title": "Modern & Contemporary",
     "description": "Modern description goes here",
     "tags": [
       "contemporary", "contemporary classics",

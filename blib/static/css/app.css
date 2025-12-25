@@ -291,6 +291,17 @@
     }
   }
 
+  .icon {
+    width: calc(24 / 16 * 1rem);
+    height: calc(24 / 16 * 1rem);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0; /* To avoid getting shrunk in flex container */
+  }
+
   #app {
     display: grid;
     grid-template-rows: auto 1fr auto;
