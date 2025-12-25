@@ -1,4 +1,68 @@
 @layer component {
   .collections {
+    .collections__title {
+      margin-block-end: 40px;
+    }
+
+    .collections__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-auto-rows: 1fr; /* Each row takes up equal height */
+      gap: 20px;
+      list-style: none;
+      padding: 0;
+    }
+
+    .collections__card {
+      --card-bg: var(--c-gray-light, gray);
+      --card-bg-hover: var(--c-gray-lighter, lightgray);
+
+      position: relative;
+      display: grid;
+      align-items: end;
+      background-color: var(--card-bg);
+      padding: 48px 16px 32px;
+      border-radius: 16px;
+      transition: 150ms ease;
+      transition-property: background-color, box-shadow;
+      /* min-height: 250px; */
+
+      &:hover {
+        background-color: var(--card-bg-hover);
+      }
+
+      &:focus-within {
+        background-color: var(--card-bg-hover);
+
+        .collections__arrow {
+          transform: translateX(0);
+        }
+      }
+
+      &:hover .collections__arrow {
+        transform: translateX(0);
+      }
+    }
+
+    .collections__card-body {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1em;
+    }
+
+    .collections__card-title {
+      overflow-wrap: normal; /* Not sure about this one */
+    }
+
+    .collections__card-main-link {
+      color: inherit;
+      width: fit-content;
+    }
+
+    .collections__arrow {
+      transform: translateX(-6px);
+      transition: transform 150ms ease;
+    }
   }
 }

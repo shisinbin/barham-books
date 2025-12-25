@@ -49,8 +49,11 @@
       U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F,
       U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
   }
-  /* Font sizes */
+  /* Font family and sizes */
   :root {
+    --font-headings: 'Lora', Georgia, Times, 'Times New Roman', serif;
+    --font-text: 'Open Sans', Arial, Helvetica, sans-serif;
+
     --fs-14: calc(14 / 16 * 1rem);
     --fs-16: calc(16 / 16 * 1rem);
     --fs-18: calc(18 / 16 * 1rem);
@@ -166,7 +169,7 @@
   }
 
   body {
-    font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+    font-family: var(--font-text);
     line-height: 1.3;
     color: var(--color-text-dark);
     background-color: var(--color-main-bg);
@@ -175,7 +178,7 @@
   h1,
   h2,
   h3 {
-    font-family: 'Lora', Georgia, Times, 'Times New Roman', serif;
+    font-family: var(--font-headings);
     line-height: 1.1;
   }
 
@@ -263,6 +266,28 @@
       &:last-of-type {
         margin-block-end: 40px;
       }
+    }
+  }
+
+  .clickable-parent {
+    position: relative;
+
+    /* Add focus around parent */
+    &:focus-within {
+      outline: 3px solid var(--c-teal);
+      outline-offset: 3px;
+
+      /* Remove focus around child */
+      :focus {
+        outline: none;
+      }
+    }
+
+    .clickable-parent-link::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
     }
   }
 

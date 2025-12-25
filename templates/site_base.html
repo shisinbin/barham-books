@@ -5,26 +5,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}Barham Community Library{% endblock %}</title>
+    <title>
+      {% block title %}
+        Barham Community Library
+      {% endblock %}
+    </title>
 
     {% block meta %}
-      <meta name="description" content="A volunteer-run community library in Wembley. Discover, browse and explore books for all ages.">
+      <meta name="description" content="A volunteer-run community library in Wembley. Discover, browse and explore books for all ages." />
     {% endblock %}
 
-    <link rel="preload"
-      href="{% static 'fonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-mu0SC55I.woff2' %}"
-      as="font"
-      type="font/woff2"
-      crossorigin>
-    <link rel="preload"
-      href="{% static 'fonts/0QIvMX1D_JOuMwr7I_FMl_E.woff2' %}"
-      as="font"
-      type="font/woff2"
-      crossorigin>
+    <link rel="preload" href="{% static 'fonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-mu0SC55I.woff2' %}" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="{% static 'fonts/0QIvMX1D_JOuMwr7I_FMl_E.woff2' %}" as="font" type="font/woff2" crossorigin />
 
     <link rel="stylesheet" href="{% static 'css/app.css' %}" />
 
-    {% block extra_css %}{% endblock %}
+    {% block extra_css %}
+    {% endblock %}
 
     <link rel="icon" type="image/png" href="{% static 'img/favicon-96x96.png' %}" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}" />
@@ -33,17 +30,17 @@
     <link rel="manifest" href="{% static 'img/site.webmanifest' %}" />
 
     <script src="{% static 'js/app.js' %}" defer></script>
-    
-    {% block extra_js %}{% endblock %}
+
+    {% block extra_js %}
+    {% endblock %}
   </head>
   <body>
     <div id="app">
-      <a class="visually-hidden skip" href="#main">
-        Skip to main content
-      </a>
+      <a class="visually-hidden skip" href="#main">Skip to main content</a>
       {% include 'partials/header.html' %}
       <main id="main">
-        {% block content %}{% endblock %}
+        {% block content %}
+        {% endblock %}
       </main>
       {% include 'partials/footer.html' %}
     </div>
