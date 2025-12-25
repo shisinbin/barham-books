@@ -1,45 +1,92 @@
-{% extends 'base.html' %}
+{% extends 'site_base.html' %}
 {% load static %}
+{% load thumbnail %}
+
+{% block title %}
+  {{ collection.title }} - Barham Community Library
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/collection_detail.css' %}" />
+{% endblock %}
 
 {% block content %}
-  <p>
-    <a href="{% url 'collections' %}">Back to collections</a>
-  </p>
+  <div class="collection wrapper">
+    <nav class="collection__nav">
+      <a href="{% url 'collections' %}" class="collection__back">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>  
+        All collections
+      </a>
+    </nav>
 
-  <h1>{{ collection.title }}</h1>
-  <p>{{ collection.description }}</p>
+    <header class="collection__header">
+      <h1 class="collection__title">{{ collection.title }}</h1>
+      <p class="collection__description medium">{{ collection.description }}</p>
 
-  <h2>Books in this collection</h2>
+      <ul class="collection__tags">
+        {% for tag in collection.tags %}
+          <li class="collection__tag">{{ tag }}</li>
+        {% endfor %}
+      </ul>
+    </header>
 
-  {% if books %}
-    <ul>
+    <div class="collection__meta">
+      <p class="collection__count">
+        {{ total_books }} books in this collection
+      </p>
+
+      <form method="get" class="collection__sort">
+        <label for="sort">Sort by</label>
+        <select name="sort" id="sort" onchange="this.form.submit()">
+          <option value="relevance" {% if sort == 'relevance' %}selected{% endif %}>
+            Relevance
+          </option>
+          <option value="newest" {% if sort == 'newest' %}selected{% endif %}>
+            Recently added
+          </option>
+          <option value="title" {% if sort == 'title' %}selected{% endif %}>
+            Title A-Z
+          </option>
+        </select>
+      </form>
+    </div>
+
+    <ul class="collection__grid">
       {% for book in books %}
-        <li>
-          <a href="{{ book.get_absolute_url }}">
-            {{ book.title }}
-          </a>
-          {% if book.author %}
-            - {{ book.author }}
-          {% endif %}
+        <li class="collection__book clickable-parent">
+          <div class="collection__image-wrapper">
+            {% if book.photo %}
+              <img src="{{ book.photo|thumbnail_url:'default' }}" alt="" class="collection__cover-image">
+            {% else %}
+              <img src="{% static 'img/blank.png' %}" alt="" class="collection__cover-image">
+            {% endif %}
+          </div>
+
+          <div class="collection__book-body">
+            <h3 class="collection__book-title">
+              <a href="{{ book.get_absolute_url }}" class="collection__book-link clickable-parent-link">{{ book.title }}</a>
+            </h3>
+
+            <p class="collection__book-author">{{ book.author }}</p>
+          </div>
         </li>
       {% endfor %}
     </ul>
-  {% else %}
-    <p>No books found in this collection.</p>
-  {% endif %}
 
-  <div style="margin-top: 20px;">
-    {% if books.has_previous %}
-      <a href="?page={{ books.previous_page_number }}">Previous</a>
-    {% endif %}
+    <nav class="pagination">
+      {% if books.has_previous %}
+        <a href="?sort={{ sort }}&page={{ books.previous_page_number }}">Previous</a>
+      {% else %}
+        <span aria-hidden="true"></span>
+      {% endif %}
 
-    <span>
-      Page {{ books.number }} of {{ books.paginator.num_pages }}
-    </span>
+      <span>Page {{ books.number }} of {{ books.paginator.num_pages }}</span>
 
-    {% if books.has_next %}
-      <a href="?page={{ books.next_page_number }}">Next</a>
-    {% endif %}
+      {% if books.has_next %}
+        <a href="?sort={{ sort }}&page={{ books.next_page_number }}">Next</a>
+      {% else %}
+        <span aria-hidden="true"></span>
+      {% endif %}
+    </nav>
   </div>
-
 {% endblock %}

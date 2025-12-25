@@ -88,6 +88,7 @@
 */
   :root {
     --c-white: hsl(0, 0%, 96%);
+    --c-white-bone: hsl(0, 10%, 90%);
     --c-white-dark: hsl(0, 0%, 91%);
     --c-gray-dark: rgb(55, 57, 73);
     --c-gray-light: hsl(233, 14%, 85%);
@@ -682,6 +683,10 @@
       width: calc(40 / 16 * 1rem);
     }
 
+    .footer__copyright {
+      font-size: calc(16 / 16 * 1rem);
+    }
+
     .footer__main-nav-area {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -704,6 +709,7 @@
 
     .footer__link {
       color: inherit;
+      font-size: calc(16 / 16 * 1rem);
       transition: color 150ms ease-in-out;
 
       &:hover {

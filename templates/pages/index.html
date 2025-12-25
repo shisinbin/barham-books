@@ -9,7 +9,7 @@
       <div class="hero__content">
         <h1 class="hero__title">Barham Community Library</h1>
         <p class="hero__subtitle medium">A community-run library in Wembley, open to readers of all ages.</p>
-        <a href="#" class="button primary hero__link">Browse Books</a>
+        <a href="{% url 'books' %}" class="button primary hero__link">Browse Books</a>
       </div>
     </div>
   </section>
@@ -45,7 +45,7 @@
       </div>
 
       <div class="categories__cta">
-        <a href="#" class="button secondary categories__cta-link">Discover more</a>
+        <a href="{% url 'collections' %}" class="button secondary categories__cta-link">Discover more</a>
       </div>
     </div>
   </section>
@@ -62,7 +62,7 @@
 
       <p class="fullwidth__text">Our collection grows through donations, and our space hosts talks, group activities, and small community events.</p>
 
-      <a href="#" class="fw-about__link button primary">Learn more</a>
+      <a href="{% url 'about' %}" class="fw-about__link button primary">Learn more</a>
     </div>
   </section>
 

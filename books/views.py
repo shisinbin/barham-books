@@ -1265,9 +1265,13 @@ def collection_detail(request, slug):
     page = request.GET.get('page')
     books = paginator.get_page(page)
 
+    total_books = books_qs.count()
+
     context = {
         'collection': collection,
         'books': books,
+        'total_books': total_books,
+        'sort': sort,
     }
 
     return render(request, 'books/collection_detail.html', context)
