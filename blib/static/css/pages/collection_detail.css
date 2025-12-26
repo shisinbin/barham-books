@@ -49,9 +49,61 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      align-items: center;
+      align-items: last baseline;
       gap: 1em;
       margin-block-end: 32px;
+      font-size: calc(14 / 16 * 1rem);
+    }
+
+    .collection__count {
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    .collection__sort {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .collection__select-label {
+    }
+
+    .collection__select {
+      position: relative;
+      width: max-content;
+    }
+
+    .collection__select-native {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+
+      &:focus + .collection__select-presentational {
+        outline: 2px solid AccentColor;
+        outline: 2px solid -webkit-focus-ring-color;
+        outline-offset: 2px;
+      }
+    }
+
+    .collection__select-presentational {
+      background-color: var(--c-white-bone);
+      padding: 12px 16px;
+      padding-right: 52px;
+      border-radius: 8px;
+    }
+
+    .collection__select-value {
+    }
+
+    .collection__select-icon {
+      position: absolute;
+      right: 10px;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      pointer-events: none;
     }
 
     .collection__grid {

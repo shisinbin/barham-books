@@ -36,18 +36,36 @@
       </p>
 
       <form method="get" class="collection__sort">
-        <label for="sort">Sort by</label>
-        <select name="sort" id="sort" onchange="this.form.submit()">
-          <option value="relevance" {% if sort == 'relevance' %}selected{% endif %}>
-            Relevance
-          </option>
-          <option value="newest" {% if sort == 'newest' %}selected{% endif %}>
-            Recently added
-          </option>
-          <option value="title" {% if sort == 'title' %}selected{% endif %}>
-            Title A-Z
-          </option>
-        </select>
+        <label class="collection__select-label" for="sort">Sort by</label>
+
+        <div class="collection__select">
+          <select name="sort" id="sort" onchange="this.form.submit()" class="collection__select-native">
+            <option value="relevance" {% if sort == 'relevance' %}selected{% endif %}>
+              Relevance
+            </option>
+            <option value="newest" {% if sort == 'newest' %}selected{% endif %}>
+              Recently added
+            </option>
+            <option value="title" {% if sort == 'title' %}selected{% endif %}>
+              Title A-Z
+            </option>
+          </select>
+          
+          <div class="collection__select-presentational">
+            <span class="collection__select-value">
+              {% if sort == 'newest' %}Recently added
+              {% elif sort == 'title' %}Title A-Z
+              {% else %}Relevance{% endif %}
+            </span>
+
+            <svg class="collection__select-icon" width="20" height="20" viewBox="0 0 24 24">
+              <polyline points="6 9 12 15 18 9"
+                fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
       </form>
     </div>
 
@@ -90,7 +108,6 @@
     </nav> {% endcomment %}
 
     <nav class="pagination" aria-label="Pagination">
-      <!-- Previous -->
       {% if books.has_previous %}
         <a class="pagination__control previous" href="?sort={{ sort }}&page={{ books.previous_page_number }}">
           <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -103,7 +120,6 @@
         </span>
       {% endif %}
 
-      <!-- Page numbers -->
       <ul class="pagination__pages">
         {% for num in books.paginator.page_range %}
 
@@ -128,7 +144,6 @@
         {% endfor %}
       </ul>
 
-      <!-- Next -->
       {% if books.has_next %}
         <a class="pagination__control next" href="?sort={{ sort }}&page={{ books.next_page_number }}">
           <span class="pagination__control-text">Next</span>

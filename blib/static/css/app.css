@@ -209,6 +209,10 @@
   p {
     font-size: var(--fs-18);
 
+    &.small {
+      font-size: var(--fs-16);
+    }
+
     &.medium {
       font-size: var(--fs-20);
 
@@ -279,7 +283,8 @@
 
     /* Add focus around parent */
     &:focus-within {
-      outline: 3px solid var(--c-teal);
+      outline: 3px solid AccentColor;
+      outline: 3px solid -webkit-focus-ring-color;
       outline-offset: 3px;
 
       /* Remove focus around child */
@@ -344,7 +349,8 @@
     transition-property: background-color, color, border-color;
 
     &:focus-visible {
-      outline: 3px solid var(--c-teal);
+      outline: 3px solid AccentColor;
+      outline: 3px solid -webkit-focus-ring-color;
       outline-offset: 3px;
     }
 
