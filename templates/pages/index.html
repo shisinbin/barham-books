@@ -14,38 +14,53 @@
     </div>
   </section>
 
-  <section class="categories">
-    <div class="wrapper categories__wrapper">
-      <div class="categories__top-row">
-        <h2 class="categories__title">Discover something new</h2>
+  <section class="collections">
+    <div class="wrapper collections__wrapper">
+      <div class="collections__top-row">
+        <h2 class="collections__title">Discover something new</h2>
         <p>Not sure where to begin? Explore one of our curated collections.</p>
       </div>
 
-      <div class="categories__container">
-        <a href="#" class="categories__link">
-          <article class="categories__item">
-            <h3 class="categories__category">Crime, Mystery & Thriller</h3>
-          </article>
-        </a>
-        <a href="#" class="categories__link">
-          <article class="categories__item">
-            <h3 class="categories__category">Sci-Fi & Fantasy</h3>
-          </article>
-        </a>
-        <a href="#" class="categories__link">
-          <article class="categories__item">
-            <h3 class="categories__category">Modern & Contemporary Classics</h3>
-          </article>
-        </a>
-        <a href="#" class="categories__link">
-          <article class="categories__item">
-            <h3 class="categories__category">Young Adult Essentials</h3>
-          </article>
-        </a>
-      </div>
+      <ul class="collections__container">
+        <li class="collections__item clickable-parent">
+          <h3 class="collections__item-title"><a href="#" class="collections__item-link clickable-parent-link">Crime, Mystery & Thriller</a></h3>
+        </li>
+        <li class="collections__item clickable-parent">
+          <h3 class="collections__item-title"><a href="#" class="collections__item-link clickable-parent-link">Sci-Fi & Fantasy</a></h3>
+        </li>
+        <li class="collections__item clickable-parent">
+          <h3 class="collections__item-title"><a href="#" class="collections__item-link clickable-parent-link">Modern & Contemporary Classics</a></h3>
+        </li>
+        <li class="collections__item clickable-parent">
+          <h3 class="collections__item-title"><a href="#" class="collections__item-link clickable-parent-link">Young Adult Essentials</a></h3>
+        </li>
+      </ul>
 
-      <div class="categories__cta">
-        <a href="{% url 'collections' %}" class="button secondary categories__cta-link">Discover more</a>
+      {% comment %} <div class="collections__container">
+        <a href="#" class="collections__link">
+          <article class="collections__item">
+            <h3 class="collections__category">Crime, Mystery & Thriller</h3>
+          </article>
+        </a>
+        <a href="#" class="collections__link">
+          <article class="collections__item">
+            <h3 class="collections__category">Sci-Fi & Fantasy</h3>
+          </article>
+        </a>
+        <a href="#" class="collections__link">
+          <article class="collections__item">
+            <h3 class="collections__category">Modern & Contemporary Classics</h3>
+          </article>
+        </a>
+        <a href="#" class="collections__link">
+          <article class="collections__item">
+            <h3 class="collections__category">Young Adult Essentials</h3>
+          </article>
+        </a>
+      </div> {% endcomment %}
+
+      <div class="collections__cta">
+        <a href="{% url 'collections' %}" class="button secondary collections__cta-link">Explore collections</a>
       </div>
     </div>
   </section>

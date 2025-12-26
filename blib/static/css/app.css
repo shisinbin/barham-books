@@ -125,8 +125,8 @@
     --color-button-tertiary-bg-hover: var(--c-teal);
     --color-button-tertiary-text: var(--c-gray-dark);
 
-    --color-categories-border: var(--c-gray-light);
-    --color-categories-border-hover: var(--c-gray-lighter);
+    --color-collections-border: var(--c-gray-light);
+    --color-collections-border-hover: var(--c-gray-lighter);
     --color-fullwidth-bg: var(--c-magenta);
     --color-cta-gradient1: var(--c-gray-dark);
     --color-cta-gradient2: var(--c-purple);
@@ -505,8 +505,8 @@
     }
   }
 
-  .categories {
-    .categories__wrapper {
+  .collections {
+    .collections__wrapper {
       text-align: center;
 
       @media (width >= calc(600 / 16 * 1rem)) {
@@ -514,23 +514,24 @@
       }
     }
 
-    .categories__top-row {
+    .collections__top-row {
       margin-block-end: 40px;
     }
 
-    .categories__title {
+    .collections__title {
       margin-block-end: 20px;
     }
 
-    .categories__container {
+    .collections__container {
       display: grid;
-      grid-template-rows: 1fr;
-      gap: 30px;
+      grid-auto-rows: 1fr;
+      gap: 20px 24px;
       margin-block-end: 40px;
+      list-style: none;
+      padding: 0;
 
       @media (width >= calc(600 / 16 * 1rem)) {
         grid-template-columns: 1fr 1fr;
-        gap: 40px;
       }
 
       @media (width >= calc(1000 / 16 * 1rem)) {
@@ -538,43 +539,37 @@
       }
     }
 
-    .categories__link {
-      color: inherit;
-
-      &:hover .categories__item,
-      &:focus-visible .categories__item {
-        transform: translateY(-2px);
-        border-color: var(--c-gray-lighter);
-        box-shadow: var(--shadow-gray);
-      }
-    }
-
-    .categories__item {
+    .collections__item {
       display: grid;
       place-content: center;
-      height: 100%;
-      width: 100%;
-      border: 2px solid var(--color-categories-border);
       border-radius: 8px;
       padding: 24px 16px;
-      transition: 150ms ease-in-out;
-      transition-property: transform, box-shadow, border-color;
-      will-change: transform;
+      border: 2px solid var(--color-collections-border);
+      transition: background-color 150ms ease-in-out;
+
+      &:hover,
+      &:focus-within {
+        background-color: var(--c-white-bone);
+      }
 
       @media (width >= calc(1000 / 16 * 1rem)) {
         padding-block: 32px;
       }
     }
 
-    .categories__category {
-      /* To fit 'Contemporary Classics' */
+    .collections__item-title {
       max-width: 18ch;
     }
 
-    .categories__cta {
+    .collections__item-link {
+      color: inherit;
+      width: fit-content;
     }
 
-    .categories__cta-link {
+    .collections__cta {
+    }
+
+    .collections__cta-link {
     }
   }
 

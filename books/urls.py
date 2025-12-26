@@ -63,3 +63,8 @@ urlpatterns += [
     path('collections/', views.collections_index, name='collections'),
     path('collections/<slug:slug>/', views.collection_detail, name='collection_detail'),
 ]
+
+# browse
+urlpatterns += [
+    path('browse/', views.browse_books, name='browse_books'),
+]

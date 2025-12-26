@@ -109,7 +109,7 @@
     .collection__grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      grid-template-rows: 1fr auto;
+      grid-auto-rows: 1fr auto;
       gap: 24px var(--vertical-padding, 16px);
       list-style: none;
       padding: 0;
