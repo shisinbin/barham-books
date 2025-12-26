@@ -71,12 +71,16 @@
     --font-size-h3: var(--fs-24);
     --font-size-button: var(--fs-18);
     --font-size-quote: var(--fs-24);
+    --font-size-book-title: var(--fs-20);
+    --font-size-book-author: var(--fs-16);
 
     @media (width >= calc(600 / 16 * 1rem)) {
       --font-size-topnav: var(--fs-16);
       --font-size-h1: var(--fs-72);
       --font-size-h2: var(--fs-48);
       --font-size-quote: var(--fs-36);
+      /* --font-size-book-title: var(--fs-24);
+      --font-size-book-author: var(--fs-18); */
     }
   }
 

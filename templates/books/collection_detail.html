@@ -73,7 +73,7 @@
       {% endfor %}
     </ul>
 
-    <nav class="pagination">
+    {% comment %} <nav class="pagination">
       {% if books.has_previous %}
         <a href="?sort={{ sort }}&page={{ books.previous_page_number }}">Previous</a>
       {% else %}
@@ -87,6 +87,60 @@
       {% else %}
         <span aria-hidden="true"></span>
       {% endif %}
+    </nav> {% endcomment %}
+
+    <nav class="pagination" aria-label="Pagination">
+      <!-- Previous -->
+      {% if books.has_previous %}
+        <a class="pagination__control previous" href="?sort={{ sort }}&page={{ books.previous_page_number }}">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <span class="pagination__control-text">Previous</span>
+        </a>
+      {% else %}
+        <span class="pagination__control previous pagination__control--disabled">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <span class="pagination__control-text">Previous</span>
+        </span>
+      {% endif %}
+
+      <!-- Page numbers -->
+      <ul class="pagination__pages">
+        {% for num in books.paginator.page_range %}
+
+          {% if num == 1 or num == books.paginator.num_pages or num >= books.number|add:-1 and num <= books.number|add:1 %}
+
+            {% if num == books.number %}
+              <li>
+                <span class="pagination__page pagination__page--current">{{ num }}</span>
+              </li>
+            {% else %}
+              <li>
+                <a class="pagination__page" href="?sort={{ sort }}&page={{ num }}">{{ num }}</a>
+              </li>
+            {% endif %}
+
+          {% elif num == books.number|add:-2 or num == books.number|add:2 %}
+            <li>
+              <span class="pagination__ellipsis">…</span>
+            </li>
+          {% endif %}
+
+        {% endfor %}
+      </ul>
+
+      <!-- Next -->
+      {% if books.has_next %}
+        <a class="pagination__control next" href="?sort={{ sort }}&page={{ books.next_page_number }}">
+          <span class="pagination__control-text">Next</span>
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </a>
+      {% else %}
+        <span class="pagination__control next pagination__control--disabled">
+          <span class="pagination__control-text">Next</span>
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </span>
+      {% endif %}
     </nav>
+
   </div>
 {% endblock %}
