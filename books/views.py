@@ -67,8 +67,11 @@ def index(request):
     return render(request, 'books/books.html', context)
 
 def autocomplete_books(request):
+    MAX_NUM_RESULTS = 5
     if 'term' in request.GET:
         term = request.GET.get('term')
+
+        term = term.strip().lower()
 
         # Handles articles ('the', 'a') to improve search results
         if term.startswith('the '):
@@ -78,7 +81,7 @@ def autocomplete_books(request):
         
         if term != 'the' and len(term) > 2:
             # Get books that match the search term
-            books = Book.objects.filter(title__icontains=term, instances__isnull=False).distinct()[:10]
+            books = Book.objects.filter(title__icontains=term, instances__isnull=False).order_by('title').distinct()[:MAX_NUM_RESULTS]
 
             results = []
             for book in books:

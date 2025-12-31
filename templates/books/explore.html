@@ -9,18 +9,26 @@
   <link rel="stylesheet" href="{% static 'css/pages/explore_books.css' %}" />
 {% endblock %}
 
+{% block extra_js %}
+  <script src="{% static 'js/autocomplete_redux.js' %}" defer></script>
+{% endblock %}
+
 {% block content %}
   <div class="search-label">
     <label for="search-input" class="wrapper search-label__label">Search our library for books</label>
   </div>
-  <div class="search">
+
+  <div class="search" data-autocomplete data-autocomplete-url="{% url 'autocomplete_books' %}">
     <div class="wrapper search__wrapper">
-      <form action="" class="search__form">
-        <input class="search__form-input" type="text" name="search" id="search-input" placeholder="rings tolkien..." required />
+      <form action="" class="search__form" autocomplete="off">
+        <input class="search__form-input" type="text" name="search" id="search-input" placeholder="rings tolkien..." required role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-autocomplete" />
         <button type="submit" class="button tertiary search__form-button">
-          <img src="{% static 'img/icons/search.svg' %}" alt="Search" height="24" width="24" class="search__icon" />
+          <img src="{% static 'img/icons/search.svg' %}" alt="" height="24" width="24" aria-hidden="true" class="search__icon" />
+          <span class="visually-hidden">Search</span>
           {% comment %} <span class="search__button-text">Search</span> {% endcomment %}
         </button>
+
+        <ul class="search__autocomplete" id="search-autocomplete" role="listbox" hidden></ul>
       </form>
     </div>
   </div>
