@@ -6,11 +6,26 @@
 {% endblock %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/pages/browse_books.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/pages/explore_books.css' %}" />
 {% endblock %}
 
 {% block content %}
-  <div class="browse wrapper">
-    <h1 class="browse__title">Find your next read</h1>
+  <div class="search-label">
+    <label for="search-input" class="wrapper search-label__label">Search our library for books</label>
   </div>
+  <div class="search">
+    <div class="wrapper search__wrapper">
+      <form action="" class="search__form">
+        <input class="search__form-input" type="text" name="search" id="search-input" placeholder="rings tolkien..." required />
+        <button type="submit" class="button tertiary search__form-button">
+          <img src="{% static 'img/icons/search.svg' %}" alt="Search" height="24" width="24" class="search__icon" />
+          {% comment %} <span class="search__button-text">Search</span> {% endcomment %}
+        </button>
+      </form>
+    </div>
+  </div>
+  <div class="explore wrapper">
+    <h1 class="explore__title">Find your next read</h1>
+  </div>
+  <div id="padding"></div>
 {% endblock %}

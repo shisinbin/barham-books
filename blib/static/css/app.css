@@ -73,6 +73,8 @@
     --font-size-quote: var(--fs-24);
     --font-size-book-title: var(--fs-20);
     --font-size-book-author: var(--fs-16);
+    --font-size-form-label: var(--fs-20);
+    --font-size-form: var(--fs-18);
 
     @media (width >= calc(600 / 16 * 1rem)) {
       --font-size-topnav: var(--fs-16);
@@ -81,6 +83,7 @@
       --font-size-quote: var(--fs-36);
       /* --font-size-book-title: var(--fs-24);
       --font-size-book-author: var(--fs-18); */
+      --font-size-form-label: var(--fs-24);
     }
   }
 
@@ -99,6 +102,12 @@
     --c-gray-light: hsl(233, 14%, 85%);
     --c-gray-lighter: hsl(233, 14%, 90%);
     --c-purple: hsl(232, 58%, 55%);
+    --c-purple-96: hsl(
+      232,
+      58%,
+      55%,
+      96%
+    ); /* To make header opaque */
     --c-purple-dark-60: hsl(232, 58%, 35%, 60%);
     --c-teal: hsl(180, 100%, 42%);
     --c-teal-dark: hsl(180, 100%, 37%);
@@ -132,6 +141,9 @@
     --color-button-tertiary-bg-hover: var(--c-teal);
     --color-button-tertiary-text: var(--c-gray-dark);
 
+    --color-sticky-search-bg: peachpuff; /*var(--c-purple);*/
+    --color-form-input-bg: var(--c-white);
+
     --color-collections-border: var(--c-gray-light);
     --color-collections-border-hover: var(--c-gray-lighter);
     --color-fullwidth-bg: var(--c-magenta);
@@ -146,9 +158,11 @@
   /* Spacing */
   :root {
     --vertical-padding: 16px;
+    --header-height: 66px;
 
     @media (width >= calc(600 / 16 * 1rem)) {
       --vertical-padding: 24px;
+      --header-height: 100px;
     }
 
     @media (width >= calc(1000 / 16 * 1rem)) {
@@ -420,6 +434,7 @@
     top: 0;
     z-index: 110;
     background-color: var(--color-header-bg);
+    height: var(--header-height);
 
     &.is-open {
       .topnav__overlay {
@@ -913,7 +928,15 @@
       clip-path: none;
       clip: auto;
       overflow: visible;
-      z-index: 200;
+      z-index: 150;
     }
   }
 }
+
+/* 
+  z-index:
+  - 150: skip link (even though it'll be inerted by js)
+  - 120: mobile menu
+  - 110: sticky header (header below menu, above overlay)
+  - 100: overlay (for mobile menu)
+*/

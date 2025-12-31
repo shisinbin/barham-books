@@ -1,0 +1,45 @@
+@layer component {
+  .search-label {
+    background: var(--color-sticky-search-bg);
+    text-align: center;
+    padding-block: 22px 8px;
+
+    .search-label__label {
+      display: inline-block;
+      padding: 0;
+      /* font-family: var(--font-headings); */
+      font-size: var(--font-size-form-label);
+      line-height: 1;
+    }
+  }
+
+  .search {
+    position: sticky;
+    top: var(--header-height);
+    background-color: var(--color-sticky-search-bg);
+
+    .search__wrapper {
+      padding-block: 0;
+    }
+
+    .search__form {
+      display: flex;
+      gap: 12px;
+      padding-block: 16px;
+      font-size: var(--font-size-form);
+    }
+
+    .search__form-input {
+      background: var(--color-form-input-bg);
+      padding: 8px 20px;
+      border-radius: 5px;
+      width: 0;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .search__form-button {
+      cursor: pointer;
+    }
+  }
+}
