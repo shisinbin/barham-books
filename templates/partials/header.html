@@ -1,26 +1,40 @@
 {% load static %}
 
-<header class="topnav">
+<header id="header" class="topnav">
   <h2 class="visually-hidden">Header</h2>
 
   <div class="wrapper topnav__wrapper">
     <a href="/" class="topnav__homelink"><img src="{% static 'img/logo.svg' %}" alt="Barham homepage" class="topnav__logo" width="40" height="40" /></a>
 
-    <nav aria-label="Primary">
-      <ul class="topnav__links">
-        {% comment %} <li class="topnav__item">
-          <a href="#" class="topnav__link">O</a>
-        </li> {% endcomment %}
-        <li class="topnav__item">
-          <a href="{% url 'books' %}" class="topnav__link">Books</a>
-        </li>
-        <li class="topnav__item">
-          <a href="{% url 'collections' %}" class="topnav__link">Collections</a>
-        </li>
-        <li class="topnav__item">
-          <a href="{% url 'about' %}" class="topnav__link">About</a>
-        </li>
-      </ul>
+    <nav>
+      <span id="nav-label" hidden>Navigation</span>
+      <span id="close-label" hidden>Close Navigation</span>
+
+      <div class="topnav__overlay"></div>
+
+      <button id="btnOpen" class="topnav__open-btn" aria-labelledby="nav-label" aria-expanded="false"><img src="{% static 'img/icons/hamburger.svg' %}" alt="" width="30" height="23" class="topnav__open-icon" /></button>
+
+      <div class="topnav__menu" id="menuTopNav" aria-labelledby="nav-label">
+        <button id="btnClose" class="topnav__close-btn" aria-labelledby="close-label"><img src="{% static 'img/icons/close-button.svg' %}" alt="" width="25" height="26" class="topnav__open-icon" /></button>
+
+        <ul class="topnav__links">
+          <li class="topnav__item">
+            <a href="/" class="topnav__link">Home</a>
+          </li>
+          <li class="topnav__item">
+            <a href="{% url 'explore_books' %}" class="topnav__link">Explore</a>
+          </li>
+          <li class="topnav__item">
+            <a href="{% url 'collections' %}" class="topnav__link">Collections</a>
+          </li>
+          <li class="topnav__item">
+            <a href="{% url 'about' %}" class="topnav__link">About</a>
+          </li>
+          <li class="topnav__item">
+            <a href="#" class="topnav__link">Contact</a>
+          </li>
+        </ul>
+      </div>
     </nav>
   </div>
 </header>

@@ -1,0 +1,16 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block title %}
+  Explore books - Barham Community Library
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/browse_books.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <div class="browse wrapper">
+    <h1 class="browse__title">Find your next read</h1>
+  </div>
+{% endblock %}

@@ -1276,8 +1276,8 @@ def collection_detail(request, slug):
 
     return render(request, 'books/collection_detail.html', context)
 
-def browse_books(request):
+def explore_books(request):
     context = {
-        'query': request.GET.get('q', ''),
+        # 'query': request.GET.get('q', ''),
     }
-    return render(request, 'books/browse_books.html', context)
+    return render(request, 'books/explore.html', context)
