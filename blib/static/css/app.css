@@ -406,7 +406,7 @@
   .topnav {
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 110;
     background-color: var(--color-header-bg);
 
     &.is-open {
@@ -459,7 +459,7 @@
         position: fixed;
         inset: 0;
         background-color: var(--color-topnav-menu-overlay);
-        z-index: 10;
+        z-index: 100;
         transition: opacity 250ms ease-in-out;
 
         /* &:has(+ .topnav__open-btn[aria-expanded='true']) {
@@ -498,7 +498,7 @@
       @media (width < calc(600 / 16 * 1rem)) {
         position: fixed;
         inset: 0 0 auto 0;
-        z-index: 20;
+        z-index: 120;
         background-color: var(--color-topnav-menu-bg);
         border-radius: 0 0 20px 20px;
         box-shadow: 0 12px 12px var(--color-topnav-menu-shadow);
