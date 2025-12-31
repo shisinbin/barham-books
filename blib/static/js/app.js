@@ -9,6 +9,14 @@ const btnClose = document.querySelector('#btnClose');
 const menuTopNav = document.querySelector('#menuTopNav');
 const breakpoint = window.matchMedia('(width < 600px)');
 
+const inertable = [
+  main,
+  footer,
+  document.querySelector('.topnav__homelink'),
+  btnOpen,
+  document.querySelector('#skip-header-link'),
+];
+
 let isMenuOpen = false;
 
 btnOpen.addEventListener('click', openMobileMenu);
@@ -19,17 +27,15 @@ function openMobileMenu() {
   if (isMenuOpen) return;
   isMenuOpen = true;
 
-  header.classList.add('is-open');
-  btnOpen.setAttribute('aria-expanded', 'true');
-
   animateMenu();
 
+  header.classList.add('is-open');
+  btnOpen.setAttribute('aria-expanded', 'true');
   menuTopNav.removeAttribute('inert');
-  main.setAttribute('inert', '');
-  footer.setAttribute('inert', '');
+
+  setInertAll(true);
 
   bodyScrollLockUpgrade.disableBodyScroll(menuTopNav);
-
   attachGlobalMenuListeners();
 
   btnClose.focus();
@@ -39,17 +45,15 @@ function closeMobileMenu() {
   if (!isMenuOpen) return;
   isMenuOpen = false;
 
-  header.classList.remove('is-open');
-  btnOpen.setAttribute('aria-expanded', 'false');
-
   animateMenu();
 
+  header.classList.remove('is-open');
+  btnOpen.setAttribute('aria-expanded', 'false');
   menuTopNav.setAttribute('inert', '');
-  main.removeAttribute('inert');
-  footer.removeAttribute('inert');
+
+  setInertAll(false);
 
   bodyScrollLockUpgrade.enableBodyScroll(menuTopNav);
-
   detachGlobalMenuListeners();
 
   btnOpen.focus();
@@ -101,6 +105,15 @@ function attachGlobalMenuListeners() {
 function detachGlobalMenuListeners() {
   document.removeEventListener('keydown', handleKeydown);
   document.removeEventListener('click', handleClickOutside);
+}
+
+function setInertAll(state) {
+  inertable.forEach((el) => {
+    if (!el) return;
+    state
+      ? el.setAttribute('inert', '')
+      : el.removeAttribute('inert');
+  });
 }
 
 setupTopNav();

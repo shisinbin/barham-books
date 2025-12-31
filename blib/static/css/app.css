@@ -318,6 +318,18 @@
     }
   }
 
+  .tap-target {
+    position: relative;
+
+    &::after {
+      --min: 44px;
+      content: '';
+      position: absolute;
+      inset: min(0px, calc((100% - var(--min)) / 2));
+      pointer-events: auto;
+    }
+  }
+
   .icon {
     width: calc(24 / 16 * 1rem);
     height: calc(24 / 16 * 1rem);
@@ -474,8 +486,24 @@
       display: none;
 
       @media (width < calc(600 / 16 * 1rem)) {
-        display: block;
+        display: revert;
         cursor: pointer;
+
+        position: relative;
+        --click-target-minimum: 44px;
+        --inset-by: min(
+          0px,
+          calc((100% - var(--click-target-minimum)) / 2)
+        );
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: var(--inset-by);
+          left: var(--inset-by);
+          right: var(--inset-by);
+          bottom: var(--inset-by);
+        }
       }
     }
 
@@ -885,7 +913,7 @@
       clip-path: none;
       clip: auto;
       overflow: visible;
-      z-index: 50;
+      z-index: 200;
     }
   }
 }
