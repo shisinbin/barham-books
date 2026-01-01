@@ -141,7 +141,9 @@
     --color-button-tertiary-bg-hover: var(--c-teal);
     --color-button-tertiary-text: var(--c-gray-dark);
 
-    --color-sticky-search-bg: peachpuff; /*var(--c-purple);*/
+    --color-sticky-search-bg: var(
+      --c-white-bone
+    ); /*var(--c-purple);*/
     --color-form-input-bg: var(--c-white);
 
     --color-collections-border: var(--c-gray-light);
@@ -832,6 +834,7 @@
   }
 
   .footer {
+    background-color: gainsboro;
     .footer__top-row {
       display: grid;
       gap: 14px;

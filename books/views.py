@@ -3,7 +3,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from .choices import language_choices, a_z
 from django.contrib import messages
 from taggit.models import Tag
-from django.db.models import Count
+from django.db.models import Count, Q
 from authors.models import Author
 from .models import Book, BookInstance2, Review, Category, BookTags, Series
 from .forms import SearchForm
@@ -882,8 +882,6 @@ def del_review(request, review_id):
 #         }
 #         return render(request, 'books/edit_review.html', context)
 
-from django.db.models import Q
-
 def category(request, category_code):
     categories = Category.objects.all()
     category = get_object_or_404(Category, code=category_code)
@@ -1232,6 +1230,8 @@ def collections_index(request):
     }
     return render(request, 'books/collections.html', context)
 
+from urllib.parse import urlencode
+
 def collection_detail(request, slug):
     try:
         collection = COLLECTIONS[slug]
@@ -1270,11 +1270,16 @@ def collection_detail(request, slug):
 
     total_books = books_qs.count()
 
+    base_params = {}
+    if (sort and sort != 'relevance'):
+        base_params['sort'] = sort
+
     context = {
         'collection': collection,
         'books': books,
         'total_books': total_books,
         'sort': sort,
+        'base_querystring': urlencode(base_params),
     }
 
     return render(request, 'books/collection_detail.html', context)
@@ -1284,3 +1289,33 @@ def explore_books(request):
         # 'query': request.GET.get('q', ''),
     }
     return render(request, 'books/explore.html', context)
+
+def book_search_redux(request):
+    query = request.GET.get('q', '').strip()
+    results = Book.objects.none()
+
+    if len(query) >= 2:
+        qs = Book.objects.filter(
+            Q(title__icontains=query) |
+            Q(author__last_name__icontains=query) |
+            Q(author__first_name__icontains=query)
+        )
+
+        if not request.user.is_staff:
+            qs = qs.filter(instances__isnull=False)
+
+        results = qs.distinct().order_by('title')
+    
+    paginator = Paginator(results, 30)
+    page = request.GET.get('page')
+    books = paginator.get_page(page)
+
+    total_books = results.count()
+
+    context = {
+        'query': query,
+        'books': books,
+        'total_books': total_books,
+    }
+
+    return render(request, 'books/search_results.html', context)

@@ -42,13 +42,13 @@
   <body>
     <div id="app">
       <a id="skip-header-link" class="visually-hidden skip" href="#main">Skip to main content</a>
-      {% include 'partials/header.html' %}
+      {% include 'components/header.html' %}
       <main id="main">
         {% block content %}
 
         {% endblock %}
       </main>
-      {% include 'partials/footer.html' %}
+      {% include 'components/footer.html' %}
     </div>
   </body>
 </html>

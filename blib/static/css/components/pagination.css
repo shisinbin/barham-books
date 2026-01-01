@@ -1,0 +1,107 @@
+@layer component {
+  /* .pagination {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      justify-items: center;
+      margin-block-start: 24px;
+
+      :first-child {
+        justify-self: start;
+      }
+
+      :last-child {
+        justify-self: end;
+      }
+
+      a {
+        color: inherit;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    } */
+
+  .pagination {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1em;
+    margin-block-start: 32px;
+    font-size: calc(18 / 16 * 1rem);
+
+    .pagination__control {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: inherit;
+      padding: 4px 8px;
+      border-radius: 100vmax;
+
+      &.previous {
+        justify-self: start;
+      }
+
+      &.next {
+        justify-self: end;
+      }
+
+      &:hover,
+      &:focus-visible {
+        background-color: var(--c-white-bone);
+      }
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        padding-inline: 12px;
+      }
+    }
+
+    .pagination__control-text {
+      display: none;
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        display: revert;
+      }
+    }
+
+    .pagination__control--disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .pagination__pages {
+      justify-self: center;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .pagination__page {
+      display: grid;
+      place-content: center;
+      min-width: calc(32 / 16 * 1rem);
+      height: calc(32 / 16 * 1rem);
+      border-radius: 100vmax;
+      color: inherit;
+
+      &:not(.pagination__page--current):hover,
+      &:not(.pagination__page--current):focus-visible {
+        background-color: var(--c-white-bone);
+      }
+    }
+
+    .pagination__page--current {
+      background: var(--c-gray-dark);
+      color: white;
+      font-weight: 600;
+    }
+
+    .pagination__ellipsis {
+      padding-inline: 0.25rem;
+      opacity: 0.6;
+    }
+  }
+}

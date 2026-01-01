@@ -68,3 +68,8 @@ urlpatterns += [
 urlpatterns += [
     path('explore/', views.explore_books, name='explore_books'),
 ]
+
+# new book search
+urlpatterns += [
+    path('search/', views.book_search_redux, name='book_search_redux'),
+]

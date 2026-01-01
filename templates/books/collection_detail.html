@@ -8,6 +8,8 @@
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/pages/collection_detail.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/components/book-grid.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/components/pagination.css' %}" />
 {% endblock %}
 
 {% block content %}
@@ -69,93 +71,9 @@
       </form>
     </div>
 
-    <ul class="collection__grid">
-      {% for book in books %}
-        <li class="collection__book clickable-parent">
-          <div class="collection__image-wrapper">
-            {% if book.photo %}
-              <img src="{{ book.photo|thumbnail_url:'default' }}" alt="" class="collection__cover-image">
-            {% else %}
-              <img src="{% static 'img/blank.png' %}" alt="" class="collection__cover-image">
-            {% endif %}
-          </div>
+    {% include 'components/book_grid.html' with books=books %}
 
-          <div class="collection__book-body">
-            <h3 class="collection__book-title">
-              <a href="{{ book.get_absolute_url }}" class="collection__book-link clickable-parent-link">{{ book.title }}</a>
-            </h3>
-
-            <p class="collection__book-author">{{ book.author }}</p>
-          </div>
-        </li>
-      {% endfor %}
-    </ul>
-
-    {% comment %} <nav class="pagination">
-      {% if books.has_previous %}
-        <a href="?sort={{ sort }}&page={{ books.previous_page_number }}">Previous</a>
-      {% else %}
-        <span aria-hidden="true"></span>
-      {% endif %}
-
-      <span>Page {{ books.number }} of {{ books.paginator.num_pages }}</span>
-
-      {% if books.has_next %}
-        <a href="?sort={{ sort }}&page={{ books.next_page_number }}">Next</a>
-      {% else %}
-        <span aria-hidden="true"></span>
-      {% endif %}
-    </nav> {% endcomment %}
-
-    <nav class="pagination" aria-label="Pagination">
-      {% if books.has_previous %}
-        <a class="pagination__control previous" href="?sort={{ sort }}&page={{ books.previous_page_number }}">
-          <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          <span class="pagination__control-text">Previous</span>
-        </a>
-      {% else %}
-        <span class="pagination__control previous pagination__control--disabled">
-          <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          <span class="pagination__control-text">Previous</span>
-        </span>
-      {% endif %}
-
-      <ul class="pagination__pages">
-        {% for num in books.paginator.page_range %}
-
-          {% if num == 1 or num == books.paginator.num_pages or num >= books.number|add:-1 and num <= books.number|add:1 %}
-
-            {% if num == books.number %}
-              <li>
-                <span class="pagination__page pagination__page--current">{{ num }}</span>
-              </li>
-            {% else %}
-              <li>
-                <a class="pagination__page" href="?sort={{ sort }}&page={{ num }}">{{ num }}</a>
-              </li>
-            {% endif %}
-
-          {% elif num == books.number|add:-2 or num == books.number|add:2 %}
-            <li>
-              <span class="pagination__ellipsis">…</span>
-            </li>
-          {% endif %}
-
-        {% endfor %}
-      </ul>
-
-      {% if books.has_next %}
-        <a class="pagination__control next" href="?sort={{ sort }}&page={{ books.next_page_number }}">
-          <span class="pagination__control-text">Next</span>
-          <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </a>
-      {% else %}
-        <span class="pagination__control next pagination__control--disabled">
-          <span class="pagination__control-text">Next</span>
-          <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </span>
-      {% endif %}
-    </nav>
+    {% include 'components/pagination.html' with books=books sort=sort %}
 
   </div>
 {% endblock %}

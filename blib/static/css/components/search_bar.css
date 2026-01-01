@@ -1,31 +1,4 @@
 @layer component {
-  .search-label {
-    background: var(--color-sticky-search-bg);
-    /* text-align: center; */
-
-    .wrapper {
-      text-align: center;
-      padding-block: 22px 4px;
-
-      @media (width >= calc(600 / 16 * 1rem)) {
-        text-align: left;
-        padding-block-start: 28px;
-      }
-    }
-
-    .search-label__label {
-      display: inline-block;
-      padding: 0;
-      /* font-family: var(--font-headings); */
-      font-size: var(--font-size-form-label);
-      line-height: 1;
-    }
-
-    /* @media (width >= calc(600 / 16 * 1rem)) {
-      text-align: left;
-    } */
-  }
-
   .search {
     position: sticky;
     isolation: isolate;

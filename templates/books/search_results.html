@@ -1,0 +1,25 @@
+{% extends 'site_base.html' %}
+{% load static %}
+{% load thumbnail %}
+
+{% block title %}
+  Search results for "{{ query }}" - Barham Community Library
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/search_results.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <div class="search-results">
+    <div class="wrapper">
+      <h1>Search results for query: {{ query }}</h1>
+
+      <ul>
+        {% for book in books %}
+          <li>{{ book.title }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endblock %}
