@@ -149,6 +149,7 @@
     --color-sticky-search-bg: var(--c-white-bone);
     --color-form-input-bg: var(--c-white);
 
+    --color-book-card-author-hover: var(--c-magenta);
     --color-search-results-divider: var(--c-gray-light);
 
     --color-collections-border: var(--c-gray-light);
@@ -314,6 +315,7 @@
 
   .clickable-parent {
     position: relative;
+    isolation: isolate;
 
     /* Add focus around parent */
     &:focus-within {
