@@ -1292,6 +1292,10 @@ def explore_books(request):
 
 def book_search_redux(request):
     query = request.GET.get('q', '').strip()
+
+    if (query == ''):
+        return redirect('explore_books')
+
     results = Book.objects.none()
 
     if len(query) >= 2:
@@ -1312,10 +1316,15 @@ def book_search_redux(request):
 
     total_books = results.count()
 
+    base_params = {}
+    if query:
+        base_params['q'] = query
+
     context = {
         'query': query,
         'books': books,
         'total_books': total_books,
+        'base_querystring': urlencode(base_params),
     }
 
     return render(request, 'books/search_results.html', context)

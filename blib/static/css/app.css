@@ -58,6 +58,7 @@
     --fs-16: calc(16 / 16 * 1rem);
     --fs-18: calc(18 / 16 * 1rem);
     --fs-20: calc(20 / 16 * 1rem);
+    --fs-22: calc(22 / 16 * 1rem);
     --fs-24: calc(24 / 16 * 1rem);
     --fs-28: calc(28 / 16 * 1rem);
     --fs-36: calc(36 / 16 * 1rem);
@@ -75,6 +76,8 @@
     --font-size-book-author: var(--fs-16);
     --font-size-form-label: var(--fs-20);
     --font-size-form: var(--fs-18);
+    --font-size-search-heading: var(--fs-36);
+    --font-size-book-card-heading: var(--fs-22);
 
     @media (width >= calc(600 / 16 * 1rem)) {
       --font-size-topnav: var(--fs-16);
@@ -84,6 +87,8 @@
       /* --font-size-book-title: var(--fs-24);
       --font-size-book-author: var(--fs-18); */
       --font-size-form-label: var(--fs-24);
+      --font-size-search-heading: var(--fs-48);
+      --font-size-book-card-heading: var(--fs-24);
     }
   }
 
@@ -122,37 +127,32 @@
     --color-topnav-menu-bg: var(--c-purple);
     --color-topnav-menu-overlay: var(--c-gray-dark-40);
     --color-topnav-menu-shadow: var(--c-purple-dark-60);
-
     --color-hero-bg: var(--c-purple);
-    --color-categories-bg: var(--c-transparent);
-
-    --color-button-primary-bg: var(--c-teal);
-    --color-button-primary-bg-hover: var(--c-teal-dark);
-    --color-button-primary-text: var(--c-gray-dark);
-
-    --color-button-secondary-bg: var(--color-categories-bg);
-    --color-button-secondary-border: var(--c-gray-dark);
-    --color-button-secondary-text: var(--c-gray-dark);
-    --color-button-secondary-bg-hover: var(--c-teal);
-    --color-button-secondary-border-hover: var(--c-transparent);
-    /* --color-button-secondary-text-hover: var(--c-white); */
-
-    --color-button-tertiary-bg: var(--c-white);
-    --color-button-tertiary-bg-hover: var(--c-teal);
-    --color-button-tertiary-text: var(--c-gray-dark);
-
-    --color-sticky-search-bg: var(
-      --c-white-bone
-    ); /*var(--c-purple);*/
-    --color-form-input-bg: var(--c-white);
-
-    --color-collections-border: var(--c-gray-light);
-    --color-collections-border-hover: var(--c-gray-lighter);
     --color-fullwidth-bg: var(--c-magenta);
     --color-cta-gradient1: var(--c-gray-dark);
     --color-cta-gradient2: var(--c-purple);
     --color-cta-gradient3: var(--c-teal);
     --color-footer-link-hover: var(--c-magenta);
+
+    --color-button-primary-bg: var(--c-teal);
+    --color-button-primary-bg-hover: var(--c-teal-dark);
+    --color-button-primary-text: var(--c-gray-dark);
+    --color-button-secondary-bg: var(--c-transparent);
+    --color-button-secondary-border: var(--c-gray-dark);
+    --color-button-secondary-text: var(--c-gray-dark);
+    --color-button-secondary-bg-hover: var(--c-teal);
+    --color-button-secondary-border-hover: var(--c-transparent);
+    --color-button-tertiary-bg: var(--c-white);
+    --color-button-tertiary-bg-hover: var(--c-teal);
+    --color-button-tertiary-text: var(--c-gray-dark);
+
+    --color-sticky-search-bg: var(--c-white-bone);
+    --color-form-input-bg: var(--c-white);
+
+    --color-search-results-divider: var(--c-gray-light);
+
+    --color-collections-border: var(--c-gray-light);
+    --color-collections-border-hover: var(--c-gray-lighter);
 
     --shadow-gray: 0 8px 24px hsl(0 0% 0% / 0.08);
   }
@@ -161,6 +161,7 @@
   :root {
     --vertical-padding: 16px;
     --header-height: 66px;
+    --thumbnail-cover-width: 100px;
 
     @media (width >= calc(600 / 16 * 1rem)) {
       --vertical-padding: 24px;
@@ -942,4 +943,5 @@
   - 120: mobile menu
   - 110: sticky header (header below menu, above overlay)
   - 100: overlay (for mobile menu)
+  - 80: sticky search bar
 */

@@ -4,6 +4,7 @@
     isolation: isolate;
     top: var(--header-height);
     background-color: var(--color-sticky-search-bg);
+    z-index: 80;
 
     .search__wrapper {
       padding-block: 0;

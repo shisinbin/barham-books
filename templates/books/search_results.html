@@ -8,18 +8,30 @@
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/pages/search_results.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/components/search_bar.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/components/book-stack.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/components/pagination.css' %}" />
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/autocomplete_redux.js' %}" defer></script>
 {% endblock %}
 
 {% block content %}
-  <div class="search-results">
-    <div class="wrapper">
-      <h1>Search results for query: {{ query }}</h1>
+  <label for="search-input" class="visually-hidden">Search for books using title or author name</label>
+  {% include 'components/search_bar.html' %}
 
-      <ul>
-        {% for book in books %}
-          <li>{{ book.title }}</li>
-        {% endfor %}
-      </ul>
+  <div class="search-results">
+    <div class="wrapper search-results__wrapper">
+      <h1 class="search-results__title" id="search-results-title">Search results for "{{ query }}"</h1>
+
+      <div class="search-results__meta">
+        <p class="search-results__count">{{ total_books }} results found</p>
+      </div>
+
+      {% include 'components/book_stack.html' with books=books list_name_id='search-results-title' %}
+
+      {% include 'components/pagination.html' with books=books query=query base_querystring=base_querystring %}
     </div>
   </div>
 {% endblock %}

@@ -1,5 +1,17 @@
 @layer component {
   .search-results {
-    background: palegoldenrod;
+    .search-results__title {
+      font-size: var(--font-size-search-heading);
+      margin-block-end: 40px;
+    }
+
+    .search-results__meta {
+      margin-block-end: 32px;
+    }
+
+    .search-results__count {
+      font-style: italic;
+      font-weight: 300;
+    }
   }
 }

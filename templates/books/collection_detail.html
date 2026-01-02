@@ -25,7 +25,8 @@
       <h1 class="collection__title">{{ collection.title }}</h1>
       <p class="collection__description medium">{{ collection.description }}</p>
 
-      <ul class="collection__tags">
+      <span class="visually-hidden" id="book-tags-label">Book tags prevalent in this collection</span>
+      <ul class="collection__tags" aria-labelledby="book-tags-label">
         {% for tag in collection.tags %}
           <li class="collection__tag">{{ tag }}</li>
         {% endfor %}
@@ -73,7 +74,7 @@
 
     {% include 'components/book_grid.html' with books=books %}
 
-    {% include 'components/pagination.html' with books=books sort=sort %}
+    {% include 'components/pagination.html' with books=books sort=sort base_querystring=base_querystring %}
 
   </div>
 {% endblock %}

@@ -1,0 +1,39 @@
+{% load static %}
+{% load thumbnail %}
+
+{% if not list_name_id %}
+  <span id="book-stack">Book list</span>
+{% endif %}
+
+<ul class="book-stack" aria-labelledby="{% if list_name_id %}{{ list_name_id }}{% else %}book-stack{% endif %}">
+  {% for book in books %}
+    <li class="book-stack__book">
+      <div class="book-stack__image-wrapper">
+        <a href="{{ book.get_absolute_url }}" class="book-stack__image-link sync-link">
+          {% if book.photo %}
+            <img src="{{ book.photo|thumbnail_url:'default' }}" alt="" class="book-stack__cover-image" />
+          {% else %}
+            <img src="{% static 'img/blank.png' %}" alt="" class="book-stack__cover-image" />
+          {% endif %}
+        </a>
+      </div>
+
+      <div class="book-stack__body">
+        <h2 class="book-stack__book-title"><a href="{{ book.get_absolute_url }}" class="book-stack__text-link sync-link">{{ book.title }}</a></h2>
+
+        <p class="book-stack__book-author">
+          <a href="{{ book.author.get_absolute_url }}" class="book-stack__author-link">{{ book.author }}</a>
+        </p>
+
+        {% if book.book_tags.all %}
+          <span class="visually-hidden" id="book-tags">Book tags</span>
+          <ul class="book-stack__book-tags" aria-labelledby="book-tags">
+            {% for tag in book.book_tags.all %}
+              <li class="book-stack__book-tag">{{ tag }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    </li>
+  {% endfor %}
+</ul>
