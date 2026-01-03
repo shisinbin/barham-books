@@ -8,8 +8,12 @@ function initAutocomplete(container) {
   const input = container.querySelector('input');
   const listbox = container.querySelector('.search__autocomplete');
   const endpoint = container.dataset.autocompleteUrl;
-  let controller;
 
+  // state to help stop hammering db unnecessarily
+  let lastQuery = '';
+  let lastHadResults = true;
+
+  let controller;
   let suggestions = [];
   let selectedIndex = -1;
 
@@ -57,7 +61,24 @@ function initAutocomplete(container) {
 
   input.addEventListener('input', async () => {
     const term = input.value.trim();
-    if (term.length < 3) return clear();
+    if (term.length < 3) {
+      // reset the state that tracks whether the last query had results
+      lastHadResults = true;
+      lastQuery = term;
+      return clear();
+    }
+
+    // avoids hammering db if current term starts with last query that had no results
+    if (
+      !lastHadResults &&
+      term.startsWith(lastQuery) &&
+      lastQuery.length >= 8
+    ) {
+      return;
+    }
+
+    // sets the 'new' lastQuery value
+    lastQuery = term;
 
     controller?.abort();
     controller = new AbortController();
@@ -67,6 +88,9 @@ function initAutocomplete(container) {
       { signal: controller.signal }
     );
     const data = await res.json();
+
+    // updates the state that tracks if the last query had results
+    lastHadResults = data.length > 0;
 
     if (data.length === 0) return clear();
 

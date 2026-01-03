@@ -3,7 +3,7 @@
 <div class="search" data-autocomplete data-autocomplete-url="{% url 'autocomplete_books' %}">
   <div class="wrapper search__wrapper">
     <form action="{% url 'book_search_redux' %}" method="get" class="search__form" autocomplete="off">
-      <input class="search__form-input" type="text" name="q" id="search-input" placeholder="rings tolkien..." required role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-autocomplete" value="{% if query %}{{ query }}{% endif %}" />
+      <input class="search__form-input" type="text" name="q" id="search-input" placeholder="rings tolkien..." minlength="3" maxLength="64" required role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-autocomplete" value="{% if query %}{{ query }}{% endif %}" />
       <button type="submit" class="button tertiary search__form-button">
         <img src="{% static 'img/icons/search.svg' %}" alt="" height="24" width="24" aria-hidden="true" class="search__icon" />
         <span class="visually-hidden">Search</span>

@@ -113,17 +113,11 @@ class SeriesAdmin(admin.ModelAdmin):
     inlines = [BookInlineForSeries]
 
 from django.forms import Textarea
-from django.contrib.postgres.fields import ArrayField
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('order', 'code', 'name')
     readonly_fields = ('tags_included',)
-    ##############################
-    # formfield_overrides = {
-    #   ArrayField: {'widget': Textarea(attrs={'rows':5, 'cols':60})},
-    # }
-    #inlines = [BookInlineForCategory]
 
 from .models import BookTags
 admin.site.register(BookTags)

@@ -4,6 +4,7 @@ from .choices import language_choices, a_z
 from django.contrib import messages
 from taggit.models import Tag
 from django.db.models import Count, Q
+from django.db.models.functions import Lower
 from authors.models import Author
 from .models import Book, BookInstance2, Review, Category, BookTags, Series
 from .forms import SearchForm
@@ -13,6 +14,86 @@ from django.utils import timezone
 from django.urls import reverse_lazy
 from PIL import Image
 import re
+
+# STOPWORDS = [
+#     "the", "and", "for", "with", "from", "that",
+#     "this", "into", "onto", "over", "under",
+#     "about", "after", "before", "between",
+#     "through", "without", "within", "upon",
+#     "book", "books", "novel", "novels", "story", "stories"
+# ]
+
+STOPWORDS = [
+    "the", "and", "for", "with", "from", "that",
+    "this", "into", "onto"
+]
+
+def clean_and_split_query(query):
+    """
+    Lowercase, remove punctuation, remove stopwords, split into words.
+    """
+    query = query.lower()
+    query = re.sub(r"[^\w\s]", " ", query)
+
+    words = query.split()
+    cleaned_words = []
+
+    for word in words:
+        if word not in STOPWORDS and len(word) >= 3:
+            cleaned_words.append(word)
+    
+    return cleaned_words
+
+SCORING_WEIGHTS = {
+    "title_exact_word": 50,
+    "title_startswith": 40,
+    "title_contains": 20,
+    "author_last_exact": 45,
+    "author_last_startswith": 30,
+    "author_first_exact": 20,
+    "author_first_startswith": 10,
+    "multi_term_bonus": 15,
+}
+
+def score_book(book, terms):
+    score = 0
+
+    # Pre-process book data
+    title = book.title.lower()
+    author_first = (book.author.first_name or "").lower()
+    author_last = (book.author.last_name or "").lower()
+    title_words = re.findall(r"\w+", title)
+
+    for term in terms:
+        # Title-scoring
+        if term in title_words:
+            score += SCORING_WEIGHTS["title_exact_word"]
+        if title.startswith(term):
+            score += SCORING_WEIGHTS["title_startswith"]
+        if term in title:
+            score += SCORING_WEIGHTS["title_contains"]
+
+        # Author-scoring
+        if term == author_last:
+            score += SCORING_WEIGHTS["author_last_exact"]
+        elif author_last.startswith(term):
+            score += SCORING_WEIGHTS["author_last_startswith"]
+
+        if term == author_first:
+            score += SCORING_WEIGHTS["author_first_exact"]
+        elif author_first.startswith(term):
+            score += SCORING_WEIGHTS["author_first_startswith"]
+
+    # Multi-term bonus
+    if len(terms) > 1:
+        match_count = 0
+        for term in terms:
+            if term in title or term in author_first or term in author_last:
+                match_count += 1
+
+        score += match_count * SCORING_WEIGHTS["multi_term_bonus"]
+
+    return score
 
 def format_author_name(author_name):
     """
@@ -68,31 +149,63 @@ def index(request):
 
 def autocomplete_books(request):
     MAX_NUM_RESULTS = 5
-    if 'term' in request.GET:
-        term = request.GET.get('term')
 
-        term = term.strip().lower()
+    raw_query = request.GET.get('term', '').strip()[:80]
 
-        # Handles articles ('the', 'a') to improve search results
-        if term.startswith('the '):
-            term = term[4:]
-        if term.startswith('a '):
-            term = term[2:]
-        
-        if term != 'the' and len(term) > 2:
-            # Get books that match the search term
-            books = Book.objects.filter(title__icontains=term, instances__isnull=False).order_by('title').distinct()[:MAX_NUM_RESULTS]
+    if len(raw_query) < 3:
+        return JsonResponse([], safe=False)
 
-            results = []
-            for book in books:
-                results.append({
-                    'label': book.title,
-                    'url': book.get_absolute_url(),
-                })
+    terms = clean_and_split_query(raw_query)
 
-            return JsonResponse(results, safe=False)
-        
-        return JsonResponse([], safe=False) # Empty response if no term or no matches
+    print(terms)
+
+    if not terms:
+        return JsonResponse([], safe=False)
+
+    completed_terms = terms[:-1]
+    active_term = terms[-1]
+    
+    if len(active_term) < 3:
+        return JsonResponse([], safe=False)
+
+    query_filter = Q()
+    for term in completed_terms:
+        query_filter &= (
+            Q(title__icontains=term) |
+            Q(author__last_name__iexact=term) |
+            Q(author__first_name__iexact=term)
+        )
+    
+    active_condition = (
+        Q(title__icontains=active_term) |
+        Q(author__last_name__icontains=active_term) |
+        Q(author__first_name__icontains=active_term)
+    )
+    query_filter &= active_condition
+
+    books_qs = (
+        Book.objects
+        .filter(query_filter, instances__isnull=False)
+        .distinct()[:20]
+    )
+
+    scored = []
+
+    for book in books_qs:
+        score = score_book(book, terms)
+        scored.append((score, book))
+    
+    scored.sort(key=lambda item: (-item[0], item[1].title.lower()))
+
+    results = []
+
+    for score, book in scored[:MAX_NUM_RESULTS]:
+        results.append({
+            'label': book.title,
+            'url': book.get_absolute_url(),
+        })
+    
+    return JsonResponse(results, safe=False)
 
 from reservations.models import Reservation
 from staff.forms import AddBookCopy
@@ -1266,7 +1379,7 @@ def collection_detail(request, slug):
 
     paginator = Paginator(books_qs, 30)
     page = request.GET.get('page')
-    books = paginator.get_page(page)
+    page_obj = paginator.get_page(page)
 
     total_books = books_qs.count()
 
@@ -1276,7 +1389,7 @@ def collection_detail(request, slug):
 
     context = {
         'collection': collection,
-        'books': books,
+        'books': page_obj,
         'total_books': total_books,
         'sort': sort,
         'base_querystring': urlencode(base_params),
@@ -1290,31 +1403,64 @@ def explore_books(request):
     }
     return render(request, 'books/explore.html', context)
 
-def book_search_redux(request):
-    query = request.GET.get('q', '').strip()
 
-    if (query == ''):
+def book_search_redux(request):
+    query = request.GET.get('q', '').strip()[:80]
+    if (query == '' or len(query) < 3):
         return redirect('explore_books')
 
-    results = Book.objects.none()
+    terms = clean_and_split_query(query)
+    if not terms: 
+        return redirect('explore_books')
 
-    if len(query) >= 2:
-        qs = Book.objects.filter(
-            Q(title__icontains=query) |
-            Q(author__last_name__icontains=query) |
-            Q(author__first_name__icontains=query)
+    # results = Book.objects.none()
+
+    # if len(query) >= 2:
+    #     qs = Book.objects.filter(
+    #         Q(title__icontains=query) |
+    #         Q(author__last_name__icontains=query) |
+    #         Q(author__first_name__icontains=query)
+    #     )
+
+    #     if not request.user.is_staff:
+    #         qs = qs.filter(instances__isnull=False)
+
+    #     results = qs.distinct().order_by('title')
+
+    query_filter = Q()
+    for term in terms:
+        term_filter = (
+            Q(title__icontains=term) |
+            Q(author__last_name__iexact=term) |
+            Q(author__first_name__iexact=term)
         )
+        query_filter &= term_filter
 
-        if not request.user.is_staff:
-            qs = qs.filter(instances__isnull=False)
+    books_qs = Book.objects.filter(query_filter)
 
-        results = qs.distinct().order_by('title')
+    if not request.user.is_staff:
+        books_qs = books_qs.filter(instances__isnull=False)
+    
+    books_qs = books_qs.distinct()
+    books_list = list(books_qs)
+
+    scored_books = []
+
+    for book in books_list:
+        book_score = score_book(book, terms)
+        scored_books.append((book_score, book))
+    
+    scored_books.sort(
+        key=lambda item: (-item[0], item[1].title.lower())
+    )
+
+    results = [item[1] for item in scored_books]
     
     paginator = Paginator(results, 30)
     page = request.GET.get('page')
-    books = paginator.get_page(page)
+    page_obj = paginator.get_page(page)
 
-    total_books = results.count()
+    total_books = len(results)
 
     base_params = {}
     if query:
@@ -1322,7 +1468,7 @@ def book_search_redux(request):
 
     context = {
         'query': query,
-        'books': books,
+        'books': page_obj,
         'total_books': total_books,
         'base_querystring': urlencode(base_params),
     }
