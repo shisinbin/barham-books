@@ -14,6 +14,7 @@ from django.utils import timezone
 from django.urls import reverse_lazy
 from PIL import Image
 import re
+# import unicodedata - need to install this package, I think
 
 # STOPWORDS = [
 #     "the", "and", "for", "with", "from", "that",
@@ -33,6 +34,7 @@ def clean_and_split_query(query):
     Lowercase, remove punctuation, remove stopwords, split into words.
     """
     query = query.lower()
+    # query = query.unicodedata.normalize("NFKD", query)
     query = re.sub(r"[^\w\s]", " ", query)
 
     words = query.split()
@@ -156,8 +158,6 @@ def autocomplete_books(request):
         return JsonResponse([], safe=False)
 
     terms = clean_and_split_query(raw_query)
-
-    print(terms)
 
     if not terms:
         return JsonResponse([], safe=False)
@@ -549,7 +549,7 @@ def add_book(request):
         }
 
     if request.method == 'POST':
-        print(request.POST)
+        # print(request.POST)
         # Get and format the title
         title = request.POST.get('title', '').strip()
 

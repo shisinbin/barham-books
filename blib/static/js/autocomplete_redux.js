@@ -1,3 +1,39 @@
+// const STOPWORDS = [
+//   "the","and","for","with","from","that","this","into","onto","over","under",
+//   "about","after","before","between","through","without","within","upon",
+//   "book","books","novel","novels","story","stories"
+// ];
+
+// This has to align with stopwords used in the view !!!
+const STOPWORDS = [
+  'the',
+  'and',
+  'for',
+  'with',
+  'from',
+  'that',
+  'this',
+  'into',
+  'onto',
+];
+
+function normaliseQuery(q) {
+  if (!q) return '';
+
+  return q
+    .toLowerCase()
+    .normalize('NFKD') // normalises accents
+    .replace(/[^\w\s]/g, ' ') // remove special characters
+    .split(/\s+/) // split into words
+    .filter(
+      (word) =>
+        word.length >= 3 && // keeps words >= 3 chars
+        !STOPWORDS.includes(word) // filters stopwords
+    )
+    .join(' ')
+    .trim();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   document
     .querySelectorAll('[data-autocomplete]')
@@ -10,7 +46,7 @@ function initAutocomplete(container) {
   const endpoint = container.dataset.autocompleteUrl;
 
   // state to help stop hammering db unnecessarily
-  let lastQuery = '';
+  let lastEffectiveQuery = '';
   let lastHadResults = true;
 
   let controller;
@@ -60,41 +96,53 @@ function initAutocomplete(container) {
   }
 
   input.addEventListener('input', async () => {
-    const term = input.value.trim();
-    if (term.length < 3) {
-      // reset the state that tracks whether the last query had results
-      lastHadResults = true;
-      lastQuery = term;
-      return clear();
+    try {
+      const raw = input.value.trim();
+
+      if (raw.length < 3) {
+        clear();
+        lastEffectiveQuery = '';
+        lastHadResults = true;
+        return;
+      }
+
+      const effectiveQuery = normaliseQuery(raw);
+      if (!effectiveQuery) return;
+
+      // if last query returned zero results and new query only extends it, exit
+      if (
+        !lastHadResults &&
+        effectiveQuery.startsWith(lastEffectiveQuery)
+      ) {
+        return;
+      }
+
+      // updates state
+      lastEffectiveQuery = effectiveQuery;
+
+      controller?.abort();
+      controller = new AbortController();
+
+      const res = await fetch(
+        `${endpoint}?term=${encodeURIComponent(effectiveQuery)}`,
+        { signal: controller.signal }
+      );
+      const data = await res.json();
+
+      // updates state
+      lastHadResults = data.length > 0;
+
+      if (data.length === 0) {
+        clear();
+        return;
+      }
+
+      render(data);
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        console.error(err);
+      }
     }
-
-    // avoids hammering db if current term starts with last query that had no results
-    if (
-      !lastHadResults &&
-      term.startsWith(lastQuery) &&
-      lastQuery.length >= 8
-    ) {
-      return;
-    }
-
-    // sets the 'new' lastQuery value
-    lastQuery = term;
-
-    controller?.abort();
-    controller = new AbortController();
-
-    const res = await fetch(
-      `${endpoint}?term=${encodeURIComponent(term)}`,
-      { signal: controller.signal }
-    );
-    const data = await res.json();
-
-    // updates the state that tracks if the last query had results
-    lastHadResults = data.length > 0;
-
-    if (data.length === 0) return clear();
-
-    render(data);
   });
 
   input.addEventListener('keydown', (e) => {
