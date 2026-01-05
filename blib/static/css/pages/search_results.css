@@ -13,5 +13,18 @@
       font-style: italic;
       font-weight: 300;
     }
+
+    .search-results__error-body {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .search-results__tip {
+      display: block;
+      color: var(--c-gray-medium);
+      font-style: italic;
+      font-size: calc(16 / 16 * 1rem);
+    }
   }
 }

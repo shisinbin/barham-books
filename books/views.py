@@ -4,7 +4,6 @@ from .choices import language_choices, a_z
 from django.contrib import messages
 from taggit.models import Tag
 from django.db.models import Count, Q
-from django.db.models.functions import Lower
 from authors.models import Author
 from .models import Book, BookInstance2, Review, Category, BookTags, Series
 from .forms import SearchForm
@@ -14,88 +13,7 @@ from django.utils import timezone
 from django.urls import reverse_lazy
 from PIL import Image
 import re
-# import unicodedata - need to install this package, I think
-
-# STOPWORDS = [
-#     "the", "and", "for", "with", "from", "that",
-#     "this", "into", "onto", "over", "under",
-#     "about", "after", "before", "between",
-#     "through", "without", "within", "upon",
-#     "book", "books", "novel", "novels", "story", "stories"
-# ]
-
-STOPWORDS = [
-    "the", "and", "for", "with", "from", "that",
-    "this", "into", "onto"
-]
-
-def clean_and_split_query(query):
-    """
-    Lowercase, remove punctuation, remove stopwords, split into words.
-    """
-    query = query.lower()
-    # query = query.unicodedata.normalize("NFKD", query)
-    query = re.sub(r"[^\w\s]", " ", query)
-
-    words = query.split()
-    cleaned_words = []
-
-    for word in words:
-        if word not in STOPWORDS and len(word) >= 3:
-            cleaned_words.append(word)
-    
-    return cleaned_words
-
-SCORING_WEIGHTS = {
-    "title_exact_word": 50,
-    "title_startswith": 40,
-    "title_contains": 20,
-    "author_last_exact": 45,
-    "author_last_startswith": 30,
-    "author_first_exact": 20,
-    "author_first_startswith": 10,
-    "multi_term_bonus": 15,
-}
-
-def score_book(book, terms):
-    score = 0
-
-    # Pre-process book data
-    title = book.title.lower()
-    author_first = (book.author.first_name or "").lower()
-    author_last = (book.author.last_name or "").lower()
-    title_words = re.findall(r"\w+", title)
-
-    for term in terms:
-        # Title-scoring
-        if term in title_words:
-            score += SCORING_WEIGHTS["title_exact_word"]
-        if title.startswith(term):
-            score += SCORING_WEIGHTS["title_startswith"]
-        if term in title:
-            score += SCORING_WEIGHTS["title_contains"]
-
-        # Author-scoring
-        if term == author_last:
-            score += SCORING_WEIGHTS["author_last_exact"]
-        elif author_last.startswith(term):
-            score += SCORING_WEIGHTS["author_last_startswith"]
-
-        if term == author_first:
-            score += SCORING_WEIGHTS["author_first_exact"]
-        elif author_first.startswith(term):
-            score += SCORING_WEIGHTS["author_first_startswith"]
-
-    # Multi-term bonus
-    if len(terms) > 1:
-        match_count = 0
-        for term in terms:
-            if term in title or term in author_first or term in author_last:
-                match_count += 1
-
-        score += match_count * SCORING_WEIGHTS["multi_term_bonus"]
-
-    return score
+from .search import normalise_query, build_search_filter, score_book, is_confident_redirect
 
 def format_author_name(author_name):
     """
@@ -152,45 +70,21 @@ def index(request):
 def autocomplete_books(request):
     MAX_NUM_RESULTS = 5
 
-    raw_query = request.GET.get('term', '').strip()[:80]
+    raw = request.GET.get('term', '')[:80].strip()
+    terms = normalise_query(raw)
 
-    if len(raw_query) < 3:
+    if len(terms) == 0:
         return JsonResponse([], safe=False)
 
-    terms = clean_and_split_query(raw_query)
-
-    if not terms:
-        return JsonResponse([], safe=False)
-
-    completed_terms = terms[:-1]
-    active_term = terms[-1]
-    
-    if len(active_term) < 3:
-        return JsonResponse([], safe=False)
-
-    query_filter = Q()
-    for term in completed_terms:
-        query_filter &= (
-            Q(title__icontains=term) |
-            Q(author__last_name__iexact=term) |
-            Q(author__first_name__iexact=term)
-        )
-    
-    active_condition = (
-        Q(title__icontains=active_term) |
-        Q(author__last_name__icontains=active_term) |
-        Q(author__first_name__icontains=active_term)
-    )
-    query_filter &= active_condition
+    q = build_search_filter(terms, allow_prefix=True)
 
     books_qs = (
         Book.objects
-        .filter(query_filter, instances__isnull=False)
+        .filter(q, instances__isnull=False)
         .distinct()[:20]
     )
 
     scored = []
-
     for book in books_qs:
         score = score_book(book, terms)
         scored.append((score, book))
@@ -842,7 +736,7 @@ def books_filtered(request, letter_choice=None, tag_slug=None):
                   context)
 
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
-# from django.contrib import messages
+
 def book_search(request):
     form = SearchForm()
     query = None
@@ -928,72 +822,6 @@ def del_review(request, review_id):
     else:
         messages.error(request, 'You cannot delete a review you did not write')
         return redirect('books')
-
-
-# too much fiddly shit to get this editing review thing working
-# best to change the add/edit review to a form,
-# but not necessary from start.
-# @login_required
-# def edit_review(request, review, starting_point=None):
-
-#     # if updating the review
-#     if request.method == 'POST':
-
-#         # perform checks
-#         if request.POST.get('body'):
-#             body = request.POST.get('body')
-
-#             if request.POST.get('title'):
-#                 title = request.POST.get('title')
-
-#                 # rating - note, don't need to check if there is one,
-#                 # cos default is set to None (0) so there will
-#                 # always be a rating
-#                 rating = int(request.POST.get('rating'))
-#                 if rating == 0:
-#                     rating = None
-
-#                 # update review
-#                 review.title = title
-#                 review.body = body
-#                 review.rating = rating
-#                 review.save()
-
-#                 messages.success(request, 'Your review for ' + review.book.title + ' has been updated')
-#                 if starting_point == 'dashboard':
-#                     return redirect(starting_point)
-#                 else
-#                     return redirect(review.book)
-
-#             else:
-#                 messages.error(request, 'You have not entered in a title')
-#                 return redirect('add_review', book, body)
-
-#         else:
-#             messages.error(request, 'You have not entered in a review')
-#             return redirect('add_review', book)
-
-#     else:
-
-#         values = {
-#             'title': review.title,
-#             'body': review.body,
-#             'rating': review.rating,
-#         }
-
-#         rating_choices = {
-#             '1':'Poor',
-#             '2':'Average',
-#             '3':'Good',
-#             '4':'Very Good',
-#             '5':'Excellent',
-#         }
-#         context = {
-#             'book': book,
-#             'rating_choices': rating_choices,
-#             'values': values,
-#         }
-#         return render(request, 'books/edit_review.html', context)
 
 def category(request, category_code):
     categories = Category.objects.all()
@@ -1405,47 +1233,20 @@ def explore_books(request):
 
 
 def book_search_redux(request):
-    query = request.GET.get('q', '').strip()[:80]
-    if (query == '' or len(query) < 3):
+    raw = request.GET.get('q', '')[:80].strip()
+    terms = normalise_query(raw)
+    if not terms:
         return redirect('explore_books')
 
-    terms = clean_and_split_query(query)
-    if not terms: 
-        return redirect('explore_books')
+    q = build_search_filter(terms)
 
-    # results = Book.objects.none()
-
-    # if len(query) >= 2:
-    #     qs = Book.objects.filter(
-    #         Q(title__icontains=query) |
-    #         Q(author__last_name__icontains=query) |
-    #         Q(author__first_name__icontains=query)
-    #     )
-
-    #     if not request.user.is_staff:
-    #         qs = qs.filter(instances__isnull=False)
-
-    #     results = qs.distinct().order_by('title')
-
-    query_filter = Q()
-    for term in terms:
-        term_filter = (
-            Q(title__icontains=term) |
-            Q(author__last_name__iexact=term) |
-            Q(author__first_name__iexact=term)
-        )
-        query_filter &= term_filter
-
-    books_qs = Book.objects.filter(query_filter)
+    books_qs = Book.objects.filter(q)
 
     if not request.user.is_staff:
         books_qs = books_qs.filter(instances__isnull=False)
     
-    books_qs = books_qs.distinct()
-    books_list = list(books_qs)
-
+    books_list = list(books_qs.distinct())
     scored_books = []
-
     for book in books_list:
         book_score = score_book(book, terms)
         scored_books.append((book_score, book))
@@ -1454,6 +1255,11 @@ def book_search_redux(request):
         key=lambda item: (-item[0], item[1].title.lower())
     )
 
+    if len(scored_books) == 1:
+        book = scored_books[0][1]
+        if is_confident_redirect(book, terms):
+            return redirect(book.get_absolute_url())
+
     results = [item[1] for item in scored_books]
     
     paginator = Paginator(results, 30)
@@ -1461,13 +1267,10 @@ def book_search_redux(request):
     page_obj = paginator.get_page(page)
 
     total_books = len(results)
-
-    base_params = {}
-    if query:
-        base_params['q'] = query
+    base_params = { 'q': raw }
 
     context = {
-        'query': query,
+        'query': raw,
         'books': page_obj,
         'total_books': total_books,
         'base_querystring': urlencode(base_params),

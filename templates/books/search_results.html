@@ -23,15 +23,25 @@
 
   <div class="search-results">
     <div class="wrapper search-results__wrapper">
-      <h1 class="search-results__title" id="search-results-title">Search results for "{{ query }}"</h1>
+      {% if total_books > 0 %}
+        <h1 class="search-results__title" id="search-results-title">Search results for "{{ query }}"</h1>
 
-      <div class="search-results__meta">
-        <p class="search-results__count">{{ total_books }} results found</p>
-      </div>
+        <div class="search-results__meta">
+          <p class="search-results__count">{{ total_books }} result{{ total_books|pluralize }} found</p>
+        </div>
 
-      {% include 'components/book_stack.html' with books=books list_name_id='search-results-title' %}
-
-      {% include 'components/pagination.html' with books=books query=query base_querystring=base_querystring %}
+        {% include 'components/book_stack.html' with books=books list_name_id='search-results-title' %}
+        {% include 'components/pagination.html' with books=books query=query base_querystring=base_querystring %}
+      {% else %}
+        <h1 class="search-results__title">No results for "{{ query }}"</h1>
+        <div class="search-results__error-body">
+          {% comment %} <p>No books matched your search of: "{{ query }}".</p> {% endcomment %}
+          <p>
+            Try using fewer words or searching by <strong>title</strong> or <strong>author</strong> only.
+          </p>
+          {% comment %} <span class="search-results__tip">Tip: common words like "the" are ignored.</span> {% endcomment %}
+        </div>
+      {% endif %}
     </div>
   </div>
 {% endblock %}

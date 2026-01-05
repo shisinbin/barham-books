@@ -1,5 +1,8 @@
 @layer component {
   .search {
+    --clear-button-height: calc(32 / 16 * 1rem);
+    --clear-icon-size: calc(20 / 16 * 1rem);
+
     position: sticky;
     isolation: isolate;
     top: var(--header-height);
@@ -22,16 +25,60 @@
       }
     }
 
+    .search__input-wrapper {
+      flex: 1;
+      display: flex;
+      position: relative;
+    }
+
     .search__form-input {
       background: var(--color-form-input-bg);
-      padding: 8px 20px;
+      padding: 8px 50px 8px 20px;
       border-radius: 5px;
       width: 0;
       min-width: 0;
       flex: 1;
+
+      &:not(:placeholder-shown) + .search__clear-button {
+        opacity: 1;
+        pointer-events: auto;
+      }
     }
 
-    .search__form-button {
+    .search__clear-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 8px;
+      height: var(--clear-button-height);
+      width: var(--clear-button-height);
+      display: grid;
+      place-content: center;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 150ms ease;
+
+      &:hover .search__clear-icon path {
+        stroke: var(--color-clear-button-hover);
+      }
+
+      &:focus {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
+
+    .search__clear-icon {
+      width: var(--clear-icon-size);
+      height: var(--clear-icon-size);
+
+      & path {
+        transition: stroke 150ms ease-in-out;
+      }
+    }
+
+    .search__submit-button {
       cursor: pointer;
     }
 

@@ -1,21 +1,5 @@
-// const STOPWORDS = [
-//   "the","and","for","with","from","that","this","into","onto","over","under",
-//   "about","after","before","between","through","without","within","upon",
-//   "book","books","novel","novels","story","stories"
-// ];
-
-// This has to align with stopwords used in the view !!!
-const STOPWORDS = [
-  'the',
-  'and',
-  'for',
-  'with',
-  'from',
-  'that',
-  'this',
-  'into',
-  'onto',
-];
+// This has to align with STOPWORDS in autocomplete view !!!
+const STOPWORDS = ['the', 'and', 'for'];
 
 function normaliseQuery(q) {
   if (!q) return '';
@@ -42,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initAutocomplete(container) {
   const input = container.querySelector('input');
+  const clearBtn = container.querySelector('.search__clear-button');
   const listbox = container.querySelector('.search__autocomplete');
   const endpoint = container.dataset.autocompleteUrl;
 
@@ -178,4 +163,14 @@ function initAutocomplete(container) {
     },
     true
   );
+
+  input.addEventListener('focus', () => {
+    if (input.value.length) input.select();
+  });
+
+  clearBtn.addEventListener('click', () => {
+    input.value = '';
+    input.focus();
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  });
 }
