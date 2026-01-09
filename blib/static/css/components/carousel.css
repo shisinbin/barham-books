@@ -1,0 +1,136 @@
+@layer component {
+  .carousel {
+    --carousel-slide-width: 140px;
+    --carousel-image-width: 120px;
+    --carousel-icon-size: 24px;
+    --carousel-slide-column-gap: 0;
+
+    display: grid;
+    gap: 12px;
+    position: relative;
+    isolation: isolate;
+
+    .carousel__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .carousel__title {
+      font-size: calc(36 / 16 * 1rem);
+    }
+
+    .carousel__controls {
+      flex-shrink: 0;
+      display: flex;
+      gap: 8px;
+    }
+
+    .carousel__btn {
+      display: grid;
+      place-content: center;
+      border-radius: 100vmax; /* content must be square to achieve circle */
+      padding: 12px;
+      cursor: pointer;
+      border: 1px solid hsl(0, 2%, 71%);
+      transition: 120ms ease-in-out;
+      transition-property: background-color;
+
+      &[disabled] {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+
+      &:not([disabled]):hover {
+        background-color: var(--c-white-bone);
+      }
+    }
+
+    .carousel__arrow-icon {
+      width: var(--carousel-icon-size, 24px);
+      height: var(--carousel-icon-size, 24px);
+    }
+
+    .carousel__viewport {
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scroll-padding-inline: 6px;
+    }
+
+    .carousel__track {
+      /* background-color: yellow; */
+      padding: 0 0 16px;
+      list-style: none;
+
+      display: grid;
+      gap: 8px var(--carousel-slide-column-gap);
+      grid-template-rows: auto auto; /* same height for each row */
+      grid-auto-columns: var(
+        --carousel-slide-width,
+        134px
+      ); /* same defined height for each column */
+      grid-auto-flow: column; /* items are placed by filling each column in turn */
+    }
+
+    .carousel__slide {
+      display: grid;
+      grid-template-rows: subgrid;
+      grid-row: span 2;
+      border-radius: 8px;
+      /* background-color: yellowgreen; */
+      position: relative;
+      /* transition: background-color 150ms ease-in-out; */
+
+      /* &:hover {
+        background-color: var(--c-white-bone);
+      } */
+
+      &:hover .carousel__slide-text {
+        text-decoration: 2px underline;
+        text-underline-offset: 3px;
+      }
+
+      &:hover .carousel__image {
+        filter: brightness(105%);
+      }
+    }
+
+    .carousel__image-wrapper {
+      /* background-color: hsl(25, 41%, 81%); */
+      display: grid;
+      place-content: center;
+      padding-block: 4px;
+    }
+
+    .carousel__image {
+      width: var(--carousel-image-width, 120px);
+      border-radius: 3px;
+      filter: brightness(95%);
+      will-change: filter;
+      transition: filter 150ms ease-in-out;
+    }
+
+    .carousel__slide-text {
+      /* background-color: hsl(35, 41%, 89%); */
+      justify-self: start;
+      text-align: center;
+      width: 100%;
+      font-size: calc(18 / 16 * 1rem);
+      font-weight: 600;
+      padding-inline: 6px;
+      padding-block-end: 10px;
+      font-family: var(--font-headings);
+    }
+
+    .carousel__link {
+      color: inherit;
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+      }
+    }
+  }
+}

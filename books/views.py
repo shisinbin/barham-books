@@ -4,6 +4,7 @@ from .choices import language_choices, a_z
 from django.contrib import messages
 from taggit.models import Tag
 from django.db.models import Count, Q
+from django.db.models.functions import Random
 from authors.models import Author
 from .models import Book, BookInstance2, Review, Category, BookTags, Series
 from .forms import SearchForm
@@ -13,7 +14,75 @@ from django.utils import timezone
 from django.urls import reverse_lazy
 from PIL import Image
 import re
+from .collections import COLLECTIONS
 from .search import normalise_query, build_search_filter, score_book, is_confident_redirect
+
+def get_related_collections(book):
+    book_tag_names = set(book.book_tags.values_list("name", flat=True))
+    related = []
+
+    for slug, coll in COLLECTIONS.items():
+        matches = book_tag_names.intersection(set(coll["tags"]))
+        if len(matches) >= coll.get("min_match", 1):
+            related.append({
+                "slug": slug,
+                "title": coll["title"],
+                "description": coll["description"],
+                "match_count": len(matches)
+            })
+    return sorted(related, key=lambda c: -c["match_count"])
+
+def build_book_level_details(book):
+    items = []
+
+    if book.category:
+        items.append(("Category", book.category.name))
+    if book.language:
+        items.append(("Language", book.language))
+    if book.year:
+        items.append(("Publication year", str(book.year)))
+    
+    return items
+
+def build_copy_details(copy):
+    items = []
+
+    if copy.pages:
+        items.append(("Pages", str(copy.pages)))
+    if copy.book_type:
+        items.append(("Format", copy.get_book_type_display()))
+    if copy.publisher:
+        items.append(("Publisher", copy.publisher))
+    
+    if copy.isbn13:
+        items.append(("ISBN-13", copy.get_formatted_isbn13()))
+    elif copy.isbn10:
+        items.append(("ISBN-10", copy.get_formatted_isbn10()))
+    
+    return items
+
+def build_details_block(book, copies_qs):
+    copies = list(copies_qs)
+
+    if len(copies) == 0:
+        return {
+            "heading": "No copies available",
+            "mode": "none",
+            "lists": [build_book_level_details(book)],
+        }
+    
+    if len(copies) == 1:
+        return {
+            "heading": "1 copy available",
+            "mode": "single",
+            "lists": [build_copy_details(copies[0])],
+        }
+    
+    return {
+        "heading": f"{len(copies)} copies available",
+        "mode": "multiple",
+        "lists": [build_copy_details(c) for c in copies],
+    }
 
 def format_author_name(author_name):
     """
@@ -1163,7 +1232,7 @@ def delete_book_for_sale(request, slug):
         return redirect('books_for_sale_list')
 
 
-from .collections import COLLECTIONS
+
 
 def collections_index(request):
     context = {
@@ -1225,9 +1294,17 @@ def collection_detail(request, slug):
 
     return render(request, 'books/collection_detail.html', context)
 
+
+
 def explore_books(request):
+    books = (
+        Book.objects
+        .filter(instances__isnull=False)
+        .distinct()
+        .order_by(Random())[:12]
+    )
     context = {
-        # 'query': request.GET.get('q', ''),
+        'featured_books': books
     }
     return render(request, 'books/explore.html', context)
 
@@ -1277,3 +1354,103 @@ def book_search_redux(request):
     }
 
     return render(request, 'books/search_results.html', context)
+
+
+
+import random
+def book_v2(request):
+    """
+    Temporary development book page.
+    Toggle between RANDOM book or FIXED ID book here.
+    """
+
+    # =========================
+    # BOOK SELECTION STRATEGY
+    # =========================
+
+    USE_RANDOM_BOOK = True
+    FIXED_BOOK_ID = 1791 #1178
+
+    if USE_RANDOM_BOOK:
+        ids = Book.objects.values_list("id", flat=True)
+        book_id = random.choice(list(ids))
+        book = get_object_or_404(Book, pk=book_id)
+    else:
+        book = get_object_or_404(Book, pk=FIXED_BOOK_ID)
+
+    copies = BookInstance2.objects.filter(book=book)
+    num_copies = copies.count()
+    details_block = build_details_block(book, copies)
+
+    # try:
+    #     copies = BookInstance2.objects.filter(book=book)
+    # except:
+    #     copies = None
+    # try:
+    #     available_copies = copies.filter(status='a')
+    # except:
+    #     available_copies = None
+
+    author_books_count = (
+        Book.objects
+            .filter(author=book.author)
+            .exclude(id=book.id)
+            .count()
+    )
+
+    related_collections = get_related_collections(book)
+
+    # other books in series
+    other_books_in_series = None
+    if book.series:
+        other_books_in_series = Book.objects.filter(series=book.series).exclude(id=book.id).order_by('series_num')
+
+    # similar books
+    similar_books_initial = book.book_tags.similar_objects()
+
+    # exclude other books in series from similar books
+    if other_books_in_series:
+        for other_book in other_books_in_series:
+            if other_book in similar_books_initial:
+                similar_books_initial.remove(other_book)
+
+    # build new list only including same category
+    similar_books = []
+    if similar_books_initial:
+        for bk in similar_books_initial:
+            if bk.category == book.category:
+                similar_books.append(bk)
+            if len(similar_books) == 12:
+                break
+    del similar_books_initial
+
+    # redundant code, but doing no harm really
+    similar_books = similar_books[:12]
+
+    # review stuff
+    reviews = Review.objects.filter(book=book)
+    has_not_reviewed = True
+    if request.user.is_authenticated:
+        if reviews.filter(user=request.user):
+            has_not_reviewed = False
+
+    copy_form = AddBookCopy()
+
+    # determine if book was created with last week, for basic staff
+    is_recently_created = book.created >= timezone.now() - timedelta(weeks=4)
+
+    context = {
+        'book': book,
+        'author_extra_count': author_books_count,
+        'related_collections': related_collections,
+        'details_block': details_block,
+        'num_copies': num_copies,
+        'copy_form': copy_form,
+        'other_books_in_series': other_books_in_series,
+        'similar_books': similar_books,
+        'reviews': reviews,
+        'has_not_reviewed': has_not_reviewed,
+        'is_recently_created': is_recently_created,
+    }
+
+    return render(request, "books/book_v2.html", context)

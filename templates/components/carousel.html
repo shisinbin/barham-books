@@ -1,0 +1,53 @@
+{% load static %}
+{% load thumbnail %}
+
+{% with title=title|default:"" tag=tag|default:"section" books=books|slice:":20" extra_class=extra_class|default:"" %}
+  <{{ tag }} class="carousel {{extra_class}}" data-carousel>
+    <header class="carousel__header">
+      <h2 class="carousel__title">
+        {% if title %}
+          {{ title }}
+        {% else %}
+          <span class="visually-hidden">A Book List in a Carousel</span>
+        {% endif %}
+      </h2>
+      <div class="carousel__controls">
+        <button class="carousel__btn prev">
+          <svg class="carousel__arrow-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel__btn next">
+          <svg class="carousel__arrow-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="carousel__viewport">
+      <ul class="carousel__track" aria-label="{% if title %}{{ title }}{% else %}A Book List in a Carousel{% endif %}">
+        {% for book in books %}
+          <li class="carousel__slide">
+            {% if book.photo %}
+              <div class="carousel__image-wrapper">
+                <img src="{{ book.photo|thumbnail_url:'default' }}" alt="" class="carousel__image" />
+              </div>
+            {% else %}
+              <div class="carousel__image-wrapper">
+                <img src="{% static 'img/open_book.svg' %}" alt="" class="carousel__image" />
+              </div>
+            {% endif %}
+            <h3 class="carousel__slide-text">
+              <a href="{{ book.get_absolute_url }}" class="carousel__link">{{ book.title }}</a>
+            </h3>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </{{ tag }}>
+{% endwith %}

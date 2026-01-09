@@ -21,26 +21,29 @@
 
       &:hover .book-grid__cover-image,
       &:focus-within .book-grid__cover-image {
-        transform: scale(1.05);
+        /* transform: scale(1.05); */
         filter: brightness(100%);
+      }
+
+      &:hover .book-grid__book-title,
+      &:focus-within .book-grid__book-title {
+        text-decoration: underline 2px;
+        text-underline-offset: 3px;
       }
     }
 
     .book-grid__image-wrapper {
-      justify-self: center;
-      border-radius: 2px;
-      overflow: hidden;
-      width: fit-content;
+      place-self: center;
+      height: fit-content;
+      width: calc(100 / 16 * 1rem);
     }
 
     .book-grid__cover-image {
-      height: 100%;
+      height: auto;
       width: 100%;
-      object-fit: cover;
-      will-change: transform;
+      will-change: filter;
       filter: brightness(95%);
-      transition: 150ms ease-in-out;
-      transition-property: transform, filter;
+      transition: filter 150ms ease-in-out;
     }
 
     .book-grid__book-body {

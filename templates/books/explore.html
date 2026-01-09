@@ -1,5 +1,6 @@
 {% extends 'site_base.html' %}
 {% load static %}
+{% load thumbnail %}
 
 {% block title %}
   Explore books - Barham Community Library
@@ -8,10 +9,12 @@
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/pages/explore_books.css' %}" />
   <link rel="stylesheet" href="{% static 'css/components/search_bar.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/components/carousel.css' %}" />
 {% endblock %}
 
 {% block extra_js %}
   <script src="{% static 'js/autocomplete_redux.js' %}" defer></script>
+  <script src="{% static 'js/carousel.js' %}" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -25,6 +28,8 @@
 
   <div class="explore wrapper">
     <h1 class="explore__title">Find your next read</h1>
+
+    {% include 'components/carousel.html' with books=featured_books title='Featured Books' tag='section' %}
   </div>
   <div id="padding"></div>
 {% endblock %}

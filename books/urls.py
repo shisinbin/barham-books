@@ -73,3 +73,8 @@ urlpatterns += [
 urlpatterns += [
     path('search/', views.book_search_redux, name='book_search_redux'),
 ]
+
+# temporary production book page
+urlpatterns += [
+    path('v2/book/', views.book_v2, name='book_v2'),
+]

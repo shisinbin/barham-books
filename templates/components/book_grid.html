@@ -8,7 +8,7 @@
         {% if book.photo %}
           <img src="{{ book.photo|thumbnail_url:'default' }}" alt="" class="book-grid__cover-image">
         {% else %}
-          <img src="{% static 'img/blank.png' %}" alt="" class="book-grid__cover-image">
+          <img src="{% static 'img/open_book.svg' %}" alt="" class="book-grid__cover-image">
         {% endif %}
       </div>
 

@@ -48,14 +48,7 @@
 
     .book-stack__image-wrapper {
       max-width: var(--thumbnail-cover-width);
-      height: auto;
-      align-self: start;
-      overflow: hidden;
-      border-radius: 2px;
-
-      @media (width >= calc(600 / 16 * 1rem)) {
-        align-self: center;
-      }
+      align-self: center;
     }
 
     .book-stack__cover-image {

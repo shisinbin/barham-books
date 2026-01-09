@@ -1,0 +1,253 @@
+@layer component {
+  .book {
+    /* background-color: bisque; */
+    position: relative;
+    isolation: isolate;
+
+    .book__wrapper {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        'breadcrumb'
+        'image'
+        'title'
+        'actions'
+        'summary'
+        'meta'
+        'collections'
+        'series'
+        'similar'
+        'reviews';
+
+      @media (width >= calc(768 / 16 * 1rem)) {
+        grid-template-columns: calc(260 / 16 * 1rem) 1fr;
+        grid-template-areas:
+          '.        breadcrumb'
+          'image    title'
+          'image    summary'
+          'image    meta'
+          'image    collections'
+          'divider  divider'
+          'series   series'
+          'similar  similar'
+          'reviews  reviews';
+        column-gap: calc(32 / 16 * 1rem);
+      }
+    }
+
+    .book__nav {
+      grid-area: breadcrumb;
+      margin-block-end: 20px;
+    }
+
+    .book__back {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      color: inherit;
+
+      .icon {
+        width: calc(20 / 16 * 1rem);
+        height: calc(20 / 16 * 1rem);
+      }
+
+      &:hover {
+        text-decoration: underline 1px;
+        text-underline-offset: 4px;
+      }
+    }
+
+    .book__image-container {
+      grid-area: image;
+      border: 2px solid red;
+      margin-block-end: 32px;
+
+      @media (width >= calc(768 / 16 * 1rem)) {
+        margin-block-end: 0;
+      }
+    }
+
+    .sticky-sidebar {
+      display: grid;
+      place-content: center;
+      @media (width >= calc(768 / 16 * 1rem)) {
+        display: revert;
+        position: sticky;
+        top: calc(var(--header-height) + 16px);
+      }
+    }
+
+    .book__image-wrapper {
+      width: calc(260 / 16 * 1rem);
+      border-radius: 3px;
+      height: fit-content;
+      overflow: hidden;
+    }
+
+    .book__image {
+      width: 100%;
+    }
+
+    .book__desktop-actions {
+      display: none;
+      @media (width >= calc(768 / 16 * 1rem)) {
+        display: revert;
+      }
+    }
+
+    .book__title-strap {
+      grid-area: title;
+      margin-block-end: 48px;
+    }
+
+    .book__title {
+      font-size: calc(36 / 16 * 1rem);
+      margin-block-end: 16px;
+
+      @media (width >= calc(768 / 16 * 1rem)) {
+        font-size: calc(64 / 16 * 1rem);
+      }
+    }
+
+    .book__series-title {
+      color: hsl(0, 0%, 43%);
+      margin-block: 8px;
+    }
+
+    .book__author {
+      font-size: calc(24 / 16 * 1rem);
+    }
+
+    .book__author-link {
+      position: relative;
+      color: inherit;
+      /* text-decoration: underline;
+      text-underline-offset: 4px; */
+      transition: color 150ms ease-in-out;
+
+      &:hover {
+        color: var(--c-magenta);
+        text-decoration: none;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: var(--color-text-dark);
+        opacity: 1;
+        transition: opacity 100ms ease-in-out;
+      }
+
+      &:hover::after {
+        opacity: 0;
+      }
+    }
+
+    .book__author-more {
+      color: darkgray;
+    }
+
+    .book__mobile-actions {
+      grid-area: actions;
+
+      @media (width >= calc(768 / 16 * 1rem)) {
+        display: none;
+      }
+    }
+
+    .book__subheading {
+      font-size: calc(36 / 16 * 1rem);
+      margin-block-end: 24px;
+    }
+
+    .book__summary {
+      grid-area: summary;
+      line-height: 1.5;
+      padding-block-end: 32px;
+
+      & > p:not(:last-of-type) {
+        margin-block-end: 16px;
+      }
+    }
+
+    .book__collections {
+      grid-area: collections;
+      margin-block-end: 32px;
+    }
+
+    .book__collections-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      grid-auto-rows: 1fr;
+      gap: 8px 12px;
+      list-style: none;
+      padding: 0;
+      margin-block-start: 16px;
+    }
+
+    .book__collections-list-item {
+      display: grid;
+      place-content: center;
+      position: relative;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid gray;
+      text-align: center;
+
+      &:hover {
+        background-color: var(--c-white-bone);
+      }
+    }
+
+    .book__collections-item-link {
+      color: inherit;
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+      }
+    }
+
+    .book__meta {
+      grid-area: meta;
+      margin-block-end: 32px;
+    }
+
+    .book__desc-list {
+      margin-block-start: 12px;
+    }
+
+    .book__desc-row {
+      display: flex;
+      margin-block-end: 4px;
+    }
+
+    .book__desc-term::after {
+      content: ':';
+    }
+
+    .book__desc-details {
+      margin-inline-start: 10px;
+    }
+
+    .book__series {
+      grid-area: series;
+    }
+
+    .book__similar {
+      grid-area: similar;
+
+      padding-block-start: 32px;
+      border-block-start: 2px solid var(--c-gray-lighter);
+      margin-block-start: 32px;
+    }
+
+    .book__reviews {
+      grid-area: reviews;
+    }
+  }
+}

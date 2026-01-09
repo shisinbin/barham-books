@@ -45,14 +45,47 @@ def normalise_query(query):
 def plural_forms(term):
     """
     Return possible plural variants for matching
+
+    Assumptions:
+    - term is lowercase
+    - term length >= 3
+    - punctuation already stripped
     """
     forms = {term}
 
-    if term.endswith("s"):
-        forms.add(term[:-1])
-    else:
-        forms.add(term + "s")
+    # parties -> party
+    if term.endswith("ies"):
+        base = term[:-3] + "y"
+        if len(base) >= 3:
+            forms.add(base)
+            return forms
+
+    # boxes -> box, wishes -> wish, catches -> catch
+    if term.endswith("es") and term[:-2].endswith(("sh", "ch", "x", "s")):
+        base = term[:-2]
+        if len(base) >= 3:
+            forms.add(base)
+            return forms
+
+    # dogs -> dog (not dress -> dres)
+    if term.endswith("s") and not term.endswith("ss"):
+        base = term[:-1]
+        if len(base) >= 3:
+            forms.add(base)
+            return forms
+
+    # party -> parties
+    if term.endswith("y") and term[-2] not in "aeiou":
+        forms.add(term[:-1] + "ies")
+        return forms
     
+    # glass -> glasses
+    if term.endswith("ss"):
+        forms.add(term + "es")
+        return forms
+
+    # default plural
+    forms.add(term + "s")
     return forms
 
 def build_search_filter(terms, allow_prefix=False):
