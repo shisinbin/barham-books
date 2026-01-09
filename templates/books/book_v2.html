@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% block extra_js %}
+  <script src="{% static 'js/likes_redux.js' %}" defer></script>
   <script src="{% static 'js/carousel.js' %}" defer></script>
 {% endblock %}
 
@@ -53,7 +54,27 @@
           </figure>
 
           <section class="book__desktop-actions">
-            <button>❤️ {{ book.users_like.count }}</button>
+            <div class="book-like" data-like data-id="{{ book.id }}" data-liked="{% if user.is_authenticated and user in book.users_like.all %}true{% else %}false{% endif %}" data-url="{% url 'like' %}">
+              {% if not user.is_authenticated %}
+                <p class="book-like__hint">Log in to like this book</p>
+              {% endif %}
+
+              <button type="button" class="book-like__btn" aria-pressed="{% if user.is_authenticated and user in book.users_like.all %}true{% else %}false{% endif %}" {% if not user.is_authenticated %}disabled{% endif %}>
+                <span class="visually-hidden">
+                  Like or unlike book
+                </span>
+                <span class="book-like__count">
+                  {% if book.users_like.count > 0 %}
+                    {{ book.users_like.count }}
+                  {% endif %}
+                </span>
+
+                <svg class="book-like__icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              </button>
+            </div>
+
 
             {% if user.is_authenticated %}
               {% if num_copies >= 1 %}
@@ -124,7 +145,7 @@
         </aside>
       {% endif %}
 
-      {% if other_books_in_series %}
+      {% comment %} {% if other_books_in_series %}
         <aside class="book__series">
           <h2 class="book__subheading">Other books in this series</h2>
           <ul>
@@ -133,6 +154,10 @@
             {% endfor %}
           </ul>
         </aside>
+      {% endif %} {% endcomment %}
+
+      {% if other_books_in_series %}
+        {% include 'components/carousel.html' with books=other_books_in_series title='Other books in series' tag='aside' extra_class='book__series' %}
       {% endif %}
 
       {% comment %} <aside class="book__similar">

@@ -868,17 +868,20 @@ def book_like(request):
     book_id = request.POST.get('id')
     action = request.POST.get('action')
 
-    if book_id and action:
-        try:
-            book = Book.objects.get(id=book_id)
-            if action == 'like':
-                book.users_like.add(request.user)
-            else:
-                book.users_like.remove(request.user)
-            return JsonResponse({'status':'ok'})
-        except:
-            pass
-    return JsonResponse({'status':'error'})
+    if not book_id or action not in ('like', 'unlike'):
+        return JsonResponse({'status': 'error'})
+    
+    book = get_object_or_404(Book, id=book_id)
+
+    if action == 'like':
+        book.users_like.add(request.user)
+    else:
+        book.users_like.remove(request.user)
+    
+    return JsonResponse({
+        'status': 'ok',
+        'likes': book.users_like.count(),
+    })
 
 @login_required
 def del_review(request, review_id):
@@ -1368,8 +1371,8 @@ def book_v2(request):
     # BOOK SELECTION STRATEGY
     # =========================
 
-    USE_RANDOM_BOOK = True
-    FIXED_BOOK_ID = 1791 #1178
+    USE_RANDOM_BOOK = False
+    FIXED_BOOK_ID = 10 #1071 #1791 #1178
 
     if USE_RANDOM_BOOK:
         ids = Book.objects.values_list("id", flat=True)

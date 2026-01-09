@@ -236,6 +236,10 @@
 
     .book__series {
       grid-area: series;
+
+      padding-block-start: 32px;
+      border-block-start: 2px solid var(--c-gray-lighter);
+      margin-block-start: 32px;
     }
 
     .book__similar {
@@ -248,6 +252,56 @@
 
     .book__reviews {
       grid-area: reviews;
+
+      padding-block-start: 32px;
+      border-block-start: 2px solid var(--c-gray-lighter);
+      margin-block-start: 32px;
+    }
+
+    .book-like {
+      display: flex;
+      align-items: center;
+      justify-content: end;
+      gap: 8px;
+
+      .book-like__btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+        border: none;
+        padding: 8px;
+        background: none;
+        cursor: pointer;
+      }
+
+      .book-like__btn[aria-pressed='true'] {
+        color: hsl(0, 70%, 55%);
+      }
+
+      .book-like__icon {
+        width: 24px;
+        height: 24px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2px;
+        transition: 120ms ease-in-out;
+        transition-property: transform, fill;
+      }
+
+      .book-like__btn[aria-pressed='true'] .book-like__icon {
+        fill: currentColor;
+        transform: scale(1.1);
+      }
+
+      .book-like__count {
+        font-weight: 500;
+      }
+
+      .book-like__hint {
+        font-size: calc(14 / 16 * 1rem);
+        color: gray;
+      }
     }
   }
 }

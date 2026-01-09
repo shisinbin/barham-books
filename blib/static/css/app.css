@@ -363,6 +363,17 @@
     flex-shrink: 0; /* To avoid getting shrunk in flex container */
   }
 
+  .divider-above {
+    padding-block-start: 32px;
+    border-block-start: 2px solid var(--c-gray-lighter);
+    margin-block-start: 32px;
+  }
+  .divider-below {
+    padding-block-end: 32px;
+    border-block-end: 2px solid var(--c-gray-lighter);
+    margin-block-end: 32px;
+  }
+
   #app {
     display: grid;
     grid-template-rows: auto 1fr auto;
