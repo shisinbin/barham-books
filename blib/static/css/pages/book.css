@@ -91,7 +91,9 @@
     .book__desktop-actions {
       display: none;
       @media (width >= calc(768 / 16 * 1rem)) {
-        display: revert;
+        display: grid;
+        gap: 8px;
+        margin-block-start: 4px;
       }
     }
 
@@ -259,9 +261,11 @@
     }
 
     .book-like {
+      width: fit-content;
+      justify-self: end;
+
       display: flex;
       align-items: center;
-      justify-content: end;
       gap: 8px;
 
       .book-like__btn {
@@ -301,6 +305,73 @@
       .book-like__hint {
         font-size: calc(14 / 16 * 1rem);
         color: gray;
+      }
+    }
+
+    .book-interest {
+      width: fit-content;
+      justify-self: center;
+
+      .interest-btn[aria-pressed='true'] .register-text,
+      .interest-btn[aria-pressed='true'] .icon-bookmark {
+        display: none;
+      }
+
+      .interest-btn {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        --btn-bg: hsl(210, 40%, 98%);
+        --btn-border: hsl(210, 14%, 83%);
+        --btn-text: hsl(210, 15%, 20%);
+        --btn-hover: hsl(210, 40%, 94%);
+
+        background: var(--btn-bg);
+        border: 1px solid var(--btn-border);
+        color: var(--btn-text);
+        border-radius: 999px;
+        padding: 10px 16px;
+        font-weight: 500;
+        transition: background-color 120ms ease, transform 80ms ease;
+
+        &:hover:not([disabled]) {
+          background: var(--btn-hover);
+          transform: translateY(-1px);
+        }
+
+        &[aria-pressed='true'] {
+          background: hsl(140, 45%, 92%);
+          border-color: hsl(140, 35%, 70%);
+          color: hsl(140, 35%, 25%);
+        }
+      }
+
+      .interest-btn[aria-pressed='true'],
+      .interest-btn.is-loading {
+        opacity: 0.8;
+        pointer-events: none;
+      }
+
+      .interest-btn[aria-pressed='false'] .interested-text,
+      .interest-btn[aria-pressed='false'] .icon-check {
+        display: none;
+      }
+
+      .interest-btn.is-loading .register-text,
+      .interest-btn.is-loading .interested-text,
+      .interest-btn.is-loading .icon-check,
+      .interest-btn.is-loading .icon-bookmark {
+        display: none;
+      }
+
+      .interest-btn .sending-text {
+        display: none;
+      }
+
+      .interest-btn.is-loading .sending-text {
+        display: inline-block;
       }
     }
   }

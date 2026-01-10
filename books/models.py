@@ -404,3 +404,16 @@ class Category(models.Model):
 #     # could do this for a category instead to save cpu
 #     for book in Book.objects.all():
 #         update_tags_in_categories(book)
+
+class BookInterest(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='interests')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='book_interests')
+    created = models.DateTimeField(auto_now_add=True)
+    handled = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('book', 'user')
+        ordering = ['-created']
+    
+    def __str__(self):
+        return f'{self.user.username} → {self.book.title}'

@@ -6,7 +6,7 @@ from taggit.models import Tag
 from django.db.models import Count, Q
 from django.db.models.functions import Random
 from authors.models import Author
-from .models import Book, BookInstance2, Review, Category, BookTags, Series
+from .models import Book, BookInstance2, Review, Category, BookTags, Series, BookInterest
 from .forms import SearchForm
 from datetime import datetime, timedelta
 from django.http import JsonResponse, Http404
@@ -16,6 +16,7 @@ from PIL import Image
 import re
 from .collections import COLLECTIONS
 from .search import normalise_query, build_search_filter, score_book, is_confident_redirect
+from django.core.mail import send_mail
 
 def get_related_collections(book):
     book_tag_names = set(book.book_tags.values_list("name", flat=True))
@@ -1371,8 +1372,8 @@ def book_v2(request):
     # BOOK SELECTION STRATEGY
     # =========================
 
-    USE_RANDOM_BOOK = False
-    FIXED_BOOK_ID = 10 #1071 #1791 #1178
+    USE_RANDOM_BOOK = True
+    FIXED_BOOK_ID = 1071 #1791 #1178
 
     if USE_RANDOM_BOOK:
         ids = Book.objects.values_list("id", flat=True)
@@ -1380,6 +1381,11 @@ def book_v2(request):
         book = get_object_or_404(Book, pk=book_id)
     else:
         book = get_object_or_404(Book, pk=FIXED_BOOK_ID)
+
+    # book interest
+    interest = None
+    if request.user.is_authenticated:
+        interest = BookInterest.objects.filter(book=book, user=request.user).first()
 
     copies = BookInstance2.objects.filter(book=book)
     num_copies = copies.count()
@@ -1444,6 +1450,7 @@ def book_v2(request):
 
     context = {
         'book': book,
+        'interest': interest,
         'author_extra_count': author_books_count,
         'related_collections': related_collections,
         'details_block': details_block,
@@ -1457,3 +1464,41 @@ def book_v2(request):
     }
 
     return render(request, "books/book_v2.html", context)
+
+from django.conf import settings
+
+@login_required
+@require_POST
+def register_interest(request):
+    book = get_object_or_404(Book, id=request.POST.get('book_id'))
+
+    interest, created = BookInterest.objects.get_or_create(
+        book=book,
+        user=request.user,
+    )
+
+    if created:
+        send_mail(
+            f'Book interest: {book.title}',
+            f'{request.user.username} is interested in "{book.title}.',
+            settings.EMAIL_HOST_USER,
+            ['sb1664@gmail.com'],
+            fail_silently=True,
+        )
+    
+    return JsonResponse({
+        'status': 'ok',
+        'created': created,
+        'handled': interest.handled,
+    })
+
+@login_required
+def delete_interest(request):
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error'})
+    
+    book_id = request.POST.get('book_id')
+
+    BookInterest.objects.filter(book_id=book_id, user=request.user).delete()
+
+    return JsonResponse({'status': 'ok'})

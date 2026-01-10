@@ -134,3 +134,6 @@ class BookForSaleAdmin(admin.ModelAdmin):
 class SaleCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'code')
     search_fields = ('name',)
+
+from .models import BookInterest
+admin.site.register(BookInterest)

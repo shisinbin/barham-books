@@ -78,3 +78,9 @@ urlpatterns += [
 urlpatterns += [
     path('v2/book/', views.book_v2, name='book_v2'),
 ]
+
+# registering book interest
+urlpatterns += [
+    path('interest/add/', views.register_interest, name='register_interest'),
+    path('interest/remove/', views.delete_interest, name='delete_interest'),
+]

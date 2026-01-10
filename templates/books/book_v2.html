@@ -12,6 +12,7 @@
 
 {% block extra_js %}
   <script src="{% static 'js/likes_redux.js' %}" defer></script>
+  <script src="{% static 'js/book-interest.js' %}" defer></script>
   <script src="{% static 'js/carousel.js' %}" defer></script>
 {% endblock %}
 
@@ -75,17 +76,24 @@
               </button>
             </div>
 
+            <div class="book-interest" data-interest data-book-id="{{ book.id }}" data-url="{% url 'register_interest' %}">
+              {% if user.is_authenticated %}
+                {% if num_copies > 0 %}
+                  <button class="interest-btn" aria-pressed="{% if interest %}true{% else %}false{% endif %}" {% if interest %}disabled{% endif %}>
 
-            {% if user.is_authenticated %}
-              {% if num_copies >= 1 %}
-                <button>Reserve</button>
-              {% else %}
-                <button disabled>Not Available</button>
+                    <span class="interested-text">Interested</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-check"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+
+                    <span class="sending-text">Sending...</span>
+                    
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-bookmark"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                    <span class="register-text">Register interest</span>
+                  </button>
+                {% else %}
+                  <span class="interest-fake-btn">Not Available</span>
+                {% endif %}
               {% endif %}
-            {% else %}
-              {% comment %}Will redirect to login page{% endcomment %}
-              <button>Borrow</button>
-            {% endif %}
+            </div>
           </section>
         </div>
       </div>
@@ -145,29 +153,10 @@
         </aside>
       {% endif %}
 
-      {% comment %} {% if other_books_in_series %}
-        <aside class="book__series">
-          <h2 class="book__subheading">Other books in this series</h2>
-          <ul>
-            {% for book in other_books_in_series %}
-              <li>{{ book.title }}</li>
-            {% endfor %}
-          </ul>
-        </aside>
-      {% endif %} {% endcomment %}
 
       {% if other_books_in_series %}
         {% include 'components/carousel.html' with books=other_books_in_series title='Other books in series' tag='aside' extra_class='book__series' %}
       {% endif %}
-
-      {% comment %} <aside class="book__similar">
-        <h2 class="book__subheading">You might also like</h2>
-        <ul>
-          {% for book in similar_books %}
-            <li>{{ book.title }}</li>
-          {% endfor %}
-        </ul>
-      </aside> {% endcomment %}
 
       {% if similar_books %}
         {% include 'components/carousel.html' with books=similar_books title='You might also like' tag='aside' extra_class='book__similar' %}
