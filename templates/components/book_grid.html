@@ -6,18 +6,18 @@
     <li class="book-grid__book clickable-parent">
       <div class="book-grid__image-wrapper">
         {% if book.photo %}
-          <img src="{{ book.photo|thumbnail_url:'default' }}" alt="" class="book-grid__cover-image">
+          <img src="{{ book.photo|thumbnail_url:'default' }}" alt="" class="book-grid__cover-image" />
         {% else %}
-          <img src="{% static 'img/open_book.svg' %}" alt="" class="book-grid__cover-image">
+          <img src="{% static 'img/open_book.svg' %}" alt="" class="book-grid__cover-image" />
         {% endif %}
       </div>
 
       <div class="book-grid__book-body">
-        <h3 class="book-grid__book-title">
-          <a href="{{ book.get_absolute_url }}" class="book-grid__book-link clickable-parent-link">{{ book.title }}</a>
-        </h3>
+        <h3 class="book-grid__book-title"><a href="{{ book.get_absolute_url }}" class="book-grid__book-link clickable-parent-link">{{ book.title }}</a></h3>
 
-        <p class="book-grid__book-author">{{ book.author }}</p>
+        {% if not hide_author %}
+          <p class="book-grid__book-author">{{ book.author }}</p>
+        {% endif %}
       </div>
     </li>
   {% empty %}

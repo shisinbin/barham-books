@@ -3,16 +3,17 @@ from .models import Author
 
 def author(request, author_id, slug):
     author = get_object_or_404(Author, pk=author_id)
-    books = author.books.order_by('-year')
+    books = author.books.order_by('title')
+    num_books = books.count()
 
     context = {
         'author': author,
         'books': books,
+        'hide_author': True,
+        'num_books': num_books,
     }
 
-    return render(request,
-                  'authors/author.html',
-                  context)
+    return render(request,'authors/author.html', context)
 
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
