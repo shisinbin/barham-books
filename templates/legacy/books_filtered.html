@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if tag %}
+    {{ tag.name|title }}
+  {% elif letter %}
+    {{ letter|title }}
+  {% else %}
+    A to Z
+  {% endif %}
+  | Books |
+{% endblock title %}
+
+{% block content %}
+  <section
+    {% if tag %}
+      id="work" class="bg-dark text-white text-center" style="padding: 2rem 0;"
+    {% else %}
+      id="showcase-inner" class="py-5 text-white" style="min-height: 50px; background-size:cover;"
+    {% endif %}
+  >
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-12">
+          {% if tag %}
+            <h1 class="display-4">
+              {{ tag.name|title }}
+            </h1>
+            <p class="lead">
+              <h3 class="mt-2">
+                <a href="#" data-toggle="modal" data-target="#tagModal" class="btn btn-outline-secondary">
+                  <span>
+                    See all tags &raquo;
+                  </span>
+                </a>
+              </h3>
+            </p>
+          {% else %}
+            <h1 class="display-4">
+              {{ letter|title }}
+            </h1>
+            <p class="lead">
+              Book A - Z
+            </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Breadcrumb -->
+  <section id="bc" class="mt-3">
+    <div class="container">
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="#">Home</a>
+          </li>
+          {% if tag %}
+            <li class="breadcrumb-item">
+                <a href="#">Tags</a>
+            </li>
+            <li class="breadcrumb-item active">
+              {{ tag.name|title }}
+            </li>
+          {% else %}
+            <li class="breadcrumb-item">
+                <a href="#">Books</a>
+            </li>
+            <li class="breadcrumb-item active">
+              A-Z
+            </li>
+          {% endif %}
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <!-- A to Z breadcrumb -->
+  {% if not tag %}
+    <section id="bc" class="mt-2 container">
+      <nav>
+        <ol class="breadcrumb">
+          <li
+            {% if 'books/all/0/' in request.path %}
+              class="breadcrumb-item active"
+            {% else %}
+              class="breadcrumb-item"
+            {% endif %}>
+            <a href="#">0-9</a>
+          </li>
+          {% for character in alphabet %}
+            <li 
+              {% if 'books/all/{{ character }}/' in request.path %}
+                class="breadcrumb-item active"
+              {% else %}
+                class="breadcrumb-item"
+              {% endif %}>
+              <a href="#">
+                {{ character|title }}
+              </a>
+            </li>
+          {% endfor %}
+        </ol>
+      </nav>
+    </section>
+  {% endif %}
+
+  <section id="dashboard" class="pb-5 pt-3 container">
+    {% if books %}
+      <div class="col-md-12">
+        <p class="mb-4" style="font-family: georgia, serif; font-style: italic;">
+          {{ num_results }} result{{ num_results|pluralize }} found
+        </p>
+
+        <div id="book-list">
+          {% include 'legacy/books_filtered_partial.html' %}
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      {% if books.has_other_pages %}
+        <nav class="float-right mt-4" aria-label="Book pagination">
+          <ul class="pagination">
+            {% if books.has_previous %}
+              <li class="page-item">
+                <a href="#" class="page-link" aria-label="Previous">&laquo;</a>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <span class="page-link">&laquo;</span>
+              </li>
+            {% endif %}
+
+            {% for i in books.paginator.page_range %}
+              {% if books.number == i %}
+                <li class="page-item active" aria-current="page">
+                  <a class="page-link">{{i}}</a>
+                </li>
+              {% else %}
+                <li class="page-item">
+                  <a href="#" class="page-link">{{i}}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
+            {% if books.has_next %}
+              <li class="page-item">
+                <a href="#" class="page-link" aria-label="Next">&raquo;</a>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <span class="page-link">&raquo;</span>
+              </li>
+            {% endif %}
+          </ul>  
+        </nav>
+      {% endif %}
+    {% else %}
+      <p>No books.</p>
+    {% endif %}
+
+  </section>
+
+  <!-- Tag Modal -->
+  {% if tag %}
+    <div class="modal fade" id="tagModal" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content text-center">
+          <div class="modal-header">
+            <h5 class="modal-title" id="inquiryModalLabel">Select Tag</h5>
+            <button type="button" class="close" data-dismiss="modal">
+              <span>&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {% for a_tag in all_tags %}
+              <a href="#"
+              {% if a_tag.band == 1 %}
+                class="badge badge-pill badge-primary mb-1"
+              {% elif a_tag.band == 2 %}
+                class="badge badge-pill badge-light mb-1"
+              {% elif a_tag.band == 3 %}
+                class="badge badge-pill badge-info mb-1"
+              {% elif a_tag.band == 4 %}
+                class="badge badge-pill badge-danger mb-1"
+              {% elif a_tag.band == 5 %}
+                class="badge badge-pill badge-secondary mb-1"
+              {% elif a_tag.band == 6 %}
+                class="badge badge-pill badge-warning mb-1"
+              {% else %}
+                class="badge badge-pill badge-dark mb-1"
+              {% endif %}
+              >
+                <p class="mb-1 mt-1">
+                  {{ a_tag.name|title }}
+                </p>
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+{% endblock content %}

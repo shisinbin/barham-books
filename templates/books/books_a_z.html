@@ -1,0 +1,36 @@
+{% extends 'site_base.html' %}
+{% load static %}
+{% load thumbnail %}
+
+{% block title %}
+  Book A-Z - Barham Community Library
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/a-z.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/components/book-grid.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/components/pagination.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="a-z">
+    <div class="wrapper a-z__wrapper">
+      <header class="a-z__heading">
+        <h1 class="a-z__title">Browse books A-Z</h1>
+        <p class="a-z__meta">{{ num_results }} book{{ num_results|pluralize }} starting with {{ letter }}</p>
+      </header>
+
+      <div class="a-z__alphabet-container">
+        <nav class="a-z__alphabet-nav">
+          {% for l in alphabet %}
+            <a href="{% url 'books_a_z_letter' l %}" class="a-z__nav-link {% if l == letter %}is-active{% endif %}">{{ l }}</a>
+          {% endfor %}
+        </nav>
+      </div>
+
+      {% include 'components/book_grid.html' with books=books %}
+
+      {% include 'components/pagination.html' with books=books %}
+    </div>
+  </section>
+{% endblock %}

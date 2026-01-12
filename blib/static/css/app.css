@@ -382,6 +382,11 @@
     isolation: isolate;
   }
 
+  /* Grid items have min-width: auto by default. Not good for wanting to have stuff overflow */
+  #app > * {
+    min-width: 0;
+  }
+
   #padding {
     height: 50dvh;
   }

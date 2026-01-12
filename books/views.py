@@ -1515,3 +1515,32 @@ def delete_interest(request):
     BookInterest.objects.filter(book_id=book_id, user=request.user).delete()
 
     return JsonResponse({'status': 'ok'})
+
+import string
+A_Z = list(string.ascii_uppercase)
+A_Z.append('0-9')
+
+def books_a_z(request, letter='A'):
+    letter = letter.upper()
+
+    books = Book.objects.all()
+
+    if letter == '0-9':
+        books = books.filter(title__regex=r'^\d')
+    else:
+        books = books.filter(title__istartswith=letter)
+
+    books = books.order_by('title')
+
+    paginator = Paginator(books, 30)
+    page = request.GET.get('page')
+    page_obj = paginator.get_page(page)
+
+    context = {
+        'books': page_obj,
+        'letter': letter,
+        'alphabet': A_Z,
+        'num_results': books.count(),
+    }
+
+    return render(request, 'books/books_a_z.html', context)

@@ -1,0 +1,19 @@
+{% load thumbnail %}
+{% load static %}
+
+<div class="row">
+  {% for book in books %}
+    <div class="col-lg-2 col-md-3 col-sm-4 col-4 text-center mb-3">
+      <a href="#">
+        {% if book.photo %}
+          <img src="{{ book.photo|thumbnail_url:'default' }}" class="img-fluid img-thumbnail-edit" />
+        {% else %}
+          <img class="img-fluid img-thumbnail-edit" src="{% static 'img/blank.png' %}" alt="" />
+        {% endif %}
+      </a>
+      <div class="d-none d-md-block mt-1">
+        <a href="#">{{ book.title }}</a>
+      </div>
+    </div>
+  {% endfor %}
+</div>

@@ -1,11 +1,13 @@
-from django.shortcuts import render
 import random
+from django.shortcuts import render
+from django.core.paginator import Paginator
 
 from books.models import Book, Category
 from authors.models import Author
 from .forms import SearchForm
 from staff.forms import AddBookCopy
 from .fake_data import FAKE_REVIEWS, FAKE_COPIES
+from .choices import a_z
 
 def index(request):
     return render(request, 'legacy/index.html')
@@ -119,3 +121,47 @@ def author(request):
         'author': author,
         'books': books,
     })
+
+def books_filtered(request, letter_choice=None, tag_slug=None):
+    books = Book.objects.filter(instances__isnull=False).distinct()
+
+    tag = None
+    letter = None
+
+    # two ways of filtering - tag or letter
+    if tag_slug:
+        tag = get_object_or_404(BookTags, slug=tag_slug)
+        books = books.filter(book_tags__in=[tag])
+    else:
+        if letter_choice:
+            if letter_choice == '0':
+                letter = '0-9'
+                books=books.filter(title__regex=r'^\d')
+            else:
+                letter = letter_choice
+                books = books.filter(title__istartswith=letter)
+        else:
+            letter = 'a'
+            books = books.filter(title__istartswith=letter)
+
+    # to show number of results
+    num_results = books.count()
+
+    paginator = Paginator(books, 24)
+    page_number = request.GET.get('page')
+    paged_books = paginator.get_page(page_number)
+    
+    all_tags = Book.book_tags.all()
+
+    context = {
+        'tag': tag,
+        'all_tags': all_tags,
+        'letter': letter,
+        'books': paged_books,
+        'alphabet': a_z,
+        'num_results': num_results,
+    }
+
+    return render(request,
+                  'legacy/books_filtered.html',
+                  context)

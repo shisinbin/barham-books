@@ -12,8 +12,8 @@ urlpatterns = [
     path('book_search', views.book_search, name='book_search'),
 
     # a to z list and tags
-    path('all/', views.books_filtered, name='books_all'),
-    path('all/<str:letter_choice>/', views.books_filtered, name='books_by_alphabet'),
+    # path('all/', views.books_filtered, name='books_all'),
+    # path('all/<str:letter_choice>/', views.books_filtered, name='books_by_alphabet'),
     path('tags/<slug:tag_slug>/', views.books_filtered, name='books_by_tag'),
 
     # for likes, uses AJAX
@@ -78,6 +78,12 @@ urlpatterns += [
 urlpatterns += [
     path('interest/add/', views.register_interest, name='register_interest'),
     path('interest/remove/', views.delete_interest, name='delete_interest'),
+]
+
+# new a-z
+urlpatterns += [
+    path('a-z/', views.books_a_z, name='books_a_z'),
+    path('a-z/<str:letter>/', views.books_a_z, name='books_a_z_letter'),
 ]
 
 # temporary production book page

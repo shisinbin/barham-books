@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-  {{ author }} | Authors |
+  Legacy version |
 {% endblock %}
 
 {% block extra_css %}
@@ -22,6 +22,9 @@
     </li>
     <li>
       <a href="{% url 'legacy:author' %}">Author</a>
+    </li>
+    <li>
+      <a href="{% url 'legacy:books_by_alphabet' 's' %}">A-Z</a>
     </li>
   </ul>
 {% endblock %}
