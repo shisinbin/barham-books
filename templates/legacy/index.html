@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  {{ author }} | Authors |
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <ul>
+    <li>
+      <a href="{% url 'legacy:books' %}">Homepage</a>
+    </li>
+    <li>
+      <a href="{% url 'legacy:about' %}">About</a>
+    </li>
+    <li>
+      <a href="{% url 'legacy:book' %}">Book</a>
+    </li>
+    <li>
+      <a href="{% url 'legacy:author' %}">Author</a>
+    </li>
+  </ul>
+{% endblock %}

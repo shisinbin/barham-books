@@ -74,13 +74,13 @@ urlpatterns += [
     path('search/', views.book_search_redux, name='book_search_redux'),
 ]
 
-# temporary production book page
-urlpatterns += [
-    path('v2/book/', views.book_v2, name='book_v2'),
-]
-
 # registering book interest
 urlpatterns += [
     path('interest/add/', views.register_interest, name='register_interest'),
     path('interest/remove/', views.delete_interest, name='delete_interest'),
 ]
+
+# temporary production book page
+# urlpatterns += [
+#     path('v2/book/', views.book_v2, name='book_v2'),
+# ]

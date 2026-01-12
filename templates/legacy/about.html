@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  About |
+{% endblock %}
+
+{% block content %}
+  <section id="showcase-inner" class="py-5 text-white" style="background-size:cover;">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-12">
+          <h1 class="display-4">About Us</h1>
+          <p class="lead">A community library run by volunteers</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Breadcrumb -->
+  <section id="bc" class="mt-3">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="#"><i class="fas fa-home"></i> Home</a>
+          </li>
+          <li class="breadcrumb-item active">About</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <section id="about" class="py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8">
+          <h2>Friends of Barham Library</h2>
+          <p class="lead">Unit 4, 660 Harrow Road, Wembley, London, HA0 2HB</p>
+          <img src="{% static 'img/about.jpg' %}" alt="" />
+          <p class="mt-4">
+            Friends of Barham Library is a registered charity (no. 1142113).
+            <br />
+            Our community library is based in the Barham Park building on the frontage to Harrow Road. It is run by volunteers and replaces the library closed by Brent Council in October 2011.
+            <br />
+            Our collection of books includes General Fiction and Sci-Fi/Fantasy (both collections searchable here), as well as Young Adult, Children's to Teens, and Non-fiction.
+          </p>
+          <p>
+            Other than our books, we have many <a href="http://anonymz.com/?https://barhamlibrary.tumblr.com/activities" class="text-info" target="_blank">activities going on</a> and are open to offering up our space for one-off or regular events.
+            <br />
+            We also have a <a href="http://anonymz.com/?https://barhamlibrary.tumblr.com/shop" class="text-info" target="_blank">shop</a> at Sudbury Underground Station (entrance from Station Approach), where we sell books, CD's, DVD's, records and other notable items.
+          </p>
+          <p>The full address for the library is Unit 4, 660 Harrow Road Wembley HA0 2HB and buses 18, 92, 182, 204 and H17 stop nearby.</p>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title text-center">About the web app</h5>
+              <p class="card-text">
+                This app was created by one of the volunteers at the library, built using Django, Python, Bootstrap, Postgres, some Javascript, and many other developer tools. The app is securely housed in a remote server provided by <a href="http://anonymz.com/?https://www.digitalocean.com/" class="text-info" target="_blank">DigitalOcean</a>. Book data has mainly been collected from <a href="http://anonymz.com/?https://books.google.com/" class="text-info" target="_blank">Google Books</a>, <a href="http://anonymz.com/?https://www.goodreads.com/" class="text-info" target="_blank">Goodreads</a> and the excellent <a href="http://anonymz.com/?https://www.libib.com" class="text-info" target="_blank">Libib</a> web app. The only user data that is stored are account details, active reservations or reviews, or any books that have been 'liked'. If you want to discuss any aspect of the web app itself, please get in touch.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Work -->
+  <section id="work" class="bg-dark text-white text-center" style="padding: 3rem 0;">
+    <div class="col-md-12">
+      <h2 class="display-4">Thank You For Your Support</h2>
+      We would like to hear from you and what your expectations from us are in terms of facilities, activities and anything else in general that you would like us to provide. We are here to help. You can contact us by email at <a href="#" class="text-secondary">barhamlibrary@hotmail.co.uk</a>.
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section id="team" class="py-5">
+    <div class="container">
+      <h2 class="text-center">Our Trustees and Directors</h2>
+      <div class="row text-center">
+        <div class="col-md-4">
+          <h4>Robert Wharton</h4>
+          <p class="text-success">
+            <i class="fas fa-award text-success mb-3"></i> Trustee
+          </p>
+          <hr />
+        </div>
+
+        <div class="col-md-4">
+          <h4>Paul Lorber</h4>
+          <p class="text-success">
+            <i class="fas fa-award text-success mb-3"></i> Director
+          </p>
+          <hr />
+        </div>
+
+        <div class="col-md-4">
+          <h4>Francis Henry</h4>
+          <p class="text-success">
+            <i class="fas fa-award text-success mb-3"></i> Director
+          </p>
+          <hr />
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

@@ -11,6 +11,7 @@ urlpatterns = [
 	path('reservations/', include('reservations.urls')),
 	path('staff/', include('staff.urls')),
 	path('blog/', include('blog.urls')),
+	path('legacy/', include('legacy.urls')),
     #path('select2/', include('django_select2.urls')),
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

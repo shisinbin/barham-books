@@ -173,7 +173,8 @@ def autocomplete_books(request):
 
 from reservations.models import Reservation
 from staff.forms import AddBookCopy
-def book(request, book_id, slug):
+# DELETE
+def book_legacy(request, book_id, slug):
     book = get_object_or_404(Book, pk=book_id)
 
     try:
@@ -1362,100 +1363,112 @@ def book_search_redux(request):
 
 
 import random
-def book_v2(request):
-    """
-    Temporary development book page.
-    Toggle between RANDOM book or FIXED ID book here.
-    """
-
+def book(request, book_id, slug):
     # =========================
     # BOOK SELECTION STRATEGY
     # =========================
 
-    USE_RANDOM_BOOK = True
-    FIXED_BOOK_ID = 1071 #1791 #1178
+    # USE_RANDOM_BOOK = True
+    # FIXED_BOOK_ID = 1071 #1791 #1178
 
-    if USE_RANDOM_BOOK:
-        ids = Book.objects.values_list("id", flat=True)
-        book_id = random.choice(list(ids))
-        book = get_object_or_404(Book, pk=book_id)
-    else:
-        book = get_object_or_404(Book, pk=FIXED_BOOK_ID)
+    # if USE_RANDOM_BOOK:
+    #     ids = Book.objects.values_list("id", flat=True)
+    #     book_id = random.choice(list(ids))
+    #     book = get_object_or_404(Book, pk=book_id)
+    # else:
+    #     book = get_object_or_404(Book, pk=FIXED_BOOK_ID)
+    book = get_object_or_404(Book, pk=book_id)
 
-    # book interest
+    # -------------------
+    # Author count
+    # -------------------
+    author_extra_books_count = (
+        book.author
+            .books
+            .exclude(id=book.id)
+            .count()
+    )
+    # -------------------
+    # Book interest
+    # -------------------
     interest = None
     if request.user.is_authenticated:
         interest = BookInterest.objects.filter(book=book, user=request.user).first()
 
-    copies = BookInstance2.objects.filter(book=book)
+    # -------------------
+    # Copies & details
+    # -------------------
+    copies = book.instances.all()
     num_copies = copies.count()
     details_block = build_details_block(book, copies)
 
-    # try:
-    #     copies = BookInstance2.objects.filter(book=book)
-    # except:
-    #     copies = None
-    # try:
-    #     available_copies = copies.filter(status='a')
-    # except:
-    #     available_copies = None
-
-    author_books_count = (
-        Book.objects
-            .filter(author=book.author)
-            .exclude(id=book.id)
-            .count()
-    )
-
+    # -------------------
+    # Related collections
+    # -------------------
     related_collections = get_related_collections(book)
 
-    # other books in series
-    other_books_in_series = None
+    # -------------------
+    # Series books
+    # -------------------
+    other_books_in_series = []
     if book.series:
-        other_books_in_series = Book.objects.filter(series=book.series).exclude(id=book.id).order_by('series_num')
+        other_books_in_series = (
+            Book.objects
+                .filter(series=book.series)
+                .exclude(id=book.id)
+                .order_by('series_num')
+        )
 
-    # similar books
-    similar_books_initial = book.book_tags.similar_objects()
-
-    # exclude other books in series from similar books
-    if other_books_in_series:
-        for other_book in other_books_in_series:
-            if other_book in similar_books_initial:
-                similar_books_initial.remove(other_book)
-
-    # build new list only including same category
+    # -------------------
+    # Similar books
+    # -------------------
     similar_books = []
-    if similar_books_initial:
-        for bk in similar_books_initial:
-            if bk.category == book.category:
-                similar_books.append(bk)
-            if len(similar_books) == 12:
-                break
-    del similar_books_initial
+    MAX_LENGTH_SIMILAR_BOOKS = 12
 
-    # redundant code, but doing no harm really
-    similar_books = similar_books[:12]
+    initial_similar_books = book.book_tags.similar_objects()
 
-    # review stuff
-    reviews = Review.objects.filter(book=book)
+    # Remove books that are already in the same series
+    if other_books_in_series:
+        series_book_ids = set(b.id for b in other_books_in_series)
+    else:
+        series_book_ids = set()
+
+    for candidate in initial_similar_books:
+
+        # Skip if it's in the same series
+        if candidate.id in series_book_ids:
+            continue
+        
+        # Skip if it's not the same category
+        if candidate.category_id != book.category_id:
+            continue
+
+        similar_books.append(candidate)
+
+        if len(similar_books) == MAX_LENGTH_SIMILAR_BOOKS:
+            break
+
+    # -------------------
+    # Reviews
+    # -------------------
+    reviews = Review.objects.filter(book=book, active=True)
+
     has_not_reviewed = True
     if request.user.is_authenticated:
-        if reviews.filter(user=request.user):
-            has_not_reviewed = False
+        has_not_reviewed = not reviews.filter(user=request.user).exists()
 
-    copy_form = AddBookCopy()
-
-    # determine if book was created with last week, for basic staff
+    # -------------------
+    # Staff related
+    # -------------------
     is_recently_created = book.created >= timezone.now() - timedelta(weeks=4)
 
     context = {
         'book': book,
         'interest': interest,
-        'author_extra_count': author_books_count,
+        'author_extra_books_count': author_extra_books_count,
         'related_collections': related_collections,
         'details_block': details_block,
         'num_copies': num_copies,
-        'copy_form': copy_form,
         'other_books_in_series': other_books_in_series,
         'similar_books': similar_books,
         'reviews': reviews,
@@ -1463,7 +1476,7 @@ def book_v2(request):
         'is_recently_created': is_recently_created,
     }
 
-    return render(request, "books/book_v2.html", context)
+    return render(request, "books/book.html", context)
 
 from django.conf import settings
 

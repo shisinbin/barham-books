@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+  Browse books |
+{% endblock %}
+
+{% block content %}
+  <div class="flex-grow-1 py-5 d-flex flex-column" style="background-image: url('{% static 'img/bookshelf2.jpg' %}'); background-size: cover; background-position: center; position: relative;">
+    <div class="overlay" style="background-color: rgba(32, 134, 107, 0.7); position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
+
+    <!-- Alerts -->
+    {% include 'partials/_alerts.html' %}
+
+    <!-- Hero Section -->
+    <section class="container text-white pb-4">
+      <div class="container text-center position-relative my-5" style="z-index: 1;">
+        <h1 class="display-4" style="text-shadow: 2px 4px 8px hsl(0deg 0% 0% / 0.25);">Search Our Library</h1>
+        <p class="lead my-4" style="text-shadow: 2px 4px 8px hsl(0deg 0% 0% / 0.25);">Find your next favourite book to borrow.</p>
+
+        <!-- Search Form -->
+        <form onsubmit="return false;">
+          <!-- Search Input and Button (on the same row) -->
+          <div class="form-row justify-content-center">
+            <div class="col-md-8 col-sm-12">
+              <input type="text" name="keywords" class="form-control form-control-lg" placeholder="Search by title and/or author..." required minlength="3" id="keywords" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="autocomplete-list" />
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-lg btn-primary">Search</button>
+            </div>
+          </div>
+
+          <!-- Category Selector (below the search bar) -->
+          <div class="form-row justify-content-center mt-3">
+            <div class="col-auto d-flex align-items-baseline">
+              <label class="text-light mr-2" for="categorySelect">in:</label>
+              <select name="category" id="categorySelect" class="custom-select custom-select-sm">
+                <option value="-1" selected>All Categories</option>
+                {% for cat in categories %}
+                  <option value="{{ cat.id }}">{{ cat.short_name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Featured Books for Sale Section -->
+    <section id="book-for-sale-hero" class="py-5 position-relative">
+      <div class="container text-center">
+        <h2 class="mb-4">Books for Sale</h2>
+        <p class="lead">Looking for great deals on books? Check out our selection of books for sale!</p>
+        <a href="#" class="btn btn-primary btn-lg mt-2">View Books for Sale &raquo;</a>
+      </div>
+    </section>
+
+    <!-- Links Section -->
+    <section class="container pt-5 mt-auto mb-4 position-relative text-white" style="z-index: 1;">
+      <h4 class="text-center" style="text-shadow: 2px 4px 8px hsl(0deg 0% 0% / 0.25);">Library Links:</h4>
+      <div class="row text-center">
+        <div class="col-md-4">
+          <a href="#" class="btn btn-outline-light btn-lg btn-block mt-2" style="text-shadow: 2px 4px 8px hsl(0deg 0% 0% / 0.25);">Book A-Z &raquo;</a>
+        </div>
+        <div class="col-md-4">
+          <a href="#" class="btn btn-outline-light btn-lg btn-block mt-2" style="text-shadow: 2px 4px 8px hsl(0deg 0% 0% / 0.25);">Explore Tags &raquo;</a>
+        </div>
+        <div class="col-md-4">
+          <div class="dropdown dropup">
+            <button class="btn btn-outline-light btn-lg btn-block dropdown-toggle mt-2" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-shadow: 2px 4px 8px hsl(0deg 0% 0% / 0.25);">Browse Categories</button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              {% for cat in categories %}
+                <a class="dropdown-item" href="#">{{ cat.name }}</a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+{% endblock %}

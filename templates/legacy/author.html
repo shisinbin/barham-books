@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  {{ author }} | Authors |
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section id="showcase-inner" class="py-5 text-white" style="min-height: 100px; background-size:cover;">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-12">
+          <h1 class="display-4">{{ author }}</h1>
+          {% if author.dob %}
+            <p class="lead">
+              <i class="fas fa-map-marker"></i> {{ author.dob }} -{% if author.dod %}{{ author.dod }}{% endif %}
+            </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Breadcrumb -->
+  <section id="bc" class="mt-3">
+    <div class="container">
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="#">Home</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="#">Books</a>
+          </li>
+          <li class="breadcrumb-item active">Authors / {{ author }}</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <!-- Listing -->
+  <section id="listing" class="py-4">
+    <div class="container">
+      <div class="col-md-12">
+        {% if books %}
+          <div class="container-fluid">
+            <div class="row">
+              {% for book in books %}
+                <div class="col-lg-2 col-md-3 col-sm-4 col-4 text-center mb-2">
+                  <a href="#">
+                    {% if book.photo %}
+                      {% load thumbnail %}
+                      <img src="{{ book.photo|thumbnail_url:'default' }}" class="img-fluid img-thumbnail-edit" />
+                    {% else %}
+                      <img class="img-fluid img-thumbnail-edit" src="{% static 'img/blank.png' %}" alt="" />
+                    {% endif %}
+                  </a>
+                  <div class="d-none d-md-block">
+                    <a href="#">{{ book.title }}</a>
+                    {% if book.year %}
+                      <p class="text-secondary">
+                        <small>{{ book.year }}</small>
+                      </p>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% else %}
+          <p>Author has no books in library.</p>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+{% endblock %}

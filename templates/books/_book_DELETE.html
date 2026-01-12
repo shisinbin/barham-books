@@ -1,0 +1,511 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load rating_stuff %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+  {{ book.title }} by {{ book.author }} | Books | 
+{% endblock %}
+
+{% block content %}
+	<section id="showcase-inner" class="py-5 text-white" style="background-size:cover;">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-12">
+          <h1 class="display-4">{{ book.title }}</h1>
+          {% if book.series %}
+            <p class="series">{{ book.series }} 
+              {% if book.series_num != 99 %}
+                #{{ book.series_num }}
+              {% endif %}
+            </p>
+          {% endif %}
+          <p class="lead">
+            <!-- <i class="fas fa-pen-alt"></i> --> by <a href="{{ book.author.get_absolute_url }}" style="color:white;">{{ book.author }}</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Breadcrumb -->
+  <section id="bc" class="mt-3">
+    <div class="container">
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'index' %}">Home</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="{% url 'books' %}">Books</a>
+          </li>
+          <li class="breadcrumb-item active">{{ book.title }}</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <!-- Alerts -->
+  {% include 'partials/_alerts.html' %}
+
+  <!-- Book -->
+  <section id="listing" class="py-4">
+    <div class="container">
+
+      <!-- First row showing book info -->
+      <div class="row">
+
+        <!-- First column -->
+        <div class="col-md-4">
+
+          <!-- Book image -->
+          <img
+            {% if book.photo %}
+              src="{{ book.photo.url }}"
+            {% else %}
+              src="{% static 'img/blank.png' %}"
+            {% endif %}
+           alt="" class="img-thumbnail">
+
+          <!-- Book deets -->
+          <div class="row mb-5 fields">
+            <div class="col-md-12">
+              <ul class="list-group list-group-flush">
+                {% if book.category %}
+                  <li class="list-group-item text-secondary">
+                    <i class="far fa-list-alt"></i> Category:
+                    <span class="float-right">{{ book.category|title }}</span>
+                  </li>
+                {% endif %}
+
+
+	              {% if book.year %}
+                  <li class="list-group-item text-secondary">
+                    <i class="far fa-calendar-alt"></i> Year:
+                    <span class="float-right">{{ book.year }}</span>
+                  </li>
+                {% endif %}
+
+                <!-- ~~~~ changed 'book.tags.all' to 'book.book_tags.all' -->
+                {% if book.book_tags.all %}
+                  <li class="list-group-item text-secondary">
+                    <i class="fas fa-tag"></i> Tags:
+                      <span class="float-right">
+                        {% for tag in book.book_tags.all %}
+                          <a href="{% url 'books_by_tag' tag_slug=tag.slug %}"
+                            {% if tag.band == 1 %}
+                              class="badge badge-pill badge-primary mb-1"
+                            {% elif tag.band == 2 %}
+                              class="badge badge-pill badge-light mb-1"
+                            {% elif tag.band == 3 %}
+                              class="badge badge-pill badge-info mb-1"
+                            {% elif tag.band == 4 %}
+                              class="badge badge-pill badge-danger mb-1"
+                            {% elif tag.band == 5 %}
+                              class="badge badge-pill badge-secondary mb-1"
+                            {% elif tag.band == 6 %}
+                              class="badge badge-pill badge-warning mb-1"
+                            {% else %}
+                              class="badge badge-pill badge-dark mb-1"
+                            {% endif %}
+                          >
+                            <p class="mb-1 mt-1">
+                              {{ tag.name|title }}
+                            </p>
+                          </a>{% if not forloop.last %} {% endif %}
+                        {% endfor %}
+                      </span>
+                  </li>
+                {% endif %}
+
+              </ul>
+              <!--{% if user.is_staff %}
+                <br>
+                <p><a href="{% url 'book_update' book.id %}" class="btn btn-secondary">Update book</a></p>
+              {% endif %}-->
+            </div>
+          </div>
+        </div>
+
+        <!-- Second column -->
+        <div class="col-lg-5 col-md-8">
+
+          <!-- Likes -->
+          {% with total_likes=book.users_like.count users_like=book.users_like.all %}
+            <div class="d-flex justify-content-between align-items-center">
+              <h3><span class="count badge badge-pill badge-light">
+                <span class="total">{{ total_likes }}</span>
+                like{{ total_likes|pluralize }}
+              </span></h3>
+
+              {% if user.is_authenticated %}
+                <h3><span class="count">
+                  <a href="#" data-id="{{ book.id }}" data-action="{% if request.user in users_like %}un{% endif %}like" class="like badge badge-pill badge-light" data-url={% url 'like' %}>
+                    {% if request.user not in users_like %}
+                      Like
+                    {% else %}
+                      Unlike
+                    {% endif %}
+                  </a>
+                </span></h3>
+
+              {% endif %}
+            </div>
+          {% endwith %}
+
+          <!-- Book description -->
+          <p>
+            {{ book.summary|linebreaks }}
+          </p>
+            
+          <!-- Copies -->
+          {% if copies %}
+            {% if user.is_authenticated %}
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item text-primary"> <i class="far fa-clone"></i>
+                  <strong>Copies ({{copies.count}}):</strong>
+                </li>
+                {% for copy in book.instances.all %}
+                  <li
+                    {% if copy.status == 'a' %}
+                      class="list-group-item text-success"
+                    {% elif copy.status == 'r' %}
+                      class="list-group-item text-warning"
+                    {% else %}
+                      class="list-group-item text-danger"
+                    {% endif %}>
+                      <i class="fas fa-angle-right"></i> {{ copy.get_status_display }}
+                    
+                    {% if copy.status == 'o' %}
+                      <br />Due to be returned: {{ copy.due_back }}
+                      {% if user.is_staff %}
+                        <br />Currently loaned by: <a href="{% url 'user' copy.borrower.id %}">{{ copy.borrower.username }}</a>
+                      {% endif %}
+                    {% endif %}
+
+                    <br />
+                    <ul style="list-style-type:none; color:black; margin-left: -30px;">
+                      {% if copy.isbn10 %}
+                        <li>
+                          ISBN: {{ copy.get_formatted_isbn10 }}
+                        </li>
+                      {% endif %}
+                      {% if copy.isbn13 %}
+                        <li>
+                          ISBN13: {{ copy.get_formatted_isbn13 }}
+                        </li>
+                      {% endif %}
+
+                      {% if copy.pages %}
+                          <li>
+                            Pages: {{ copy.pages }}
+                          </li>
+                      {% endif %}
+                      {% if copy.book_type %}
+                          <li>
+                            {{ copy.get_book_type_display|title }}
+                          </li>
+                      {% endif %}
+                    </ul>
+                    {% if user.is_superuser %}
+                      <p><a href="{% url 'book_instance_update' copy.id %}" class="btn btn-sm btn-outline-dark mt-1">Edit &raquo;</a></p>
+                    {% endif %}
+                  </li>
+                {% endfor %}
+                
+                <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#reserveModal">
+                  {% if available_copies %}
+                    Reserve book
+                  {% else %}
+                    Join waiting list
+                  {% endif %}
+                </button>
+                
+              </ul>
+            {% endif %}
+          {% else %}
+            <p class="text-uppercase text-danger">
+              This book is no longer in our collection
+            </p>
+          {% endif %}
+        </div>
+
+        <!-- Third column -->
+        <div class="col-lg-3 col-md-12">
+
+          <!-- Author -->
+          <div class="card text-center mt-2 mb-4">
+            <div class="card-body">
+              <h5 class="card-title">
+                <!--<i class="fas fa-pen-alt"></i>--> {{ book.author }}
+              </h5>
+
+              <a href="{{ book.author.get_absolute_url }}" class="btn btn-outline-dark">
+                See all books &raquo;
+              </a>
+            </div>
+          </div>
+
+          <!-- Staff tools -->
+          {% if user.is_staff %}
+            <div class="card text-center text-white bg-dark mt-2 mb-4">
+              <div class="card-body">
+                <h5 class="card-title">Staff tools</h5>
+                {% if user.is_superuser %}
+                  <p><a href="{% url 'book_update_super' book.id %}" class="btn btn-outline-light">Super update &raquo;</a></p>
+                  <hr style="background-color: #f8f9fa;;"/>
+                {% endif %}
+                {% if user.is_superuser or is_recently_created %}
+                  <p><a href="{% url 'book_update' book.id %}" class="btn btn-outline-light">Update book &raquo;</a></p>
+                  <p><button class="btn btn-outline-light" data-toggle="modal" data-target="#amendAuthorModal">
+                    Amend author &raquo;
+                  </button></p>
+                  {% if book.photo %}
+                    <hr style="background-color: #f8f9fa;"/>
+                  {% endif %}
+                {% endif %}
+                {% if not book.photo %}
+                  <p><a href="{% url 'lookup_book_cover' book.id %}" class="btn btn-outline-light">Lookup book cover &raquo;</a></p>
+                  <hr style="background-color: #f8f9fa;"/>
+                {% endif %}
+                <p><button class="btn btn-outline-light" data-toggle="modal" data-target="#addCopyModal">
+                  Add copy &raquo;
+                </button></p>
+                <p><button class="btn btn-outline-light" data-toggle="modal" data-target="#delCopyModal">
+                  Delete copy &raquo;
+                </button></p>
+              </div>
+            </div>
+          {% endif %}
+
+        </div>
+
+      </div>
+
+      <!-- Second row if other books in series -->
+      {% if other_books_in_series %}
+        <h4>Other books in series:</h4>
+        <div class="row">
+          {% for book in other_books_in_series %}
+            <div class="col-lg-2 col-md-3 col-sm-4 col-4 text-center mb-2">
+              <a href="{{ book.get_absolute_url }}">
+                {% if book.photo %}
+                  {% load thumbnail %}
+                  <img src="{{ book.photo|thumbnail_url:'default' }}" class="img-fluid img-thumbnail-edit">
+                {% else %}
+                  <img class="img-fluid img-thumbnail-edit" src="{% static 'img/blank.png' %}" alt="">
+                {% endif %}
+              </a>
+              <div class="d-none d-md-block">
+                <a href="{{ book.get_absolute_url }}">
+                  {{ book.title }}
+                  {% if book.series_num != 99 %}
+                    (#{{ book.series_num }})
+                  {% endif %}
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- Third row showing similar books -->
+      {% if similar_books %}
+        <h4>Similar books:</h4>
+        <div class="row">
+          {% for book in similar_books %}
+            <div class="col-lg-2 col-md-3 col-sm-4 col-4 text-center mb-2">
+              <a href="{{ book.get_absolute_url }}">
+                {% if book.photo %}
+                  {% load thumbnail %}
+                  <img src="{{ book.photo|thumbnail_url:'default' }}" class="img-fluid img-thumbnail-edit">
+                {% else %}
+                  <img class="img-fluid img-thumbnail-edit" src="{% static 'img/blank.png' %}" alt="">
+                {% endif %}
+              </a>
+              <div class="d-none d-md-block">
+                <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+    </div>
+  </section>
+
+  <!-- User reviews -->
+  <section id="listing" class="py-4">
+    <div class="container">
+      <div class="col-md-12">
+        <hr>
+        <div class="row">
+          <div class="col-md-9">
+            <h3>User reviews</h3>
+          </div>
+          {% if has_not_reviewed and user.is_authenticated %}
+          <div class="col-md-3">
+            <a class="btn btn-block btn-secondary" href="{% url 'add_review' book.id %}">Add review</a>
+          </div>
+          {% endif %}
+        </div>
+        {% for review in reviews %}
+          <hr />
+
+          <!-- Rating star stuff - uses custom subtract filter -->
+          {% if review.rating %}
+            {% with ''|center:review.rating as range %}
+              {% for _ in range %}
+                <i class="fas fa-star"></i>
+              {% endfor %}
+            {% endwith %}
+            {% with review.rating|subtract as empty_stars %}
+              {% with ''|center:empty_stars as range %}
+                {% for _ in range %}
+                  <i class="far fa-star"></i>
+                {% endfor %}
+              {% endwith %}
+            {% endwith %}
+          {% endif %}
+
+          <h5>{{ review.title }}</h5>
+          <p>
+            {{ review.body|linebreaks }}
+          </p>
+          <small>by {{ review.user.username }}</small>
+        {% empty %}
+          <p>There are no reviews yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Reserve Modal -->
+  <div class="modal fade" id="reserveModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="inquiryModalLabel">Confirm reservation</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="{% url 'reserve' %}" method="POST">
+            {% csrf_token %}
+            {% if user.is_authenticated %}
+              <input type="hidden" name="user_id" value="{{ user.id }}">
+            {% else %}
+              <input type="hidden" name="user_id" value="0">
+            {% endif %}
+            <input type="hidden" name="book_id" value="{{ book.id }}">
+            <div class="form-group">
+              <label for="property_name" class="col-form-label">Book:</label>
+              <input type="text" name="book_title" class="form-control" value="{{ book.title }}" disabled>
+            </div>
+            <!--<div class="form-group">
+              <label for="email" class="col-form-label">Email:</label>
+              <input type="email" name="email" class="form-control"
+              {% if user.is_authenticated %}
+                value="{{ user.email }}"
+              {% endif %}
+              required>
+            </div>-->
+            <hr>
+            <input type="submit" value="Reserve" class="btn btn-block btn-secondary">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add copy Modal -->
+  <div class="modal fade" id="addCopyModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addCopyModalLabel">Add copy</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="{% url 'add_copy' book.id %}" method="POST">
+            {{ copy_form|crispy }}
+            {% csrf_token %}
+            <p><input type="submit" value="Add copy" class="btn btn-secondary btn-block"></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Del copy Modal -->
+  <div class="modal fade" id="delCopyModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="delCopyModalLabel">Delete copy</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete a copy for this book?</p>
+          <a href="{% url 'del_copy' book.id %}" class="btn btn-secondary btn-block">Confirm</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Amend author Modal -->
+  <div class="modal fade" id="amendAuthorModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="amendAuthorModalLabel">Amend Author for Book</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="{% url 'amend_author' book.id %}">
+            {% csrf_token %}
+            <input type="text" id="author" name="author" value="{{ book.author }}" class="form-control" required>
+            <button type="submit" class="btn btn-secondary btn-block mt-3">Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% comment %} {% block domready %}
+  $('a.like').click(function(e){
+    e.preventDefault();
+    $.post('{% url "like" %}',
+      {
+        id: $(this).data('id'),
+        action: $(this).data('action')
+      },
+      function(data){
+        if (data['status'] == 'ok')
+        {
+          var previous_action = $('a.like').data('action');
+          // toggle data-action
+          $('a.like').data('action', previous_action == 'like' ?
+          'unlike' : 'like');
+          // toggle link text
+          $('a.like').text(previous_action == 'like' ? 'Unlike' :
+          'Like');
+          // update total likes
+          var previous_likes = parseInt($('span.count .total').text());
+          $('span.count .total').text(previous_action == 'like' ?
+          previous_likes + 1 : previous_likes - 1);
+        }
+      }
+    );
+  });
+{% endblock %} {% endcomment %}
+{% block extrascripts %}
+  <script src="{% static 'js/likes.js' %}"></script>
+{% endblock %}

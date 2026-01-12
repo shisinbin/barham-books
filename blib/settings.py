@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'reservations.apps.ReservationsConfig',
     'staff.apps.StaffConfig',
     'blog.apps.BlogConfig',
+    'legacy.apps.LegacyConfig',
 
     # 3rd party apps
     'taggit',
