@@ -1,0 +1,39 @@
+@layer component {
+  .update {
+    .update__title {
+      margin-block-end: 24px;
+    }
+
+    .update__form {
+      width: min(600px, 100%);
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    }
+
+    .update__form p {
+      display: grid;
+      gap: 6px;
+      margin-block-end: 16px;
+      justify-items: start;
+    }
+
+    .update__form p:last-of-type {
+      margin-block-end: 32px;
+    }
+
+    .update__form label {
+      font-weight: 500;
+      font-size: calc(14 / 16 * 1rem);
+    }
+
+    .update__form input,
+    .update__form select,
+    .update__form textarea {
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      font-size: calc(16 / 16 * 1rem);
+    }
+  }
+}

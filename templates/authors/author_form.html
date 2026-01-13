@@ -1,15 +1,20 @@
-{% extends 'base.html' %}
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/update-form.css' %}" />
+{% endblock %}
 
 {% block content %}
-<section id="listing" class="py-4">
-	<div class="container">
-	  <form action="" method="post" enctype="multipart/form-data">
-	    {% csrf_token %}
-	    <table>
-	    {{ form.as_p }}
-	    </table>
-	    <input type="submit" value="Submit">
-	  </form>
-	</div>
-</section>
+  <section class="update">
+    <div class="wrapper">
+      <h1 class="update__title">Update Author</h1>
+
+      <form action="" method="post" enctype="multipart/form-data" class="update__form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="button primary">Save changes</button>
+      </form>
+    </div>
+  </section>
 {% endblock %}

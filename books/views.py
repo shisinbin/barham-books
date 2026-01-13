@@ -1462,7 +1462,10 @@ def book(request, book_id, slug):
     # -------------------
     is_recently_created = book.created >= timezone.now() - timedelta(weeks=4)
 
+    copy_form = AddBookCopy()
+
     context = {
+        'copy_form': copy_form,
         'book': book,
         'interest': interest,
         'author_extra_books_count': author_extra_books_count,

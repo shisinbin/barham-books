@@ -191,6 +191,10 @@
     }
   }
 
+  html {
+    scrollbar-gutter: stable;
+  }
+
   *,
   *::before,
   *::after {
@@ -399,6 +403,7 @@
     justify-content: center;
     gap: 0.5ch; */
     display: inline-block;
+    cursor: pointer;
 
     font-size: var(--font-size-button);
     text-transform: uppercase;
@@ -960,6 +965,8 @@
 
 /* 
   z-index:
+  - 210: staff menu
+  - 200: staff trigger
   - 150: skip link (even though it'll be inerted by js)
   - 120: mobile menu
   - 110: sticky header (header below menu, above overlay)

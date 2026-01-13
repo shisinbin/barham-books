@@ -20,7 +20,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 class AuthorUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Author
-    fields = '__all__'
+    fields = ['first_name', 'middle_names', 'last_name']
 
     def test_func(self):
         return self.request.user.is_staff

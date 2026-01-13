@@ -12,8 +12,8 @@ urlpatterns = [
     path('book_search', views.book_search, name='book_search'),
 
     # a to z list and tags
-    # path('all/', views.books_filtered, name='books_all'),
-    # path('all/<str:letter_choice>/', views.books_filtered, name='books_by_alphabet'),
+    path('all/', views.books_filtered, name='books_all'),
+    path('all/<str:letter_choice>/', views.books_filtered, name='books_by_alphabet'),
     path('tags/<slug:tag_slug>/', views.books_filtered, name='books_by_tag'),
 
     # for likes, uses AJAX
@@ -28,12 +28,12 @@ urlpatterns = [
 
 urlpatterns += [
     #class-based views
-	path('books/<int:pk>/update/', views.BookUpdate.as_view(), name='book_update'),
-    path('books/create/', views.BookCreate.as_view(), name='book_create'),
+	path('update/<int:pk>/', views.BookUpdate.as_view(), name='book_update'),
+    path('create/', views.BookCreate.as_view(), name='book_create'),
 
-    path('books/<int:pk>/update_super/', views.BookUpdateSuper.as_view(), name='book_update_super'),
+    path('super_update/<int:pk>/', views.BookUpdateSuper.as_view(), name='book_update_super'),
 
-    path('books/<int:pk>/update_instance/', views.BookInstanceUpdate.as_view(), name='book_instance_update'),
+    path('update_instance/<int:pk>/', views.BookInstanceUpdate.as_view(), name='book_instance_update'),
 	]
 
 urlpatterns += [

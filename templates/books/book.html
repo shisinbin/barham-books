@@ -1,5 +1,6 @@
 {% extends 'site_base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block title %}
   {{ book.title }} by {{ book.author }} - Barham Community Library
@@ -14,6 +15,7 @@
   <script src="{% static 'js/likes_redux.js' %}" defer></script>
   <script src="{% static 'js/book-interest.js' %}" defer></script>
   <script src="{% static 'js/carousel.js' %}" defer></script>
+  <script src="{% static 'js/staff-settings.js' %}" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -178,4 +180,7 @@
       {% endif %}
     </div>
   </article>
+  {% if user.is_staff %}
+    {% include 'components/staff_tools.html' %}
+  {% endif %}
 {% endblock %}
