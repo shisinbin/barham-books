@@ -1,22 +1,26 @@
-{% extends 'base.html' %}
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/lookup-book-cover.css' %}" />
+{% endblock %}
 
 {% block content %}
+  <section class="cover-lookup">
+    <div class="wrapper">
+      <h1 class="cover-lookup__title">Add Cover Image</h1>
+      <p class="cover-lookup__lead">Here's a book cover image we found:</p>
+      <div class="cover-lookup__card">
+        <img src="{{ temp_image_url }}" alt="Book Cover" class="cover-lookup__image" />
 
-<div class="container">
-  <div class="row">
-    <div class="col-md-8 offset-md-2">
-      <h2 class="mt-4 mb-3">Add Cover Image</h2>
-      <p>Here's a book cover image we found:</p>
-      <div style="width: min-content;" class="mb-4">
-        <img style="display: block; width: 300px" src="{{ temp_image_url }}" alt="Book Cover" />
+        <form action="{% url 'associate_book_for_sale_cover' book.id %}" method="post">
+          {% csrf_token %}
+          <div class="cover-lookup__buttons">
+            <button class="button primary" type="submit">Associate Image To Book</button>
+            <a href="" class="cover-lookup__cancel">Cancel</a>
+          </div>
+        </form>
       </div>
-      <form action="{% url 'associate_book_cover' book.id %}" method="post">
-        {% csrf_token %}
-        <button class="btn btn-primary mr-3" type="submit">Associate Image To Book</button>
-        <a class="btn btn-secondary" href="{{ book.get_absolute_url }}">Cancel</a>
-      </form>
     </div>
-  </div>
-</div>
-
+  </section>
 {% endblock %}

@@ -1,0 +1,43 @@
+@layer component {
+  .cover-lookup {
+    .cover-lookup__card {
+      display: grid;
+      gap: 32px;
+      width: min(600px, 100%);
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    }
+
+    .cover-lookup__title {
+      font-size: calc(48 / 16 * 1rem);
+      margin-block-end: 32px;
+    }
+
+    .cover-lookup__lead {
+      margin-block-end: 24px;
+    }
+
+    .cover-lookup__image {
+      width: calc(300 / 16 * 1rem);
+      border-radius: 4px;
+    }
+
+    .cover-lookup__buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .cover-lookup__cancel {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+
+      &:hover {
+        text-decoration: none;
+        color: var(--c-purple);
+      }
+    }
+  }
+}
