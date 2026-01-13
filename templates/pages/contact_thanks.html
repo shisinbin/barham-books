@@ -1,0 +1,16 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/contact.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="contact">
+    <div class="wrapper">
+      <h1 class="contact__title">Thank You</h1>
+      <p>Your message has been sent. We'll get back to you shortly.</p>
+      <a href="/" class="contact__home-link">Homepage</a>
+    </div>
+  </section>
+{% endblock %}

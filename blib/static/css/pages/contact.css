@@ -4,12 +4,60 @@
     }
 
     .contact__title {
+      margin-block-end: 32px;
     }
 
     .contact__lead {
+      font-size: calc(32 / 16 * 1rem);
+      margin-block-end: 16px;
     }
 
     .contact__text {
+      margin-block-end: 32px;
+    }
+
+    .contact__form {
+      width: min(560px, 100%);
+      margin-inline: auto;
+      display: grid;
+      gap: 20px;
+    }
+
+    .contact__field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .contact__field input,
+    .contact__field textarea {
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+    }
+
+    .contact__button {
+      margin-block-start: 16px;
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        background-color: #ccc;
+        border-color: #999;
+        box-shadow: none;
+      }
+    }
+
+    .contact__home-link {
+      display: block;
+      margin-block-start: 32px;
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+
+      &:hover {
+        text-decoration: none;
+        color: var(--c-magenta);
+      }
     }
   }
 }

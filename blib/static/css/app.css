@@ -431,7 +431,7 @@
       background-color: var(--color-button-primary-bg);
       color: var(--color-button-primary-text);
 
-      &:hover {
+      &:not(:disabled):hover {
         background-color: var(--color-button-primary-bg-hover);
       }
     }
@@ -441,7 +441,7 @@
       color: var(--c-gray-dark);
       border-color: var(--c-gray-dark);
 
-      &:hover {
+      &:not(:disabled):hover {
         background-color: var(--c-gray-lighter);
         /* color: var(--color-button-secondary-text-hover); */
         /* border-color: var(--color-button-secondary-border-hover); */
@@ -452,7 +452,7 @@
       background-color: var(--color-button-tertiary-bg);
       color: var(--color-button-tertiary-text);
 
-      &:hover {
+      &:not(:disabled):hover {
         background-color: var(--color-button-tertiary-bg-hover);
       }
     }

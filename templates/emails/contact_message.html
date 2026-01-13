@@ -1,0 +1,10 @@
+<p>
+  <strong>{{ data.name }}</strong> sent the following message:
+</p>
+
+<p style="padding: 10px; background-color: #f9f9f9; border-left: 4px solid #ccc;">{{ data.message|linebreaksbr }}</p>
+
+<p>
+  To respond, send an email to
+  <a href="mailto:{{ data.email }}">{{ data.email }}</a>
+</p>
