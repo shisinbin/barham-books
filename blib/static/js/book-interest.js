@@ -26,8 +26,12 @@ document.addEventListener('click', async (e) => {
     btn.classList.remove('is-loading');
     btn.setAttribute('aria-pressed', 'true');
     btn.disabled = true;
+    createToast(
+      "Interest registered - we'll be in touch soon!",
+      'success'
+    );
   } catch (err) {
     btn.classList.remove('is-loading');
-    alert('Something went wrong. Please try again.');
+    createToast('Something went wrong. Please try again', 'error');
   }
 });

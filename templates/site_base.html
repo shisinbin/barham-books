@@ -15,8 +15,8 @@
       <meta name="description" content="A volunteer-run community library in Wembley. Discover, browse and explore books for all ages." />
     {% endblock %}
 
-    <link rel="preload" href="{% static 'fonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-mu0SC55I.woff2' %}" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="{% static 'fonts/0QIvMX1D_JOuMwr7I_FMl_E.woff2' %}" as="font" type="font/woff2" crossorigin />
+    {% comment %} <link rel="preload" href="{% static 'fonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-mu0SC55I.woff2' %}" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="{% static 'fonts/0QIvMX1D_JOuMwr7I_FMl_E.woff2' %}" as="font" type="font/woff2" crossorigin /> {% endcomment %}
 
     <link rel="stylesheet" href="{% static 'css/app.css' %}" />
 
@@ -49,6 +49,7 @@
         {% endblock %}
       </main>
       {% include 'components/footer.html' %}
+      {% include 'components/toasts.html' %}
     </div>
   </body>
 </html>

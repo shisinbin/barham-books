@@ -13,7 +13,7 @@
       <div class="cover-lookup__card">
         <img src="{{ temp_image_url }}" alt="Book Cover" class="cover-lookup__image" />
 
-        <form action="{% url 'associate_book_for_sale_cover' book.id %}" method="post">
+        <form action="{% url 'associate_book_cover' book.id %}" method="post">
           {% csrf_token %}
           <div class="cover-lookup__buttons">
             <button class="button primary" type="submit">Associate Image To Book</button>

@@ -5,6 +5,7 @@ class ContactForm(forms.Form):
     email = forms.EmailField()
     message = forms.CharField(widget=forms.Textarea)
 
+    # Bots autofill hidden fields. Humans never see it.
     website = forms.CharField(required=False, widget=forms.HiddenInput)
 
     def clean_website(self):
