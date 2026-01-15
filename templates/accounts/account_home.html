@@ -37,6 +37,15 @@
       {% empty %}
         <p>No interests yet.</p>
       {% endfor %}
+
+      <h2>Reviews</h2>
+      {% for review in reviews %}
+        <p>Review for: {{ review.book.title }}</p>
+        <p>{{ review.title }}</p>
+        <p>{{ review.body }}</p>
+      {% empty %}
+        <p>No reviews yet.</p>
+      {% endfor %}
     </div>
   </section>
 {% endblock %}

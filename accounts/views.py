@@ -333,7 +333,9 @@ def register(request):
 def account_home(request):
     liked_books = request.user.books_liked.all()
     interests = request.user.book_interests.all()
+    reviews = request.user.reviews.all()
     return render(request, "accounts/account_home.html", {
         "liked_books": liked_books,
         "interests": interests,
+        "reviews": reviews,
     })
