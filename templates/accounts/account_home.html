@@ -7,45 +7,89 @@
 {% endblock %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/pages/a-z.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/pages/account.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/components/book-grid.css' %}" />
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/account.js' %}" defer></script>
 {% endblock %}
 
 {% block content %}
   <section class="account">
     <div class="wrapper">
-      <h1>Your account</h1>
+      <header class="account__header">
+        <h1 class="account__title">Account Overview</h1>
 
-      <p>
-        <strong>Username:</strong> {{ request.user.username }}
-      </p>
-      <p>
-        <strong>Email:</strong> {{ request.user.email }}
-      </p>
+        <nav>
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="button tertiary">Logout</button>
+          </form>
+        </nav>
+      </header>
 
-      <a href="{% url 'password_change' %}">Change password</a>
+      <section class="account__meta">
+        <h3>Profile Details</h3>
+        <p>
+          <strong>Username:</strong> <span class="account__username">{{ request.user.username }}</span>
+        </p>
+        <p>
+          <strong>Email:</strong> <span class="account__email">{{ request.user.email }}</span>
+        </p>
 
-      <h2>Liked books</h2>
-      {% for book in liked_books %}
-        <p>{{ book.title }}</p>
-      {% empty %}
-        <p>No liked books yet.</p>
-      {% endfor %}
+        <a href="{% url 'password_change' %}">Change password</a>
+      </section>
 
-      <h2>Registered interests</h2>
-      {% for interest in interests %}
-        <p>{{ interest.book.title }}</p>
-      {% empty %}
-        <p>No interests yet.</p>
-      {% endfor %}
+      <section class="account__section">
+        <h2>Registered Interests</h2>
 
-      <h2>Reviews</h2>
-      {% for review in reviews %}
-        <p>Review for: {{ review.book.title }}</p>
-        <p>{{ review.title }}</p>
-        <p>{{ review.body }}</p>
-      {% empty %}
-        <p>No reviews yet.</p>
-      {% endfor %}
+        {% if interested_books %}
+          {% comment %} <ul>
+            {% for i in interests %}
+              <li>
+                <a href="{{ i.book.get_absolute_url }}">{{ i.book.title }}</a>
+              </li>
+            {% endfor %}
+          </ul> {% endcomment %}
+          {% include 'components/book_grid.html' with books=interested_books is_book_interest=True %}
+        {% else %}
+          <p>You haven't registered interest in any books yet.</p>
+        {% endif %}
+      </section>
+
+      <section class="account__section">
+        <h2>Liked books</h2>
+
+        {% if liked_books %}
+          {% comment %} <ul>
+            {% for book in liked_books %}
+              <li>
+                <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
+              </li>
+            {% endfor %}
+          </ul> {% endcomment %}
+          {% include 'components/book_grid.html' with books=liked_books %}
+        {% else %}
+          <p>You haven't liked any books yet.</p>
+        {% endif %}
+      </section>
+
+      <section class="account__section">
+        <h2>Reviews</h2>
+
+        {% if reviews %}
+          <ul>
+            {% for r in reviews %}
+              <li>
+                <a href="{{ r.book.get_absolute_url }}">{{ r.book.title }}</a> - {{ r.rating }}/5
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>You haven't written any reviews yet.</p>
+        {% endif %}
+      </section>
     </div>
   </section>
 {% endblock %}

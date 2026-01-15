@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 # from .models import Profile
 from django.core.mail import send_mail
+from books.models import Book
 
 # def register(request):
 #     if request.method == 'POST':
@@ -332,10 +333,10 @@ def register(request):
 @login_required
 def account_home(request):
     liked_books = request.user.books_liked.all()
-    interests = request.user.book_interests.all()
+    interested_books = Book.objects.filter(interests__user=request.user)
     reviews = request.user.reviews.all()
     return render(request, "accounts/account_home.html", {
         "liked_books": liked_books,
-        "interests": interests,
+        "interested_books": interested_books,
         "reviews": reviews,
     })

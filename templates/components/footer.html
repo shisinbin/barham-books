@@ -56,7 +56,11 @@
               <a href="{% url 'account_home' %}" class="footer__link">Account Home</a>
             </li>
             <li>
-              <a href="{% url 'logout' %}" class="footer__link">Logout</a>
+              {% comment %} <a href="{% url 'logout' %}" class="footer__link">Logout</a> {% endcomment %}
+              <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="footer__link">Log out</button>
+              </form>
             </li>
           {% else %}
             <li>

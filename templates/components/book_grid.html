@@ -3,7 +3,9 @@
 
 <ul class="book-grid">
   {% for book in books %}
-    <li class="book-grid__book clickable-parent">
+    <li class="book-grid__book" data-book="{{ book.id }}">
+      <a href="{{ book.get_absolute_url }}" class="book-grid__book-link"><span class="visually-hidden">{{ book.title }}</span></a>
+
       <div class="book-grid__image-wrapper">
         {% if book.photo %}
           <img src="{{ book.photo|thumbnail_url:'default' }}" alt="" class="book-grid__cover-image" />
@@ -13,12 +15,20 @@
       </div>
 
       <div class="book-grid__book-body">
-        <h3 class="book-grid__book-title"><a href="{{ book.get_absolute_url }}" class="book-grid__book-link clickable-parent-link">{{ book.title }}</a></h3>
+        <h3 class="book-grid__book-title">{{ book.title }}</h3>
 
         {% if not hide_author %}
           <p class="book-grid__book-author">{{ book.author }}</p>
         {% endif %}
       </div>
+      {% if is_book_interest|default:False %}
+        <button class="book-grid__remove" type="button" aria-label="Remove interest" data-book-id="{{ book.id }}" data-url="{% url 'delete_interest' %}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      {% endif %}
     </li>
   {% empty %}
     <li>No books found.</li>

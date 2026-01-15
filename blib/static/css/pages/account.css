@@ -1,0 +1,51 @@
+@layer component {
+  .account {
+    .account__header {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    .account__title {
+      font-size: calc(48 / 16 * 1rem);
+      margin-block-end: 32px;
+    }
+
+    .account__meta {
+      width: fit-content;
+      border-radius: 20px;
+      padding: 20px;
+      border: 1px solid rgb(201, 201, 201);
+      box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .account__meta h3 {
+      /* font-size: calc(28 / 16 * 1rem); */
+      margin-block-end: 8px;
+    }
+
+    .account__meta a {
+      color: inherit;
+      text-decoration: 1px underline;
+      text-underline-offset: 3px;
+      width: fit-content;
+      margin-inline-start: auto;
+      margin-block-start: 8px;
+      display: inline-block;
+      /* font-weight: 300; */
+      font-size: calc(14 / 16 * 1rem);
+
+      &:hover {
+        text-decoration: none;
+        color: var(--c-magenta);
+      }
+    }
+
+    .account__section h2 {
+      margin-block: 64px 48px;
+    }
+  }
+}

@@ -1508,16 +1508,20 @@ def register_interest(request):
         'handled': interest.handled,
     })
 
+@require_POST
 @login_required
 def delete_interest(request):
-    if request.method != 'POST':
-        return JsonResponse({'status': 'error'})
-    
     book_id = request.POST.get('book_id')
 
-    BookInterest.objects.filter(book_id=book_id, user=request.user).delete()
+    deleted, _ = BookInterest.objects.filter(
+        book_id=book_id,
+        user=request.user
+    ).delete()
 
-    return JsonResponse({'status': 'ok'})
+    return JsonResponse({
+        'status': 'ok',
+        'deleted': deleted
+    })
 
 import string
 A_Z = list(string.ascii_uppercase)
