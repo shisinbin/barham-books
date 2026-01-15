@@ -6,101 +6,102 @@ from reservations.models import Reservation
 from records2.models import Record
 from django.utils import timezone
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from .models import Profile
+# from .models import Profile
 from django.core.mail import send_mail
 
-def register(request):
-    if request.method == 'POST':
-        # Get required form values
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
-        password2 = request.POST['password2']
+# def register(request):
+#     if request.method == 'POST':
+#         # Get required form values
+#         username = request.POST['username']
+#         email = request.POST['email']
+#         password = request.POST['password']
+#         password2 = request.POST['password2']
 
-        # Check if passwords match
-        if password == password2:
-            # Check username
-            if User.objects.filter(username=username).exists():
-                messages.error(request, 'Username is taken')
-                return redirect('register')
-            else:
-                # Check email
-                if User.objects.filter(email=email).exists():
-                    messages.error(request, 'That email is being used')
-                    return redirect('register')
-                else:
-                    memb_num = None
-                    if request.POST['memb_num']:
-                        memb_num = int(request.POST['memb_num'])
-                        if memb_num in range(1,1000):
-                            if Profile.objects.filter(memb_num=memb_num).exists():
-                                messages.error(request, f'The membership number {str(memb_num)} is already in use')
-                                return redirect('register')
-                        else:
-                            messages.error(request, 'You have chosen a membership number outside the permitted range (1-999)')
-                            return redirect('register')
-                        # at this point if not redirected should have a valid memb_num and create the user
+#         # Check if passwords match
+#         if password == password2:
+#             # Check username
+#             if User.objects.filter(username=username).exists():
+#                 messages.error(request, 'Username is taken')
+#                 return redirect('register')
+#             else:
+#                 # Check email
+#                 if User.objects.filter(email=email).exists():
+#                     messages.error(request, 'That email is being used')
+#                     return redirect('register')
+#                 else:
+#                     memb_num = None
+#                     if request.POST['memb_num']:
+#                         memb_num = int(request.POST['memb_num'])
+#                         if memb_num in range(1,1000):
+#                             # if Profile.objects.filter(memb_num=memb_num).exists():
+#                             #     messages.error(request, f'The membership number {str(memb_num)} is already in use')
+#                             #     return redirect('register')
+#                             pass
+#                         else:
+#                             messages.error(request, 'You have chosen a membership number outside the permitted range (1-999)')
+#                             return redirect('register')
+#                         # at this point if not redirected should have a valid memb_num and create the user
 
-                    user = User.objects.create_user(
-                        username=username,
-                        password=password,
-                        email=email)
+#                     user = User.objects.create_user(
+#                         username=username,
+#                         password=password,
+#                         email=email)
 
-                    email_additional = ''
-                    if request.POST['first_name']:
-                        user.first_name = request.POST['first_name']
-                        email_additional = email_additional + f'First name: {user.first_name}\n'
-                    if request.POST['last_name']:
-                        user.last_name = request.POST['last_name']
-                        email_additional = email_additional + f'Surname: {user.last_name}\n'
-                    user.save()
+#                     email_additional = ''
+#                     if request.POST['first_name']:
+#                         user.first_name = request.POST['first_name']
+#                         email_additional = email_additional + f'First name: {user.first_name}\n'
+#                     if request.POST['last_name']:
+#                         user.last_name = request.POST['last_name']
+#                         email_additional = email_additional + f'Surname: {user.last_name}\n'
+#                     user.save()
 
-                    profile = Profile.objects.create(user=user)
+#                     # profile = Profile.objects.create(user=user)
 
-                    if memb_num:
-                        # can just use memb_num
-                        profile.memb_num = memb_num
-                        profile.save()
-                        email_additional = email_additional + f'Membership number: {memb_num}\n'
+#                     if memb_num:
+#                         # can just use memb_num
+#                         # profile.memb_num = memb_num
+#                         # profile.save()
+#                         email_additional = email_additional + f'Membership number: {memb_num}\n'
 
-                    send_mail(
-                        f"New user: {user.username}",
-                        f'Hello Paul!\n\nA new user has just made an account on the web app.\n\nUsername: {user.username}\nEmail: {user.email}\n{email_additional}\nGo to the Staff area to see more and, if possible, verify the account.\n\nSincerely,\nBarham Bot',
-                        'enthuzimuzzy00@gmail.com',
-                        ['barhamlibrary@hotmail.co.uk', 'sb1664@gmail.com',],
-                        fail_silently=True
-                        )
+#                     send_mail(
+#                         f"New user: {user.username}",
+#                         f'Hello Paul!\n\nA new user has just made an account on the web app.\n\nUsername: {user.username}\nEmail: {user.email}\n{email_additional}\nGo to the Staff area to see more and, if possible, verify the account.\n\nSincerely,\nBarham Bot',
+#                         'enthuzimuzzy00@gmail.com',
+#                         ['barhamlibrary@hotmail.co.uk', 'sb1664@gmail.com',],
+#                         fail_silently=True
+#                         )
 
-                    messages.success(request, 'You are now registered and can log in')
-                    return redirect('login')
-        else:
-            messages.error(request, 'Passwords do not match')
-            return redirect('register')
-    else:
-        return render(request, 'accounts/register.html')
+#                     messages.success(request, 'You are now registered and can log in')
+#                     return redirect('login')
+#         else:
+#             messages.error(request, 'Passwords do not match')
+#             return redirect('register')
+#     else:
+#         return render(request, 'accounts/register.html')
 
-def login(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+# def login(request):
+#     if request.method == 'POST':
+#         username = request.POST['username']
+#         password = request.POST['password']
         
-        user = auth.authenticate(username=username, password=password)
+#         user = auth.authenticate(username=username, password=password)
         
-        if user is not None:
-            auth.login(request, user)
-            messages.success(request, 'You are now logged in')
-            return redirect('dashboard')
-        else:
-            messages.error(request, 'Invalid credentials')
-            return redirect('login')
-    else:
-        return render(request, 'accounts/login.html')
+#         if user is not None:
+#             auth.login(request, user)
+#             messages.success(request, 'You are now logged in')
+#             return redirect('dashboard')
+#         else:
+#             messages.error(request, 'Invalid credentials')
+#             return redirect('login')
+#     else:
+#         return render(request, 'accounts/login.html')
 
-def logout(request):
-    if request.method == 'POST':
-        auth.logout(request)
-        messages.success(request, 'You are now logged out')
-        return redirect('index')
+# def logout(request):
+#     if request.method == 'POST':
+#         auth.logout(request)
+#         messages.success(request, 'You are now logged out')
+#         return redirect('index')
 
 from django.contrib.auth.decorators import login_required
 
@@ -261,27 +262,78 @@ def change_password(request):
     }
     return render(request, 'accounts/change_password.html', context)
 
-from .forms import UserEditForm, ProfileEditForm
+from .forms import UserEditForm#, ProfileEditForm
 @login_required
 def edit(request):
     if request.method == 'POST':
         user_form = UserEditForm(instance=request.user,
                                  data=request.POST)
-        profile_form = ProfileEditForm(
-                                    instance=request.user.profile,
-                                    data=request.POST,
-                                    files=request.FILES)
-        if user_form.is_valid() and profile_form.is_valid():
+        # profile_form = ProfileEditForm(
+        #                             instance=request.user.profile,
+        #                             data=request.POST,
+        #                             files=request.FILES)
+        if user_form.is_valid():# and profile_form.is_valid():
             user_form.save()
-            profile_form.save()
+            # profile_form.save()
             messages.success(request, 'Your profile has been updated')
             return redirect('dashboard')
     else:
         user_form = UserEditForm(instance=request.user)
-        profile_form = ProfileEditForm(
-                                    instance=request.user.profile)
+        # profile_form = ProfileEditForm(
+        #                             instance=request.user.profile)
     context = {
         'user_form': user_form,
-        'profile_form': profile_form,
+        # 'profile_form': profile_form,
     }
     return render(request, 'accounts/edit.html', context)
+
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+from .forms import RegisterForm
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.urls import reverse_lazy
+
+class CustomLoginView(LoginView):
+    template_name = "accounts/login.html"
+
+    def form_valid(self, form):
+        messages.success(self.request, "You are now logged in.")
+        return super().form_valid(form)
+
+class CustomLogoutView(LogoutView):
+    def dispatch(self, request, *args, **kwargs):
+        messages.success(request, "You have been logged out.")
+        return super().dispatch(request, *args, **kwargs)
+
+class CustomPasswordChangeView(PasswordChangeView):
+    template_name = "accounts/password_change.html"
+    success_url = reverse_lazy("account_home")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Your password has been updated.")
+        return super().form_valid(form)
+
+def register(request):
+    form = RegisterForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        user = form.save(commit=False)
+        user.set_password(form.cleaned_data["password"])
+        user.save()
+        login(request, user)
+        messages.success(request, "Account created successfully.")
+        next_url = request.GET.get("next")
+        return redirect(next_url or "explore_books")
+
+    return render(request, "accounts/register.html", {"form": form})
+
+@login_required
+def account_home(request):
+    liked_books = request.user.books_liked.all()
+    interests = request.user.book_interests.all()
+    return render(request, "accounts/account_home.html", {
+        "liked_books": liked_books,
+        "interests": interests,
+    })

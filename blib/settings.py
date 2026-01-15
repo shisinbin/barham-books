@@ -163,6 +163,8 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
+LOGIN_REDIRECT_URL = 'explore_books'
+LOGOUT_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
 
 TAGGIT_CASE_INSENSITIVE = True

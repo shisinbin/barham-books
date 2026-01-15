@@ -1,0 +1,42 @@
+{% extends 'site_base.html' %}
+{% load static %}
+{% load thumbnail %}
+
+{% block title %}
+  Account Home
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/a-z.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="account">
+    <div class="wrapper">
+      <h1>Your account</h1>
+
+      <p>
+        <strong>Username:</strong> {{ request.user.username }}
+      </p>
+      <p>
+        <strong>Email:</strong> {{ request.user.email }}
+      </p>
+
+      <a href="{% url 'password_change' %}">Change password</a>
+
+      <h2>Liked books</h2>
+      {% for book in liked_books %}
+        <p>{{ book.title }}</p>
+      {% empty %}
+        <p>No liked books yet.</p>
+      {% endfor %}
+
+      <h2>Registered interests</h2>
+      {% for interest in interests %}
+        <p>{{ interest.book.title }}</p>
+      {% empty %}
+        <p>No interests yet.</p>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

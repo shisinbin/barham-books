@@ -1,0 +1,52 @@
+@layer component {
+  .auth {
+    width: min(420px, 100%);
+    margin: 80px auto;
+    display: grid;
+    gap: 24px;
+  }
+
+  .auth h1 {
+    font-size: calc(48 / 16 * 1rem);
+  }
+
+  .auth p {
+    text-wrap: wrap;
+  }
+
+  .auth .auth-form {
+    display: grid;
+    gap: 16px;
+  }
+
+  .auth label {
+    display: block;
+    margin-block-end: 8px;
+  }
+
+  .auth .auth-form input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: var(--c-white-bone);
+  }
+
+  .auth .auth-form button {
+    margin-block-start: 16px;
+    text-align: center;
+  }
+
+  .auth a {
+    text-align: center;
+  }
+
+  .auth .errorlist {
+    margin-block-start: 4px;
+    color: #b00020;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+}

@@ -57,21 +57,17 @@
           </figure>
 
           <section class="book__desktop-actions">
-            <div class="book-like" data-like data-id="{{ book.id }}" data-liked="{% if user.is_authenticated and user in book.users_like.all %}true{% else %}false{% endif %}" data-url="{% url 'like' %}">
-              {% if not user.is_authenticated %}
-                <p class="book-like__hint">Log in to like this book</p>
-              {% endif %}
+            <div class="book-like" data-like data-id="{{ book.id }}" data-liked="{% if user.is_authenticated and user in book.users_like.all %}true{% else %}false{% endif %}" data-url="{% url 'like' %}" data-auth="{% if user.is_authenticated %}true{% else %}false{% endif %}">
+              <span class="book-like__count">
+                {% if book.users_like.count > 0 %}
+                  {{ book.users_like.count }}
+                {% endif %}
+              </span>
 
-              <button type="button" class="book-like__btn" aria-pressed="{% if user.is_authenticated and user in book.users_like.all %}true{% else %}false{% endif %}" {% if not user.is_authenticated %}disabled{% endif %}>
+              <button type="button" class="book-like__btn" aria-pressed="{% if user.is_authenticated and user in book.users_like.all %}true{% else %}false{% endif %}">
                 <span class="visually-hidden">
                   Like or unlike book
                 </span>
-                <span class="book-like__count">
-                  {% if book.users_like.count > 0 %}
-                    {{ book.users_like.count }}
-                  {% endif %}
-                </span>
-
                 <svg class="book-like__icon" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                 </svg>
@@ -79,8 +75,8 @@
             </div>
 
             <div class="book-interest" data-interest data-book-id="{{ book.id }}" data-url="{% url 'register_interest' %}">
-              {% if user.is_authenticated %}
-                {% if num_copies > 0 %}
+              {% if num_copies > 0 %}
+                {% if user.is_authenticated %}
                   <button class="interest-btn" aria-pressed="{% if interest %}true{% else %}false{% endif %}" {% if interest %}disabled{% endif %}>
 
                     <span class="interested-text">Interested</span>
@@ -92,8 +88,12 @@
                     <span class="register-text">Register interest</span>
                   </button>
                 {% else %}
-                  <span class="interest-fake-btn">Not Available</span>
+                  <a href="{% url 'login' %}?next={{ request.path }}" class="fake-interest-btn">
+                    Log in to register interest
+                  </a>
                 {% endif %}
+              {% else %}
+                <span class="interest-fake-btn">Not Available</span>
               {% endif %}
             </div>
           </section>

@@ -27,7 +27,7 @@ def index(request):
 @staff_member_required
 def users(request):
     #users = User.objects.order_by(Lower('username'))
-    users = User.objects.order_by('profile__memb_num', Lower('username'))
+    users = User.objects.order_by(Lower('username'))
     keyword = None
     if 'keyword' in request.GET:
         keyword = request.GET['keyword']
@@ -339,29 +339,29 @@ def return_single_book(request, record_id):
         messages.success(request, f'{record.book_title} successfully returned')
         return redirect('user', record.user_id)
 
-from .forms import StaffUserEditForm, StaffProfileEditForm
+from .forms import StaffUserEditForm#, StaffProfileEditForm
 @staff_member_required
 def staff_edit(request, user_id):
     user = get_object_or_404(User, id=user_id)
     if request.method == 'POST':
         user_form = StaffUserEditForm(instance=user,
                                  data=request.POST)
-        profile_form = StaffProfileEditForm(
-                                    instance=user.profile,
-                                    data=request.POST,
-                                    files=request.FILES)
+        # profile_form = StaffProfileEditForm(
+        #                             instance=user.profile,
+        #                             data=request.POST,
+        #                             files=request.FILES)
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
-            profile_form.save()
+            # profile_form.save()
             messages.success(request, 'The profile has been updated')
             return redirect('user', user_id)
     else:
         user_form = StaffUserEditForm(instance=user)
-        profile_form = StaffProfileEditForm(
-                                    instance=user.profile)
+        # profile_form = StaffProfileEditForm(
+        #                             instance=user.profile)
     context = {
         'user_form': user_form,
-        'profile_form': profile_form,
+        # 'profile_form': profile_form,
     }
     return render(request, 'staff/edit.html', context)
 

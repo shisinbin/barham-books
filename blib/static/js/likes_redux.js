@@ -3,6 +3,12 @@ document.addEventListener('click', async (e) => {
   if (!btn || btn.disabled) return;
 
   const root = btn.closest('[data-like]');
+
+  if (root.dataset.auth !== 'true') {
+    createToast('Log in to like books', 'info');
+    return;
+  }
+
   const bookId = root.dataset.id;
   const liked = root.dataset.liked == 'true';
   const url = root.dataset.url;
@@ -11,18 +17,22 @@ document.addEventListener('click', async (e) => {
   formData.append('id', bookId);
   formData.append('action', liked ? 'unlike' : 'like');
 
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'X-CSRFToken': csrftoken },
-    body: formData,
-  });
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'X-CSRFToken': csrftoken },
+      body: formData,
+    });
 
-  const data = await res.json();
-  if (data.status !== 'ok') return;
+    const data = await res.json();
+    if (data.status !== 'ok') return;
 
-  root.dataset.liked = (!liked).toString();
-  btn.setAttribute('aria-pressed', (!liked).toString());
+    root.dataset.liked = (!liked).toString();
+    btn.setAttribute('aria-pressed', (!liked).toString());
 
-  const countEl = btn.querySelector('.book-like__count');
-  countEl.textContent = data.likes > 0 ? data.likes : '';
+    const countEl = root.querySelector('.book-like__count');
+    countEl.textContent = data.likes > 0 ? data.likes : '';
+  } catch (err) {
+    createToast('Something went wrong. Please try again.', 'error');
+  }
 });

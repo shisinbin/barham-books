@@ -9,7 +9,7 @@
       <div class="hero__content">
         <h1 class="hero__title">Barham Community Library</h1>
         <p class="hero__subtitle medium">A community-run library in Wembley, open to readers of all ages.</p>
-        <a href="{% url 'books' %}" class="button primary hero__link">Explore Books</a>
+        <a href="{% url 'explore_books' %}" class="button primary hero__link">Explore Books</a>
       </div>
     </div>
   </section>
@@ -23,16 +23,16 @@
 
       <ul class="collections__container">
         <li class="collections__item clickable-parent">
-          <h3 class="collections__item-title"><a href="#" class="collections__item-link clickable-parent-link">Crime, Mystery & Thriller</a></h3>
+          <h3 class="collections__item-title"><a href="#" class="collections__item-link clickable-parent-link">Crime, Mystery & Thrillers</a></h3>
         </li>
         <li class="collections__item clickable-parent">
-          <h3 class="collections__item-title"><a href="#" class="collections__item-link clickable-parent-link">Sci-Fi & Fantasy</a></h3>
+          <h3 class="collections__item-title"><a href="#" class="collections__item-link clickable-parent-link">Fantasy, Sci-Fi & Speculative</a></h3>
         </li>
         <li class="collections__item clickable-parent">
-          <h3 class="collections__item-title"><a href="#" class="collections__item-link clickable-parent-link">Modern & Contemporary Classics</a></h3>
+          <h3 class="collections__item-title"><a href="#" class="collections__item-link clickable-parent-link">War, Sagas & Historical Fiction</a></h3>
         </li>
         <li class="collections__item clickable-parent">
-          <h3 class="collections__item-title"><a href="#" class="collections__item-link clickable-parent-link">Young Adult Essentials</a></h3>
+          <h3 class="collections__item-title"><a href="#" class="collections__item-link clickable-parent-link">Children's and Young Adult</a></h3>
         </li>
       </ul>
 
@@ -104,7 +104,7 @@
     <div class="wrapper fullwidth__wrapper">
       <h2 class="fullwidth__title fw-cta__title">Get in touch</h2>
       <p class="fullwidth__text large">Have a question, a donation, or an idea for using our space?</p>
-      <a href="#" class="button tertiary">Send a message</a>
+      <a href="{% url 'contact' %}" class="button tertiary">Send a message</a>
     </div>
   </section>
 

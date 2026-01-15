@@ -33,6 +33,35 @@
           <li class="topnav__item">
             <a href="{% url 'contact' %}" class="topnav__link">Contact</a>
           </li>
+          <li class="topnav__item">
+            <a href="{% if user.is_authenticated %}
+                {% url 'account_home' %}
+              {% else %}
+                {% url 'login' %}
+              {% endif %}"
+              class="topnav__link topnav__account-link">
+              <span class="topnav__account-text">
+                {% if user.is_authenticated %}
+                  Account
+                {% else %}
+                  Login
+                {% endif %}
+              </span>
+              <div class="topnav__account-icon-wrapper">
+                <span class="visually-hidden">
+                  {% if user.is_authenticated %}
+                    Account
+                  {% else %}
+                    Login
+                  {% endif %}
+                </span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="account-icon">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
+            </a>
+          </li>
         </ul>
       </div>
     </nav>

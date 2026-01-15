@@ -112,9 +112,9 @@
               class="nav-item mr-3"
             {% endif %}
           >
-            <a class="nav-link" href="{% url 'dashboard' %}">
+            {% comment %} <a class="nav-link" href="{% url 'dashboard' %}">
              <!--<i class="fas fa-user"></i> -->Dashboard
-            </a>
+            </a> {% endcomment %}
           </li>
           <li class="nav-item mr-3">
             <a href="javascript:{document.getElementById('logout').submit()}" class="nav-link">Logout</a> 

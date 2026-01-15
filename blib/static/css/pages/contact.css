@@ -1,6 +1,8 @@
 @layer component {
   .contact {
-    .contact__wrapper {
+    .contact__inner-wrapper {
+      width: min(560px, 100%);
+      margin-inline: auto;
     }
 
     .contact__title {
@@ -9,18 +11,16 @@
 
     .contact__lead {
       font-size: calc(32 / 16 * 1rem);
-      margin-block-end: 16px;
+      margin-block-end: 20px;
     }
 
     .contact__text {
-      margin-block-end: 32px;
+      margin-block-end: 48px;
     }
 
     .contact__form {
-      width: min(560px, 100%);
-      margin-inline: auto;
       display: grid;
-      gap: 20px;
+      gap: 24px;
     }
 
     .contact__field {
@@ -33,6 +33,7 @@
       padding: 10px 12px;
       border-radius: 6px;
       border: 1px solid #ddd;
+      background-color: var(--c-white-bone);
     }
 
     .contact__button {

@@ -1,0 +1,94 @@
+@layer component {
+  .account {
+    .account__card {
+      width: min(420px, 100%);
+      margin-inline: auto;
+    }
+
+    .account__card h1 {
+      font-size: calc(48 / 16 * 1rem);
+    }
+
+    .form {
+      /* width: min(420px, 100%);
+      margin-inline: auto; */
+      display: grid;
+      gap: 24px;
+      margin-block: 48px 72px;
+    }
+
+    .form label {
+      font-weight: 500;
+      margin-block-end: 8px;
+      display: inline-block;
+    }
+
+    .form input {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      width: 100%;
+      background-color: var(--c-white-bone);
+    }
+
+    .form__actions {
+      margin-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 24px;
+    }
+
+    .form__actions a {
+      margin-block-start: 16px;
+      font-size: 0.9rem;
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+
+      &:hover {
+        text-decoration: none;
+        color: var(--c-magenta);
+      }
+    }
+
+    .form__actions button {
+      flex: 1;
+    }
+
+    .form__errors {
+      color: #b00020;
+      font-size: 0.9rem;
+    }
+
+    .register-cta {
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+    }
+
+    .register-cta a {
+      color: inherit;
+      font-weight: 600;
+      text-transform: uppercase;
+      text-decoration: underline 2px;
+      text-underline-offset: 3px;
+      width: fit-content;
+
+      &:hover {
+        color: var(--c-magenta);
+        text-decoration: none;
+      }
+    }
+
+    .errorlist {
+      margin-block-start: 4px;
+      color: #b00020;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+  }
+}

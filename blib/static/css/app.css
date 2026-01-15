@@ -597,6 +597,7 @@
 
     .topnav__links {
       display: flex;
+      align-items: center;
       gap: 20px;
 
       @media (width < calc(600 / 16 * 1rem)) {
@@ -630,6 +631,49 @@
       @media (width < calc(600 / 16 * 1rem)) {
         text-transform: revert;
       }
+    }
+
+    .topnav__account-link {
+      position: relative;
+      isolation: isolate;
+      display: block;
+      margin-inline-start: 8px;
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -4px;
+          left: 0;
+          right: 0;
+          height: 2px;
+          background-color: var(--color-text-light);
+          opacity: 0;
+          transition: opacity 50ms ease-in-out;
+        }
+
+        &:hover::after {
+          opacity: 1;
+        }
+      }
+    }
+
+    .topnav__account-text {
+      display: none;
+      @media (width < calc(600 / 16 * 1rem)) {
+        display: revert;
+      }
+    }
+
+    .topnav__account-icon-wrapper {
+      @media (width < calc(600 / 16 * 1rem)) {
+        display: none;
+      }
+    }
+
+    .account-icon {
+      fill: var(--color-text-light);
+      stroke: var(--color-text-light);
     }
   }
 
@@ -952,7 +996,7 @@
       max-width: 360px;
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
       animation: toast-in 200ms ease-out forwards;
     }

@@ -37,7 +37,7 @@
             <a href="{% url 'about' %}" class="footer__link">About the library</a>
           </li>
           <li>
-            <a href="#" class="footer__link">Contact us</a>
+            <a href="{% url 'contact' %}" class="footer__link">Contact us</a>
           </li>
           {% comment %} <li>
             <a href="#" class="footer__link">Donate books</a>
@@ -51,15 +51,21 @@
       <nav class="footer__nav-item">
         <h3 class="footer__nav-title">Account</h3>
         <ul class="footer__nav-list">
-          <li>
-            <a href="{% url 'login' %}" class="footer__link">Log in</a>
-          </li>
-          <li>
-            <a href="{% url 'register' %}" class="footer__link">Create account</a>
-          </li>
-          {% comment %} <li>
-            <a href="{% url 'dashboard' %}" class="footer__link">Dashboard</a>
-          </li> {% endcomment %}
+          {% if user.is_authenticated %}
+            <li>
+              <a href="{% url 'account_home' %}" class="footer__link">Account Home</a>
+            </li>
+            <li>
+              <a href="{% url 'logout' %}" class="footer__link">Logout</a>
+            </li>
+          {% else %}
+            <li>
+              <a href="{% url 'login' %}" class="footer__link">Log in</a>
+            </li>
+            <li>
+              <a href="{% url 'register' %}" class="footer__link">Create account</a>
+            </li>
+          {% endif %}
         </ul>
       </nav>
 
