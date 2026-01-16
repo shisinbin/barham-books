@@ -1,0 +1,33 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/components/review-forms.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="review">
+    <div class="wrapper">
+      <div class="review__card">
+        <h1>Delete book interest</h1>
+
+        <p class="review__lead">
+          Are you sure you want to delete
+          <strong>{{ object.user.username }}'s</strong>
+          interest in
+          <strong>{{ object.book.title }}</strong>?
+        </p>
+
+        <form method="post" class="form">
+          {% csrf_token %}
+
+          <div class="review__actions">
+            <button type="submit" class="button primary">Delete interest</button>
+
+            <a href="{{ object.book.get_absolute_url }}" class="button secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+{% endblock %}

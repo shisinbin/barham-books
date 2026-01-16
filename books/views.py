@@ -310,6 +310,7 @@ def tag_search(request):
     }
     return render(request, 'books/tag_search.html', context)
 
+from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
@@ -1529,6 +1530,16 @@ def delete_interest(request):
         'deleted': deleted
     })
 
+@require_POST
+@staff_member_required
+def mark_interest_handled(request, pk):
+    interest = get_object_or_404(BookInterest, pk=pk)
+    interest.handled = True
+    interest.save(update_fields=["handled"])
+
+    messages.success(request, 'Interest marked as handled.')
+    return redirect("staff_book_interests")
+
 import string
 A_Z = list(string.ascii_uppercase)
 A_Z.append('0-9')
@@ -1609,3 +1620,36 @@ class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def get_success_url(self):
         messages.success(self.request, "Your review was deleted.")
         return self.object.book.get_absolute_url()
+
+from django.utils.decorators import method_decorator
+
+@method_decorator(staff_member_required, name="dispatch")
+class StaffBookInterestDeleteView(LoginRequiredMixin, DeleteView):
+    model = BookInterest
+    template_name = "books/interest_confirm_delete.html"
+    success_url = reverse_lazy("staff_book_interests")
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, "The interest has been deleted.")
+        return super().delete(request, *args, **kwargs)
+
+    # def test_func(self):
+    #     return self.request.user.is_staff
+
+    # def get_success_url(self):
+    #     messages.success(self.request, "The interest has been deleted.")
+    #     return redirect("staff_book_interests")
+
+@method_decorator(staff_member_required, name="dispatch")
+class StaffBookInterestListView(ListView):
+    model = BookInterest
+    template_name = "books/staff_interest_list.html"
+    context_object_name = "interests"
+    paginate_by = 25
+
+    def get_queryset(self):
+        return (
+            BookInterest.objects
+            .select_related("user", "book")
+            .order_by("handled", "-created")
+        )

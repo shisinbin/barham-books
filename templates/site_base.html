@@ -19,6 +19,7 @@
     <link rel="preload" href="{% static 'fonts/0QIvMX1D_JOuMwr7I_FMl_E.woff2' %}" as="font" type="font/woff2" crossorigin /> {% endcomment %}
 
     <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/components/staff-tools.css' %}" />
 
     {% block extra_css %}
 
@@ -27,8 +28,9 @@
     {% comment %}Body scroll lock{% endcomment %}
     <script src="https://cdn.jsdelivr.net/gh/rick-liruixin/body-scroll-lock-upgrade@v1.1.0/lib/index.umd.js"></script>
 
-    <script src="{% static 'js/app.js' %}" defer></script>
     <script src="{% static 'js/csrf.js' %}" defer></script>
+    <script src="{% static 'js/app.js' %}" defer></script>
+    <script src="{% static 'js/staff-tools.js' %}" defer></script>
     {% block extra_js %}
 
     {% endblock %}
@@ -50,6 +52,9 @@
       </main>
       {% include 'components/footer.html' %}
       {% include 'components/toasts.html' %}
+      {% if user.is_staff %}
+        {% include 'components/staff_tools.html' %}
+      {% endif %}
     </div>
   </body>
 </html>

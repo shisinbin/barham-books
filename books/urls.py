@@ -74,10 +74,13 @@ urlpatterns += [
     path('search/', views.book_search_redux, name='book_search_redux'),
 ]
 
-# registering book interest
+# book interest
 urlpatterns += [
     path('interest/add/', views.register_interest, name='register_interest'),
     path('interest/remove/', views.delete_interest, name='delete_interest'),
+    path("staff/interests/", views.StaffBookInterestListView.as_view(), name="staff_book_interests"),
+    path('staff/interests/<int:pk>/handled/', views.mark_interest_handled, name='staff_mark_interest_handled'),
+    path('staff/interests/<int:pk>/delete/', views.StaffBookInterestDeleteView.as_view(), name='staff_delete_interest'),
 ]
 
 # new a-z
@@ -86,6 +89,7 @@ urlpatterns += [
     path('a-z/<str:letter>/', views.books_a_z, name='books_a_z_letter'),
 ]
 
+# new review structure
 urlpatterns += [
     path('<int:book_id>/review/add/', views.ReviewCreateView.as_view(), name='review_add'),
     path('reviews/<int:pk>/edit/', views.ReviewUpdateView.as_view(), name='review_edit'),

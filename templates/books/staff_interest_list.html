@@ -1,0 +1,62 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/staff-interests.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="staff-interests">
+    <div class="wrapper">
+      <h1 class="staff-interests__title">Book Interests</h1>
+
+      {% if interests %}
+        <table class="staff-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Book</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for interest in interests %}
+              <tr class="{% if interest.handled %}is-handled{% endif %}">
+                <td data-title="User">
+                  {{ interest.user.username }}<br />
+                  <a class="staff-interests__link" href="mailto:{{ interest.user.email }}">{{ interest.user.email }}</a>
+                </td>
+
+                <td data-title="Book">
+                  <a class="staff-interests__link" href="{{ interest.book.get_absolute_url }}">{{ interest.book.title }}</a>
+                </td>
+
+                <td data-title="Status">
+                  {% if interest.handled %}
+                    ✔ Handled
+                  {% else %}
+                    ⏳ Pending
+                  {% endif %}
+                </td>
+
+                <td data-title="Actions" class="staff-actions">
+                  {% if not interest.handled %}
+                    <form method="post" action="{% url 'staff_mark_interest_handled' interest.id %}">
+                      {% csrf_token %}
+                      <button class="staff-interests__link">Mark handled</button>
+                    </form>
+                  {% endif %}
+
+                  <a href="{% url 'staff_delete_interest' interest.id %}" class="staff-interests__link">Delete</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>No book interests found.</p>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

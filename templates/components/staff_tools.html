@@ -20,14 +20,33 @@
     </button>
   </header>
   <nav class="staff-drawer__body">
-    {% if user.is_superuser or is_recently_created %}
-      <a href="{% url 'book_update' book.id %}" class="staff-drawer__action">Update Book</a>
+    <a href="{% url 'staff_book_interests' %}" class="staff-drawer__action">Manage Book Interests</a>
+
+    {% if book %}
+      {% if user.is_superuser or is_recently_created %}
+        <a href="{% url 'book_update' book.id %}" class="staff-drawer__action">Update Book</a>
+      {% endif %}
     {% endif %}
 
-    {% if not book.photo %}
-      <a href="{% url 'lookup_book_cover' book.id %}" class="staff-drawer__action">Lookup Book Cover</a>
+    {% if book %}
+      {% if not book.photo %}
+        <a href="{% url 'lookup_book_cover' book.id %}" class="staff-drawer__action">Lookup Book Cover</a>
+      {% endif %}
     {% endif %}
 
-    <a href="{% url 'author_update' book.author.id %}" class="staff-drawer__action">Update Author</a>
+    {% if author %}
+      <a href="{% url 'author_update' author.id %}" class="staff-drawer__action">Update Author</a>
+    {% endif %}
+
+    {% if interest %}
+      {% if not interest.handled %}
+        <form method="post" action="{% url 'mark_interest_handled' interest.id %}">
+          {% csrf_token %}
+          <button type="submit" class="staff-drawer__action">Mark interest handled</button>
+        </form>
+      {% endif %}
+
+      <a href="{% url 'staff_delete_interest' interest.id %}" class="staff-drawer__action">Delete interest</a>
+    {% endif %}
   </nav>
 </aside>

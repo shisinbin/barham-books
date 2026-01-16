@@ -1,0 +1,76 @@
+@layer component {
+  .staff-interests {
+    .staff-interests__title {
+      font-size: calc(36 / 16 * 1rem);
+      margin-block-end: 32px;
+    }
+
+    .staff-interests__link {
+      color: inherit;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+
+      &:hover {
+        color: var(--c-magenta);
+        text-decoration: none;
+      }
+    }
+
+    .staff-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .staff-table th,
+    .staff-table td {
+      padding: 0.75rem;
+      vertical-align: top;
+    }
+
+    .staff-table tr {
+      border-bottom: 1px solid #b6b6b6;
+    }
+
+    .staff-table th {
+      border-bottom: 1px solid #b6b6b6;
+    }
+
+    .staff-table tr.is-handled {
+      opacity: 0.6;
+    }
+
+    .staff-actions {
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    @media (width < calc(600 / 16 * 1rem)) {
+      .staff-table,
+      .staff-table thead,
+      .staff-table tbody,
+      .staff-table th,
+      .staff-table td,
+      .staff-table tr {
+        display: block;
+      }
+
+      .staff-table thead tr {
+        display: none;
+      }
+
+      .staff-table tr {
+        position: relative;
+        isolation: isolate;
+        padding-left: 40%;
+      }
+
+      .staff-table td::before {
+        content: attr(data-title);
+        position: absolute;
+        left: 0;
+        font-weight: 500;
+      }
+    }
+  }
+}

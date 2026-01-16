@@ -15,7 +15,6 @@
   <script src="{% static 'js/likes_redux.js' %}" defer></script>
   <script src="{% static 'js/book-interest.js' %}" defer></script>
   <script src="{% static 'js/carousel.js' %}" defer></script>
-  <script src="{% static 'js/staff-settings.js' %}" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -79,7 +78,14 @@
                 {% if user.is_authenticated %}
                   <button class="interest-btn" aria-pressed="{% if interest %}true{% else %}false{% endif %}" {% if interest %}disabled{% endif %}>
 
-                    <span class="interested-text">Interested</span>
+                    <span class="interested-text" style="text-wrap: balance;">
+                      Interested:
+                      {% if interest.handled %}
+                        ready to collect
+                      {% else %}
+                        await staff response
+                      {% endif %}
+                    </span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-check"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
 
                     <span class="sending-text">Sending...</span>
@@ -181,7 +187,4 @@
       {% endif %}
     </div>
   </article>
-  {% if user.is_staff %}
-    {% include 'components/staff_tools.html' %}
-  {% endif %}
 {% endblock %}
