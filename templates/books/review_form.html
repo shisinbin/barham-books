@@ -1,0 +1,35 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/components/review-forms.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="review">
+    <div class="wrapper">
+      <div class="review__card">
+        <h1>
+          {% if object %}
+            Edit
+          {% else %}
+            Add
+          {% endif %}review
+        </h1>
+
+        <form method="post" class="form">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+
+          <div>{{ form.title.label_tag }}{{ form.title }}{{ form.title.errors }}</div>
+          <div>{{ form.body.label_tag }}{{ form.body }}{{ form.body.errors }}</div>
+          <div>{{ form.rating.label_tag }}{{ form.rating }}{{ form.rating.errors }}</div>
+
+          <div class="review__actions">
+            <button class="button primary">Save review</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+{% endblock %}

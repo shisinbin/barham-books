@@ -335,8 +335,10 @@ def account_home(request):
     liked_books = request.user.books_liked.all()
     interested_books = Book.objects.filter(interests__user=request.user)
     reviews = request.user.reviews.all()
+    review_nums = [1, 2, 3, 4, 5]
     return render(request, "accounts/account_home.html", {
         "liked_books": liked_books,
         "interested_books": interested_books,
         "reviews": reviews,
+        "review_nums": review_nums,
     })

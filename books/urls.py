@@ -86,6 +86,12 @@ urlpatterns += [
     path('a-z/<str:letter>/', views.books_a_z, name='books_a_z_letter'),
 ]
 
+urlpatterns += [
+    path('<int:book_id>/review/add/', views.ReviewCreateView.as_view(), name='review_add'),
+    path('reviews/<int:pk>/edit/', views.ReviewUpdateView.as_view(), name='review_edit'),
+    path('reviews/<int:pk>/delete/', views.ReviewDeleteView.as_view(), name='review_delete'),
+]
+
 # temporary production book page
 # urlpatterns += [
 #     path('v2/book/', views.book_v2, name='book_v2'),

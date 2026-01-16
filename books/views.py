@@ -310,7 +310,7 @@ def tag_search(request):
     }
     return render(request, 'books/tag_search.html', context)
 
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 class BookUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -1452,6 +1452,11 @@ def book(request, book_id, slug):
     # Reviews
     # -------------------
     reviews = Review.objects.filter(book=book, active=True)
+    has_not_reviewed = True
+    if request.user.is_authenticated:
+        if reviews.filter(user=request.user):
+            has_not_reviewed = False
+    review_nums = [1, 2, 3, 4, 5]
 
     has_not_reviewed = True
     if request.user.is_authenticated:
@@ -1476,6 +1481,7 @@ def book(request, book_id, slug):
         'similar_books': similar_books,
         'reviews': reviews,
         'has_not_reviewed': has_not_reviewed,
+        'review_nums': review_nums,
         'is_recently_created': is_recently_created,
     }
 
@@ -1551,3 +1557,55 @@ def books_a_z(request, letter='A'):
     }
 
     return render(request, 'books/books_a_z.html', context)
+
+from .forms import ReviewForm
+
+class ReviewBaseMixin(LoginRequiredMixin):
+    model = Review
+    form_class = ReviewForm
+
+    def get_success_url(self):
+        return self.object.book.get_absolute_url()
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Your review has been saved.')
+        return super().form_valid(form)
+
+class ReviewCreateView(ReviewBaseMixin, CreateView):
+    template_name = "books/review_form.html"
+
+    def get_initial(self):
+        initial = super().get_initial().copy()
+        initial['title'] = "My Review of this Book"
+        initial['rating'] = 5
+        return initial
+
+    def dispatch(self, request, *args, **kwargs):
+        book = get_object_or_404(Book, pk=self.kwargs["book_id"])
+        if Review.objects.filter(book=book, user=request.user).exists():
+            messages.info(request, "You’ve already reviewed this book.")
+            return redirect(book)
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.book_id = self.kwargs["book_id"]
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class ReviewUpdateView(ReviewBaseMixin, UserPassesTestMixin, UpdateView):
+    template_name = "books/review_form.html"
+
+    def test_func(self):
+        return self.get_object().user == self.request.user
+
+class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Review
+    template_name = "books/review_confirm_delete.html"
+
+    def test_func(self):
+        return self.get_object().user == self.request.user
+
+    def get_success_url(self):
+        messages.success(self.request, "Your review was deleted.")
+        return self.object.book.get_absolute_url()

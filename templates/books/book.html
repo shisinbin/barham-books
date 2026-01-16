@@ -1,6 +1,5 @@
 {% extends 'site_base.html' %}
 {% load static %}
-{% load crispy_forms_tags %}
 
 {% block title %}
   {{ book.title }} by {{ book.author }} - Barham Community Library
@@ -9,6 +8,7 @@
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/pages/book.css' %}" />
   <link rel="stylesheet" href="{% static 'css/components/carousel.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/components/review.css' %}" />
 {% endblock %}
 
 {% block extra_js %}
@@ -167,15 +167,16 @@
       {% if user.is_authenticated or book.reviews.count > 1 %}
         <aside class="book__reviews">
           <h2 class="book__subheading">Reviews</h2>
-          {% if book.reviews.count == 0 %}
-            <p>Be the first to leave a review!</p>
-            <a href="{% url 'add_review' book.id %}">Add review</a>
-          {% else %}
-            <ul>
-              <li>Need to add reviews here, buddy</li>
-              <li>Most def</li>
-            </ul>
+
+          {% if user.is_authenticated and has_not_reviewed %}
+            <a href="{% url 'review_add' book.id %}" class="button small">Write a review</a>
           {% endif %}
+
+          {% for review in book.reviews.all %}
+            {% include 'components/review.html' %}
+          {% empty %}
+            <p>No reviews yet.</p>
+          {% endfor %}
         </aside>
       {% endif %}
     </div>

@@ -9,6 +9,7 @@
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/pages/account.css' %}" />
   <link rel="stylesheet" href="{% static 'css/components/book-grid.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/components/review.css' %}" />
 {% endblock %}
 
 {% block extra_js %}
@@ -45,13 +46,6 @@
         <h2>Registered Interests</h2>
 
         {% if interested_books %}
-          {% comment %} <ul>
-            {% for i in interests %}
-              <li>
-                <a href="{{ i.book.get_absolute_url }}">{{ i.book.title }}</a>
-              </li>
-            {% endfor %}
-          </ul> {% endcomment %}
           {% include 'components/book_grid.html' with books=interested_books is_book_interest=True %}
         {% else %}
           <p>You haven't registered interest in any books yet.</p>
@@ -62,13 +56,6 @@
         <h2>Liked books</h2>
 
         {% if liked_books %}
-          {% comment %} <ul>
-            {% for book in liked_books %}
-              <li>
-                <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
-              </li>
-            {% endfor %}
-          </ul> {% endcomment %}
           {% include 'components/book_grid.html' with books=liked_books %}
         {% else %}
           <p>You haven't liked any books yet.</p>
@@ -78,17 +65,11 @@
       <section class="account__section">
         <h2>Reviews</h2>
 
-        {% if reviews %}
-          <ul>
-            {% for r in reviews %}
-              <li>
-                <a href="{{ r.book.get_absolute_url }}">{{ r.book.title }}</a> - {{ r.rating }}/5
-              </li>
-            {% endfor %}
-          </ul>
-        {% else %}
+        {% for review in reviews %}
+          {% include 'components/review.html' with is_account_page_reviews=True %}
+        {% empty %}
           <p>You haven't written any reviews yet.</p>
-        {% endif %}
+        {% endfor %}
       </section>
     </div>
   </section>

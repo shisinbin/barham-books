@@ -1,0 +1,61 @@
+{% load static %}
+{% load thumbnail %}
+
+<article class="review">
+  {% if is_account_page_reviews %}
+    <div class="review__image-wrapper">
+      <a class="review__image-link" href="{{ review.book.get_absolute_url }}">
+        <span class="visually-hidden">{{ review.book.title }}</span>
+        {% if review.book.photo %}
+          <img src="{{ review.book.photo|thumbnail_url:'default' }}" alt="" class="review__cover-image" />
+        {% else %}
+          <img src="{% static 'img/open_book.svg' %}" alt="" class="review__cover-image" />
+        {% endif %}
+      </a>
+    </div>
+  {% endif %}
+  <div class="review__content">
+    <heading class="review__heading">
+      <div class="review__title-wrapper">
+        {% if is_account_page_reviews %}
+        <a class="review__title-link" href="{{ review.book.get_absolute_url }}">
+          <h3 class="review__book-title">{{ review.book.title }}</h3></a>
+        {% endif %}
+        <h3>{{ review.title }}</h3>
+      </div>
+
+      {% if review.rating %}
+        <div class="review__rating">
+          {% for num in review_nums %}
+            <svg xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="{% if num <= review.rating %}gold{% else %}none{% endif %}"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="review__star-icon">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </heading>
+    <p class="review__body">{{ review.body|linebreaksbr }}</p>
+    <small>
+      {% if not is_account_page_reviews|default:False %}
+        {{ review.user.username }} ·
+      {% endif %}
+      {{ review.created|date:'j M Y' }}
+    </small>
+
+    {% if review.user == user %}
+      <div class="review__tools">
+        <a href="{% url 'review_edit' review.id %}">Edit</a>
+        <a href="{% url 'review_delete' review.id %}">Delete</a>
+      </div>
+    {% endif %}
+  </div>
+</article>

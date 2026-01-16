@@ -52,7 +52,11 @@ from .models import Review
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ('user', 'book', 'title', 'body')
+        # fields = ('user', 'book', 'title', 'body')
+        fields = ['title', 'body', 'rating']
+        widgets = {
+            'body': forms.Textarea(attrs={'rows': 5})
+        }
 
 # full text search
 # from .choices import category_choices

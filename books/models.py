@@ -354,7 +354,7 @@ class BookInstance2(models.Model):
             return self.isbn13
 
 class Review(models.Model):
-    book = models.ForeignKey('Book', on_delete=models.DO_NOTHING, related_name='reviews')
+    book = models.ForeignKey('Book', on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews")
     title = models.CharField(max_length=50, default='add title')
     body = models.TextField()
@@ -370,7 +370,10 @@ class Review(models.Model):
     )
     rating = models.IntegerField(choices=RATING_CHOICES, blank=True, null=True)
     class Meta:
-        ordering = ('created',)
+        ordering = ('-created',)
+        constraints = [
+            models.UniqueConstraint(fields=["book", "user"], name="unique_review_per_user")
+        ]
     def __str__(self):
         return f"Review by {self.user} on {self.book}"
 

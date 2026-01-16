@@ -1,0 +1,54 @@
+@layer component {
+  .review {
+    .review__card {
+      width: min(600px, 100%);
+      margin-inline: auto;
+    }
+
+    .review__card h1 {
+      font-size: calc(48 / 16 * 1rem);
+      margin-block-end: 48px;
+    }
+
+    .review__lead {
+      margin-block-end: 16px;
+    }
+
+    .form {
+      display: grid;
+      gap: 24px;
+    }
+
+    .form label {
+      font-weight: 500;
+      margin-block-end: 8px;
+      display: block;
+    }
+
+    .form input,
+    .form textarea {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      width: 100%;
+      background-color: var(--c-white-bone);
+    }
+
+    .form select {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      background-color: var(--c-white-bone);
+      cursor: pointer;
+    }
+
+    .review__actions {
+      margin-top: 24px;
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+    }
+  }
+}

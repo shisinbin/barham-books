@@ -1,0 +1,108 @@
+@layer component {
+  .review {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+
+    .review__image-wrapper {
+      margin-block-start: 34px;
+      max-width: var(--thumbnail-cover-width);
+      align-self: center;
+      flex-shrink: 0;
+      align-self: flex-start;
+
+      @media (width < calc(600 / 16 * 1rem)) {
+        display: none;
+      }
+    }
+
+    .review__image-link {
+      &:hover .review__cover-image {
+        filter: brightness(105%);
+      }
+    }
+
+    .review__cover-image {
+      width: 100%;
+      height: auto;
+      filter: brightness(95%);
+      transition: filter 150ms ease-in-out;
+      will-change: filter;
+    }
+
+    .review__content {
+      width: 100%;
+      display: grid;
+      gap: 4px;
+      margin-block: 16px;
+      /* margin-inline-start: 16px; */
+
+      border-block-start: 2px solid var(--c-gray-lighter);
+      padding-block-start: 16px;
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        margin-inline-start: 16px;
+      }
+    }
+
+    .review__heading {
+      display: flex;
+      justify-content: space-between;
+      align-content: center;
+      gap: 16px;
+    }
+
+    .review__title-link {
+      color: var(--c-magenta);
+      &:hover {
+        text-decoration: underline 1px;
+        text-underline-offset: 2px;
+      }
+    }
+
+    .review__book-title {
+      font-family: var(--font-text);
+      font-size: calc(16 / 16 * 1rem);
+      margin-block-end: 8px;
+      font-weight: 400;
+    }
+
+    .review__rating {
+      flex-shrink: 0;
+      display: inline-flex;
+    }
+
+    .review__star-icon {
+      width: 20px;
+      height: 20px;
+
+      @media (width < calc(600 / 16 * 1rem)) {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    .review__body {
+      margin-block: 12px;
+    }
+
+    .review__tools {
+      display: flex;
+      gap: 16px;
+      margin-block-start: 8px;
+      width: fit-content;
+      justify-self: end;
+    }
+
+    .review__tools a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+
+      &:hover {
+        color: var(--c-magenta);
+        text-decoration: none;
+      }
+    }
+  }
+}
