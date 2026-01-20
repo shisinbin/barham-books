@@ -1,0 +1,37 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/book-cover-lookup.css' %}" />
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/book-cover-lookup.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+  <div class="cover-lookup">
+    <div class="wrapper">
+      <h1 class="cover-lookup__title">Lookup book cover</h1>
+
+      <div class="cover-lookup__meta">
+        <strong>{{ book_without_cover_image.title }}</strong><br />
+        {{ book_without_cover_image.author.first_name }} {{ book_without_cover_image.author.last_name }}
+      </div>
+
+      <div id="cover-lookup-app" data-candidates-url="{{ api_candidates_url }}" data-attach-url="{{ api_attach_url }}" data-book-detail-url="{{ book_detail_url }}" data-csrf-token="{{ csrf_token }}">
+        <button id="find-covers-btn" class="lookup-btn">Find cover images</button>
+
+        <span id="loading-indicator" style="display:none; margin-left:10px;">Looking up images…</span>
+
+        <div id="cover-grid" class="cover-grid"></div>
+
+        <div class="cover-lookup__actions">
+          <button id="attach-btn" class="lookup-btn success" disabled>Attach selected cover</button>
+
+          <a href="{{ book_detail_url }}" class="lookup-btn ghost">Cancel</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

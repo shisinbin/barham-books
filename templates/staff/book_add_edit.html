@@ -1,0 +1,90 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/add-book.css' %}" />
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/add-book.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+  <section class="add-book">
+    <div class="wrapper">
+      <h1 class="add-book__title">Book details</h1>
+
+      <form method="post" class="form" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {{ form.non_field_errors }}
+
+        <div class="form-field">
+          {{ form.photo.label_tag }}
+          {{ form.photo }}
+          <button id="clear-photo" type="button">Clear image</button>
+        </div>
+
+        <div class="form-field">{{ form.title.label_tag }}
+          {{ form.title }}</div>
+
+        <div class="form-field">
+          {{ form.author.label_tag }}
+          {{ form.author }}
+          <small>{{ form.author.help_text }}</small>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">{{ form.category.label_tag }}
+            {{ form.category }}</div>
+
+          <div class="form-field">{{ form.book_type.label_tag }}
+            {{ form.book_type }}</div>
+        </div>
+
+        <div class="form-field">{{ form.book_tags.label_tag }}
+          {{ form.book_tags }}</div>
+
+        <div class="form-field">{{ form.summary.label_tag }}
+          {{ form.summary }}</div>
+
+        <div class="form-field">{{ form.series_existing.label_tag }}
+          {{ form.series_existing }}</div>
+
+        <div class="form-row two-thirds">
+          <div class="form-field">{{ form.series_new.label_tag }}
+            {{ form.series_new }}</div>
+
+          <div class="form-field">{{ form.series_num.label_tag }}
+            {{ form.series_num }}</div>
+        </div>
+
+        <div class="form-field">
+          {{ form.isbn.label_tag }}
+          {{ form.isbn }}<small>{{ form.isbn.help_text }}</small>
+        </div>
+
+        <div class="form-row two-thirds">
+          <div class="form-field">{{ form.language.label_tag }}
+            {{ form.language }}</div>
+
+          <div class="form-field">{{ form.pages.label_tag }}
+            {{ form.pages }}</div>
+        </div>
+
+        <div class="form-row two-thirds">
+          <div class="form-field">{{ form.publisher.label_tag }}
+            {{ form.publisher }}</div>
+
+          <div class="form-field">{{ form.year.label_tag }}
+            {{ form.year }}</div>
+        </div>
+
+        <div class="form-field adjacent">{{ form.is_featured.label_tag }}
+          {{ form.is_featured }}</div>
+
+        <button type="submit" class="button primary">Review & confirm</button>
+      </form>
+    </div>
+  </section>
+{% endblock %}

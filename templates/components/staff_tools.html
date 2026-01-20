@@ -20,7 +20,11 @@
     </button>
   </header>
   <nav class="staff-drawer__body">
+    <a href="{% url 'book_add_lookup' %}" class="staff-drawer__action">Add New Book</a>
+
     <a href="{% url 'staff_book_interests' %}" class="staff-drawer__action">Manage Book Interests</a>
+
+    <hr />
 
     {% if book %}
       {% if user.is_superuser or is_recently_created %}
@@ -31,6 +35,7 @@
     {% if book %}
       {% if not book.photo %}
         <a href="{% url 'lookup_book_cover' book.id %}" class="staff-drawer__action">Lookup Book Cover</a>
+        <a href="{% url 'book_cover_lookup_page' book.id %}" class="staff-drawer__action">Book Cover Lookup</a>
       {% endif %}
     {% endif %}
 

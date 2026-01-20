@@ -1,6 +1,15 @@
+import requests
+import os
+import io
+import json
+from django.core.files.base import ContentFile
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET, require_POST
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from books.models import BookInstance2, Book
+from books.models import BookInstance2, Book, Series, Category, BookTags
 from authors.models import Author
 from records2.models import Record
 from reservations.models import Reservation
@@ -446,7 +455,6 @@ def amend_author(request, book_id):
         
         return redirect(book)
 
-import requests
 
 # def fetch_book_cover(isbn):
 #     """
@@ -522,8 +530,6 @@ def fetch_book_cover(isbn, size='L'):
         print(f'Error fetching cover image: {e}')
         return None
 
-import os
-from django.conf import settings
 @staff_member_required
 def lookup_book_cover (request, book_id):
     """
@@ -650,38 +656,535 @@ def associate_book_cover(request, book_id):
     # If the request method is not POST, redirect the user to the book page
     return redirect(book)
 
-# This is for a future implementation
-# @staff_member_required
-# def search_books(request):
-#     if request.method == 'GET':
-#         title = request.GET.get('title', '')
-#         author = request.GET.get('author', '')
-#         isbn = request.GET.get('isbn', '')
 
-#         # Perform the search based on the provided criteria
-#         search_results = []
-#         if title or author or isbn:
-#             api_url = 'https://openlibrary.org/search.json'
-#             params = {
-#                 # 'title': title,
-#                 # 'author': author,
-#                 # 'isbn': isbn,
-#                 'q': title,
-#             }
+# ---------- NEW IMPLEMENTATIONS 2026
 
-#             response = requests.get(api_url, params=params)
+from django.views.generic import FormView
+from django.views import View
+from django.utils.decorators import method_decorator
 
-#             if response.status == 200:
-#                 search_results = response.json()[0]
-#             else:
-#                 # Handle API request errors
-#                 search_results = []
+from .forms import StaffBookLookupForm, BookDraftForm
+from .services.book_lookup import search_openlibrary
+from .services.normalisers import normalise_openlibrary_results
+from .services.covers import build_cover_candidates
 
-#         context = {
-#             'search_results': search_results
-#         }
+SESSION_KEY = "staff_add_book"
+
+@method_decorator(staff_member_required, name="dispatch")
+class AddBookLookupView(FormView):
+    template_name = "staff/book_add_lookup.html"
+    form_class = StaffBookLookupForm
+
+    def form_valid(self, form):
+        # RESET any existing wizard state
+        self.request.session.pop(SESSION_KEY, None)
+
+        lookup_data = form.cleaned_data
+
+        try:
+            raw_results = search_openlibrary(**lookup_data) # what does adding two stars with the form data do?
+            results = normalise_openlibrary_results(raw_results)
+        except Exception:
+            messages.error(self.request, "Error contacting book data provider.")
+            return self.form_invalid(form)
+
+        self.request.session[SESSION_KEY] = {
+            "lookup": lookup_data,
+            "api_results": results,
+            "selected_index": None,
+            "book_data": {},
+            "meta": {
+                "source": "api",
+            },
+        }
+
+        if not results:
+            messages.info(
+                self.request,
+                "No results found. You can proceed to manual entry."
+            )
         
-#         return render(request, 'staff/search_books.html', context)
+        return redirect("book_add_select")
+
+class AddBookSelectView(View):
+    template_name = "staff/book_add_select.html"
+
+    def get(self, request):
+        session_data = request.session.get(SESSION_KEY)
+
+        if not session_data:
+            messages.error(request, "Your session expired. Start again.")
+            return redirect("book_add_lookup")
+        
+        return render(request, self.template_name, {
+            "results": session_data["api_results"],
+        })
+    
+    def post(self, request):
+        session_data = request.session.get(SESSION_KEY)
+
+        if not session_data:
+            messages.error(request, "Your session expired. Start again.")
+            return redirect("book_add_lookup")
+        
+        choice = request.POST.get("choice")
+
+        if choice == "manual":
+            session_data["selected_index"] = None
+            session_data["meta"]["source"] = "manual"
+        
+        else:
+            try:
+                index = int(choice)
+                session_data["selected_index"] = index
+                session_data["meta"]["source"] = "api"
+            except (TypeError, ValueError):
+                messages.error(request, "Invalid selection")
+                return redirect("book_add_select")
+        
+        request.session.modified = True
+        return redirect("book_add_edit")
+
+from .helpers import choose_best_isbn, save_temp_uploaded_file
+
+class AddBookEditView(FormView):
+    template_name = "staff/book_add_edit.html"
+    form_class = BookDraftForm
+
+    def _serialize_book_data(self, cleaned_data):
+        data = cleaned_data.copy()
+
+        # ModelChoiceField → store PK
+        if data.get("category"):
+            data["category_id"] = data["category"].pk
+        data.pop("category", None)
+
+        if data.get("series_existing"):
+            data["series_existing_id"] = data["series_existing"].pk
+        data.pop("series_existing", None)
+
+        # ModelMultipleChoiceField → store list of PKs
+        tags = data.get("book_tags")
+        if tags:
+            data["book_tag_ids"] = [t.pk for t in tags]
+        else:
+            data["book_tag_ids"] = []
+        data.pop("book_tags", None)
+
+        photo = data.get("photo")
+        if photo:
+            temp_path, temp_url = save_temp_uploaded_file(photo)
+            data["photo_path"] = temp_path
+            data["photo_url"] = temp_url
+            data["photo"] = None
+
+        return data
 
 
-#     return render(request, 'staff/search_books.html')
+    def get_initial(self):
+        initial = {
+            "language": "English",
+            # "category": Category.objects.filter(code="GEN").first(),
+        }
+
+        session_data = self.request.session.get(SESSION_KEY)
+        if not session_data:
+            return initial
+        
+        if session_data["meta"]["source"] == "api":
+            idx = session_data["selected_index"]
+            api_book = session_data["api_results"][idx]
+            api_isbn = choose_best_isbn(api_book.get("isbns", []))
+            lookup_isbn = session_data.get("lookup", {}).get("isbn")
+
+            initial.update({
+                "title": api_book.get("title", ""),
+                "author": api_book.get("author", ""),
+                "isbn": api_isbn or lookup_isbn or "",
+                "year": api_book.get("year"),
+            })
+        
+        return initial
+    
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        session_data = self.request.session.get(SESSION_KEY)
+        
+        if not session_data:
+            messages.error(self.request, "Your session expired.")
+            return redirect("book_add_lookup")
+
+        # session_data["book_data"] = form.cleaned_data
+        session_data["book_data"] = self._serialize_book_data(form.cleaned_data)
+        self.request.session.modified = True
+
+        return redirect("book_add_confirm")
+
+from django.db import transaction, IntegrityError
+from django.core.exceptions import ValidationError
+from django.core.files import File
+from django.core.files.storage import default_storage
+
+class AddBookConfirmView(View):
+    template_name = "staff/book_add_confirm.html"
+
+    def get(self, request):
+        session_data = request.session.get(SESSION_KEY)
+        
+        if not session_data or "book_data" not in session_data:
+            messages.error(request, "Your session expired.")
+            return redirect("book_add_lookup")
+
+        raw_book_data = session_data["book_data"]
+        book_data = self._hydrate_book_data(raw_book_data)
+
+        title = book_data["title"]
+
+        author = self._find_existing_author(book_data)
+        duplicate_book = self._find_duplicate_book(book_data, author)
+        series_warning = self._check_series_number_conflict(book_data)
+
+        print(book_data)
+
+        context = {
+            "tentative_book": book_data,
+            "tentative_author": author,
+            "duplicate_book": duplicate_book,
+            "series_warning": series_warning,
+            "can_confirm": not duplicate_book,
+            "photo_url": book_data.get("photo_url"),
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        session_data = request.session.get(SESSION_KEY)
+
+        if not session_data or "book_data" not in session_data:
+            messages.error(request, "Your session expired.")
+            return redirect("book_add_lookup")
+
+        raw_book_data = session_data["book_data"]
+        book_data = self._hydrate_book_data(raw_book_data)
+
+        try:
+            with transaction.atomic():
+                author = self._get_or_create_author(book_data)
+                self._assert_no_duplicate_book(book_data, author)
+
+                series = self._get_or_create_series(book_data)
+
+                book = self._create_book(book_data, author, series)
+                self._add_tags(book, book_data)
+                self._create_book_instance(book, book_data)
+
+        except (ValidationError, IntegrityError) as e:
+            messages.error(request, str(e))
+            return redirect("book_add_confirm")
+
+        del request.session[SESSION_KEY]
+        messages.success(request, "Book added successfully.")
+        return redirect(book)
+
+    # ---------- get helpers ----------
+
+    def _hydrate_book_data(self, book_data):
+        data = book_data.copy()
+
+        # Category
+        category_id = data.get("category_id")
+        if category_id:
+            data["category"] = Category.objects.get(pk=category_id)
+
+        # Series
+        series_id = data.get("series_existing_id")
+        if series_id:
+            data["series_existing"] = Series.objects.get(pk=series_id)
+        else:
+            data["series_existing"] = None
+
+        # Tags
+        tag_ids = data.get("book_tag_ids", [])
+        if tag_ids:
+            data["book_tags"] = BookTags.objects.filter(pk__in=tag_ids)
+        else:
+            data["book_tags"] = BookTags.objects.none()
+
+        return data
+
+
+    def _find_existing_author(self, book_data):
+        author_name = book_data["author"]
+        parts = author_name.split()
+        return Author.objects.filter(
+            first_name__iexact=parts[0],
+            last_name__iexact=parts[-1],
+        ).first()
+
+    def _find_duplicate_book(self, book_data, author):
+        if not author:
+            return None
+        return Book.objects.filter(
+            title__iexact=book_data["title"],
+            author=author,
+        ).first()
+
+    def _check_series_number_conflict(self, book_data):
+        series = book_data.get("series_existing")
+        num = book_data.get("series_num")
+
+        if not series or not num:
+            return None
+        
+        return Book.objects.filter(
+            series=series,
+            series_num=num,
+        ).first()
+
+    # ---------- post helpers ----------
+
+    def _get_or_create_author(self, book_data):
+        author_name = book_data["author"]
+        parts = author_name.split()
+        first_name, *middle_names_list, last_name = parts
+        middle_names = " ".join(middle_names_list)
+        author, _ = Author.objects.get_or_create(
+            first_name=first_name,
+            middle_names=middle_names,
+            last_name=last_name,
+        )
+        return author
+
+    def _assert_no_duplicate_book(self, book_data, author):
+        if Book.objects.filter(
+            title__iexact=book_data["title"],
+            author=author,
+        ).exists():
+            raise ValidationError("This book already exists.")
+
+    def _get_or_create_series(self, book_data):
+        series = book_data.get("series_existing")
+        new_name = book_data.get("series_new", "").strip()
+
+        if series:
+            return series
+
+        if new_name:
+            series, _ = Series.objects.get_or_create(name=new_name)
+            return series
+
+    def _get_series_number(self, book_data, series):
+        num = book_data.get("series_num")
+
+        if not series:
+            return None
+        
+        if num:
+            return num
+        
+        # Default
+        return 99
+
+    def _create_book(self, book_data, author, series):
+        photo_file = None
+        temp_path = book_data.get("photo_path")
+
+        if temp_path and default_storage.exists(temp_path):
+            photo_file = File(default_storage.open(temp_path))
+
+        book = Book.objects.create(
+            title=book_data["title"],
+            author=author,
+            summary=book_data.get("summary", ""),
+            series=series,
+            series_num=self._get_series_number(book_data, series),
+            category=book_data["category"],
+            photo=photo_file,
+            year=book_data.get("year"),
+            is_featured=book_data.get("is_featured", False),
+        )
+
+        # Cleanup temp file
+        if temp_path:
+            default_storage.delete(temp_path)
+
+        return book
+    
+    def _add_tags(self, book, book_data):
+        tags = book_data.get("book_tags")
+        if tags:
+            book.book_tags.add(*tags)
+
+    def _split_isbn(self, isbn):
+        if not isbn:
+            return None, None
+        
+        if len(isbn) == 10:
+            return isbn, None
+
+        if len(isbn) == 13:
+            return None, isbn
+
+        return None, None
+
+    def _create_book_instance(self, book, book_data):
+        isbn10, isbn13 = self._split_isbn(book_data.get("isbn"))
+
+        BookInstance2.objects.create(
+            book=book,
+            pages=book_data.get("pages"),
+            isbn10=isbn10,
+            isbn13=isbn13,
+            publisher=book_data.get("publisher", ""),
+            book_type=book_data["book_type"],
+        )
+
+from django.urls import reverse
+
+@staff_member_required
+def book_cover_lookup_page(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+
+    # Safeguard
+    if book.photo:
+        messages.error(request, 'This book already has a cover image.')
+        return redirect(book)
+
+    context = {
+        "book_without_cover_image": book,
+        "api_candidates_url": reverse("lookup_book_cover_candidates", args=[book.id]),
+        "api_attach_url": reverse("attach_book_cover", args=[book.id]),
+        "book_detail_url": book.get_absolute_url(),
+    }
+
+    return render(request, 'staff/book_cover_lookup.html', context)
+
+
+# PROBE_COVERS = False
+# MAX_PROBES = 10
+# COVER_TIMEOUT = 2
+
+@staff_member_required
+@require_GET
+def lookup_book_cover_candidates(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+
+    if book.photo:
+        return JsonResponse({
+            "ok": False,
+            "error": "Book already has a cover image."
+        }, status=400)
+
+    candidates = build_cover_candidates(book)
+
+    # if PROBE_COVERS:
+    #     candidates = _filter_working_covers(candidates)
+
+    return JsonResponse({
+        "ok": True,
+        "book": {
+            "id": book.id,
+            "title": book.title,
+            "author": (
+                f"{book.author.first_name} {book.author.last_name}"
+                if book.author else None
+            ),
+        },
+        "candidates": candidates,
+    })
+
+
+# def _filter_working_covers(candidates):
+#     working = []
+#     probes = 0
+
+#     for item in candidates:
+#         if probes >= MAX_PROBES:
+#             break
+
+#         url = item["url"]
+#         probes += 1
+
+#         try:
+#             resp = requests.head(url, timeout=COVER_TIMEOUT)
+#             if resp.status_code == 200:
+#                 working.append(item)
+#         except requests.RequestException:
+#             continue
+
+#     return working
+
+MAX_IMAGE_BYTES = 1 * 1024 * 1024  # 1MB
+FETCH_TIMEOUT = 8
+ALLOWED_HOST = "covers.openlibrary.org"
+
+@staff_member_required
+@require_POST
+# @csrf_exempt
+def attach_book_cover(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+
+    if book.photo:
+        return JsonResponse({
+            "ok": False,
+            "error": "Book already has a cover image."
+        }, status=400)
+
+    try:
+        payload = json.loads(request.body.decode("utf-8"))
+        cover_url = payload.get("cover_url")
+    except Exception:
+        return JsonResponse({
+            "ok": False,
+            "error": "Invalid JSON payload."
+        }, status=400)
+
+    if not cover_url:
+        return JsonResponse({
+            "ok": False,
+            "error": "Missing cover_url."
+        }, status=400)
+
+    if ALLOWED_HOST not in cover_url:
+        return JsonResponse({
+            "ok": False,
+            "error": "Only OpenLibrary cover URLs are allowed."
+        }, status=400)
+
+    try:
+        resp = requests.get(cover_url, timeout=FETCH_TIMEOUT, stream=True)
+        resp.raise_for_status()
+    except requests.RequestException:
+        return JsonResponse({
+            "ok": False,
+            "error": "Failed to fetch image from OpenLibrary."
+        }, status=400)
+
+    content_type = resp.headers.get("Content-Type", "")
+    if not content_type.startswith("image/"):
+        return JsonResponse({
+            "ok": False,
+            "error": "URL did not return an image."
+        }, status=400)
+
+    # Read with size cap
+    data = bytearray()
+    for chunk in resp.iter_content(chunk_size=8192):
+        if not chunk:
+            break
+        data.extend(chunk)
+        if len(data) > MAX_IMAGE_BYTES:
+            return JsonResponse({
+                "ok": False,
+                "error": "Image exceeds 1MB limit."
+            }, status=400)
+
+    # Derive filename
+    ext = content_type.split("/")[-1].lower()
+    if ext not in ("jpeg", "jpg", "png", "webp"):
+        ext = "jpg"
+
+    filename = f"cover_{book.id}.{ext}"
+
+    book.photo.save(filename, ContentFile(bytes(data)), save=True)
+
+    return JsonResponse({ "ok": True })

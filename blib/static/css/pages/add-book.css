@@ -1,0 +1,54 @@
+@layer component {
+  .add-book {
+    .add-book__title {
+      font-size: calc(48 / 16 * 1rem);
+      margin-block-end: 32px;
+    }
+
+    .form {
+      width: min(100%);
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+
+      display: grid;
+      gap: 24px;
+    }
+
+    .form input,
+    .form select,
+    .form textarea {
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      font-size: calc(16 / 16 * 1rem);
+      background: hsl(0, 0%, 94%);
+    }
+
+    .form label {
+      width: fit-content;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+
+      &.two-thirds {
+        grid-template-columns: 2fr 1fr;
+      }
+    }
+
+    .form-field {
+      display: grid;
+      gap: 8px;
+      width: 100%;
+
+      &.adjacent {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+    }
+  }
+}

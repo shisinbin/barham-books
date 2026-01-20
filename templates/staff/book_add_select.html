@@ -1,0 +1,49 @@
+{% extends 'site_base.html' %}
+{% block content %}
+  <h1>Select a book</h1>
+
+  {% if results %}
+    <p>Choose the correct book, or proceed with manual entry.</p>
+
+    <form method="post" class="book-select">
+      {% csrf_token %}
+
+      <ul class="book-select__list">
+        {% for book in results %}
+          <li class="book-select__item">
+            <label>
+              <input type="radio" name="choice" value="{{ forloop.counter0 }}" required />
+
+              {% if book.cover_url %}
+                <img src="{{ book.cover_url }}" alt="" class="book-select__cover" />
+              {% endif %}
+
+              <div class="book-select__meta">
+                <strong>{{ book.title }}</strong>
+                {% if book.authors %}
+                  <div>{{ book.authors|join:', ' }}</div>
+                {% endif %}
+                {% if book.published_year %}
+                  <div>Published {{ book.published_year }}</div>
+                {% endif %}
+                {% if book.isbn %}
+                  <div>ISBN: {{ book.isbn }}</div>
+                {% endif %}
+              </div>
+            </label>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <button class="button primary">Use selected book</button>
+    </form>
+
+    <hr />
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="choice" value="manual" />
+    <button class="button secondary">Enter details manually</button>
+  </form>
+{% endblock %}

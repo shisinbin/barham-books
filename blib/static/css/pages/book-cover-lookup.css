@@ -1,0 +1,119 @@
+@layer component {
+  .cover-lookup {
+    .cover-lookup__title {
+      font-size: calc(48 / 16 * 1rem);
+      margin-block-end: 32px;
+    }
+
+    .cover-lookup__meta {
+      font-size: calc(20 / 16 * 1rem);
+      padding-block-end: 16px;
+      border-block-end: 2px solid var(--c-gray-light);
+      margin-block-end: 16px;
+    }
+
+    .lookup-btn {
+      background-color: var(--c-purple);
+      border: 0;
+      border-radius: 100vmax;
+      box-sizing: border-box;
+      color: var(--color-text-light);
+      cursor: pointer;
+      padding: 0px;
+      padding: 10px 20px;
+      touch-action: manipulation;
+      transition: 0.167s cubic-bezier(0.4, 0, 0.2, 1);
+      transition-property: background-color, color;
+      user-select: none;
+      -webkit-user-select: none;
+
+      &:not(:disabled):hover,
+      &:not(:disabled):focus {
+        background-color: hsl(232, 58%, 40%);
+        color: var(--color-text-light);
+      }
+
+      &:active {
+        background: #09223b;
+        color: rgb(255, 255, 255, 0.7);
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        background: rgba(0, 0, 0, 0.08);
+        color: rgba(0, 0, 0, 0.3);
+      }
+
+      &.success {
+        background-color: var(--c-teal);
+        color: var(--color-text-dark);
+
+        &:disabled {
+          cursor: not-allowed;
+          background: rgba(0, 0, 0, 0.08);
+          color: rgba(0, 0, 0, 0.3);
+        }
+
+        &:not(:disabled):hover,
+        &:not(:disabled):focus {
+          background-color: hsl(180, 90%, 50%);
+          color: var(--color-text-dark);
+        }
+      }
+
+      &.ghost {
+        background-color: transparent;
+        color: var(--color-text-dark);
+
+        &:hover,
+        &:focus {
+          background-color: var(--c-gray-lighter);
+          color: var(--c-magenta);
+        }
+      }
+    }
+
+    .cover-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+      min-height: 300px;
+      margin-block: 32px 48px;
+    }
+
+    .cover-option {
+      border: 2px solid transparent;
+      padding: 8px;
+      cursor: pointer;
+      border-radius: 8px;
+      background: var(--c-white-bone);
+      display: grid;
+      place-content: center;
+      transition: background 0.167s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &:hover {
+        background: hsl(0, 10%, 85%);
+      }
+    }
+
+    .cover-option img {
+      width: 100%;
+      margin: 0 auto 6px;
+    }
+
+    .cover-option.selected {
+      border-color: hsl(122, 39%, 49%);
+      background: hsl(120, 100%, 97%);
+    }
+
+    .cover-option .meta {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .cover-lookup__actions {
+      display: flex;
+      gap: 48px;
+    }
+  }
+}

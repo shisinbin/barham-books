@@ -1,0 +1,16 @@
+{% extends 'site_base.html' %}
+{% block content %}
+  <h1>Add a new book</h1>
+  <p>Search by ISBN, title, or author.</p>
+
+  <form method="post" class="form">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div>{{ form.isbn.label_tag }} {{ form.isbn }}</div>
+    <div>{{ form.title.label_tag }} {{ form.title }}</div>
+    <div>{{ form.author.label_tag }} {{ form.author }}</div>
+
+    <button class="button primary">Search</button>
+  </form>
+{% endblock %}
