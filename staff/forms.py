@@ -1,3 +1,4 @@
+import re
 from PIL import Image
 from django import forms
 from django.contrib.auth.models import User
@@ -203,3 +204,14 @@ class BookDraftForm(forms.Form):
             photo.name += ".jpg"
         
         return photo
+    
+    def clean_summary(self):
+        summary = self.cleaned_data.get("summary", "")
+        if not summary:
+            return summary
+        
+        # Light normalisation
+        summary = summary.strip()
+        summary = re.sub(r"\n{3,}", "\n\n", summary)
+
+        return summary

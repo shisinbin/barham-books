@@ -5,45 +5,51 @@
   {% if results %}
     <p>Choose the correct book, or proceed with manual entry.</p>
 
-    <form method="post" class="book-select">
+    <form method="post">
       {% csrf_token %}
 
-      <ul class="book-select__list">
-        {% for book in results %}
-          <li class="book-select__item">
-            <label>
-              <input type="radio" name="choice" value="{{ forloop.counter0 }}" required />
+      {% for book in results %}
+        <div class="book-result">
+          <label>
+            <input type="radio" name="choice" value="{{ forloop.counter0 }}" required />
 
-              {% if book.cover_url %}
-                <img src="{{ book.cover_url }}" alt="" class="book-select__cover" />
-              {% endif %}
+            <strong>{{ book.title }}</strong>
 
-              <div class="book-select__meta">
-                <strong>{{ book.title }}</strong>
-                {% if book.authors %}
-                  <div>{{ book.authors|join:', ' }}</div>
-                {% endif %}
-                {% if book.published_year %}
-                  <div>Published {{ book.published_year }}</div>
-                {% endif %}
-                {% if book.isbn %}
-                  <div>ISBN: {{ book.isbn }}</div>
-                {% endif %}
+            {% if book.authors %}
+              <div>By {{ book.authors|join:', ' }}</div>
+            {% endif %}
+
+            {% if book.published_year %}
+              <div>Published: {{ book.published_year }}</div>
+            {% endif %}
+
+            {% if book.page_count %}
+              <div>Pages: {{ book.page_count }}</div>
+            {% endif %}
+
+            {% if book.thumbnail %}
+              <div>
+                <img src="{{ book.thumbnail }}" loading="lazy" alt="" />
               </div>
-            </label>
-          </li>
-        {% endfor %}
-      </ul>
+            {% endif %}
 
-      <button class="button primary">Use selected book</button>
+            {% if book.description %}
+              <p>{{ book.description|truncatewords:40 }}</p>
+            {% endif %}
+          </label>
+        </div>
+      {% endfor %}
+
+      <hr />
+
+      <div class="book-result">
+        <label>
+          <input type="radio" name="choice" value="manual" />
+          <strong>Enter details manually</strong>
+        </label>
+      </div>
+
+      <button type="submit">Continue</button>
     </form>
-
-    <hr />
   {% endif %}
-
-  <form method="post">
-    {% csrf_token %}
-    <input type="hidden" name="choice" value="manual" />
-    <button class="button secondary">Enter details manually</button>
-  </form>
 {% endblock %}

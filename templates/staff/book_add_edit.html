@@ -14,6 +14,9 @@
     <div class="wrapper">
       <h1 class="add-book__title">Book details</h1>
 
+      {% if tag_hint %}
+        <p>{{ tag_hint }}</p>
+      {% endif %}
       <form method="post" class="form" enctype="multipart/form-data">
         {% csrf_token %}
 

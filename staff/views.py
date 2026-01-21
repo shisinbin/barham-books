@@ -664,8 +664,8 @@ from django.views import View
 from django.utils.decorators import method_decorator
 
 from .forms import StaffBookLookupForm, BookDraftForm
-from .services.book_lookup import search_openlibrary
-from .services.normalisers import normalise_openlibrary_results
+from .services.book_lookup import search_google_books
+from .services.normalisers import normalise_google_books_results
 from .services.covers import build_cover_candidates
 
 SESSION_KEY = "staff_add_book"
@@ -676,35 +676,49 @@ class AddBookLookupView(FormView):
     form_class = StaffBookLookupForm
 
     def form_valid(self, form):
-        # RESET any existing wizard state
+        # Reset wizard state
         self.request.session.pop(SESSION_KEY, None)
 
         lookup_data = form.cleaned_data
 
         try:
-            raw_results = search_openlibrary(**lookup_data) # what does adding two stars with the form data do?
-            results = normalise_openlibrary_results(raw_results)
-        except Exception:
+            raw = search_google_books(**lookup_data)
+            results = normalise_google_books_results(raw)
+        except (requests.RequestException, ValueError):
             messages.error(self.request, "Error contacting book data provider.")
             return self.form_invalid(form)
 
+        # Store base session state
         self.request.session[SESSION_KEY] = {
             "lookup": lookup_data,
-            "api_results": results,
-            "selected_index": None,
-            "book_data": {},
-            "meta": {
-                "source": "api",
+            "results": results,
+            "selected": {
+                "index": None,
+                "source": None,
             },
         }
 
-        if not results:
-            messages.info(
-                self.request,
-                "No results found. You can proceed to manual entry."
-            )
+        # --- Case 1: ISBN search with exactly one result ---
+        if lookup_data.get('isbn') and len(results) == 1:
+            self.request.session[SESSION_KEY]["selected"] = {
+                "index": 0,
+                "source": "google_books",
+            }
+            self.request.session.modified = True
+            # messages.success(self.request, "Exactly one result found, proceed with book form input.")
+            return redirect("book_add_edit")
         
-        return redirect("book_add_select")
+        # --- Case 2: Multiple results ---
+        if results:
+            self.request.session.modified = True
+            return redirect("book_add_select")
+
+        # --- Case 3: No results ---
+        messages.info(
+            self.request,
+            "No results found. Try again or proceed to manual entry."
+        )
+        return self.form_invalid(form)
 
 class AddBookSelectView(View):
     template_name = "staff/book_add_select.html"
@@ -715,9 +729,17 @@ class AddBookSelectView(View):
         if not session_data:
             messages.error(request, "Your session expired. Start again.")
             return redirect("book_add_lookup")
+
+        results = session_data.get('results')
+        if not results:
+            messages.error(request, "No results found. Start again")
+            return redirect("book_add_lookup")
+        
+        # if len(results) == 1:
+        #     redirect("book_add_edit")
         
         return render(request, self.template_name, {
-            "results": session_data["api_results"],
+            "results": results,
         })
     
     def post(self, request):
@@ -730,17 +752,23 @@ class AddBookSelectView(View):
         choice = request.POST.get("choice")
 
         if choice == "manual":
-            session_data["selected_index"] = None
-            session_data["meta"]["source"] = "manual"
+            session_data["selected"]["index"] = None
+            session_data["selected"]["source"] = "manual"
         
         else:
             try:
                 index = int(choice)
-                session_data["selected_index"] = index
-                session_data["meta"]["source"] = "api"
             except (TypeError, ValueError):
                 messages.error(request, "Invalid selection")
                 return redirect("book_add_select")
+            
+            results = session_data.get("results", [])
+            if index < 0 or index >= len(results):
+                messages.error(request, "Invalid selection")
+                return redirect("book_add_select")
+            
+            session_data["selected"]["index"] = index
+            session_data["selected"]["source"] = "google_books"
         
         request.session.modified = True
         return redirect("book_add_edit")
@@ -784,25 +812,50 @@ class AddBookEditView(FormView):
     def get_initial(self):
         initial = {
             "language": "English",
-            # "category": Category.objects.filter(code="GEN").first(),
+            "category": Category.objects.filter(code="GEN").first(),
         }
 
         session_data = self.request.session.get(SESSION_KEY)
         if not session_data:
             return initial
-        
-        if session_data["meta"]["source"] == "api":
-            idx = session_data["selected_index"]
-            api_book = session_data["api_results"][idx]
-            api_isbn = choose_best_isbn(api_book.get("isbns", []))
-            lookup_isbn = session_data.get("lookup", {}).get("isbn")
 
-            initial.update({
-                "title": api_book.get("title", ""),
-                "author": api_book.get("author", ""),
-                "isbn": api_isbn or lookup_isbn or "",
-                "year": api_book.get("year"),
-            })
+        selected = session_data.get("selected", {})
+        if selected.get("source") != "google_books":
+            return initial
+        
+        idx = selected.get("index")
+        results = session_data.get("results", [])
+
+        if idx is None or idx >= len(results):
+            return initial
+        
+        book = results[idx]
+
+        title = book.get("title", "")
+        subtitle = book.get("subtitle")
+        if subtitle:
+            title = f"{title}: {subtitle}"
+        
+        authors = book.get("authors") or []
+        author = authors[0] if authors else ""
+
+        isbn = book.get("isbn13") or book.get("isbn10") or ""
+
+        initial.update({
+            "title": title,
+            "author": author,
+            "isbn": isbn,
+            "year": book.get("published_year"),
+            "pages": book.get("page_count"),
+            "publisher": book.get("publisher"),
+            "summary": book.get("description"),
+        })
+        
+        categories = book.get("categories")
+        if categories:
+            self.extra_content = {
+                "tag_hint": ", ".join(categories)
+            }
         
         return initial
     
@@ -1188,3 +1241,96 @@ def attach_book_cover(request, book_id):
     book.photo.save(filename, ContentFile(bytes(data)), save=True)
 
     return JsonResponse({ "ok": True })
+
+@staff_member_required
+@require_GET
+def google_books_probe(request):
+    """
+    Very simple probe endpoint for Google Books API.
+
+    Query params supported:
+      - title
+      - author
+      - isbn
+      - q      (raw query override)
+      - max    (maxResults, default 5)
+    """
+
+    title = request.GET.get("title")
+    author = request.GET.get("author")
+    isbn = request.GET.get("isbn")
+    raw_q = request.GET.get("q")
+    max_results = request.GET.get("max", "5")
+
+    # Build query
+    q_parts = []
+
+    if raw_q:
+        q = raw_q
+    else:
+        if isbn:
+            q_parts.append(f"isbn:{isbn}")
+
+        if title:
+            q_parts.append(f'intitle:"{title}"')
+
+        if author:
+            q_parts.append(f'inauthor:"{author}"')
+
+        q = " ".join(q_parts)
+
+    if not q:
+        return JsonResponse(
+            {"ok": False, "error": "Provide at least one of: title, author, isbn, or q"},
+            status=400,
+        )
+
+    params = {
+        "q": q,
+        "maxResults": max_results,
+        "key": settings.GOOGLE_BOOKS_API_KEY,
+    }
+
+    try:
+        resp = requests.get(
+            "https://www.googleapis.com/books/v1/volumes",
+            params=params,
+            timeout=10,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+
+    except requests.RequestException as exc:
+        return JsonResponse(
+            {"ok": False, "error": f"Request failed: {exc}"},
+            status=502,
+        )
+    except ValueError:
+        return JsonResponse(
+            {"ok": False, "error": "Invalid JSON from Google Books"},
+            status=502,
+        )
+
+    # Log some useful high-level info to console
+    total = data.get("totalItems")
+    items = data.get("items") or []
+
+    print("=== GOOGLE BOOKS PROBE ===")
+    print("Query:", q)
+    print("Total items:", total)
+    print("Returned items:", len(items))
+    if items:
+        info = items[0].get("volumeInfo", {})
+        print("Top result title:", info.get("title"))
+        print("Top result authors:", info.get("authors"))
+        print("==========================")
+
+    return JsonResponse(
+        {
+            "ok": True,
+            "query": q,
+            "totalItems": total,
+            "returnedItems": len(items),
+            "raw": data,
+        }
+    )
