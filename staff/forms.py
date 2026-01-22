@@ -181,6 +181,12 @@ class BookDraftForm(forms.Form):
         label="Add to Featured books?"
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['book_tags'].widget.attrs.update({
+            'class': 'js-book-tags',
+        })
+
     def clean_title(self):
         title = self.cleaned_data["title"].strip()
         if not title:
