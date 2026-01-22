@@ -875,9 +875,9 @@ class AddBookEditView(FormView):
         book = results[idx]
 
         title = book.get("title", "")
-        subtitle = book.get("subtitle")
-        if subtitle:
-            title = f"{title}: {subtitle}"
+        # subtitle = book.get("subtitle")
+        # if subtitle:
+        #     title = f"{title}: {subtitle}"
         
         authors = book.get("authors") or []
         author = authors[0] if authors else ""

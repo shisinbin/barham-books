@@ -46,10 +46,10 @@ def normalise_google_books_results(data):
         title = volume_info.get("title")
         subtitle = volume_info.get("subtitle")
 
-        if title and subtitle:
-            full_title = f"{title}: {subtitle}"
-        else:
-            full_title = title
+        # if title and subtitle:
+        #     full_title = f"{title}: {subtitle}"
+        # else:
+        #     full_title = title
 
         # --- Authors ---
         authors = volume_info.get("authors") or []
@@ -96,7 +96,8 @@ def normalise_google_books_results(data):
         results.append({
             "source": "google_books",
             "volume_id": volume_id,
-            "title": full_title,
+            "title": title,
+            "subtitle": subtitle,
             "authors": authors,
             "description": description,
             "published_year": published_year,
