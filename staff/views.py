@@ -670,6 +670,31 @@ from .services.covers import build_cover_candidates
 
 SESSION_KEY = "staff_add_book"
 
+def get_wizard_context(request, current_step):
+    session = request.session.get(SESSION_KEY, {})
+
+    steps = [
+        {"key": "lookup", "label": "Lookup"},
+        {"key": "select", "label": "Select"},
+        {"key": "entry", "label": "Entry"},
+        {"key": "review", "label": "Review"},
+    ]
+
+    completed = []
+    for step in steps:
+        if step["key"] == current_step:
+            break
+        completed.append(step["key"])
+    
+    return {
+        "wizard": {
+            "steps": steps,
+            "current": current_step,
+            "completed": completed,
+            "source": session.get("selected", {}).get("source"),
+        }
+    }
+
 @method_decorator(staff_member_required, name="dispatch")
 class AddBookLookupView(FormView):
     template_name = "staff/book_add_lookup.html"
@@ -678,6 +703,21 @@ class AddBookLookupView(FormView):
     def form_valid(self, form):
         # Reset wizard state
         self.request.session.pop(SESSION_KEY, None)
+
+        action = self.request.POST.get("action")
+
+        # Manual entry shortcut
+        if action == "manual":
+            self.request.session[SESSION_KEY] = {
+                "lookup": {},
+                "results": [],
+                "selected": {
+                    "index": None,
+                    "source": "manual",
+                },
+            }
+            self.request.session.modified = True
+            return redirect("book_add_edit")
 
         lookup_data = form.cleaned_data
 
@@ -698,27 +738,31 @@ class AddBookLookupView(FormView):
             },
         }
 
-        # --- Case 1: ISBN search with exactly one result ---
+        # ISBN - exactly one result
         if lookup_data.get('isbn') and len(results) == 1:
             self.request.session[SESSION_KEY]["selected"] = {
                 "index": 0,
                 "source": "google_books",
             }
             self.request.session.modified = True
-            # messages.success(self.request, "Exactly one result found, proceed with book form input.")
             return redirect("book_add_edit")
         
-        # --- Case 2: Multiple results ---
+        # Multiple results
         if results:
             self.request.session.modified = True
             return redirect("book_add_select")
 
-        # --- Case 3: No results ---
+        # No results
         messages.info(
             self.request,
             "No results found. Try again or proceed to manual entry."
         )
         return self.form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(get_wizard_context(self.request, "lookup"))
+        return context
 
 class AddBookSelectView(View):
     template_name = "staff/book_add_select.html"
@@ -734,13 +778,11 @@ class AddBookSelectView(View):
         if not results:
             messages.error(request, "No results found. Start again")
             return redirect("book_add_lookup")
+
+        context = get_wizard_context(self.request, "select")
+        context.update({"results": results})
         
-        # if len(results) == 1:
-        #     redirect("book_add_edit")
-        
-        return render(request, self.template_name, {
-            "results": results,
-        })
+        return render(request, self.template_name, context)
     
     def post(self, request):
         session_data = request.session.get(SESSION_KEY)
@@ -816,6 +858,7 @@ class AddBookEditView(FormView):
         }
 
         session_data = self.request.session.get(SESSION_KEY)
+        # print(session_data)
         if not session_data:
             return initial
 
@@ -853,9 +896,7 @@ class AddBookEditView(FormView):
         
         categories = book.get("categories")
         if categories:
-            self.extra_content = {
-                "tag_hint": ", ".join(categories)
-            }
+            self.tag_hint = ", ".join(categories)
         
         return initial
     
@@ -872,6 +913,15 @@ class AddBookEditView(FormView):
         self.request.session.modified = True
 
         return redirect("book_add_confirm")
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(get_wizard_context(self.request, "entry"))
+
+        if hasattr(self, 'tag_hint'):
+            context['tag_hint'] = self.tag_hint
+
+        return context
 
 from django.db import transaction, IntegrityError
 from django.core.exceptions import ValidationError
@@ -899,14 +949,15 @@ class AddBookConfirmView(View):
 
         print(book_data)
 
-        context = {
+        context = get_wizard_context(self.request, "review")
+        context.update({
             "tentative_book": book_data,
             "tentative_author": author,
             "duplicate_book": duplicate_book,
             "series_warning": series_warning,
             "can_confirm": not duplicate_book,
             "photo_url": book_data.get("photo_url"),
-        }
+        })
         return render(request, self.template_name, context)
 
     def post(self, request):

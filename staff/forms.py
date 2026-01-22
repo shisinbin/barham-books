@@ -33,28 +33,78 @@ class StaffBookLookupForm(forms.Form):
         max_length=20,
         required=False,
         label="ISBN",
-        widget=forms.TextInput(attrs={"placeholder": "1234567890..."})
+        widget=forms.TextInput(attrs={"placeholder": "1234567890123..."})
     )
     title = forms.CharField(
         max_length=255,
         required=False,
         label="Title",
-        widget=forms.TextInput(attrs={"placeholder": "george's marvellous medicine..."})
+        widget=forms.TextInput(attrs={"placeholder": "pride and prejudice..."})
     )
     author = forms.CharField(
         max_length=255,
         required=False,
         label="Author",
-        widget=forms.TextInput(attrs={"placeholder": "roald dahl..."})
+        widget=forms.TextInput(attrs={"placeholder": "jane austen..."})
     )
 
+    def clean_isbn(self):
+        isbn = self.cleaned_data.get("isbn", "").replace("-", "").strip()
+        if not isbn:
+            return ""
+        
+        if not isbn.isdigit():
+            raise forms.ValidationError("ISBN must contain only digits.")
+
+        if len(isbn) not in (10, 13):
+            raise forms.ValidationError("ISBN must be 10 or 13 digits long.")
+
+        return isbn
+
+    def clean_title(self):
+        title_raw =  self.cleaned_data["title"].strip()
+        if not title_raw:
+            return ""
+
+        terms = [word for word in title_raw.split() if len(word) >= 2]
+
+        cleaned_title = " ".join(terms)
+        
+        if len(cleaned_title) < 3:
+            raise forms.ValidationError("Title must be at least 3 characters long.")
+        
+        return cleaned_title
+
+    def clean_author(self):
+        author_raw = self.cleaned_data["author"].strip()
+        if not author_raw:
+            return ""
+        
+        terms = [word for word in author_raw.split() if len(word) >= 2]
+
+        cleaned_author = " ".join(terms)
+        
+        if len(cleaned_author) < 3:
+            raise forms.ValidationError("Author must be at least 3 characters long.")
+        
+        return cleaned_author
+
     def clean(self):
-        cleaned = super().clean()
-        if not any(cleaned.values()):
+        cleaned_data = super().clean()
+
+        action = self.data.get("action")
+        if action == "manual":
+            return cleaned_data
+
+        isbn = cleaned_data.get("isbn")
+        title = cleaned_data.get("title")
+        author = cleaned_data.get("author")
+
+        if not any([isbn, title, author]):
             raise forms.ValidationError(
                 "Enter at least one search field (ISBN, title, or author)."
             )
-        return cleaned
+        return cleaned_data
 
 
 class BookDraftForm(forms.Form):
@@ -80,7 +130,7 @@ class BookDraftForm(forms.Form):
 
     summary = forms.CharField(
         widget=forms.Textarea(attrs={
-        "rows": 5,
+        "rows": 10,
         "placeholder": "Short description or blurb",
         }),
         required=False,

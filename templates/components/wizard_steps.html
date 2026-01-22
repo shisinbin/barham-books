@@ -1,0 +1,7 @@
+<nav class="wizard__nav">
+  <ul class="wizard__nav-list">
+    {% for step in wizard.steps %}
+      <li class="wizard__nav-item {% if step.key == wizard.current %}active{% endif %}{% if step.key in wizard.completed %}completed{% endif %}">{{ step.label }}</li>
+    {% endfor %}
+  </ul>
+</nav>

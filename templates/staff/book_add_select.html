@@ -1,55 +1,93 @@
 {% extends 'site_base.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/add-book-wizard.css' %}" />
+{% endblock %}
+
 {% block content %}
-  <h1>Select a book</h1>
+  <div class="wizard">
+    <div class="wrapper">
+      {% include 'components/wizard_steps.html' %}
 
-  {% if results %}
-    <p>Choose the correct book, or proceed with manual entry.</p>
-
-    <form method="post">
-      {% csrf_token %}
-
-      {% for book in results %}
-        <div class="book-result">
-          <label>
-            <input type="radio" name="choice" value="{{ forloop.counter0 }}" required />
-
-            <strong>{{ book.title }}</strong>
-
-            {% if book.authors %}
-              <div>By {{ book.authors|join:', ' }}</div>
-            {% endif %}
-
-            {% if book.published_year %}
-              <div>Published: {{ book.published_year }}</div>
-            {% endif %}
-
-            {% if book.page_count %}
-              <div>Pages: {{ book.page_count }}</div>
-            {% endif %}
-
-            {% if book.thumbnail %}
-              <div>
-                <img src="{{ book.thumbnail }}" loading="lazy" alt="" />
-              </div>
-            {% endif %}
-
-            {% if book.description %}
-              <p>{{ book.description|truncatewords:40 }}</p>
-            {% endif %}
-          </label>
+      <section class="wizard__panel">
+        <div class="wizard__header">
+          <h1 class="wizard__title">Select a book</h1>
+          <p class="wizard__intro">Choose from one of the following books, or proceed manually.</p>
         </div>
-      {% endfor %}
 
-      <hr />
+        <div class="wizard__body">
+          {% if results %}
+            <form method="post" class="select-form">
+              {% csrf_token %}
 
-      <div class="book-result">
-        <label>
-          <input type="radio" name="choice" value="manual" />
-          <strong>Enter details manually</strong>
-        </label>
-      </div>
+              <fieldset class="book-results">
+                <legend class="visually-hidden">Select a book</legend>
 
-      <button type="submit">Continue</button>
-    </form>
-  {% endif %}
+                {% for book in results %}
+                  <label class="book-card">
+                    <input
+                      type="radio"
+                      name="choice"
+                      value="{{ forloop.counter0 }}"
+                      {% if forloop.first %}checked{% endif %}
+                    />
+
+                    <div class="book-card__content">
+                      {% if forloop.first %}
+                        <span class="badge">Most relevant</span>
+                      {% endif %}
+
+                      <header class="book-card__header">
+                        <h3 class="book-card__title">{{ book.title }}</h3>
+
+                        {% if book.authors %}
+                          <p>By {{ book.authors|join:", " }}</p>
+                        {% endif %}
+
+                        <div class="book-card__meta">
+                        {% if book.published_year %}
+                          <span>Published {{ book.published_year }}</span>
+                        {% endif %}
+                        {% if book.page_count %}
+                          <span>• {{ book.page_count }} pages</span>
+                        {% endif %}
+                      </div>
+                      </header>
+
+                      <div class="book-card__body">
+                        {% if book.thumbnail %}
+                          <img
+                            src="{{ book.thumbnail }}"
+                            loading="lazy"
+                            alt=""
+                            class="book-card__thumb"
+                          />
+                        {% endif %}
+
+                        {% if book.description %}
+                          <p class="book-card__summary">{{ book.description|linebreaksbr }}</p>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </label>
+                {% endfor %}
+              </fieldset>
+
+              <label class="book-card book-card-manual">
+                <input type="radio" name="choice" value="manual" />
+                <h3 class="book-card__title">Enter details manually</h3>
+              </label>
+ 
+              <div class="select-form__actions">
+                <button class="button primary" type="submit">
+                  Continue
+                </button>
+              </div>
+            </form>
+          {% endif %}
+        </div>
+      </section>
+    </div>
+  </div>
 {% endblock %}
