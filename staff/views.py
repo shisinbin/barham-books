@@ -790,6 +790,9 @@ class AddBookSelectView(View):
         if not session_data:
             messages.error(request, "Your session expired. Start again.")
             return redirect("book_add_lookup")
+
+        # clear existing (stale) book_data if there is any
+        session_data.pop("book_data", None)
         
         choice = request.POST.get("choice")
 
@@ -815,11 +818,35 @@ class AddBookSelectView(View):
         request.session.modified = True
         return redirect("book_add_edit")
 
-from .helpers import choose_best_isbn, save_temp_uploaded_file
+from .helpers import choose_best_isbn, save_temp_uploaded_file, format_author_name, format_book_title
 
 class AddBookEditView(FormView):
     template_name = "staff/book_add_edit.html"
     form_class = BookDraftForm
+
+    def _hydrate_book_data(self, book_data):
+        data = book_data.copy()
+
+        # Category
+        category_id = data.get("category_id")
+        if category_id:
+            data["category"] = Category.objects.get(pk=category_id)
+
+        # Series
+        series_id = data.get("series_existing_id")
+        if series_id:
+            data["series_existing"] = Series.objects.get(pk=series_id)
+        else:
+            data["series_existing"] = None
+
+        # Tags
+        tag_ids = data.get("book_tag_ids", [])
+        if tag_ids:
+            data["book_tags"] = BookTags.objects.filter(pk__in=tag_ids)
+        else:
+            data["book_tags"] = BookTags.objects.none()
+
+        return data
 
     def _serialize_book_data(self, cleaned_data):
         data = cleaned_data.copy()
@@ -862,6 +889,11 @@ class AddBookEditView(FormView):
         if not session_data:
             return initial
 
+        # prefer existing draft data
+        book_data = session_data.get("book_data")
+        if book_data:
+            return self._hydrate_book_data(book_data)
+
         selected = session_data.get("selected", {})
         if selected.get("source") != "google_books":
             return initial
@@ -879,6 +911,7 @@ class AddBookEditView(FormView):
         # if subtitle:
         #     title = f"{title}: {subtitle}"
         
+        # only getting first author, for now
         authors = book.get("authors") or []
         author = authors[0] if authors else ""
 
@@ -901,14 +934,12 @@ class AddBookEditView(FormView):
         return initial
     
     def form_valid(self, form):
-        print(form.cleaned_data)
         session_data = self.request.session.get(SESSION_KEY)
         
         if not session_data:
             messages.error(self.request, "Your session expired.")
             return redirect("book_add_lookup")
 
-        # session_data["book_data"] = form.cleaned_data
         session_data["book_data"] = self._serialize_book_data(form.cleaned_data)
         self.request.session.modified = True
 
@@ -937,17 +968,33 @@ class AddBookConfirmView(View):
         if not session_data or "book_data" not in session_data:
             messages.error(request, "Your session expired.")
             return redirect("book_add_lookup")
-
+        
+        # hydrate book data
         raw_book_data = session_data["book_data"]
         book_data = self._hydrate_book_data(raw_book_data)
 
-        title = book_data["title"]
+        # get correct title and author name for checks
+        formatted_title = format_book_title(book_data["title"])
+        formatted_author_name = format_author_name(book_data["author"])
 
-        author = self._find_existing_author(book_data)
-        duplicate_book = self._find_duplicate_book(book_data, author)
+        # are we adding book to existing author?
+        author = self._find_existing_author(formatted_author_name)
+
+        # are we adding a duplicate book?
+        duplicate_book = self._find_duplicate_book(formatted_title, author)
+
+        # have we mistakenly entered series data?
         series_warning = self._check_series_number_conflict(book_data)
 
-        print(book_data)
+        # for display purposes
+        BOOK_TYPE_CHOICES = {
+            'p': 'Paperback',
+            'h': 'Hardcover',
+            'o': 'Oversized',
+        }
+        raw_book_type = book_data.get("book_type")
+        if raw_book_type:
+            book_data["book_type"] = BOOK_TYPE_CHOICES.get(raw_book_type) or raw_book_type
 
         context = get_wizard_context(self.request, "review")
         context.update({
@@ -1015,23 +1062,26 @@ class AddBookConfirmView(View):
 
         return data
 
-
-    def _find_existing_author(self, book_data):
-        author_name = book_data["author"]
+    # takes a correct author name. returns an existing Author, or None
+    def _find_existing_author(self, author_name):
         parts = author_name.split()
         return Author.objects.filter(
             first_name__iexact=parts[0],
             last_name__iexact=parts[-1],
         ).first()
 
-    def _find_duplicate_book(self, book_data, author):
+    # takes a correct title and author object. returns a Book, or None
+    def _find_duplicate_book(self, title, author):
         if not author:
             return None
+
         return Book.objects.filter(
-            title__iexact=book_data["title"],
+            title__iexact=title,
             author=author,
         ).first()
 
+    # takes a series name and number. returns a Book with
+    # same series and number, or None
     def _check_series_number_conflict(self, book_data):
         series = book_data.get("series_existing")
         num = book_data.get("series_num")
@@ -1047,7 +1097,7 @@ class AddBookConfirmView(View):
     # ---------- post helpers ----------
 
     def _get_or_create_author(self, book_data):
-        author_name = book_data["author"]
+        author_name = format_author_name(book_data["author"])
         parts = author_name.split()
         first_name, *middle_names_list, last_name = parts
         middle_names = " ".join(middle_names_list)
@@ -1060,7 +1110,7 @@ class AddBookConfirmView(View):
 
     def _assert_no_duplicate_book(self, book_data, author):
         if Book.objects.filter(
-            title__iexact=book_data["title"],
+            title__iexact=format_book_title(book_data["title"]),
             author=author,
         ).exists():
             raise ValidationError("This book already exists.")
@@ -1096,7 +1146,7 @@ class AddBookConfirmView(View):
             photo_file = File(default_storage.open(temp_path))
 
         book = Book.objects.create(
-            title=book_data["title"],
+            title=format_book_title(book_data["title"]),
             author=author,
             summary=book_data.get("summary", ""),
             series=series,

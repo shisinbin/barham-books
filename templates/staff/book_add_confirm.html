@@ -10,107 +10,118 @@
     <div class="wrapper">
       {% include 'components/wizard_steps.html' %}
 
-      <h1 class="wizard__title">Confirm new book</h1>
+      <section class="wizard__panel">
+        <header class="wizard__header">
+          <h1 class="wizard__title">Review and confirm book</h1>
+          {% comment %} <p class="wizard__intro">Self explanatory</p> {% endcomment %}
+        </header>
 
-      {% if duplicate_book %}
-        <div class="alert alert-danger">
-          <strong>Duplicate detected:</strong>
-          This book already exists:
-          <a href="{{ duplicate_book.get_absolute_url }}">{{ duplicate_book.title }} by {{ duplicate_book.author }}</a>
+        {% if duplicate_book %}
+          <aside class="wizard__alert danger" role="alert">
+            <h2 class="wizard__alert-title">Duplicate book detected</h2>
+            <p>
+              This book already exists:
+              <a href="{{ duplicate_book.get_absolute_url }}" class="wizard__alert-link">
+                {{ duplicate_book.title }} by {{ duplicate_book.author }}
+              </a>
+            </p>
+          </aside>
+        {% endif %}
+
+        {% if series_warning %}
+          <aside class="wizard__alert info">
+            <h2 class="wizard__alert-title">Series numbering warning</h2>
+            <p>
+              Another book in this series already uses number
+              <strong>{{ tentative_book.series_num }}</strong>:
+              <a href="{{ series_warning.get_absolute_url }}" class="wizard__alert-link">
+                {{ series_warning.title }}
+              </a>
+            </p>
+          </aside>
+        {% endif %}
+
+        <div class="wizard__body">
+          <dl class="wizard__details-list {% if duplicate_book %}mask{% endif %}">
+            <dt>Title</dt>
+            <dd>{{ tentative_book.title }}</dd>
+
+            <dt>Author</dt>
+            <dd>{{ tentative_book.author }}</dd>
+
+            <dt>Category</dt>
+            <dd>{{ tentative_book.category }}</dd>
+
+            <dt>Format</dt>
+            <dd>{{ tentative_book.book_type }}</dd>
+
+            {% if tentative_book.series_existing or tentative_book.series_new %}
+              <dt>Series</dt>
+              <dd>
+                {{ tentative_book.series_existing|default:tentative_book.series_new }}
+                (Book {{ tentative_book.series_num }})
+              </dd>
+            {% endif %}
+
+            {% if tentative_book.isbn %}
+              <dt>ISBN</dt>
+              <dd>{{ tentative_book.isbn }}</dd>
+            {% endif %}
+
+            {% if tentative_book.pages %}
+              <dt>Pages</dt>
+              <dd>{{ tentative_book.pages }}</dd>
+            {% endif %}
+
+            {% if tentative_book.publisher %}
+              <dt>Publisher</dt>
+              <dd>{{ tentative_book.publisher }}</dd>
+            {% endif %}
+
+            {% if tentative_book.year %}
+              <dt>Publication year</dt>
+              <dd>{{ tentative_book.year }}</dd>
+            {% endif %}
+
+            {% if tentative_book.language %}
+              <dt>Language</dt>
+              <dd>{{ tentative_book.language }}</dd>
+            {% endif %}
+
+            {% if tentative_book.book_tags %}
+              <dt>Tags</dt>
+              <dd>
+                {% for tag in tentative_book.book_tags %}
+                  <span class="tag">{{ tag }}{% if not forloop.last %}, {% endif %}</span>
+                {% endfor %}
+              </dd>
+            {% endif %}
+
+            {% if tentative_book.summary %}
+              <dt>Summary</dt>
+              <dd>{{ tentative_book.summary|linebreaksbr }}</dd>
+            {% endif %}
+
+            <dt>Featured</dt>
+            <dd>{{ tentative_book.is_featured|yesno:'Yes,No' }}</dd>
+          </dl>
+
+          {% if photo_url %}
+            <img src="{{ photo_url }}" alt="Cover preview" class="wizard__uploaded-image-preview" />
+          {% endif %}
+
+          
+            <div class="wizard__confirm-actions">
+              <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="button primary" {% if not can_confirm %}disabled{% endif %}>Confirm & add book</button>
+              </form>
+
+              <a href="{% url 'book_add_edit' %}" class="button secondary">Back & edit</a>
+            </div>
+          
         </div>
-      {% endif %}
-
-      {% if series_warning %}
-        <div class="alert alert-warning">
-          Another book in this series already uses number
-          <strong>{{ tentative_book.series_num }}</strong>:
-          <a href="{{ series_warning.get_absolute_url }}">{{ series_warning.title }}</a>
-        </div>
-      {% endif %}
-
-      <section class="confirm-section">
-        <h2>Book details</h2>
-
-        <dl class="confirm-list">
-          <dt>Title</dt>
-          <dd>{{ tentative_book.title }}</dd>
-
-          <dt>Author</dt>
-          <dd>{{ tentative_book.author }}</dd>
-
-          <dt>Category</dt>
-          <dd>{{ tentative_book.category }}</dd>
-
-          <dt>Format</dt>
-          <dd>{{ tentative_book.book_type }}</dd>
-
-          {% if tentative_book.series_existing or tentative_book.series_new %}
-            <dt>Series</dt>
-            <dd>
-              {{ tentative_book.series_existing|default:tentative_book.series_new }}
-              (Book {{ tentative_book.series_num }})
-            </dd>
-          {% endif %}
-
-          {% if tentative_book.isbn %}
-            <dt>ISBN</dt>
-            <dd>{{ tentative_book.isbn }}</dd>
-          {% endif %}
-
-          {% if tentative_book.pages %}
-            <dt>Pages</dt>
-            <dd>{{ tentative_book.pages }}</dd>
-          {% endif %}
-
-          {% if tentative_book.publisher %}
-            <dt>Publisher</dt>
-            <dd>{{ tentative_book.publisher }}</dd>
-          {% endif %}
-
-          {% if tentative_book.year %}
-            <dt>Publication year</dt>
-            <dd>{{ tentative_book.year }}</dd>
-          {% endif %}
-
-          {% if tentative_book.language %}
-            <dt>Language</dt>
-            <dd>{{ tentative_book.language }}</dd>
-          {% endif %}
-
-          {% if tentative_book.book_tags %}
-            <dt>Tags</dt>
-            <dd>
-              {% for tag in tentative_book.book_tags %}
-                <span class="tag">{{ tag }}</span>
-              {% endfor %}
-            </dd>
-          {% endif %}
-
-          {% if tentative_book.summary %}
-            <dt>Summary</dt>
-            <dd>{{ tentative_book.summary|linebreaks }}</dd>
-          {% endif %}
-
-          <dt>Featured</dt>
-          <dd>{{ tentative_book.is_featured|yesno:'Yes,No' }}</dd>
-        </dl>
       </section>
-
-      {% if photo_url %}
-        <div class="cover-preview">
-          <img src="{{ photo_url }}" alt="Cover preview" style="max-height: 200px;" />
-        </div>
-      {% endif %}
-
-      <form method="post">
-        {% csrf_token %}
-
-        <div class="confirm-actions">
-          <a href="{% url 'book_add_edit' %}" class="btn btn-secondary">Back & edit</a>
-
-          <button type="submit" class="btn btn-primary" {% if not can_confirm %}disabled{% endif %}>Confirm & add book</button>
-        </div>
-      </form>
     </div>
   </div>
 {% endblock %}

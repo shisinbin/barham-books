@@ -49,8 +49,11 @@
                         {% if book.published_year %}
                           <span>Published {{ book.published_year }}</span>
                         {% endif %}
+                        {% if book.publisher %}
+                          <span>&nbsp;&nbsp;•&nbsp;&nbsp;{{ book.publisher }}</span>
+                        {% endif %}
                         {% if book.page_count %}
-                          <span>• {{ book.page_count }} pages</span>
+                          <span>&nbsp;&nbsp;•&nbsp;&nbsp;{{ book.page_count }} pages</span>
                         {% endif %}
                       </div>
                       </header>

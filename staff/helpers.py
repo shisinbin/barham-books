@@ -3,6 +3,7 @@ import os
 import uuid
 from django.conf import settings
 from django.core.files.storage import default_storage
+from django.core.exceptions import ValidationError
 
 ISBN_RE = re.compile(r"isbn_(\d{10}|\d{13})")
 
@@ -114,7 +115,7 @@ def format_author_name(author_name):
     names = author_name.split()
     
     if len(names) < 2:
-        raise ValueError("Need to enter a first and last name for the author.")
+        raise ValueError("Please enter at least two parts for the author name.")
 
     # Case 1: Initials-based names (e.g., "J R R Tolkien" -> "JRR Tolkien")
     if all(len(name) == 1 for name in names[:-1]):  # Check if all but the last are single characters

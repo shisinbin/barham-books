@@ -3,8 +3,6 @@
 
 {% block extra_css %}
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-  <link rel="stylesheet" href="{% static 'css/pages/add-book.css' %}" />
   <link rel="stylesheet" href="{% static 'css/pages/add-book-wizard.css' %}" />
 {% endblock %}
 
@@ -17,84 +15,100 @@
 {% block content %}
   <div class="wizard">
     <div class="wrapper">
-      <section class="add-book">
-        {% include 'components/wizard_steps.html' %}
-        <h1 class="add-book__title">Book details</h1>
+      {% include 'components/wizard_steps.html' %}
 
-        {% if tag_hint %}
-          <p>{{ tag_hint }}</p>
-        {% endif %}
-        <form method="post" class="form" enctype="multipart/form-data">
-          {% csrf_token %}
+      <section class="wizard__panel full">
+        <div class="wizard__header">
+          <h1 class="wizard__title">Enter book detail</h1>
+          {% comment %} <p class="wizard__intro">Self explanatory</p> {% endcomment %}
+        </div>
 
-          {{ form.non_field_errors }}
+        <div class="wizard__body">
+          <form method="post" class="form" enctype="multipart/form-data">
+            {% csrf_token %}
 
-          <div class="form-field">
-            {{ form.photo.label_tag }}
-            {{ form.photo }}
-            <button id="clear-photo" type="button">Clear image</button>
-          </div>
+            {{ form.non_field_errors }}
 
-          <div class="form-field">{{ form.title.label_tag }}
-            {{ form.title }}</div>
+            <div class="form-field">{{ form.title.label_tag }}
+              {{ form.title }}
+              {{ form.title.errors }}</div>
 
-          <div class="form-field">
-            {{ form.author.label_tag }}
-            {{ form.author }}
-            <small>{{ form.author.help_text }}</small>
-          </div>
+            <div class="form-field">
+              {{ form.author.label_tag }}
+              {{ form.author }}
+              {{ form.author.errors }}
+              <small>{{ form.author.help_text }}</small>
+            </div>
 
-          <div class="form-row">
-            <div class="form-field">{{ form.category.label_tag }}
-              {{ form.category }}</div>
+            <div class="form-row">
+              <div class="form-field">{{ form.category.label_tag }}
+                {{ form.category }}
+                {{ form.category.errors }}</div>
 
-            <div class="form-field">{{ form.book_type.label_tag }}
-              {{ form.book_type }}</div>
-          </div>
+              <div class="form-field">{{ form.book_type.label_tag }}
+                {{ form.book_type }}{{ form.book_type.errors }}</div>
+            </div>
 
-          <div class="form-field">{{ form.book_tags.label_tag }}
-            {{ form.book_tags }}</div>
+            <div class="form-field">
+              {{ form.book_tags.label_tag }}
+              {{ form.book_tags }}
+              {{ form.book_tags.errors }}
+              {% if tag_hint %}
+                <span class="tag-hint">API suggested: {{ tag_hint }}</span>
+              {% endif %}
+            </div>
 
-          <div class="form-field">{{ form.summary.label_tag }}
-            {{ form.summary }}</div>
+            <div class="form-field">{{ form.summary.label_tag }}
+              {{ form.summary }}{{ form.summary.errors }}</div>
 
-          <div class="form-field">{{ form.series_existing.label_tag }}
-            {{ form.series_existing }}</div>
+            <div class="form-field">
+              {{ form.photo.label_tag }}
+              {{ form.photo }}
+              {{ form.photo.errors }}
+              <button id="clear-photo" type="button">Clear image</button>
+            </div>
 
-          <div class="form-row two-thirds">
-            <div class="form-field">{{ form.series_new.label_tag }}
-              {{ form.series_new }}</div>
+            <div class="form-field select-overflow">{{ form.series_existing.label_tag }}
+              {{ form.series_existing }}
+              {{ form.series_existing.errors }}</div>
 
-            <div class="form-field">{{ form.series_num.label_tag }}
-              {{ form.series_num }}</div>
-          </div>
+            <div class="form-row two-thirds">
+              <div class="form-field">{{ form.series_new.label_tag }}
+                {{ form.series_new }}{{ form.series_new.errors }}</div>
 
-          <div class="form-field">
-            {{ form.isbn.label_tag }}
-            {{ form.isbn }}<small>{{ form.isbn.help_text }}</small>
-          </div>
+              <div class="form-field">{{ form.series_num.label_tag }}
+                {{ form.series_num }}{{ form.series_num.errors }}</div>
+            </div>
 
-          <div class="form-row two-thirds">
-            <div class="form-field">{{ form.language.label_tag }}
-              {{ form.language }}</div>
+            <div class="form-field">
+              {{ form.isbn.label_tag }}
+              {{ form.isbn }}
+              {{ form.isbn.errors }}
+              <small>{{ form.isbn.help_text }}</small>
+            </div>
 
-            <div class="form-field">{{ form.pages.label_tag }}
-              {{ form.pages }}</div>
-          </div>
+            <div class="form-row two-thirds">
+              <div class="form-field">{{ form.language.label_tag }}
+                {{ form.language }}{{ form.language.errors }}</div>
 
-          <div class="form-row two-thirds">
-            <div class="form-field">{{ form.publisher.label_tag }}
-              {{ form.publisher }}</div>
+              <div class="form-field">{{ form.pages.label_tag }}
+                {{ form.pages }}{{ form.pages.errors }}</div>
+            </div>
 
-            <div class="form-field">{{ form.year.label_tag }}
-              {{ form.year }}</div>
-          </div>
+            <div class="form-row two-thirds">
+              <div class="form-field">{{ form.publisher.label_tag }}
+                {{ form.publisher }}{{ form.publisher.errors }}</div>
 
-          <div class="form-field adjacent">{{ form.is_featured.label_tag }}
-            {{ form.is_featured }}</div>
+              <div class="form-field">{{ form.year.label_tag }}
+                {{ form.year }}{{ form.year.errors }}</div>
+            </div>
 
-          <button type="submit" class="button primary">Review & confirm</button>
-        </form>
+            <div class="form-field adjacent">{{ form.is_featured.label_tag }}
+              {{ form.is_featured }}{{ form.is_featured.errors }}</div>
+
+            <button type="submit" class="button primary">Review & confirm</button>
+          </form>
+        </div>
       </section>
     </div>
   </div>

@@ -13,5 +13,11 @@ document.addEventListener('DOMContentLoaded', function () {
       width: '100%',
       allowClear: true,
     });
+
+    $('.js-existing-series').select2({
+      placeholder: 'Select existing series',
+      width: '100%',
+      allowClear: true,
+    });
   });
 });

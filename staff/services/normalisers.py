@@ -67,6 +67,9 @@ def normalise_google_books_results(data):
             if year_part.isdigit():
                 published_year = int(year_part)
 
+        # --- Publisher ---
+        publisher = volume_info.get("publisher")
+
         # --- Page count ---
         page_count = volume_info.get("pageCount")
         if not isinstance(page_count, int) or page_count <= 0:
@@ -97,10 +100,11 @@ def normalise_google_books_results(data):
             "source": "google_books",
             "volume_id": volume_id,
             "title": title,
-            "subtitle": subtitle,
-            "authors": authors,
+            "subtitle": subtitle, # not using yet
+            "authors": authors, # will only use first
             "description": description,
             "published_year": published_year,
+            "publisher": publisher,
             "page_count": page_count,
             "isbn10": isbn10,
             "isbn13": isbn13,

@@ -139,15 +139,15 @@ class BookDraftForm(forms.Form):
     series_existing = forms.ModelChoiceField(
         queryset=Series.objects.all(),
         required=False,
-        label="Select an existing series",
+        label="Existing series",
         # empty_label="Select a series",
-        empty_label="",
     )
     series_new = forms.CharField(
         required=False,
         max_length=255,
-        label="Or create a new series"
-        )
+        label="New series",
+        widget=forms.TextInput(attrs={"placeholder": "Enter new series"}),
+    )
     series_num = forms.IntegerField(
         required=False,
         min_value=1,
@@ -186,20 +186,31 @@ class BookDraftForm(forms.Form):
         self.fields['book_tags'].widget.attrs.update({
             'class': 'js-book-tags',
         })
+        self.fields['series_existing'].widget.attrs.update({
+            'class': 'js-existing-series',
+        })
 
     def clean_title(self):
-        title = self.cleaned_data["title"].strip()
+        title = self.cleaned_data["title"]
+        title = re.sub(r"\s+", " ", title).strip()
+
         if not title:
             raise forms.ValidationError("Title cannot be empty.")
 
-        return format_book_title(title)
+        if not re.search(r"[A-Za-z0-9]", title):
+            raise forms.ValidationError("Title must contain readable characters.")
+
+        return title
     
     def clean_author(self):
-        author = self.cleaned_data["author"].strip()
-        if not author:
-            raise forms.ValidationError("Please enter an author name.")
+        author = self.cleaned_data["author"]
+        author = re.sub(r"\s+", " ", author).strip()
 
-        return format_author_name(author)
+        names = author.split()
+        if len(names) < 2:
+            raise forms.ValidationError("Please enter at least a first and last name.")
+
+        return author
 
     def clean_isbn(self):
         isbn = self.cleaned_data.get("isbn", "").replace("-", "").strip()
@@ -266,8 +277,16 @@ class BookDraftForm(forms.Form):
         if not summary:
             return summary
         
-        # Light normalisation
-        summary = summary.strip()
-        summary = re.sub(r"\n{3,}", "\n\n", summary)
+        # Normalise newlines
+        summary = summary.replace('\r\n', '\n').replace('\r', '\n')
 
-        return summary
+        # Remove zero-width and non-breaking spaces
+        summary = re.sub(r'[\u200b\u200c\u200d\u00a0]', ' ', summary)
+
+        # Collapse excessive newlines
+        summary = re.sub(r'\n{3,}', '\n\n', summary)
+
+        # Collapse excessive spaces
+        summary = re.sub(r'[ \t]{2,}', ' ', summary)
+
+        return summary.strip()

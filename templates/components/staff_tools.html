@@ -35,7 +35,7 @@
     {% if book %}
       {% if not book.photo %}
         {% comment %} <a href="{% url 'lookup_book_cover' book.id %}" class="staff-drawer__action">Lookup Book Cover</a> {% endcomment %}
-        <a href="{% url 'book_cover_lookup_page' book.id %}" class="staff-drawer__action">Book Cover Lookup</a>
+        <a href="{% url 'book_cover_lookup_page' book.id %}" class="staff-drawer__action">Lookup Book Cover</a>
       {% endif %}
     {% endif %}
 
