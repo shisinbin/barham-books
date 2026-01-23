@@ -838,33 +838,71 @@
 
   .testimonial {
     .testimonial__wrapper {
-      max-width: calc(800 / 16 * 1rem);
     }
 
     .testimonial__figure {
-    }
+      width: min(100%, calc(800 / 16 * 1rem));
+      margin-inline: auto;
 
-    .testimonial__quotemark {
-      width: calc(52 / 16 * 1rem);
-      margin-block-end: 20px;
-
-      @media (width >= calc(600 / 16 * 1rem)) {
-        width: calc(78 / 16 * 1rem);
-        margin-block-end: 30px;
+      @media (width >= calc(1000 / 16 * 1rem)) {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 4fr 1fr;
+        grid-template-areas:
+          'l-quote quote-text r-quote'
+          '. author .';
       }
     }
 
-    .testimonial__quote {
-      font-size: var(--font-size-quote);
-      font-weight: 700;
-      margin-block-end: 30px;
+    .testimonial__icon {
+      width: calc(52 / 16 * 1rem);
 
       @media (width >= calc(600 / 16 * 1rem)) {
-        margin-block-end: 40px;
+        width: calc(78 / 16 * 1rem);
+      }
+
+      &:first-child {
+        @media (width >= calc(1000 / 16 * 1rem)) {
+          grid-area: l-quote;
+          justify-self: end;
+          align-self: start;
+          margin-inline-end: 40px;
+        }
+      }
+
+      &:last-child {
+        rotate: 180deg;
+
+        @media (width >= calc(1000 / 16 * 1rem)) {
+          grid-area: r-quote;
+          justify-self: start;
+          align-self: end;
+          margin-inline-start: 40px;
+        }
+
+        @media (width < calc(1000 / 16 * 1rem)) {
+          display: none;
+        }
+      }
+    }
+
+    .testimonial__quote-text {
+      grid-area: quote-text;
+      margin-block: 20px 40px;
+      font-size: var(--font-size-quote);
+      font-weight: 700;
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        flex-direction: row;
+      }
+
+      @media (width >= calc(1000 / 16 * 1rem)) {
+        margin-block-start: 40px;
       }
     }
 
     .testimonial__author-wrapper {
+      grid-area: author;
       display: flex;
       flex-direction: column;
       gap: 20px 30px;
