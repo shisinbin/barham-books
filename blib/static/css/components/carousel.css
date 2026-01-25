@@ -56,6 +56,14 @@
       overflow-x: auto;
       scroll-behavior: smooth;
       scroll-padding-inline: 6px;
+
+      /* Hides scrollbar in Firefox */
+      scrollbar-width: none;
+
+      /* Hides scrollbar in Chrome, Edge, Safari, and Opera */
+      &::-webkit-scrollbar {
+        display: none;
+      }
     }
 
     .carousel__track {

@@ -22,45 +22,15 @@
       </div>
 
       <ul class="collections__container">
-        <li class="collections__item clickable-parent">
-          <h3 class="collections__item-title"><a href="#" class="collections__item-link clickable-parent-link">Crime, Mystery & Thrillers</a></h3>
-        </li>
-        <li class="collections__item clickable-parent">
-          <h3 class="collections__item-title"><a href="#" class="collections__item-link clickable-parent-link">Fantasy, Sci-Fi & Speculative</a></h3>
-        </li>
-        <li class="collections__item clickable-parent">
-          <h3 class="collections__item-title"><a href="#" class="collections__item-link clickable-parent-link">War, Sagas & Historical Fiction</a></h3>
-        </li>
-        <li class="collections__item clickable-parent">
-          <h3 class="collections__item-title"><a href="#" class="collections__item-link clickable-parent-link">Children's and Young Adult</a></h3>
-        </li>
+        {% for slug, collection in featured_collections.items %}
+          <li class="collections__item clickable-parent">
+            <h3 class="collections__item-title"><a href="{% url 'collection_detail' slug=slug %}" class="collections__item-link clickable-parent-link">{{ collection.title }}</a></h3>
+          </li>
+        {% endfor %}
       </ul>
 
-      {% comment %} <div class="collections__container">
-        <a href="#" class="collections__link">
-          <article class="collections__item">
-            <h3 class="collections__category">Crime, Mystery & Thriller</h3>
-          </article>
-        </a>
-        <a href="#" class="collections__link">
-          <article class="collections__item">
-            <h3 class="collections__category">Sci-Fi & Fantasy</h3>
-          </article>
-        </a>
-        <a href="#" class="collections__link">
-          <article class="collections__item">
-            <h3 class="collections__category">Modern & Contemporary Classics</h3>
-          </article>
-        </a>
-        <a href="#" class="collections__link">
-          <article class="collections__item">
-            <h3 class="collections__category">Young Adult Essentials</h3>
-          </article>
-        </a>
-      </div> {% endcomment %}
-
       <div class="collections__cta">
-        <a href="{% url 'collections' %}" class="button secondary collections__cta-link">Browse collections</a>
+        <a href="{% url 'collections' %}" class="button secondary collections__cta-link">Browse all collections</a>
       </div>
     </div>
   </section>

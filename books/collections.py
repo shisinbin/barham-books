@@ -1,6 +1,5 @@
 COLLECTIONS = {
   "crime-mystery-thrillers": {
-    "slug": "crime-mystery-thrillers",
     "title": "Crime, Mystery & Thrillers",
     "description": "Gripping mysteries, crime novels and page-turning thrillers.",
     "tags": [
@@ -10,6 +9,7 @@ COLLECTIONS = {
       "techno-thriller"
     ],
     "min_match": 2,
+    "featured": True,
   },
 
   "fantasy-sci-fi": {
@@ -21,22 +21,24 @@ COLLECTIONS = {
       "time travel", "space opera"
     ],
     "min_match": 2,
+    "featured": True,
   },
 
   "historical-saga-war": {
     "title": "War, Sagas & Historical Fiction",
-    "description": "Historical description goes here",
+    "description": "Sweeping historical novels, wartime stories and richly imagined sagas set against the past.",
     "tags": [
       "historical fiction", "historical romance",
       "historical mystery", "saga", "war story",
       "mythology", "westerns"
     ],
     "min_match": 2,
+    "featured": True,
   },
 
   "love-life-relationships": {
     "title": "Love & Relationships",
-    "description": "Love description goes here",
+    "description": "Stories of love, family and human connection, from contemporary romance to domestic drama.",
     "tags": [
       "romance", "chick lit", "family drama",
       "relationships", "contemporary", "lad lit",
@@ -47,7 +49,7 @@ COLLECTIONS = {
 
   "psychological-literary": {
     "title": "Psychological & Literary Fiction",
-    "description": "Psychological description goes here",
+    "description": "Thought-provoking fiction that explores the inner lives of characters and the human condition.",
     "tags": [
       "psychological fiction", "literary fiction",
       "postmodern literature", "satire", "novella",
@@ -58,17 +60,18 @@ COLLECTIONS = {
 
   "children-young-adult": {
     "title": "Children's and Young Adult",
-    "description": "Children and YA description goes here",
+    "description": "Beloved children’s stories and young adult fiction for curious, adventurous readers.",
     "tags": [
       "children's", "middle grade",
       "teen", "young adult"
     ],
     "min_match": 1,
+    "featured": True,
   },
 
   "modern-contemporary": {
     "title": "Modern & Contemporary",
-    "description": "Modern description goes here",
+    "description": "Modern fiction that reflects contemporary life, culture and society.",
     "tags": [
       "contemporary", "contemporary classics",
       "adapted to screen", "cultural"
@@ -78,7 +81,7 @@ COLLECTIONS = {
 
   "culture-society-memoir": {
     "title": "Culture, Society & Memoir",
-    "description": "Culture description goes here",
+    "description": "Books exploring identity, culture, belief and lived experience.",
     "tags": [
       "memoir", "cultural", "philosophy", "feminism",
       "black authors", "lgbt", "mental health",
@@ -89,7 +92,7 @@ COLLECTIONS = {
 
   "food-travel-lifestyle": {
     "title": "Food, Travel & Lifestyle",
-    "description": "Food description goes here",
+    "description": "Books to inspire curiosity, creativity and wellbeing — from kitchens to far-flung places.",
     "tags": [
       "food and drink", "travel", "horticulture",
       "environment", "animals", "sports",
@@ -100,7 +103,7 @@ COLLECTIONS = {
 
   "books-film-tv": {
     "title": "From Page to Screen",
-    "description": "Film description goes here",
+    "description": "Books that made the leap from page to film or television, and the stories behind them.",
     "tags": [
       "adapted to screen", "novelisation"
     ],
@@ -109,7 +112,7 @@ COLLECTIONS = {
 
   "seasonal": {
     "title": "Tales of Christmas",
-    "description": "A seasonal description goes here",
+    "description": "Festive stories for the winter season, from heart-warming classics to dark seasonal tales.",
     "tags": [
       "christmas" # horror, humour, erotica, gothic, paranormal, vampires
     ],
@@ -118,7 +121,7 @@ COLLECTIONS = {
 
   "humour-satire": {
     "title": "Humour & Satire",
-    "description": "Humourous description goes here",
+    "description": "Sharp, witty and laugh-out-loud books that skewer society, politics and everyday life.",
     "tags": [
       "humour", "satire"
     ],

@@ -27,9 +27,43 @@
   {% include 'components/search_bar.html' %}
 
   <div class="explore wrapper">
-    <h1 class="explore__title">Find your next read</h1>
+    {% comment %} <h1 class="explore__title">Find your next read</h1> {% endcomment %}
 
     {% include 'components/carousel.html' with books=featured_books title='Featured Books' tag='section' %}
+
+    {% include 'components/carousel.html' with books=new_books title='New Arrivals' tag='section' %}
+
+    {% include 'components/carousel.html' with books=short_reads title='Short Reads' tag='section' %}
+
+    <ul>
+      {% for featured_author in popular_authors %}
+        <li>{{ featured_author }} - {{ featured_author.num_books }}</li>
+      {% endfor %}
+    </ul>
+
+    <br />
+
+    <ul>
+      {% for series in popular_series %}
+        <li>{{ series.name }} - {{ series.num_books }}</li>
+      {% endfor %}
+    </ul>
+
+    <br />
+
+    <ul>
+      {% for slug, collection in featured_collections.items %}
+        <li>{{ collection.title }}</li>
+      {% endfor %}
+    </ul>
+
+    <br />
+
+    <ul>
+      {% for rec in recommended_books %}
+        <li>{{ rec.title }}</li>
+      {% endfor %}
+    </ul>
   </div>
   <div id="padding"></div>
 {% endblock %}

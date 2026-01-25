@@ -10,6 +10,7 @@ from django.contrib import messages
 # from books.models import Book
 # from blog.models import Post
 from .forms import ContactForm
+from books.collections import COLLECTIONS
 
 def send_formatted_email(data):
     subject = f"Library contact from {data['name']}"
@@ -28,21 +29,13 @@ def send_formatted_email(data):
     )
 
 def index(request):
-	# redirecting home page to books
-	# if 1 == 1:
-	# 	return redirect('books')
-	# else:
-	# 	# books = Book.objects.filter(is_featured=True)[:3]
-	# 	latest_posts = Post.published.all()[:3]
-
-	# 	context = {
-	# 		#'books': books,
-	# 		'latest_posts': latest_posts,
-	# 		'language_choices': language_choices,
-	# 	}
-
-	# 	return render(request, 'pages/index.html', context)
-	return render(request, 'pages/index.html')
+    featured_collections = {
+        slug: c
+        for slug, c in COLLECTIONS.items()
+        if c.get("featured") is True
+    }
+    
+    return render(request, 'pages/index.html', { 'featured_collections': featured_collections})
 
 def about(request):
 	return render(request, 'pages/about.html')

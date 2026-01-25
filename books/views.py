@@ -3,7 +3,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from .choices import language_choices, a_z
 from django.contrib import messages
 from taggit.models import Tag
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Min
 from django.db.models.functions import Random
 from authors.models import Author
 from .models import Book, BookInstance2, Review, Category, BookTags, Series, BookInterest
@@ -1303,14 +1303,75 @@ def collection_detail(request, slug):
 
 
 def explore_books(request):
-    books = (
+    FEATURED_COUNT = 16
+    NEW_COUNT = 16
+    AUTHOR_COUNT = 10
+    SERIES_COUNT = 6
+    SHORT_READS_COUNT = 10
+
+    featured_books = (
         Book.objects
-        .filter(instances__isnull=False)
-        .distinct()
-        .order_by(Random())[:12]
+        .filter(is_featured=True)
+        .order_by('-updated', '-created')[1:FEATURED_COUNT]
     )
+
+    new_books = (
+        Book.objects
+        .exclude(is_featured=True)
+        .order_by('-created')[:NEW_COUNT]
+    )
+
+    popular_authors = (
+        Author.objects
+        .annotate(num_books=Count('books'))
+        .filter(num_books__gte=2)
+        .order_by('-num_books')[:AUTHOR_COUNT]
+    )
+
+    popular_series = (
+        Series.objects
+        .annotate(num_books=Count('books'))
+        .filter(num_books__gte=3)
+        .order_by('-num_books')[:SERIES_COUNT]
+    )
+
+    short_reads = (
+        Book.objects
+        .filter(instances__pages__isnull=False)
+        .annotate(min_pages=Min('instances__pages'))
+        .filter(min_pages__lte=200)
+        .order_by('min_pages')[:SHORT_READS_COUNT]
+    )
+
+    featured_collections = {
+        slug: data
+        for slug, data in COLLECTIONS.items()
+        if data.get("featured") is True
+    }
+
+    # recommended_books = (
+    #     Book.objects
+    #     .filter(is_featured=True)
+    #     .order_by('?')[:2]
+    # )
+
+    recommended_books = (
+        Book.objects
+        .filter(slug__in=[
+            "girl-on-the-train-the",
+            "never-let-me-go",
+    ])
+)
+
+    
     context = {
-        'featured_books': books
+        'featured_books': featured_books,
+        'new_books': new_books,
+        'popular_authors': popular_authors,
+        'popular_series': popular_series,
+        'short_reads': short_reads,
+        'featured_collections': featured_collections,
+        'recommended_books': recommended_books,
     }
     return render(request, 'books/explore.html', context)
 
