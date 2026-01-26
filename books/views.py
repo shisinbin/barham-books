@@ -1360,8 +1360,11 @@ def explore_books(request):
         .filter(slug__in=[
             "girl-on-the-train-the",
             "never-let-me-go",
-    ])
-)
+        ])
+    )
+
+    rec_one = recommended_books.first()
+    rec_two = recommended_books.last()
 
     
     context = {
@@ -1371,7 +1374,9 @@ def explore_books(request):
         'popular_series': popular_series,
         'short_reads': short_reads,
         'featured_collections': featured_collections,
-        'recommended_books': recommended_books,
+        # 'recommended_books': recommended_books,
+        'rec_one': rec_one,
+        'rec_two': rec_two,
     }
     return render(request, 'books/explore.html', context)
 

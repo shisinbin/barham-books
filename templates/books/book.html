@@ -45,24 +45,24 @@
         </p>
       </header>
 
-      <div class="book__image-container">
+      <div class="sticky-container">
         <div class="sticky-sidebar">
           <figure class="book__image-wrapper">
             {% if book.photo %}
-              <img src="{{ book.photo.url }}" alt="Book cover for {{ book.title }}" class="book__image" />
+            <img src="{{ book.photo.url }}" alt="Book cover for {{ book.title }}" class="book__image" />
             {% else %}
-              <img src="{% static 'img/open_book.svg' %}" alt="" aria-hidden="true" />
+            <img src="{% static 'img/open_book.svg' %}" alt="" aria-hidden="true" />
             {% endif %}
           </figure>
-
-          <section class="book__desktop-actions">
+          
+          <section class="book__actions">
             <div class="book-like" data-like data-id="{{ book.id }}" data-liked="{% if user.is_authenticated and user in book.users_like.all %}true{% else %}false{% endif %}" data-url="{% url 'like' %}" data-auth="{% if user.is_authenticated %}true{% else %}false{% endif %}">
               <span class="book-like__count">
                 {% if book.users_like.count > 0 %}
-                  {{ book.users_like.count }}
+                {{ book.users_like.count }}
                 {% endif %}
               </span>
-
+              
               <button type="button" class="book-like__btn" aria-pressed="{% if user.is_authenticated and user in book.users_like.all %}true{% else %}false{% endif %}">
                 <span class="visually-hidden">
                   Like or unlike book
@@ -72,41 +72,42 @@
                 </svg>
               </button>
             </div>
-
+            
             <div class="book-interest" data-interest data-book-id="{{ book.id }}" data-url="{% url 'register_interest' %}">
               {% if num_copies > 0 %}
-                {% if user.is_authenticated %}
-                  <button class="interest-btn" aria-pressed="{% if interest %}true{% else %}false{% endif %}" {% if interest %}disabled{% endif %}>
-
-                    <span class="interested-text" style="text-wrap: balance;">
-                      Interested:
-                      {% if interest.handled %}
-                        ready to collect
-                      {% else %}
-                        await staff response
-                      {% endif %}
-                    </span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-check"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-
-                    <span class="sending-text">Sending...</span>
-                    
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-bookmark"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
-                    <span class="register-text">Register interest</span>
-                  </button>
-                {% else %}
-                  <a href="{% url 'login' %}?next={{ request.path }}" class="fake-interest-btn">
-                    Log in to register interest
-                  </a>
-                {% endif %}
+              {% if user.is_authenticated %}
+              <button class="interest-btn" aria-pressed="{% if interest %}true{% else %}false{% endif %}" {% if interest %}disabled{% endif %}>
+                
+                <span class="interested-text" style="text-wrap: balance;">
+                  Interested:
+                  {% if interest.handled %}
+                  ready to collect
+                  {% else %}
+                  await staff response
+                  {% endif %}
+                </span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-check"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                
+                <span class="sending-text">Sending...</span>
+                
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-bookmark"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                <span class="register-text">Register interest</span>
+              </button>
               {% else %}
-                <span class="interest-fake-btn">Not Available</span>
+              <a href="{% url 'login' %}?next={{ request.path }}" class="fake-interest-btn">
+                Log in to register interest
+              </a>
+              {% endif %}
+              {% else %}
+              <span class="interest-fake-btn">Not Available</span>
               {% endif %}
             </div>
           </section>
         </div>
       </div>
 
-      <section class="book__mobile-actions">
+
+      {% comment %} <section class="book__mobile-actions">
         <button>❤️ {{ book.users_like.count }}</button>
 
         {% if user.is_authenticated %}
@@ -122,10 +123,9 @@
             </div>
           {% endif %}
         {% else %}
-          {% comment %}Will redirect to login page{% endcomment %}
           <button>Borrow</button>
         {% endif %}
-      </section>
+      </section> {% endcomment %}
 
       <section class="book__summary">
         <h2 class="book__subheading">Synopsis</h2>

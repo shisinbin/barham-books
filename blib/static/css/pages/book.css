@@ -23,11 +23,10 @@
         grid-template-columns: calc(260 / 16 * 1rem) 1fr;
         grid-template-areas:
           '.        breadcrumb'
-          'image    title'
-          'image    summary'
-          'image    meta'
-          'image    collections'
-          'divider  divider'
+          'sidebar  title'
+          'sidebar  summary'
+          'sidebar  meta'
+          'sidebar  collections'
           'series   series'
           'similar  similar'
           'reviews  reviews';
@@ -57,44 +56,42 @@
       }
     }
 
-    .book__image-container {
-      grid-area: image;
+    .sticky-container {
+      display: contents;
       border: 2px solid red;
-      margin-block-end: 32px;
-
       @media (width >= calc(768 / 16 * 1rem)) {
-        margin-block-end: 0;
+        grid-area: sidebar;
+        display: block;
       }
     }
 
     .sticky-sidebar {
-      display: grid;
-      place-content: center;
+      display: contents;
       @media (width >= calc(768 / 16 * 1rem)) {
-        display: revert;
+        display: block;
         position: sticky;
         top: calc(var(--header-height) + 16px);
       }
     }
 
     .book__image-wrapper {
+      grid-area: image;
       width: calc(260 / 16 * 1rem);
       border-radius: 3px;
       height: fit-content;
       overflow: hidden;
+      margin-inline: auto;
     }
 
     .book__image {
       width: 100%;
     }
 
-    .book__desktop-actions {
-      display: none;
-      @media (width >= calc(768 / 16 * 1rem)) {
-        display: grid;
-        gap: 8px;
-        margin-block-start: 4px;
-      }
+    .book__actions {
+      grid-area: actions;
+      display: grid;
+      gap: 8px;
+      margin-block-start: 4px;
     }
 
     .book__title-strap {
