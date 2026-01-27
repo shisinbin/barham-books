@@ -176,11 +176,14 @@
 
       {% if user.is_authenticated or book.reviews.count > 1 %}
         <aside class="book__reviews">
-          <h2 class="book__subheading">Reviews</h2>
+          <heading class="book__reviews-heading">
 
-          {% if user.is_authenticated and has_not_reviewed %}
-            <a href="{% url 'review_add' book.id %}" class="button small">Write a review</a>
-          {% endif %}
+            <h2 class="book__subheading book__reviews-title">Reviews</h2>
+            
+            {% if user.is_authenticated and has_not_reviewed %}
+            <a href="{% url 'review_add' book.id %}" class="button secondary">Write a review</a>
+            {% endif %}
+          </heading>
 
           {% for review in book.reviews.all %}
             {% include 'components/review.html' %}
