@@ -1,0 +1,56 @@
+@layer component {
+  .series {
+    .series__heading {
+      display: grid;
+      gap: 16px;
+      margin-block-end: 48px;
+    }
+
+    .series__title-wrapper {
+      display: grid;
+    }
+
+    .series__label {
+      font-size: calc(14 / 16 * 1rem);
+      color: var(--c-magenta);
+      text-transform: uppercase;
+    }
+
+    .series__title {
+      font-size: calc(48 / 16 * 1rem);
+    }
+
+    .series__authors {
+      margin-block-end: 16px;
+    }
+
+    .series__author-link {
+      color: inherit;
+      transition: color 150ms ease-in-out;
+
+      &:hover {
+        color: var(--c-magenta);
+      }
+    }
+
+    .series__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5em;
+      list-style: none;
+      padding: 0;
+      margin-block-end: 16px;
+    }
+
+    .series__tag {
+      padding: 0.25rem 0.75rem;
+      border: 1px solid var(--c-gray-light);
+      border-radius: 100vmax;
+    }
+
+    .series__meta {
+      font-style: italic;
+      font-weight: 300;
+    }
+  }
+}

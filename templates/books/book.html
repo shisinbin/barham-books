@@ -33,7 +33,11 @@
         <h1 class="book__title">{{ book.title }}</h1>
 
         {% if book.series %}
-          <p class="book__series-title">{{ book.series }} · #{{ book.series_num }}</p>
+          <p class="book__series-title">
+            <a href="{% url 'series_detail' book.series.id %}" class="book__series-link">
+              {{ book.series }} · #{{ book.series_num }}
+            </a>
+          </p>
         {% endif %}
 
         <p class="book__author">

@@ -96,6 +96,11 @@ urlpatterns += [
     path('reviews/<int:pk>/delete/', views.ReviewDeleteView.as_view(), name='review_delete'),
 ]
 
+# series page
+urlpatterns += [
+    path('series/<int:series_id>/', views.series_detail, name='series_detail'),
+]
+
 # temporary production book page
 # urlpatterns += [
 #     path('v2/book/', views.book_v2, name='book_v2'),

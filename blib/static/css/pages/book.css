@@ -30,7 +30,11 @@
           'series   series'
           'similar  similar'
           'reviews  reviews';
-        column-gap: calc(32 / 16 * 1rem);
+        column-gap: 32px;
+      }
+
+      @media (width >= calc(1000 / 16 * 1rem)) {
+        column-gap: 48px;
       }
     }
 
@@ -58,7 +62,7 @@
 
     .sticky-container {
       display: contents;
-      border: 2px solid red;
+      /* border: 2px solid red; */
       @media (width >= calc(768 / 16 * 1rem)) {
         grid-area: sidebar;
         display: block;
@@ -81,6 +85,7 @@
       height: fit-content;
       overflow: hidden;
       margin-inline: auto;
+      box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     }
 
     .book__image {
@@ -109,8 +114,15 @@
     }
 
     .book__series-title {
-      color: hsl(0, 0%, 43%);
       margin-block: 8px;
+    }
+
+    .book__series-link {
+      color: hsl(0, 0%, 43%);
+
+      &:hover {
+        opacity: 0.7;
+      }
     }
 
     .book__author {

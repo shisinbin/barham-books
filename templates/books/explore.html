@@ -27,73 +27,115 @@
   {% include 'components/search_bar.html' %}
 
   <div class="explore">
-    <div class="wrapper">
-      {% comment %} {% include 'components/carousel.html' with books=featured_books title='Featured Books' tag='section' %}
-
+    <div class="wrapper carousel-wrapper">
       {% include 'components/carousel.html' with books=new_books title='New Arrivals' tag='section' %}
-
-      {% include 'components/carousel.html' with books=short_reads title='Short Reads' tag='section' %}
-
-      <ul>
-        {% for featured_author in popular_authors %}
-          <li>{{ featured_author }} - {{ featured_author.num_books }}</li>
-        {% endfor %}
-      </ul>
-
-      <br />
-
-      <ul>
-        {% for series in popular_series %}
-          <li>{{ series.name }} - {{ series.num_books }}</li>
-        {% endfor %}
-      </ul>
-
-      <br />
-
-      <ul>
-        {% for slug, collection in featured_collections.items %}
-          <li>{{ collection.title }}</li>
-        {% endfor %}
-      </ul>
-
-      <br /> {% endcomment %}
-
-      <article class="recommended">
-        <h2 class="recommended__title">Barham Recommends</h2>
-
-        <p class="recommended__lede recommended__lede-one">
-          <strong>The Girl on the Train</strong> by Paula Hawkins follows a daily commuter who becomes obsessed with a seemingly perfect couple she watches from her window. After witnessing something shocking, she becomes entangled in a missing person investigation that forces her to confront her own fractured memories and dark secrets.
-        </p>
-
-        <figure class="recommended__book-figure recommended__figure-one">
-          <a href="{{ rec_one.get_absolute_url }}" class="recommended__overlay-link"><span class="visually-hidden">{{ rec_one.title }}</span></a>
-          <img class="recommended__book-image" src="{{ rec_one.photo.url }}" alt="Book cover for {{ rec_one.title }} by {{ rec_one.author }}" />
-          <figcaption class="recommended__book-text">
-            <h3 class="recommended__book-title">{{ rec_one.title }}</h3>
-            <span class="recommended__book-author"><a href="{{ rec_one.author.get_absolute_url }}" class="recommended__author-link">{{ rec_one.author }}</a></span>
-          </figcaption>
-        </figure>
-
-        <p class="recommended__lede recommended__lede-two">
-          <strong>Never Let Me Go</strong> by Kazuo Ishiguro follows Kathy and her friends at an elite, secluded boarding school as they navigate their youth. Over time, they must confront the unsettling truth about their existence and the haunting, predetermined purpose they were created to serve in a dystopian society.
-        </p>
-
-        <figure class="recommended__book-figure recommended__figure-two">
-          <a href="{{ rec_two.get_absolute_url }}" class="recommended__overlay-link"><span class="visually-hidden">{{ rec_two.title }}</span></a>
-          <img class="recommended__book-image" src="{{ rec_two.photo.url }}" alt="Book cover for {{ rec_two.title }} by {{ rec_two.author }}" />
-          <figcaption class="recommended__book-text">
-            <h3 class="recommended__book-title">{{ rec_two.title }}</h3>
-            <span class="recommended__book-author"><a href="{{ rec_two.author.get_absolute_url }}" class="recommended__author-link">{{ rec_two.author }}</a></span>
-          </figcaption>
-        </figure>
-
-        <p class="recommended__lede recommended__lede-two">
-          <strong>Never Let Me Go</strong> by Kazuo Ishiguro follows Kathy and her friends at an elite, secluded boarding school as they navigate their youth. Over time, they must confront the unsettling truth about their existence and the haunting, predetermined purpose they were created to serve in a dystopian society.
-        </p>
-      </article>
-
-      <div style="color: peachpuff;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec porta nunc lorem, at pellentesque quam pretium ac. Donec posuere eros quis lorem viverra, non congue purus pretium. Praesent nisl dui, varius feugiat massa eu, tincidunt elementum lectus. Duis vehicula, leo a venenatis malesuada, ipsum metus molestie lacus, ac gravida risus arcu at risus. Curabitur a purus at nisi condimentum egestas. In id turpis vel mi fermentum laoreet suscipit sit amet mi. Sed malesuada et arcu eget dapibus. Quisque vehicula, neque et viverra imperdiet, orci elit ultricies erat, sed volutpat felis turpis id nisl. Phasellus pellentesque sem enim. Donec enim nibh, interdum non imperdiet a, porttitor ac lacus.</div>
     </div>
+    {% comment %} {% include 'components/carousel.html' with books=featured_books title='Featured Books' tag='section' %}
+
+    {% include 'components/carousel.html' with books=short_reads title='Short Reads' tag='section' %}
+
+    <ul>
+      {% for featured_author in popular_authors %}
+        <li>{{ featured_author }} - {{ featured_author.num_books }}</li>
+      {% endfor %}
+    </ul>
+
+    <br />
+
+    <ul>
+      {% for series in popular_series %}
+        <li>{{ series.name }} - {{ series.num_books }}</li>
+      {% endfor %}
+    </ul>
+
+    <br />
+
+    <ul>
+      {% for slug, collection in featured_collections.items %}
+        <li>{{ collection.title }}</li>
+      {% endfor %}
+    </ul>
+
+    <br /> {% endcomment %}
+
+    <div class="recommended">
+      <div class="recommended__bg">
+        <div class="wrapper recommended__wrapper">
+          <article class="recommended__article">
+            <h1 class="recommended__title">Barham Recommends</h1>
+
+            <p class="recommended__lede recommended__lede-one">
+              <strong>The Girl on the Train</strong> by Paula Hawkins follows a troubled commuter who becomes fixated on a couple she observes from the train each morning. When she witnesses something disturbing, she is drawn into a missing person investigation that forces her to confront unreliable memories, buried trauma, and the dangerous consequences of obsession.
+            </p>
+
+            <figure class="recommended__book-figure recommended__figure-one">
+              <a href="{{ rec_one.get_absolute_url }}" class="recommended__overlay-link"><span class="visually-hidden">{{ rec_one.title }}</span></a>
+              <img class="recommended__book-image" src="{{ rec_one.photo.url }}" alt="Book cover for {{ rec_one.title }} by {{ rec_one.author }}" />
+              <figcaption class="recommended__book-text">
+                <h3 class="recommended__book-title">{{ rec_one.title }}</h3>
+                <span class="recommended__book-author"><a href="{{ rec_one.author.get_absolute_url }}" class="recommended__author-link">{{ rec_one.author }}</a></span>
+              </figcaption>
+            </figure>
+
+            <p class="recommended__lede recommended__lede-two">
+              <strong>Never Let Me Go</strong> by Kazuo Ishiguro centres on Kathy and her friends, who grow up at an isolated English boarding school. As they move into adulthood, they begin to uncover the unsettling truth about their lives - and the quiet, devastating purpose that awaits them in a hauntingly restrained dystopian world.
+            </p>
+
+            <figure class="recommended__book-figure recommended__figure-two">
+              <a href="{{ rec_two.get_absolute_url }}" class="recommended__overlay-link"><span class="visually-hidden">{{ rec_two.title }}</span></a>
+              <img class="recommended__book-image" src="{{ rec_two.photo.url }}" alt="Book cover for {{ rec_two.title }} by {{ rec_two.author }}" />
+              <figcaption class="recommended__book-text">
+                <h3 class="recommended__book-title">{{ rec_two.title }}</h3>
+                <span class="recommended__book-author"><a href="{{ rec_two.author.get_absolute_url }}" class="recommended__author-link">{{ rec_two.author }}</a></span>
+              </figcaption>
+            </figure>
+          </article>
+
+          {% include 'components/carousel.html' with books=featured_books title='Other Recs' tag='section' %}
+        </div>
+      </div>
+    </div>
+
+    <div class="authors">
+      <div class="wrapper authors__wrapper">
+        <h2 class="authors__title">Popular Authors</h2>
+
+        <ul class="authors__list">
+          {% for pop_author in popular_authors %}
+            <li class="authors__author" aria-label="{{ pop_author }}">
+              <a href="{{ pop_author.get_absolute_url }}" class="authors__overlay-link"><span class="visually-hidden">{{ pop_author }}</span></a>
+
+              <div class="authors__author-content">
+                <span class="authors__avatar">
+                  {% if pop_author.photo %}
+                    <img src="{{ pop_author.photo.url }}" alt="" />
+                  {% endif %}
+                </span>
+
+                <div class="authors__author-text">
+                  <h3 class="authors__name">{{ pop_author }}</h3>
+
+                  <span class="authors__meta">{{ pop_author.num_books }} book{{ pop_author.num_books|pluralize }}</span>
+                </div>
+
+                {% if pop_author.books.all|length > 0 %}
+                  <div class="authors__book-thumbs">
+                    {% for author_book in pop_author.books.all|slice:':3' %}
+                      {% if author_book.photo %}
+                        <img src="{{ author_book.photo|thumbnail_url:'default' }}" alt="" class="authors__book-thumb" />
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div style="color: peachpuff;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec porta nunc lorem, at pellentesque quam pretium ac. Donec posuere eros quis lorem viverra, non congue purus pretium. Praesent nisl dui, varius feugiat massa eu, tincidunt elementum lectus. Duis vehicula, leo a venenatis malesuada, ipsum metus molestie lacus, ac gravida risus arcu at risus. Curabitur a purus at nisi condimentum egestas. In id turpis vel mi fermentum laoreet suscipit sit amet mi. Sed malesuada et arcu eget dapibus. Quisque vehicula, neque et viverra imperdiet, orci elit ultricies erat, sed volutpat felis turpis id nisl. Phasellus pellentesque sem enim. Donec enim nibh, interdum non imperdiet a, porttitor ac lacus.</div>
   </div>
+
   <div id="padding"></div>
 {% endblock %}

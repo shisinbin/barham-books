@@ -1,0 +1,50 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block title %}
+  {{ series }} - Barham Community Library
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/series.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/components/book-grid.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <div class="series wrapper">
+    <header class="series__heading">
+      <div class="series__title-wrapper">
+        <span class="series__label">Series</span>
+        <h1 class="series__title">{{ series.name }}</h1>
+      </div>
+
+      {% if authors %}
+        <p class="series__authors medium">
+          By{% for author in authors %}
+            <a href="{{ author.get_absolute_url }}" class="series__author-link">{{ author }}</a>{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </p>
+      {% endif %}
+
+      {% if tags %}
+        <ul class="series__tags">
+          {% for tag in tags %}
+            <li class="series__tag">{{ tag.name }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% with num=series.book_count %}
+        {% if num > 0 %}
+          <p class="series__meta">{{ num }} book{{ num|pluralize }} from this series {{ num|pluralize:'is,are' }} in the library</p>
+        {% endif %}
+      {% endwith %}
+    </header>
+
+    {% if series.book_count > 0 %}
+      {% include 'components/book_grid.html' with books=books hide_author='true' %}
+    {% else %}
+      <p>No books for this series are currently in the library.</p>
+    {% endif %}
+  </div>
+{% endblock %}

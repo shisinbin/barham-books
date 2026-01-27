@@ -6,7 +6,7 @@ from taggit.models import Tag
 from django.db.models import Count, Q, Min
 from django.db.models.functions import Random
 from authors.models import Author
-from .models import Book, BookInstance2, Review, Category, BookTags, Series, BookInterest
+from .models import Book, BookInstance2, Review, Category, BookTags, Series, BookInterest, BookTag
 from .forms import SearchForm
 from datetime import datetime, timedelta
 from django.http import JsonResponse, Http404
@@ -316,7 +316,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 class BookUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Book
-    fields = ['title', 'category', 'summary', 'photo', 'year']
+    fields = ['title', 'category', 'summary', 'photo', 'year', 'is_featured']
 
     def test_func(self):
         # check if user is superuser
@@ -1305,7 +1305,7 @@ def collection_detail(request, slug):
 def explore_books(request):
     FEATURED_COUNT = 16
     NEW_COUNT = 16
-    AUTHOR_COUNT = 10
+    AUTHOR_COUNT = 5
     SERIES_COUNT = 6
     SHORT_READS_COUNT = 10
 
@@ -1363,8 +1363,7 @@ def explore_books(request):
         ])
     )
 
-    rec_one = recommended_books.first()
-    rec_two = recommended_books.last()
+    rec_one, rec_two = list(recommended_books)
 
     
     context = {
@@ -1719,3 +1718,34 @@ class StaffBookInterestListView(ListView):
             .select_related("user", "book")
             .order_by("handled", "-created")
         )
+
+def series_detail(request, series_id):
+    series = get_object_or_404(
+        Series.objects.annotate(book_count=Count("books")),
+        id=series_id
+    )
+
+    books = (
+        Book.objects
+        .filter(series=series)
+        .order_by("series_num", "title")
+    )
+
+    authors = Author.objects.filter(books__series=series).distinct()
+    tags = (
+        BookTags.objects
+        .filter(book_tags__content_object__series=series)
+        .distinct()
+        .order_by("band", "name")
+    )
+
+    return render(
+        request,
+        "books/series_detail.html",
+        {
+            "series": series,
+            "books": books,
+            "authors": authors,
+            "tags": tags,
+        }
+    )
