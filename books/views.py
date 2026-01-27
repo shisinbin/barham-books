@@ -1305,7 +1305,7 @@ def collection_detail(request, slug):
 def explore_books(request):
     FEATURED_COUNT = 16
     NEW_COUNT = 16
-    AUTHOR_COUNT = 5
+    AUTHOR_COUNT = 6
     SERIES_COUNT = 6
     SHORT_READS_COUNT = 10
 

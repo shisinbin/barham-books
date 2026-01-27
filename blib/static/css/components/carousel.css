@@ -19,6 +19,11 @@
 
     .carousel__title {
       font-size: calc(36 / 16 * 1rem);
+
+      @media (width < calc(600 / 16 * 1rem)) {
+        font-size: calc(24 / 16 * 1rem);
+        letter-spacing: -0.02em;
+      }
     }
 
     .carousel__controls {

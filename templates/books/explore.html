@@ -28,7 +28,7 @@
 
   <div class="explore">
     <div class="wrapper carousel-wrapper">
-      {% include 'components/carousel.html' with books=new_books title='New Arrivals' tag='section' %}
+      {% include 'components/carousel.html' with books=new_books title='Recently Added' tag='section' %}
     </div>
     {% comment %} {% include 'components/carousel.html' with books=featured_books title='Featured Books' tag='section' %}
 
@@ -91,55 +91,112 @@
             </figure>
           </article>
 
-          {% include 'components/carousel.html' with books=featured_books title='Other Recs' tag='section' %}
+          {% include 'components/carousel.html' with books=featured_books title='Other Recommendations' tag='section' %}
         </div>
       </div>
     </div>
 
-    <section class="authors">
-      <div class="wrapper authors__wrapper">
-        <h2 class="authors__title">Popular Authors</h2>
+    <div class="wrapper popular-wrapper">
+      <div class="popular">
+        <section class="authors">
+          <h2 class="popular__title">Popular Authors</h2>
 
-        <ul class="authors__list">
-          {% for pop_author in popular_authors %}
-            <li class="authors__author" aria-label="{{ pop_author }}">
-              <a href="{{ pop_author.get_absolute_url }}" class="authors__overlay-link"><span class="visually-hidden">{{ pop_author }}</span></a>
+          <ul class="popular__list">
+            {% for pop_author in popular_authors %}
+              <li class="popular__item" aria-label="{{ pop_author }}">
+                <a href="{{ pop_author.get_absolute_url }}" class="popular__overlay-link"><span class="visually-hidden">{{ pop_author }}</span></a>
 
-              <div class="authors__author-content">
-                <span class="authors__avatar">
-                  {% if pop_author.photo %}
-                    <img src="{{ pop_author.photo.url }}" alt="" />
-                  {% endif %}
-                </span>
+                <div class="popular__item-content">
+                  <span class="popular__avatar">
+                    {% if pop_author.photo %}
+                      <img src="{{ pop_author.photo.url }}" alt="" />
+                    {% endif %}
+                  </span>
 
-                <div class="authors__author-text">
-                  <h3 class="authors__name">{{ pop_author }}</h3>
+                  <div class="popular__item-text">
+                    <h3 class="popular__name">{{ pop_author }}</h3>
 
-                  <span class="authors__meta">{{ pop_author.num_books }} book{{ pop_author.num_books|pluralize }}</span>
-                </div>
-
-                {% if pop_author.books.all|length > 0 %}
-                  <div class="authors__book-thumbs">
-                    {% for author_book in pop_author.books.all|slice:':3' %}
-                      {% if author_book.photo %}
-                        <img src="{{ author_book.photo|thumbnail_url:'default' }}" alt="" class="authors__book-thumb" />
-                      {% endif %}
-                    {% endfor %}
+                    <span class="popular__meta">{{ pop_author.num_books }} book{{ pop_author.num_books|pluralize }}</span>
                   </div>
-                {% endif %}
-              </div>
-            </li>
-          {% endfor %}
-        </ul>
+
+                  {% if pop_author.books.all|length > 0 %}
+                    <div class="popular__book-thumbs">
+                      {% for author_book in pop_author.books.all|slice:':3' %}
+                        {% if author_book.photo %}
+                          <img src="{{ author_book.photo|thumbnail_url:'default' }}" alt="" class="popular__book-thumb" />
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </section>
+
+        <section class="series">
+          <h2 class="popular__title">Popular Series</h2>
+
+          <ul class="popular__list">
+            {% for pop_series in popular_series %}
+              <li class="popular__item" aria-label="{{ pop_series }}">
+                <a href="{% url 'series_detail' pop_series.id %}" class="popular__overlay-link"><span class="visually-hidden">{{ pop_series }}</span></a>
+
+                <div class="popular__item-content">
+                  {% comment %} <span class="popular__avatar">
+                    {% if pop_author.photo %}
+                      <img src="{{ pop_author.photo.url }}" alt="" />
+                    {% endif %}
+                  </span> {% endcomment %}
+
+                  <div class="popular__item-text">
+                    <h3 class="popular__name">{{ pop_series }}</h3>
+
+                    <span class="popular__meta">{{ pop_series.num_books }} book{{ pop_series.num_books|pluralize }}</span>
+                  </div>
+
+                  {% if pop_series.books.all|length > 0 %}
+                    <div class="popular__book-thumbs">
+                      {% for series_book in pop_series.books.all|slice:':3' %}
+                        {% if series_book.photo %}
+                          <img src="{{ series_book.photo|thumbnail_url:'default' }}" alt="" class="popular__book-thumb" />
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </section>
       </div>
-    </section>
+    </div>
 
-    <section class="series">
-      <div class="wrapper series__wrapper">series</div>
-    </section>
+    <div class="wrapper">
+      <section class="explore-cta">
+        <article class="explore-cta__card">
+          <a href="{% url 'collections' %}" class="explore-cta__overlay-link"><span class="visually-hidden">Browse collections</span></a>
 
-    <div style="color: peachpuff;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec porta nunc lorem, at pellentesque quam pretium ac. Donec posuere eros quis lorem viverra, non congue purus pretium. Praesent nisl dui, varius feugiat massa eu, tincidunt elementum lectus. Duis vehicula, leo a venenatis malesuada, ipsum metus molestie lacus, ac gravida risus arcu at risus. Curabitur a purus at nisi condimentum egestas. In id turpis vel mi fermentum laoreet suscipit sit amet mi. Sed malesuada et arcu eget dapibus. Quisque vehicula, neque et viverra imperdiet, orci elit ultricies erat, sed volutpat felis turpis id nisl. Phasellus pellentesque sem enim. Donec enim nibh, interdum non imperdiet a, porttitor ac lacus.</div>
-  </div>
+          <div class="explore-cta__content">
+            <h3 class="explore-cta__title">Browse Collections</h3>
 
-  <div id="padding"></div>
+            <p class="explore-cta__text">Discover curated reading lists across genres, themes and moods.</p>
+
+            {% comment %} <span class="explore-cta__cta">View collections -></span> {% endcomment %}
+          </div>
+        </article>
+
+        <article class="explore-cta__card">
+          <a href="{% url 'books_a_z' %}" class="explore-cta__overlay-link"><span class="visually-hidden">Browse A-Z</span></a>
+
+          <div class="explore-cta__content">
+            <h3 class="explore-cta__title">Books A-Z</h3>
+
+            <p class="explore-cta__text">Browse every book in the library alphabetically by title.</p>
+
+            {% comment %} <span class="explore-cta__cta">Browse A-Z -></span> {% endcomment %}
+          </div>
+        </article>
+      </section>
+    </div>
 {% endblock %}
