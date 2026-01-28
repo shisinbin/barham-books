@@ -8,6 +8,7 @@
     top: var(--header-height);
     background-color: var(--color-sticky-search-bg);
     z-index: 80;
+    box-shadow: 0 4px 8px hsl(0 0% 0% / 0.1);
 
     .search__wrapper {
       padding-block: 0;
