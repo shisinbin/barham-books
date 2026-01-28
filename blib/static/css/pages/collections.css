@@ -1,5 +1,8 @@
 @layer component {
   .collections {
+    .coll__wrapper {
+      padding-block-end: 100px;
+    }
     .collections__title {
       margin-block-end: 40px;
 

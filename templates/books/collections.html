@@ -10,23 +10,25 @@
 {% endblock %}
 
 {% block content %}
-  <div class="collections wrapper">
-    <h1 class="collections__title">Browse our collections</h1>
+  <div class="collections">
+    <div class="wrapper coll__wrapper">
+      <h1 class="collections__title">Browse our collections</h1>
 
-    <ul class="collections__grid">
-      {% for slug, collection in collections.items %}
-        <li class="collections__card clickable-parent">
-          {% comment %}Backdrop or image{% endcomment %}
-          <header class="collections__card-header">
-            <h3 class="collections__card-title"><a href="{% url 'collection_detail' slug=slug %}" class="collections__card-main-link clickable-parent-link">{{ collection.title }}</a></h3>
-            <svg class="collections__arrow icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right" aria-hidden="true">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </header>
-          <p class="collections__description">{{ collection.description }}</p>
-        </li>
-      {% endfor %}
-    </ul>
+      <ul class="collections__grid">
+        {% for slug, collection in collections.items %}
+          <li class="collections__card clickable-parent">
+            {% comment %}Backdrop or image{% endcomment %}
+            <header class="collections__card-header">
+              <h3 class="collections__card-title"><a href="{% url 'collection_detail' slug=slug %}" class="collections__card-main-link clickable-parent-link">{{ collection.title }}</a></h3>
+              <svg class="collections__arrow icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </header>
+            <p class="collections__description">{{ collection.description }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
   </div>
 {% endblock %}

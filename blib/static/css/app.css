@@ -378,6 +378,11 @@
     margin-block-end: 32px;
   }
 
+  .narrow-container {
+    width: min(72ch, 100%);
+    margin-inline: auto;
+  }
+
   #app {
     display: grid;
     grid-template-rows: auto 1fr auto;

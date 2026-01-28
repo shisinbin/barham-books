@@ -1,129 +1,103 @@
-{% extends 'base.html' %}
+{% extends 'site_base.html' %}
 {% load static %}
 
 {% block title %}
-	About |
+  About - Barham Community Library
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/about.css' %}" />
 {% endblock %}
 
 {% block content %}
-	<section id="showcase-inner" class="py-5 text-white" style="background-size:cover;">
-    <div class="container">
-      <div class="row text-center">
-        <div class="col-md-12">
-          <h1 class="display-4">About Us</h1>
-          <p class="lead">A community library run by volunteers</p>
-        </div>
-      </div>
-    </div>
-  </section>
+  <div class="about">
+    <div class="wrapper">
+      <div class="narrow-container">
+        <header class="about__header">
+          <h1 class="about__title">Friends of Barham Library</h1>
+          {% comment %} <p class="about__subtitle">Harrow Road, Wembley, HA0 2HB</p> {% endcomment %}
+        </header>
 
-  <!-- Breadcrumb -->
-  <section id="bc" class="mt-3">
-    <div class="container">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item">
-            <a href="{% url 'index' %}">
-              <i class="fas fa-home"></i> Home</a>
-          </li>
-          <li class="breadcrumb-item active"> About</li>
-        </ol>
-      </nav>
-    </div>
-  </section>
+        <img src="{% static 'img/about.jpg' %}" alt="Friends of Barham Library building" class="about__image" />
 
-  <section id="about" class="py-4">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-8">
-          <h2>Friends of Barham Library</h2>
-          <p class="lead">Unit 4, 660 Harrow Road, Wembley, London, HA0 2HB</p>
-          <img src="{% static 'img/about.jpg' %}" alt="">
-          <p class="mt-4">
-            Friends of Barham Library is a registered charity (no. 1142113).
-            <br>
-            Our community library is based in the Barham Park building on the frontage to Harrow Road. It is run by volunteers and replaces the library closed by Brent Council in October 2011.
-            <br>
-            Our collection of books includes General Fiction and Sci-Fi/Fantasy (both collections searchable here), as well as Young Adult, Children's to Teens, and Non-fiction.
-            </p>
-            <p>
-            Other than our books, we have many <a href="http://anonymz.com/?https://barhamlibrary.tumblr.com/activities" class="text-info" target="_blank">activities going on</a> and are open to offering up our space for one-off or regular events.
-            <br>
-            We also have a <a href="http://anonymz.com/?https://barhamlibrary.tumblr.com/shop" class="text-info" target="_blank">shop</a> at Sudbury Underground Station (entrance from Station Approach), where we sell books, CD's, DVD's, records and other notable items.
-            </p>
-            <p>The full address for the library is Unit 4, 660 Harrow Road Wembley HA0 2HB and buses 18, 92, 182, 204 and H17 stop nearby.</p>
-        </div>
-        <div class="col-md-4">
-          <div class="card">
-            <!--<img class="card-img-top" src="assets/img/realtors/kyle.jpg" alt="Volunteer of the month">-->
-            <div class="card-body">
-              <h5 class="card-title text-center">About the web app</h5>
-              <!--<h6 class="text-secondary">Val Pinder</h6>-->
-              <p class="card-text">
-                This app was created by one of the volunteers at the library, built using Django, Python, Bootstrap, Postgres, some Javascript, and many other developer tools. The app is securely housed in a remote server provided by <a href="http://anonymz.com/?https://www.digitalocean.com/" class="text-info" target="_blank">DigitalOcean</a>.
-                Book data has mainly been collected from <a href="http://anonymz.com/?https://books.google.com/" class="text-info" target="_blank">Google Books</a>, <a href="http://anonymz.com/?https://www.goodreads.com/" class="text-info" target="_blank">Goodreads</a> and the excellent <a href="http://anonymz.com/?https://www.libib.com" class="text-info" target="_blank">Libib</a> web app. The only user data that is stored are account details, active reservations or reviews, or any books that have been 'liked'. If you want to discuss any aspect of the web app itself, please get in touch.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+        <section class="about__section">
+          <h2 class="about__section-title">About the library</h2>
 
-  <!-- Work -->
-  <section id="work" class="bg-dark text-white text-center" style="padding: 3rem 0;">
-    <div class="col-md-12">
-      <h2 class="display-4">Thank You For Your Support</h2>
-      We would like to hear from you and what your expectations from us are in terms of facilities, activities and anything else in general that you would like us to provide. We are here to help.
-      You can contact us by email at <a href="mailto:barhamlibrary@hotmail.co.uk" class="text-secondary">barhamlibrary@hotmail.co.uk</a>.
-      <!--<hr>
-      <a href="#" class="btn btn-secondary text-white btn-lg">View Our Activities</a>-->
-    </div>
-  </section>
+          <p>Friends of Barham Library is a volunteer-run community library based in Wembley, UK. The library is operated by a registered charity and has been serving the local community since 2011. Today, it continues thanks to the time, care and enthusiasm of its volunteers.</p>
 
-  <!-- Team -->
-  <section id="team" class="py-5">
-    <div class="container">
-      <h2 class="text-center">Our Trustees and Directors</h2>
-      <div class="row text-center">
-        <div class="col-md-4">
-          <img src="assets/img/realtors/kyle.jpg" alt="" class="rounded-circle mb-3">
-          <h4>Robert Wharton</h4>
-          <p class="text-success">
-            <i class="fas fa-award text-success mb-3"></i> Trustee</p>
-          <hr>
-          <!--<p>
-            <i class="fas fa-phone"></i> (555)-555-5555</p>
           <p>
-            <i class="fas fa-envelope-open"></i> rob@wharton.co</p>-->
-        </div>
-
-        <div class="col-md-4">
-          <img src="assets/img/realtors/mark.jpg" alt="" class="rounded-circle mb-3">
-          <h4>Paul Lorber</h4>
-          <p class="text-success">
-            <i class="fas fa-award text-success mb-3"></i> Director
+            This website focuses primarily on <strong>the library's general book collection</strong>, making it easier to explore what's on the shelves and discover new reads.
           </p>
-          <hr>
-          <!-- <p>
-            <i class="fas fa-phone"></i> (444)-444-4444</p>
-          <p>
-            <i class="fas fa-envelope-open"></i> paul@lorber.co</p>-->
-        </div>
+        </section>
 
-        <div class="col-md-4">
-          <img src="assets/img/realtors/jenny.jpg" alt="" class="rounded-circle mb-3">
-          <h4>Francis Henry</h4>
-          <p class="text-success">
-            <i class="fas fa-award text-success mb-3"></i> Director
-          </p>
-          <hr>
-          <!--<p>
-            <i class="fas fa-phone"></i> (333)-333-3333</p>
+        <section class="about__section">
+          <h2 class="about__section-title">Beyond the books</h2>
+
           <p>
-            <i class="fas fa-envelope-open"></i> fran@henry.co</p>-->
-        </div>
+            Barham Library is more than just a place to borrow or browse books. It is an active community space, hosting a wide range of <strong>activities and events</strong>, and offering the library as a venue for <strong>one-off or regular hires</strong>.
+          </p>
+
+          <ul class="about__list">
+            <p>Rather than duplicate that information here, full details about:</p>
+
+            <li>
+              library <strong>activities</strong>
+            </li>
+            <li>
+              <strong>opening hours</strong>
+            </li>
+            <li>
+              how to <strong>get involved</strong> or volunteer
+            </li>
+            <li>
+              and the <strong>library shop</strong>
+            </li>
+          </ul>
+          <p>can be found on the Friends of Barham Library Tumblr website:</p>
+
+          <a href="https://barhamlibrary.tumblr.com/" class="about__link about__tumblr-link" target="_blank" rel="noopener noreferrer">👉 Visit the Friends of Barham Library website</a>
+
+          <p>This ensures the most up-to-date information is always available in one place.</p>
+        </section>
+
+        {% comment %} <section class="about__section">
+          <h2 class="about__section-title">How this site fits in</h2>
+
+          <p>
+            This site exists to complement the main Friends of Barham Library website by focusing specifically on <strong>the book collection</strong> - particularly adult and general fiction - and presenting it in a way that's easy to explore, search and enjoy.
+          </p>
+
+          <ul class="about__list">
+            <p>If you're looking for:</p>
+
+            <li>events and activities → visit the community site</li>
+            <li>opening hours or location details → visit the community site</li>
+            <li>
+              volunteering or supporting the library → visit the community site for information (and then <a href="{% url 'contact' %}" class="about__link">send us a message</a>)
+            </li>
+          </ul>
+
+          <p>If you're here to discover books, you're in the right place.</p>
+        </section> {% endcomment %}
+
+        <section class="about__section">
+          <h2 class="about__section-title">Get in touch</h2>
+
+          <p>
+            If you have a question about the library, the book collection, or this website, please feel free to get in touch via <a href="{% url 'contact' %}" class="about__link">the contact page</a>.
+          </p>
+        </section>
+
+        <aside class="about__aside">
+          <h3 class="about__aside-title">About this website</h3>
+
+          <p>
+            This website was created by a volunteer at Friends of Barham Library to support and showcase the library's book collection. You can visit their Github profile <a href="https://github.com/shisinbin" class="about__link" target="_blank" rel="noopener noreferrer">here</a>.
+          </p>
+
+          <p>Further technical details and background on the project will be shared separately in the future.</p>
+        </aside>
       </div>
     </div>
-  </section>
+  </div>
 {% endblock %}

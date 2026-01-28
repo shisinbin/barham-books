@@ -1,0 +1,92 @@
+@layer component {
+  .about {
+    .about__header {
+    }
+
+    .about__title {
+      font-size: calc(48 / 16 * 1rem);
+      margin-block-end: 1em;
+
+      @media (width < calc(600 / 16 * 1rem)) {
+        font-size: calc(42 / 16 * 1rem);
+      }
+    }
+
+    .about__image {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    .about__section {
+    }
+
+    .about__section p,
+    .about__aside p {
+      text-wrap: wrap;
+      margin-block-end: 1.5em;
+      line-height: 1.5;
+
+      &:last-of-type {
+        margin-block-end: 0;
+      }
+    }
+
+    .about__section-title {
+      margin-block-start: 1.75em;
+      margin-block-end: 24px;
+    }
+
+    .about__section-title {
+      font-size: calc(32 / 16 * 1rem);
+    }
+
+    .about__list {
+      padding: 0;
+      margin-block: 1.5em;
+      display: grid;
+      gap: 6px;
+    }
+
+    .about__list p {
+      margin-block-end: 0.75em;
+      line-height: 1.5;
+    }
+
+    .about__list li {
+      margin-inline-start: 24px;
+      font-size: calc(18 / 16 * 1rem);
+    }
+
+    .about__link {
+      display: inline;
+      color: inherit;
+      text-decoration: underline 2px dotted;
+      font-size: calc(18 / 16 * 1rem);
+      text-underline-offset: 3px;
+      transition: color 100ms ease-in-out;
+      cursor: pointer;
+
+      &:hover {
+        color: var(--c-magenta);
+        text-decoration: none;
+      }
+    }
+
+    .about__tumblr-link {
+      display: inline-block;
+      margin-block-end: 1.5em;
+    }
+
+    .about__aside {
+      margin-block-end: 64px;
+    }
+
+    .about__aside-title {
+      margin-block-start: 1.75em;
+      border-block-start: 2px solid var(--c-gray-lighter);
+      padding-block-start: 1.75em;
+      font-size: calc(24 / 16 * 1rem);
+      margin-block-end: 1.25em;
+    }
+  }
+}
