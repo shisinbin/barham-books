@@ -19,7 +19,7 @@
 
 {% block content %}
   <div class="search-label">
-    <div class="wrapper">
+    <div class="wrapper search-label__wrapper">
       <label for="search-input" class="wrapper search-label__label">Search our library for books</label>
     </div>
   </div>
@@ -27,7 +27,7 @@
   {% include 'components/search_bar.html' %}
 
   <div class="explore">
-    <div class="wrapper carousel-wrapper">
+    <div class="wrapper recently-added-wrapper">
       {% include 'components/carousel.html' with books=new_books title='Recently Added' tag='section' %}
     </div>
     {% comment %} {% include 'components/carousel.html' with books=featured_books title='Featured Books' tag='section' %}

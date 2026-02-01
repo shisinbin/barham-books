@@ -8,7 +8,6 @@
       display: inline-flex;
       gap: 10px;
       align-items: center;
-      color: inherit;
 
       .icon {
         width: calc(20 / 16 * 1rem);
@@ -162,7 +161,6 @@
     }
 
     .collection__book-link {
-      color: inherit;
     }
 
     .collection__book-author {

@@ -1,0 +1,126 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block title %}
+  Add book (old) - Barham Community Library
+{% endblock %}
+
+{% block extra_css %}
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/pages/add-book-quick.css' %}" />
+{% endblock %}
+
+{% block extra_js %}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js" defer></script>
+  <script src="{% static 'js/add-book.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+  <div class="quick">
+    <div class="wrapper">
+      <section class="quick__panel">
+        <div class="quick__header">
+          <h1 class="quick__title">Add book</h1>
+        </div>
+
+        <div class="quick__body">
+          <form method="post" class="form" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {{ form.non_field_errors }}
+
+            <div class="form-field">
+              <strong class="asterisk">{{ form.title.label_tag }}</strong>
+              {{ form.title }}
+              {{ form.title.errors }}
+            </div>
+
+            <div class="form-row two">
+              <div class="form-field">{{ form.author_select.label_tag }}
+                {{ form.author_select }}
+                {{ form.author_select.errors }}</div>
+
+              <div class="form-field">
+                <strong class="asterisk">{{ form.author.label_tag }}</strong>
+                {{ form.author }}
+                {{ form.author.errors }}
+              </div>
+            </div>
+
+            <div class="form-row three">
+              <div class="form-field">{{ form.category.label_tag }}
+                {{ form.category }}
+                {{ form.category.errors }}</div>
+
+              <div class="form-field">{{ form.book_type.label_tag }}
+                {{ form.book_type }}{{ form.book_type.errors }}</div>
+
+              <div class="form-field">
+                <label for="id_copies">Copies</label>
+                <input id="id_copies" type="number" name="copies" min="1" max="5" value="1" disabled="true" />
+              </div>
+            </div>
+
+            <div class="form-field">{{ form.book_tags.label_tag }}
+              {{ form.book_tags }}
+              {{ form.book_tags.errors }}</div>
+
+            <div class="form-row two-thirds">
+              <div class="form-field">{{ form.summary.label_tag }}
+                {{ form.summary }}{{ form.summary.errors }}</div>
+
+              <div class="form-field">
+                {{ form.photo.label_tag }}
+                {{ form.photo }}
+                {{ form.photo.errors }}
+                <button id="clear-photo" type="button">Clear image</button>
+              </div>
+            </div>
+
+            <button type="submit" class="button primary quick__button">Add book</button>
+
+            <h2 class="quick__optional">Extra optional information</h2>
+
+            <div class="form-row two">
+              <div class="form-field">{{ form.isbn13.label_tag }}
+                {{ form.isbn13 }}
+                {{ form.isbn13.errors }}</div>
+
+              <div class="form-field">{{ form.isbn10.label_tag }}
+                {{ form.isbn10 }}
+                {{ form.isbn10.errors }}</div>
+            </div>
+
+            <div class="form-row three">
+              <div class="form-field">{{ form.pages.label_tag }}
+                {{ form.pages }}{{ form.pages.errors }}</div>
+
+              <div class="form-field">{{ form.publisher.label_tag }}
+                {{ form.publisher }}{{ form.publisher.errors }}</div>
+
+              <div class="form-field">{{ form.year.label_tag }}
+                {{ form.year }}{{ form.year.errors }}</div>
+            </div>
+
+            <div class="form-field">{{ form.series_select.label_tag }}
+              {{ form.series_select }}
+              {{ form.series_select.errors }}</div>
+
+            <div class="form-row two">
+              <div class="form-field">{{ form.series.label_tag }}
+                {{ form.series }}{{ form.series.errors }}</div>
+
+              <div class="form-field">{{ form.series_num.label_tag }}
+                {{ form.series_num }}{{ form.series_num.errors }}</div>
+            </div>
+
+            <div class="form-field adjacent">{{ form.is_featured }}{{ form.is_featured.label_tag }}{{ form.is_featured.errors }}</div>
+
+            <button type="submit" class="button primary quick__button">Add book</button>
+          </form>
+        </div>
+      </section>
+    </div>
+  </div>
+{% endblock %}

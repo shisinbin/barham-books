@@ -59,7 +59,6 @@
 
     .about__link {
       display: inline;
-      color: inherit;
       text-decoration: underline 2px dotted;
       font-size: calc(18 / 16 * 1rem);
       text-underline-offset: 3px;

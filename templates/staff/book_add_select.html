@@ -1,8 +1,27 @@
 {% extends 'site_base.html' %}
 {% load static %}
 
+{% block title %}
+  Select - Add book - Barham Community Library
+{% endblock %}
+
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/pages/add-book-wizard.css' %}" />
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('book-select-form')
+      const radios = form.querySelectorAll("input[name='choice']")
+    
+      radios.forEach((radio) => {
+        radio.addEventListener('change', function () {
+          form.submit()
+        })
+      })
+    })
+  </script>
 {% endblock %}
 
 {% block content %}
@@ -10,7 +29,7 @@
     <div class="wrapper">
       {% include 'components/wizard_steps.html' %}
 
-      <section class="wizard__panel">
+      <section class="wizard__panel full">
         <div class="wizard__header">
           <h1 class="wizard__title">Select a book</h1>
           <p class="wizard__intro">Choose from one of the following books, or proceed manually.</p>
@@ -18,7 +37,7 @@
 
         <div class="wizard__body">
           {% if results %}
-            <form method="post" class="select-form">
+            <form method="post" class="select-form" id="book-select-form">
               {% csrf_token %}
 
               <fieldset class="book-results">
@@ -26,12 +45,7 @@
 
                 {% for book in results %}
                   <label class="book-card">
-                    <input
-                      type="radio"
-                      name="choice"
-                      value="{{ forloop.counter0 }}"
-                      {% if forloop.first %}checked{% endif %}
-                    />
+                    <input type="radio" name="choice" value="{{ forloop.counter0 }}" />
 
                     <div class="book-card__content">
                       {% if forloop.first %}
@@ -42,30 +56,25 @@
                         <h3 class="book-card__title">{{ book.title }}</h3>
 
                         {% if book.authors %}
-                          <p>By {{ book.authors|join:", " }}</p>
+                          <p>By {{ book.authors|join:', ' }}</p>
                         {% endif %}
 
                         <div class="book-card__meta">
-                        {% if book.published_year %}
-                          <span>Published {{ book.published_year }}</span>
-                        {% endif %}
-                        {% if book.publisher %}
-                          <span>&nbsp;&nbsp;•&nbsp;&nbsp;{{ book.publisher }}</span>
-                        {% endif %}
-                        {% if book.page_count %}
-                          <span>&nbsp;&nbsp;•&nbsp;&nbsp;{{ book.page_count }} pages</span>
-                        {% endif %}
-                      </div>
+                          {% if book.published_year %}
+                            <span>Published {{ book.published_year }}</span>
+                          {% endif %}
+                          {% if book.publisher %}
+                            <span>&nbsp;&nbsp;•&nbsp;&nbsp;{{ book.publisher }}</span>
+                          {% endif %}
+                          {% if book.page_count %}
+                            <span>&nbsp;&nbsp;•&nbsp;&nbsp;{{ book.page_count }} pages</span>
+                          {% endif %}
+                        </div>
                       </header>
 
                       <div class="book-card__body">
                         {% if book.thumbnail %}
-                          <img
-                            src="{{ book.thumbnail }}"
-                            loading="lazy"
-                            alt=""
-                            class="book-card__thumb"
-                          />
+                          <img src="{{ book.thumbnail }}" loading="lazy" alt="" class="book-card__thumb" />
                         {% endif %}
 
                         {% if book.description %}
@@ -81,11 +90,9 @@
                 <input type="radio" name="choice" value="manual" />
                 <h3 class="book-card__title">Enter details manually</h3>
               </label>
- 
+
               <div class="select-form__actions">
-                <button class="button primary" type="submit">
-                  Continue
-                </button>
+                <button class="button primary" type="submit">Continue</button>
               </div>
             </form>
           {% endif %}

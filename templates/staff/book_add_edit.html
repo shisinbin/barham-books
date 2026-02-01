@@ -1,6 +1,10 @@
 {% extends 'site_base.html' %}
 {% load static %}
 
+{% block title %}
+  Entry - Add book - Barham Community Library
+{% endblock %}
+
 {% block extra_css %}
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="{% static 'css/pages/add-book-wizard.css' %}" />
@@ -58,14 +62,16 @@
               {% endif %}
             </div>
 
-            <div class="form-field">{{ form.summary.label_tag }}
-              {{ form.summary }}{{ form.summary.errors }}</div>
+            <div class="form-row two-thirds">
+              <div class="form-field">{{ form.summary.label_tag }}
+                {{ form.summary }}{{ form.summary.errors }}</div>
 
-            <div class="form-field">
-              {{ form.photo.label_tag }}
-              {{ form.photo }}
-              {{ form.photo.errors }}
-              <button id="clear-photo" type="button">Clear image</button>
+              <div class="form-field">
+                {{ form.photo.label_tag }}
+                {{ form.photo }}
+                {{ form.photo.errors }}
+                <button id="clear-photo" type="button">Clear image</button>
+              </div>
             </div>
 
             <div class="form-field select-overflow">{{ form.series_existing.label_tag }}
@@ -80,22 +86,22 @@
                 {{ form.series_num }}{{ form.series_num.errors }}</div>
             </div>
 
-            <div class="form-field">
-              {{ form.isbn.label_tag }}
-              {{ form.isbn }}
-              {{ form.isbn.errors }}
-              <small>{{ form.isbn.help_text }}</small>
-            </div>
+            <div class="form-row">
+              <div class="form-field">
+                {{ form.isbn.label_tag }}
+                {{ form.isbn }}
+                {{ form.isbn.errors }}
+                <small>{{ form.isbn.help_text }}</small>
+              </div>
 
-            <div class="form-row two-thirds">
               <div class="form-field">{{ form.language.label_tag }}
                 {{ form.language }}{{ form.language.errors }}</div>
-
-              <div class="form-field">{{ form.pages.label_tag }}
-                {{ form.pages }}{{ form.pages.errors }}</div>
             </div>
 
-            <div class="form-row two-thirds">
+            <div class="form-row three-equal">
+              <div class="form-field">{{ form.pages.label_tag }}
+                {{ form.pages }}{{ form.pages.errors }}</div>
+
               <div class="form-field">{{ form.publisher.label_tag }}
                 {{ form.publisher }}{{ form.publisher.errors }}</div>
 
@@ -103,10 +109,11 @@
                 {{ form.year }}{{ form.year.errors }}</div>
             </div>
 
-            <div class="form-field adjacent">{{ form.is_featured.label_tag }}
-              {{ form.is_featured }}{{ form.is_featured.errors }}</div>
+            <div class="form-field adjacent">{{ form.is_featured }}
+              {{ form.is_featured.label_tag }}
+              {{ form.is_featured.errors }}</div>
 
-            <button type="submit" class="button primary">Review & confirm</button>
+            <button type="submit" class="button primary wizard__button">Review & confirm</button>
           </form>
         </div>
       </section>

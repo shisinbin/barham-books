@@ -82,7 +82,6 @@
     .book-stack__author-link {
       position: relative;
       z-index: 2;
-      color: inherit;
       transition: color 150ms ease-in-out;
 
       &:hover {

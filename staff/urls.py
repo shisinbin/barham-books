@@ -34,6 +34,7 @@ urlpatterns += [
     path("books/add/select/", views.AddBookSelectView.as_view(), name="book_add_select"),
     path("books/add/edit/", views.AddBookEditView.as_view(), name="book_add_edit"),
     path("books/add/confirm/", views.AddBookConfirmView.as_view(), name="book_add_confirm"),
+    path("books/add/old/", views.add_book_old, name="book_add_old"),
 ]
 
 # google books api probe

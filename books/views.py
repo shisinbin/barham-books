@@ -1312,7 +1312,7 @@ def explore_books(request):
     featured_books = (
         Book.objects
         .filter(is_featured=True)
-        .order_by('-updated', '-created')[1:FEATURED_COUNT]
+        .order_by('-updated', '-created')[:FEATURED_COUNT]
     )
 
     new_books = (

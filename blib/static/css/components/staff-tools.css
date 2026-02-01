@@ -35,6 +35,10 @@
     padding: 32px 16px;
   }
 
+  .staff-drawer__divider {
+    color: var(--c-gray-lighter);
+  }
+
   .staff-drawer.open {
     transform: translateX(0);
   }
@@ -53,7 +57,7 @@
 
   .staff-drawer__body {
     display: grid;
-    gap: 16px;
+    gap: 24px;
   }
 
   .staff-drawer__action {

@@ -1,27 +1,4 @@
 @layer component {
-  /* .pagination {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      justify-items: center;
-      margin-block-start: 24px;
-
-      :first-child {
-        justify-self: start;
-      }
-
-      :last-child {
-        justify-self: end;
-      }
-
-      a {
-        color: inherit;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    } */
-
   .pagination {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
@@ -34,7 +11,6 @@
       display: flex;
       align-items: center;
       gap: 4px;
-      color: inherit;
       padding: 4px 8px;
       border-radius: 100vmax;
 
@@ -85,7 +61,6 @@
       min-width: calc(32 / 16 * 1rem);
       height: calc(32 / 16 * 1rem);
       border-radius: 100vmax;
-      color: inherit;
 
       &:not(.pagination__page--current):hover,
       &:not(.pagination__page--current):focus-visible {

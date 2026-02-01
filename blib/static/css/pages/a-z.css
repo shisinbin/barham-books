@@ -43,7 +43,6 @@
       min-height: 54px;
       display: grid;
       place-content: center;
-      color: inherit;
       padding-inline: 2px;
       border: 1px solid #ddd;
       border-radius: 4px;

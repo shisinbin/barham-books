@@ -1,6 +1,10 @@
 {% extends 'site_base.html' %}
 {% load static %}
 
+{% block title %}
+  Lookup - Add book - Barham Community Library
+{% endblock %}
+
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/pages/add-book-wizard.css' %}" />
 {% endblock %}
@@ -25,6 +29,12 @@
               {{ form.isbn }}
               {{ form.isbn.errors }}</div>
 
+            <div class="form-actions">
+              <button class="button primary" type="submit" name="action" value="search">Search</button>
+
+              <button class="button secondary" type="submit" name="action" value="manual">Enter manually</button>
+            </div>
+
             <span class="wizard__divider">or</span>
 
             <div class="form-field">{{ form.title.label_tag }}
@@ -36,9 +46,9 @@
               {{ form.author.errors }}</div>
 
             <div class="form-actions">
-              <button class="button primary" type="submit" name="action" value="search">Search</button>
+              <button class="button tertiary" type="submit" name="action" value="search">Search</button>
 
-              <button class="button secondary" type="submit" name="action" value="manual">Enter manually</button>
+              {% comment %} <button class="button secondary" type="submit" name="action" value="manual">Enter manually</button> {% endcomment %}
             </div>
           </form>
         </div>

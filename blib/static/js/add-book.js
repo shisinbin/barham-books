@@ -19,5 +19,11 @@ document.addEventListener('DOMContentLoaded', function () {
       width: '100%',
       allowClear: true,
     });
+
+    $('.js-existing-author').select2({
+      placeholder: 'Select author',
+      width: '100%',
+      allowClear: true,
+    });
   });
 });

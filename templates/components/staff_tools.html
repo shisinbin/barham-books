@@ -19,12 +19,17 @@
       </svg>
     </button>
   </header>
+
   <nav class="staff-drawer__body">
-    <a href="{% url 'book_add_lookup' %}" class="staff-drawer__action">Add New Book</a>
+    <hr class="staff-drawer__divider" />
+
+    <a href="{% url 'book_add_old' %}" class="staff-drawer__action">Add Book - Old</a>
+
+    <a href="{% url 'book_add_lookup' %}" class="staff-drawer__action">Add Book - Guided</a>
 
     <a href="{% url 'staff_book_interests' %}" class="staff-drawer__action">Manage Book Interests</a>
 
-    <hr />
+    {% comment %} <hr class="staff-drawer__divider" /> {% endcomment %}
 
     {% if book %}
       {% if user.is_superuser or is_recently_created %}

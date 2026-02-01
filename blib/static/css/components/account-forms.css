@@ -41,7 +41,6 @@
     .form__actions a {
       margin-block-start: 16px;
       font-size: 0.9rem;
-      color: inherit;
       text-decoration: underline;
       text-underline-offset: 2px;
 
@@ -67,7 +66,6 @@
     }
 
     .register-cta a {
-      color: inherit;
       font-weight: 600;
       text-transform: uppercase;
       text-decoration: underline 2px;

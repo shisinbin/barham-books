@@ -47,7 +47,6 @@
       display: inline-flex;
       gap: 10px;
       align-items: center;
-      color: inherit;
 
       .icon {
         width: calc(20 / 16 * 1rem);
@@ -158,7 +157,6 @@
 
     .book__author-link {
       position: relative;
-      color: inherit;
       /* text-decoration: underline;
       text-underline-offset: 4px; */
       transition: color 150ms ease-in-out;
@@ -259,7 +257,6 @@
     }
 
     .book__collections-item-link {
-      color: inherit;
       &::after {
         content: '';
         position: absolute;
@@ -410,7 +407,9 @@
         border-radius: 999px;
         padding: 10px 16px;
         font-weight: 500;
-        transition: background-color 120ms ease, transform 80ms ease;
+        transition:
+          background-color 120ms ease,
+          transform 80ms ease;
 
         &:hover:not([disabled]) {
           background: var(--btn-hover);
@@ -441,7 +440,9 @@
         border-radius: 999px;
         padding: 10px 16px;
         font-weight: 500;
-        transition: background-color 120ms ease, transform 80ms ease;
+        transition:
+          background-color 120ms ease,
+          transform 80ms ease;
 
         &:hover:not([disabled]) {
           background: var(--btn-hover);

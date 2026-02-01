@@ -1435,3 +1435,62 @@ def google_books_probe(request):
             "raw": data,
         }
     )
+
+from .forms import AddBookQuickForm
+
+@staff_member_required
+def add_book_old(request):
+    if request.method == 'POST':
+        form = AddBookQuickForm(request.POST, request.FILES)
+        if form.is_valid():
+            data = form.cleaned_data
+
+            try:
+                with transaction.atomic():
+                    author = data['author_obj']
+                    series = data.get('series_obj')
+
+                    author.save()
+                    if series:
+                        series.save()
+
+                    book = Book.objects.create(
+                        title=data['title'],
+                        author=author,
+                        summary=data.get('summary', ''),
+                        series=series,
+                        series_num=data.get('series_num'),
+                        category=data['category'],
+                        photo=data.get('photo'),
+                        year=data.get('year'),
+                        is_featured=data.get('is_featured', False),
+                    )
+
+                    if data.get('book_tags'):
+                        book.book_tags.set(data['book_tags'])
+                        book.save() # to update the tags in categories
+
+
+                    BookInstance2.objects.create(
+                        book=book,
+                        pages=data.get('pages'),
+                        isbn10=data.get('isbn10'),
+                        isbn13=data.get('isbn13'),
+                        publisher=data.get('publisher'),
+                        book_type=data['book_type'],
+                    )
+            
+            except IntegrityError as e:
+                messages.error(request, "There was a problem saving the book.")
+                return render(request, 'staff/book_add_quick.html', {'form': form})
+
+            messages.success(request, "Book has been successfully added")
+            return redirect(book)
+    else:
+        form = AddBookQuickForm(initial = {
+            "category": Category.objects.filter(code="GEN").first(),
+        })
+
+    return render(request, 'staff/book_add_old.html', {
+        'form': form
+    })

@@ -51,7 +51,6 @@
     .contact__home-link {
       display: block;
       margin-block-start: 32px;
-      color: inherit;
       text-decoration: underline;
       text-underline-offset: 2px;
 

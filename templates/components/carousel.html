@@ -42,8 +42,12 @@
                 <img src="{% static 'img/open_book.svg' %}" alt="" class="carousel__image" />
               </div>
             {% endif %}
-            <h3 class="carousel__slide-text">
-              <a href="{{ book.get_absolute_url }}" class="carousel__link">{{ book.title }}</a>
+
+            <h3 class="carousel__slide-title">
+              <a href="{{ book.get_absolute_url }}">
+                <span class="absolute-inset-0" aria-hidden="true"></span>
+                {{ book.title }}
+              </a>
             </h3>
           </li>
         {% endfor %}

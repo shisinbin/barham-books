@@ -28,7 +28,6 @@
     }
 
     .account__meta a {
-      color: inherit;
       text-decoration: 1px underline;
       text-underline-offset: 3px;
       width: fit-content;
