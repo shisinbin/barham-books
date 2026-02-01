@@ -1,9 +1,15 @@
 @layer component {
   .wizard {
-    --color-field-bg: hsl(0, 0%, 99%);
-    --color-panel-bg: hsl(20, 30%, 94%);
+    --c-panel-bg: hsl(232, 20%, 97%);
+    --c-panel-border: hsl(0, 0%, 88%);
+
+    --c-field-bg: hsl(0, 0%, 99%);
+    --c-field-border: hsl(233, 14%, 80%);
+
     --shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.06);
-    --border-panel: 2px solid hsl(20, 60%, 85%);
+    /* --shadow-panel:
+      0 4px 6px -1px hsla(232, 58%, 15%, 0.1),
+      0 2px 4px -1px hsla(232, 58%, 15%, 0.06); */
 
     .wizard__nav {
       margin-block-end: 32px;
@@ -69,10 +75,10 @@
       width: min(640px, 100%);
       margin-inline: auto;
       padding: 32px;
-      background: var(--color-panel-bg);
+      background: var(--c-panel-bg);
       border-radius: 8px;
       box-shadow: var(--shadow-panel);
-      border: var(--border-panel);
+      border: 2px solid var(--c-panel-border);
 
       &.full {
         width: 100%;
@@ -148,9 +154,9 @@
     .form textarea {
       padding: 10px 12px;
       border-radius: 6px;
-      border: 1px solid #ddd;
+      border: 1px solid var(--c-field-border);
       font-size: calc(16 / 16 * 1rem);
-      background: var(--color-field-bg);
+      background: var(--c-field-bg);
     }
 
     .form label {
@@ -409,12 +415,12 @@
       padding: 8px !important;
       border-radius: 6px !important;
       border-color: hsl(210, 14%, 83%) !important;
-      background: var(--color-field-bg) !important;
+      background: var(--c-field-bg) !important;
     }
 
     .select2-container .select2-selection--single {
       height: auto !important;
-      background: var(--color-field-bg) !important;
+      background: var(--c-field-bg) !important;
     }
 
     .select2-container--default
@@ -423,14 +429,14 @@
       top: 0 !important;
       bottom: 0 !important;
       margin-block: auto !important;
-      background: var(--color-field-bg) !important;
+      background: var(--c-field-bg) !important;
     }
 
     .select2-container--default .select2-selection--multiple {
       padding: 8px !important;
       border-radius: 6px !important;
       border-color: hsl(210, 14%, 83%) !important;
-      background: var(--color-field-bg) !important;
+      background: var(--c-field-bg) !important;
     }
 
     .select2-container
@@ -438,7 +444,7 @@
       .select2-search__field {
       margin-top: 0 !important;
       margin-left: 0 !important;
-      background: var(--color-field-bg) !important;
+      background: var(--c-field-bg) !important;
     }
 
     .errorlist {
