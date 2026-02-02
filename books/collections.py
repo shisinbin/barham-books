@@ -20,7 +20,7 @@ COLLECTIONS = {
       "dystopian", "paranormal", "supernatural",
       "time travel", "space opera"
     ],
-    "min_match": 2,
+    "min_match": 1,
     "featured": True,
   },
 
@@ -32,7 +32,7 @@ COLLECTIONS = {
       "historical mystery", "saga", "war story",
       "mythology", "westerns"
     ],
-    "min_match": 2,
+    "min_match": 1,
     "featured": True,
   },
 
@@ -44,7 +44,7 @@ COLLECTIONS = {
       "relationships", "contemporary", "lad lit",
       "domestic fiction", "new adult"
     ],
-    "min_match": 2,
+    "min_match": 1,
   },
 
   "psychological-literary": {
@@ -55,7 +55,7 @@ COLLECTIONS = {
       "postmodern literature", "satire", "novella",
       "short stories", "epistolary", "magical realism"
     ],
-    "min_match": 2,
+    "min_match": 1,
   },
 
   "children-young-adult": {
@@ -73,10 +73,9 @@ COLLECTIONS = {
     "title": "Modern & Contemporary",
     "description": "Modern fiction that reflects contemporary life, culture and society.",
     "tags": [
-      "contemporary", "contemporary classics",
-      "adapted to screen", "cultural"
+      "contemporary", "contemporary classics", "cultural"
     ],
-    "min_match": 2,
+    "min_match": 1,
   },
 
   "culture-society-memoir": {
@@ -87,7 +86,7 @@ COLLECTIONS = {
       "black authors", "lgbt", "mental health",
       "politics", "religion"
     ],
-    "min_match": 2,
+    "min_match": 1,
   },
 
   "food-travel-lifestyle": {

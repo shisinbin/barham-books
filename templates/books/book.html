@@ -32,6 +32,26 @@
       <header class="book__title-strap">
         <h1 class="book__title">{{ book.title }}</h1>
 
+        {% with display_tags=book.get_display_tags %}
+          {% if book.category or display_tags %}
+            <div class="book__meta-tags">
+
+              {% if book.category %}
+                <span class="book__category">
+                  {{ book.category.name }}
+                </span>
+              {% endif %}
+
+              {% for tag in display_tags %}
+                <span class="book__tag">
+                  {{ tag.name }}
+                </span>
+              {% endfor %}
+
+            </div>
+          {% endif %}
+        {% endwith %}
+
         {% if book.series %}
           <p class="book__series-title">
             <a href="{% url 'series_detail' book.series.id %}" class="book__series-link">
@@ -110,27 +130,6 @@
         </div>
       </div>
 
-
-      {% comment %} <section class="book__mobile-actions">
-        <button>❤️ {{ book.users_like.count }}</button>
-
-        {% if user.is_authenticated %}
-          {% if available_copies.count > 0 %}
-            <div>
-              <button>Reserve</button>
-              <p>{{ available_copies.count }} copy{{ available_copies.count|pluralize }} available</p>
-            </div>
-          {% else %}
-            <div>
-              <button disabled>Not Available</button>
-              <p>No copies available</p>
-            </div>
-          {% endif %}
-        {% else %}
-          <button>Borrow</button>
-        {% endif %}
-      </section> {% endcomment %}
-
       <section class="book__summary">
         <h2 class="book__subheading book__summary-title">Synopsis</h2>
         {{ book.summary|linebreaks }}
@@ -138,7 +137,6 @@
 
       <section class="book__meta">
         <h3>Book Details</h3>
-        {% comment %} <p>{{ details_block.heading }}.</p> {% endcomment %}
 
         {% for dl in details_block.lists %}
           <dl class="book__desc-list">

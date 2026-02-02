@@ -243,7 +243,9 @@ class Book(models.Model):
         self.slug = slugify(self.title, allow_unicode=True)
         super().save(*args, **kwargs)
         update_tags_in_categories(self)
-
+    
+    def get_display_tags(self, limit=3):
+        return self.book_tags.all().order_by('band', 'name')[:limit]
 
     def __str__(self):
         return self.title

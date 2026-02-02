@@ -247,7 +247,7 @@ def filter_by_tags(request):
     tags = Book.book_tags.all()
     dropdown_tags = tags.order_by('name')
     tags_popular = tags.annotate(
-        num_times=Count('book_tags')).order_by('-num_times')[:20]
+        num_times=Count('book_tags')).order_by('-num_times')[:50]
     context = {
         'tags': tags,
         'tags_popular': tags_popular,
