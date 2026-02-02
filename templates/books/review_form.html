@@ -1,6 +1,10 @@
 {% extends 'site_base.html' %}
 {% load static %}
 
+{% block title %}
+  {% if object %}Edit{% else %}Add{% endif %}review - Barham Books
+{% endblock %}
+
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/components/review-forms.css' %}" />
 {% endblock %}
