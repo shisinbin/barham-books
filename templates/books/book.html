@@ -181,7 +181,7 @@
         {% include 'components/carousel.html' with books=similar_books title='You might also like' tag='aside' extra_class='book__similar' %}
       {% endif %}
 
-      {% if user.is_authenticated or book.reviews.count > 1 %}
+      {% if user.is_authenticated or book.reviews.count > 0 %}
         <aside class="book__reviews">
           <heading class="book__reviews-heading">
 
