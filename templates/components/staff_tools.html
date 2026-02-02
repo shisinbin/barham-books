@@ -23,11 +23,13 @@
   <nav class="staff-drawer__body">
     <hr class="staff-drawer__divider" />
 
+    <a href="{% url 'staff_book_interests' %}" class="staff-drawer__action">Manage Book Interests</a>
+
     <a href="{% url 'book_add_old' %}" class="staff-drawer__action">Add Book - Old</a>
 
     <a href="{% url 'book_add_lookup' %}" class="staff-drawer__action">Add Book - Guided</a>
 
-    <a href="{% url 'staff_book_interests' %}" class="staff-drawer__action">Manage Book Interests</a>
+    <hr class="staff-drawer__divider" />
 
     {% comment %} <hr class="staff-drawer__divider" /> {% endcomment %}
 
@@ -41,6 +43,14 @@
       {% if not book.photo %}
         {% comment %} <a href="{% url 'lookup_book_cover' book.id %}" class="staff-drawer__action">Lookup Book Cover</a> {% endcomment %}
         <a href="{% url 'book_cover_lookup_page' book.id %}" class="staff-drawer__action">Lookup Book Cover</a>
+      {% endif %}
+    {% endif %}
+
+    {% if book %}
+      <a href="{% url 'staff_add_copy' book.id %}" class="staff-drawer__action">Add copy</a>
+
+      {% if num_copies > 0 %}
+        <a href="{% url 'staff_remove_copy' book.id %}" class="staff-drawer__action">Remove copy</a>
       {% endif %}
     {% endif %}
 

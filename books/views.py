@@ -310,7 +310,8 @@ def tag_search(request):
     }
     return render(request, 'books/tag_search.html', context)
 
-from django.views.generic import ListView
+from django.views import View
+from django.views.generic import ListView, FormView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
@@ -1749,3 +1750,60 @@ def series_detail(request, series_id):
             "tags": tags,
         }
     )
+
+from .forms import AddCopyForm
+from django.db import transaction, IntegrityError
+
+class StaffAddCopyView(UserPassesTestMixin, FormView):
+    template_name="staff/add_copy.html"
+    form_class = AddCopyForm
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def dispatch(self, request, *args, **kwargs):
+        self.book = get_object_or_404(Book, pk=kwargs["pk"])
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        with transaction.atomic():
+            copy = form.save(commit=False)
+            copy.book = self.book
+            copy.save()
+        
+        messages.success(self.request, "Copy added successfully.")
+        return redirect(self.book)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["copy_book"] = self.book
+        return context
+
+class StaffRemoveCopyView(UserPassesTestMixin, View):
+    template_name = "staff/remove_copy.html"
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def dispatch(self, request, *args, **kwargs):
+        self.book = get_object_or_404(Book, pk=kwargs["pk"])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        copy = self.book.instances.order_by("-created").first()
+        return render(request, self.template_name, {
+            "copy_book": self.book,
+            "copy": copy,
+        })
+
+    def post(self, request, *args, **kwargs):
+        with transaction.atomic():
+            copy = self.book.instances.order_by("-created").first()
+            if not copy:
+                messages.error(request, "No copies to remove.")
+                return redirect(self.book)
+
+            copy.delete()
+
+        messages.success(request, "Most recent copy removed.")
+        return redirect(self.book)

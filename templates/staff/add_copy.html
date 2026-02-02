@@ -1,0 +1,41 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block title %}
+  Add copy - Barham Community Library
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/copies.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <div class="copies">
+    <div class="wrapper">
+      <div class="copies__card">
+        <header class="copies__card-header">
+          <h1>Add copy</h1>
+
+          <p class="copies__lead">{{ copy_book.title }}</p>
+        </header>
+
+        <form method="post" class="form">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+
+          {% for field in form %}
+            <div class="form-field">{{ field.label_tag }}
+              {{ field }}
+              {{ field.errors }}</div>
+          {% endfor %}
+
+          <div class="copies__actions">
+            <button type="submit" class="button primary">Add copy</button>
+
+            <a href="{{ copy_book.get_absolute_url }}" class="button secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

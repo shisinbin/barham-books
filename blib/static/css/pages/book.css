@@ -293,6 +293,27 @@
       margin-block-end: 32px;
     }
 
+    .book__meta-title {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .book__meta-multiple-copies {
+      font-size: calc(16 / 16 * 1rem);
+      color: var(--c-gray-medium);
+    }
+
+    .book__meta-container {
+      width: fit-content;
+
+      & .book__desc-list:not(:last-of-type) {
+        padding-block-end: 8px;
+        border-block-end: 1px solid var(--c-gray-light);
+        margin-block-end: 8px;
+      }
+    }
+
     .book__desc-list {
       margin-block-start: 12px;
     }

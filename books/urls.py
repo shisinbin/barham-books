@@ -101,6 +101,13 @@ urlpatterns += [
     path('series/<int:series_id>/', views.series_detail, name='series_detail'),
 ]
 
+# add/delete copies
+urlpatterns += [
+    path('staff/<int:pk>/add-copy/', views.StaffAddCopyView.as_view(), name='staff_add_copy'),
+    path("staff/<int:pk>/remove-copy/", views.StaffRemoveCopyView.as_view(), name='staff_remove_copy'),
+]
+
+
 # temporary production book page
 # urlpatterns += [
 #     path('v2/book/', views.book_v2, name='book_v2'),

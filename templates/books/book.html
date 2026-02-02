@@ -136,18 +136,27 @@
       </section>
 
       <section class="book__meta">
-        <h3>Book Details</h3>
+        <div class="book__meta-title">
+          <h3>Book Details</h3>
+          {% if num_copies > 1 %}
+            <span class="book__meta-multiple-copies">
+              ({{ num_copies }} copies)
+            </span>
+          {% endif %}
+        </div>
 
-        {% for dl in details_block.lists %}
-          <dl class="book__desc-list">
-            {% for label, value in dl %}
+        <div class="book__meta-container">
+          {% for dl in details_block.lists %}
+            <dl class="book__desc-list">
+              {% for label, value in dl %}
               <div class="book__desc-row">
                 <dt class="book__desc-term">{{ label }}</dt>
                 <dd class="book__desc-details">{{ value }}</dd>
               </div>
-            {% endfor %}
-          </dl>
-        {% endfor %}
+              {% endfor %}
+            </dl>
+          {% endfor %}
+        </div>
       </section>
 
       {% if related_collections %}

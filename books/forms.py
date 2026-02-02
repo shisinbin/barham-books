@@ -1,5 +1,5 @@
 from django import forms
-from .models import BookForSale, Author
+from .models import BookForSale, Author, BookInstance2
 from django.db.models import Count
 import os
 from django.utils.translation import gettext_lazy as _
@@ -104,3 +104,44 @@ class BookForSaleForm(forms.ModelForm):
             raise forms.ValidationError('Please select either an existing author or provide a new author, not both.')
         
         return cleaned_data
+
+class AddCopyForm(forms.ModelForm):
+    class Meta:
+        model = BookInstance2
+        fields = [
+            "book_type",
+            "pages",
+            "publisher",
+            "isbn10",
+            "isbn13",
+        ]
+    
+    def clean_isbn10(self):
+        isbn = self.cleaned_data.get("isbn10", "")
+        if isbn:
+            isbn = isbn.replace("-", "").strip()
+        if not isbn:
+            return None
+
+        if not isbn.isdigit():
+            raise forms.ValidationError("ISBN must contain only digits.")
+
+        if len(isbn) != 10:
+            raise forms.ValidationError("ISBN10 must be 10 digits long.")
+
+        return isbn
+
+    def clean_isbn13(self):
+        isbn = self.cleaned_data.get("isbn13", "")
+        if isbn:
+            isbn = isbn.replace("-", "").strip()
+        if not isbn:
+            return None
+
+        if not isbn.isdigit():
+            raise forms.ValidationError("ISBN must contain only digits.")
+
+        if len(isbn) != 13:
+            raise forms.ValidationError("ISBN13 must be 13 digits long.")
+
+        return isbn
