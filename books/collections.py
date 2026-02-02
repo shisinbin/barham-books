@@ -45,6 +45,7 @@ COLLECTIONS = {
       "domestic fiction", "new adult"
     ],
     "min_match": 1,
+    "featured": True,
   },
 
   "psychological-literary": {
@@ -66,7 +67,6 @@ COLLECTIONS = {
       "teen", "young adult"
     ],
     "min_match": 1,
-    "featured": True,
   },
 
   "modern-contemporary": {
