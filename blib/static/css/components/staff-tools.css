@@ -36,7 +36,14 @@
   }
 
   .staff-drawer__divider {
-    color: var(--c-gray-lighter);
+    border: 0;
+    height: 1px;
+    background: var(--c-gray-light);
+    /* background-image: linear-gradient(
+      to right,
+      var(--c-purple),
+      var(--c-teal)
+    ); */
   }
 
   .staff-drawer.open {
@@ -46,9 +53,7 @@
   .staff-drawer__header {
     display: flex;
     justify-content: space-between;
-    padding-block-end: 16px;
-    border-block-end: 1px solid #eee;
-    margin-block-end: 16px;
+    margin-block-end: 32px;
   }
 
   .staff-close {

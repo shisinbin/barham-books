@@ -5,6 +5,24 @@
   {{ book.title }} by {{ book.author }} - Barham Books
 {% endblock %}
 
+{% block meta %}
+  <meta name="description" content="{{ book.title }} by {{ book.author }}. {{ book.summary|truncatechars:140 }}" />
+  <meta property="og:title" content="{{ book.title }} - Barham Books" />
+  <meta property="og:description" content="{{ book.summary|truncatechars:160 }}" />
+  <meta property="og:type" content="book" />
+  {% if book.photo %}
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ book.photo.url }}" />
+    <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ book.photo.url }}" />
+  {% else %}
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/branding/og-barham-books.png' %}" />
+    <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/branding/og-barham-books.png' %}" />
+  {% endif %}
+  <meta name="twitter:title" content="{{ book.title }} by {{ book.author }}" />
+  <meta name="twitter:description" content="{{ book.summary|truncatechars:160 }}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="robots" content="all" />
+{% endblock %}
+
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/pages/book.css' %}" />
   <link rel="stylesheet" href="{% static 'css/components/carousel.css' %}" />
@@ -15,6 +33,22 @@
   <script src="{% static 'js/likes-redux.js' %}" defer></script>
   <script src="{% static 'js/book-interest.js' %}" defer></script>
   <script src="{% static 'js/carousel.js' %}" defer></script>
+  {% comment %} Schema.org markup {% endcomment %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Book",
+      "name": "{{ book.title|escapejs }}",
+      "author": {
+        "@type": "Person",
+        "name": "{{ book.author|escapejs }}"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Barham Community Library"
+      }
+    }
+  </script>
 {% endblock %}
 
 {% block content %}
@@ -100,30 +134,33 @@
             <div class="book-interest" data-interest data-book-id="{{ book.id }}" data-url="{% url 'register_interest' %}">
               {% if num_copies > 0 %}
               {% if user.is_authenticated %}
-              <button class="interest-btn" aria-pressed="{% if interest %}true{% else %}false{% endif %}" {% if interest %}disabled{% endif %}>
-                
-                <span class="interested-text" style="text-wrap: balance;">
-                  Interested:
-                  {% if interest.handled %}
-                  ready to collect
-                  {% else %}
-                  await staff response
-                  {% endif %}
-                </span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-check"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                
-                <span class="sending-text">Sending...</span>
-                
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-bookmark"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
-                <span class="register-text">Register interest</span>
-              </button>
+                <button class="interest-btn" aria-pressed="{% if interest %}true{% else %}false{% endif %}" {% if interest %}disabled{% endif %}>
+                  
+                  <span class="interested-text" style="text-wrap: balance;">
+                    Interested:
+                    {% if interest.handled %}
+                      ready to collect
+                    {% else %}
+                      await staff response
+                    {% endif %}
+                  </span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-check"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                  
+                  <span class="sending-text">Sending...</span>
+                  
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-bookmark"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                  <span class="register-text">Register interest</span>
+                </button>
               {% else %}
-              <a href="{% url 'login' %}?next={{ request.path }}" class="fake-interest-btn">
+              <a href="{% url 'login' %}?next={{ request.path }}" class="interest-btn">
                 Log in to register interest
               </a>
               {% endif %}
               {% else %}
-              <span class="interest-fake-btn">Not Available</span>
+              <span class="danger-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-frown"><circle cx="12" cy="12" r="10"></circle><path d="M16 16s-1.5-2-4-2-4 2-4 2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+                Not Available
+              </span>
               {% endif %}
             </div>
           </section>

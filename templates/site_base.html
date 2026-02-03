@@ -7,39 +7,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
       {% block title %}
-        Barham Community Library
+        Barham Books - Barham Community Library
       {% endblock %}
     </title>
 
     {% block meta %}
-      <meta name="description" content="A volunteer-run community library in Wembley. Discover, browse and explore books for all ages." />
+      <meta name="description" content="Browse fiction, classics, sci-fi, history and more from the general book collection at Barham Community Library in Wembley. Discover your next read." />
+      <meta property="og:title" content="Barham Books" />
+      <meta property="og:description" content="Browse fiction, classics, sci-fi and more from Barham Community Library in Wembley." />
+      <meta property="og:type" content="website" />
+      <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/branding/og-barham-books.png' %}" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content="Barham Books" />
+      <meta name="twitter:description" content="Explore the general book collection at Barham Community Library." />
+      <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/branding/og-barham-books.png' %}" />
+      <meta name="robots" content="all" />
     {% endblock %}
 
+    <meta property="og:site_name" content="Barham Books" />
+    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+    <meta property="og:locale" content="en_GB" />
+    <meta name="geo.region" content="GB-BRN">
+    <meta name="geo.placename" content="Wembley">
+
+    <link rel="canonical" href="{{ request.build_absolute_uri }}" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/branding/favicon-32x32.png' %}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/branding/favicon-16x16.png' %}" />
+    <link rel="icon" href="{% static 'favicon.ico' %}" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/branding/apple-touch-icon.png' %}" />
+    <link rel="icon" type="image/png" sizes="192x192" href="{% static 'img/branding/android-chrome-192x192.png' %}" />
+
+    <meta name="theme-color" content="hsl(232, 58%, 55%)" />
+    
     {% comment %} <link rel="preload" href="{% static 'fonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-mu0SC55I.woff2' %}" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="{% static 'fonts/0QIvMX1D_JOuMwr7I_FMl_E.woff2' %}" as="font" type="font/woff2" crossorigin /> {% endcomment %}
 
     <link rel="stylesheet" href="{% static 'css/app.css' %}" />
     <link rel="stylesheet" href="{% static 'css/components/staff-tools.css' %}" />
-
     {% block extra_css %}
-
     {% endblock %}
 
-    {% comment %}Body scroll lock{% endcomment %}
+    <!-- Body scroll lock -->
     <script src="https://cdn.jsdelivr.net/gh/rick-liruixin/body-scroll-lock-upgrade@v1.1.0/lib/index.umd.js"></script>
-
     <script src="{% static 'js/csrf.js' %}" defer></script>
     <script src="{% static 'js/app.js' %}" defer></script>
     <script src="{% static 'js/staff-tools.js' %}" defer></script>
     {% block extra_js %}
-
     {% endblock %}
-
-    <link rel="icon" type="image/png" href="{% static 'img/favicon-96x96.png' %}" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}" />
-    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" />
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}" />
-    <link rel="manifest" href="{% static 'img/site.webmanifest' %}" />
   </head>
   <body>
     <div id="app">

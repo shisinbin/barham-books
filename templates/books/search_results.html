@@ -6,6 +6,10 @@
   Search results for "{{ query }}" - Barham Books
 {% endblock %}
 
+{% block meta %}
+  <meta name="robots" content="none" />
+{% endblock %}
+
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/pages/search-results.css' %}" />
   <link rel="stylesheet" href="{% static 'css/components/search-bar.css' %}" />
