@@ -759,8 +759,7 @@
       font-weight: 500;
       margin-block-end: 40px;
       line-height: 1.5;
-
-      max-width: 50ch;
+      max-width: 45ch;
     }
 
     .hero__link {
