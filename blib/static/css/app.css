@@ -113,6 +113,7 @@
     --c-gray-light: hsl(229, 14%, 85%);
     --c-gray-lighter: hsl(233, 14%, 90%);
     --c-purple: hsl(232, 58%, 55%);
+    /* --c-purple: green; */
     --c-purple-60: hsl(232, 58%, 35%, 60%);
     --c-purple-light: hsl(232, 58%, 65%);
     --c-purple-light-pastel: hsl(232, 25%, 88%);
@@ -704,7 +705,8 @@
 
     .hero__wrapper {
       position: relative;
-      padding-block: 60px 80px;
+      /* padding-block: 60px 80px; */
+      padding-block: 120px 150px;
       display: grid;
       grid-template-columns: 1fr;
 
@@ -714,7 +716,7 @@
 
       @media (width >= calc(1000 / 16 * 1rem)) {
         grid-template-columns: 1fr 1fr;
-        padding-block: 100px 120px;
+        /* padding-block: 100px 120px; */
       }
     }
 

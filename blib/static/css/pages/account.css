@@ -8,8 +8,12 @@
     }
 
     .account__title {
-      font-size: calc(48 / 16 * 1rem);
+      font-size: calc(36 / 16 * 1rem);
       margin-block-end: 32px;
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        font-size: calc(48 / 16 * 1rem);
+      }
     }
 
     .account__meta {
