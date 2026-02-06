@@ -1,0 +1,97 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/home.css' %}" />
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}
+
+{% block header %}
+
+{% endblock %}
+
+{% block content %}
+  <div class="home">
+    <header class="home__utility">
+      <nav aria-label="Account">
+        <a href="{% if user.is_authenticated %}
+            {% url 'account_home' %}
+          {% else %}
+            {% url 'login' %}
+          {% endif %}"
+          class="home__account-link">
+          <span class="visually-hidden">
+            {% if user.is_authenticated %}
+              Account
+            {% else %}
+              Login
+            {% endif %}
+          </span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="home__account-icon">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </a>
+      </nav>
+    </header>
+
+    <div class="home__inner">
+      <div class="home__brand">
+        <h1 class="home__logo">Barham Books</h1>
+        <p class="home__lede">
+          Explore the general book collection at <span class="home__name">Barham Community Library</span>.
+        </p>
+      </div>
+
+      <section class="home__search" aria-labelledby="search-heading">
+        <h2 id="search-heading" class="visually-hidden">Search the catalogue</h2>
+
+        <form class="home__form" role="search">
+          <input type="search" placeholder="Search by title, author..." />
+          <button type="submit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+        </form>
+      </section>
+
+      <nav class="home__primary-nav" aria-label="Catalogue navigation">
+        <ul>
+          <li>
+            <a href="{% url 'collections' %}">Collections</a>
+          </li>
+          <li>
+            <a href="{% url 'books_a_z' %}">Browse A—Z</a>
+          </li>
+          <li>
+            <a href="#">Featured</a>
+          </li>
+          <li>
+            <a href="#">Recently added</a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Secondary navigation -->
+      <nav class="home__secondary-nav" aria-label="Information">
+        <ul>
+          <li>
+            <a href="{% url 'about' %}">About</a>
+          </li>
+          <li>
+            <a href="{% url 'contact' %}">Contact</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}

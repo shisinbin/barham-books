@@ -103,6 +103,8 @@
   then one for where they'll actually be used
 */
   :root {
+    --hue-primary: 230deg;
+
     --c-white: hsl(0, 0%, 96%);
     --c-white-bone: hsl(0, 10%, 90%);
     --c-white-dark: hsl(0, 0%, 91%);
@@ -122,7 +124,8 @@
     --c-transparent: transparent;
     --c-magenta: hsl(320, 85%, 41%);
 
-    --color-main-bg: var(--c-white);
+    --color-main-bg: hsl(var(--hue-primary), 5%, 96%);
+    /* --color-main-bg: var(--c-white); */
     --color-text-dark: var(--c-gray-dark);
     --color-text-light: var(--c-white);
     --color-text-muted: var(--c-gray-medium);

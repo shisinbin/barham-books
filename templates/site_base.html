@@ -29,18 +29,16 @@
     <meta property="og:locale" content="en_GB" />
     <meta name="geo.region" content="GB-BRN">
     <meta name="geo.placename" content="Wembley">
+    <meta name="theme-color" content="hsl(232, 58%, 55%)" />
 
     <link rel="canonical" href="{{ request.build_absolute_uri }}" />
-
-    <!-- Favicon -->
+    <!-- Favicons+ -->
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/branding/favicon-32x32.png' %}" />
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/branding/favicon-16x16.png' %}" />
     <link rel="icon" href="{% static 'favicon.ico' %}" />
-
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/branding/apple-touch-icon.png' %}" />
     <link rel="icon" type="image/png" sizes="192x192" href="{% static 'img/branding/android-chrome-192x192.png' %}" />
 
-    <meta name="theme-color" content="hsl(232, 58%, 55%)" />
     
     {% comment %} <link rel="preload" href="{% static 'fonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-mu0SC55I.woff2' %}" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="{% static 'fonts/0QIvMX1D_JOuMwr7I_FMl_E.woff2' %}" as="font" type="font/woff2" crossorigin /> {% endcomment %}
@@ -48,6 +46,7 @@
     <link rel="stylesheet" href="{% static 'css/app.css' %}" />
     <link rel="stylesheet" href="{% static 'css/components/staff-tools.css' %}" />
     {% block extra_css %}
+
     {% endblock %}
 
     <!-- Body scroll lock -->
@@ -56,18 +55,27 @@
     <script src="{% static 'js/app.js' %}" defer></script>
     <script src="{% static 'js/staff-tools.js' %}" defer></script>
     {% block extra_js %}
+
     {% endblock %}
   </head>
   <body>
     <div id="app">
-      <a id="skip-header-link" class="visually-hidden skip" href="#main">Skip to main content</a>
-      {% include 'components/header.html' %}
+      
+      {% block header %}
+        <a id="skip-header-link" class="visually-hidden skip" href="#main">Skip to main content</a>
+        {% include 'components/header.html' %}
+      {% endblock %}
+
       <main id="main">
         {% block content %}
 
         {% endblock %}
       </main>
-      {% include 'components/footer.html' %}
+
+      {% block footer %}
+        {% include 'components/footer.html' %}
+      {% endblock %}
+
       {% include 'components/toasts.html' %}
       {% if user.is_staff %}
         {% include 'components/staff_tools.html' %}

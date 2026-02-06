@@ -66,3 +66,6 @@ def contact(request):
 
 def contact_thanks(request):
     return render(request, 'pages/contact_thanks.html')
+
+def home(request):
+    return render(request, 'pages/home.html')
