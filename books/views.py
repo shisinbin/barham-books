@@ -1653,15 +1653,16 @@ class ReviewCreateView(ReviewBaseMixin, CreateView):
 
     def get_initial(self):
         initial = super().get_initial().copy()
-        initial['title'] = "My Review of this Book"
+        initial['title'] = ""
         initial['rating'] = 5
         return initial
 
     def dispatch(self, request, *args, **kwargs):
         book = get_object_or_404(Book, pk=self.kwargs["book_id"])
         if Review.objects.filter(book=book, user=request.user).exists():
-            messages.info(request, "You’ve already reviewed this book.")
+            messages.info(request, "You've already reviewed this book.")
             return redirect(book)
+        self.book = book
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -1669,12 +1670,26 @@ class ReviewCreateView(ReviewBaseMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add the Book object to the context
+        context['review_book'] = self.book
+        return context
+
 
 class ReviewUpdateView(ReviewBaseMixin, UserPassesTestMixin, UpdateView):
     template_name = "books/review_form.html"
 
     def test_func(self):
         return self.get_object().user == self.request.user
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add the Book object to the context
+        context['review_book'] = self.get_object().book
+        return context
 
 class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Review
@@ -1807,3 +1822,104 @@ class StaffRemoveCopyView(UserPassesTestMixin, View):
 
         messages.success(request, "Most recent copy removed.")
         return redirect(self.book)
+
+from .editorial import FALLBACK_FEATURES
+
+def featured_books(request):
+    HERO_COUNT = 2
+    FEATURED_COUNT = 16
+    AUTHOR_COUNT = 10
+    SERIES_COUNT = 10
+    SHORT_READS_COUNT = 16
+
+    # Attempt to fetch the most recent 2 staff reviews
+    staff_reviews = (
+        Review.objects
+        .filter(user__is_staff=True)
+        .select_related('book')
+        .order_by('-updated')[:HERO_COUNT]
+    )
+
+    hero_books = []
+
+    for review in staff_reviews:
+        hero_books.append({
+            "book": review.book,
+            "copy": review.body,
+        })
+
+    # Attempt to replenish hero_books using fallbacks if necessary
+    if len(hero_books) < HERO_COUNT:
+        existing_slugs = {item["book"].slug for item in hero_books}
+
+        for fallback in FALLBACK_FEATURES:
+            if fallback["slug"] in existing_slugs:
+                continue
+            
+            try:
+                book = Book.objects.get(slug=fallback["slug"])
+            except Book.DoesNotExist:
+                continue
+            
+            hero_books.append({
+                "book": book,
+                "copy": fallback["copy"],
+            })
+
+            if len(hero_books) == HERO_COUNT:
+                break
+
+    # In case fallbacks don't work, replenish with random books
+    if len(hero_books) < HERO_COUNT:
+        needed = HERO_COUNT - len(hero_books)
+
+        existing_slugs = {item["book"].slug for item in hero_books}
+
+        replacements = Book.objects.exclude(slug__in=existing_slugs).order_by('?')[:needed]
+
+        for book in replacements:
+            hero_books.append({
+                "book": book,
+                "copy": "A compelling and thoughtfully written story that draws readers into its world from the very first page. With memorable characters and carefully built tension, this book offers a rewarding reading experience that lingers long after the final chapter."
+            })
+    
+    hero_slugs = {item["book"].slug for item in hero_books}
+
+    featured_books = (
+        Book.objects
+        .filter(is_featured=True)
+        .exclude(slug__in=hero_slugs)
+        .order_by('-updated', '-created')[:FEATURED_COUNT]
+    )
+
+    popular_authors = (
+        Author.objects
+        .annotate(num_books=Count('books'))
+        .filter(num_books__gte=2)
+        .order_by('-num_books')[:AUTHOR_COUNT]
+    )
+
+    popular_series = (
+        Series.objects
+        .annotate(num_books=Count('books'))
+        .filter(num_books__gte=3)
+        .order_by('-num_books')[:SERIES_COUNT]
+    )
+
+    short_reads = (
+        Book.objects
+        .filter(instances__pages__isnull=False)
+        .annotate(min_pages=Min('instances__pages'))
+        .filter(min_pages__lte=200)
+        .order_by('min_pages')[:SHORT_READS_COUNT]
+    )
+
+    context = {
+        'hero_one': hero_books[0],
+        'hero_two': hero_books[1],
+        'featured_books': featured_books,
+        'popular_authors': popular_authors,
+        'popular_series': popular_series,
+        'short_reads': short_reads,
+    }
+    return render(request, 'books/featured_books.html', context)

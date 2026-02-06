@@ -1,0 +1,134 @@
+{% extends 'site_base.html' %}
+{% load static %}
+{% load thumbnail %}
+
+{% block title %}
+  Featured - Barham Books
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/featured.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/components/carousel.css' %}" />
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/carousel.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+  <div class="featured">
+    <div class="hero-featured">
+      <div class="hero__bg">
+        <div class="wrapper hero__wrapper">
+          <article class="hero__article">
+            <h1 class="hero__title">Barham Recommends</h1>
+
+            <p class="hero__lede hero__lede-one">{{ hero_one.copy|truncatewords:75 }}</p>
+
+            <figure class="hero__book-figure hero__figure-one">
+              <a href="{{ hero_one.book.get_absolute_url }}" class="hero__overlay-link"><span class="visually-hidden">{{ hero_one.book.title }}</span></a>
+              <img class="hero__book-image" src="{{ hero_one.book.photo.url }}" alt="Book cover for {{ hero_one.book.title }} by {{ hero_one.book.author }}" />
+              <figcaption class="hero__book-text">
+                <h3 class="hero__book-title">{{ hero_one.book.title }}</h3>
+                <span class="hero__book-author"><a href="{{ hero_one.book.author.get_absolute_url }}" class="hero__author-link">{{ hero_one.book.author }}</a></span>
+              </figcaption>
+            </figure>
+
+            <p class="hero__lede hero__lede-two">{{ hero_two.copy|truncatewords:75 }}</p>
+
+            <figure class="hero__book-figure hero__figure-two">
+              <a href="{{ hero_two.book.get_absolute_url }}" class="hero__overlay-link"><span class="visually-hidden">{{ hero_two.book.title }}</span></a>
+              <img class="hero__book-image" src="{{ hero_two.book.photo.url }}" alt="Book cover for {{ hero_two.book.title }} by {{ hero_two.book.author }}" />
+              <figcaption class="hero__book-text">
+                <h3 class="hero__book-title">{{ hero_two.book.title }}</h3>
+                <span class="hero__book-author"><a href="{{ hero_two.book.author.get_absolute_url }}" class="hero__author-link">{{ hero_two.book.author }}</a></span>
+              </figcaption>
+            </figure>
+          </article>
+
+          {% include 'components/carousel.html' with books=featured_books title='Other Recommendations' tag='section' %}
+        </div>
+      </div>
+    </div>
+
+    <div class="wrapper popular-wrapper">
+      <div class="popular">
+        <section class="authors">
+          <h2 class="popular__title">Popular Authors</h2>
+
+          <ul class="popular__list">
+            {% for pop_author in popular_authors %}
+              <li class="popular__item" aria-label="{{ pop_author }}">
+                <a href="{{ pop_author.get_absolute_url }}" class="popular__overlay-link"><span class="visually-hidden">{{ pop_author }}</span></a>
+
+                <div class="popular__item-content">
+                  <span class="popular__avatar">
+                    {% if pop_author.photo %}
+                      <img src="{{ pop_author.photo.url }}" alt="" />
+                    {% endif %}
+                  </span>
+
+                  <div class="popular__item-text">
+                    <h3 class="popular__name">{{ pop_author }}</h3>
+
+                    <span class="popular__meta">{{ pop_author.num_books }} book{{ pop_author.num_books|pluralize }}</span>
+                  </div>
+
+                  {% if pop_author.books.all|length > 0 %}
+                    <div class="popular__book-thumbs">
+                      {% for author_book in pop_author.books.all|slice:':3' %}
+                        {% if author_book.photo %}
+                          <img src="{{ author_book.photo|thumbnail_url:'default' }}" alt="" class="popular__book-thumb" />
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </section>
+
+        <section class="series">
+          <h2 class="popular__title">Popular Series</h2>
+
+          <ul class="popular__list">
+            {% for pop_series in popular_series %}
+              <li class="popular__item" aria-label="{{ pop_series }}">
+                <a href="{% url 'series_detail' pop_series.id %}" class="popular__overlay-link"><span class="visually-hidden">{{ pop_series }}</span></a>
+
+                <div class="popular__item-content">
+                  {% comment %} <span class="popular__avatar">
+                    {% if pop_author.photo %}
+                      <img src="{{ pop_author.photo.url }}" alt="" />
+                    {% endif %}
+                  </span> {% endcomment %}
+
+                  <div class="popular__item-text">
+                    <h3 class="popular__name">{{ pop_series }}</h3>
+
+                    <span class="popular__meta">{{ pop_series.num_books }} book{{ pop_series.num_books|pluralize }}</span>
+                  </div>
+
+                  {% if pop_series.books.all|length > 0 %}
+                    <div class="popular__book-thumbs">
+                      {% for series_book in pop_series.books.all|slice:':3' %}
+                        {% if series_book.photo %}
+                          <img src="{{ series_book.photo|thumbnail_url:'default' }}" alt="" class="popular__book-thumb" />
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </section>
+      </div>
+    </div>
+
+    <div class="wrapper short-reads__wrapper">
+      {% include 'components/carousel.html' with books=short_reads title='Short Reads' tag='section' %}
+    </div>
+  </div>
+{% endblock %}

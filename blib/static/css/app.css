@@ -103,7 +103,7 @@
   then one for where they'll actually be used
 */
   :root {
-    --hue-primary: 230deg;
+    --hue-primary: 230;
 
     --c-white: hsl(0, 0%, 96%);
     --c-white-bone: hsl(0, 10%, 90%);

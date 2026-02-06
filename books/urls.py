@@ -107,6 +107,9 @@ urlpatterns += [
     path("staff/<int:pk>/remove-copy/", views.StaffRemoveCopyView.as_view(), name='staff_remove_copy'),
 ]
 
+urlpatterns += [
+    path('featured/', views.featured_books, name='featured_books'),
+]
 
 # temporary production book page
 # urlpatterns += [

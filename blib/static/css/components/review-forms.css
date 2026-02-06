@@ -7,11 +7,18 @@
 
     .review__card h1 {
       font-size: calc(48 / 16 * 1rem);
+      margin-block-end: 24px;
+    }
+
+    .review__meta {
       margin-block-end: 48px;
+      font-style: italic;
+      font-weight: 500;
+      color: var(--c-gray-medium);
     }
 
     .review__lead {
-      margin-block-end: 16px;
+      margin-block: 48px 16px;
     }
 
     .form {

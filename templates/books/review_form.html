@@ -2,7 +2,11 @@
 {% load static %}
 
 {% block title %}
-  {% if object %}Edit{% else %}Add{% endif %}review - Barham Books
+  {% if object %}
+    Edit
+  {% else %}
+    Add
+  {% endif %}review - Barham Books
 {% endblock %}
 
 {% block extra_css %}
@@ -20,6 +24,10 @@
             Add
           {% endif %}review
         </h1>
+
+        <p class="review__meta">
+          <strong>{{ review_book.title }}</strong> by {{ review_book.author }}
+        </p>
 
         <form method="post" class="form">
           {% csrf_token %}

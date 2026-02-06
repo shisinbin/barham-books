@@ -322,8 +322,8 @@
 
     .search__autocomplete li.active,
     .search__autocomplete li:hover {
-      background: var(--color-sticky-search-autocomplete-hover-bg);
-      color: var(--color-sticky-search-autocomplete-hover-text);
+      background: hsl(var(--hue-primary), 48%, 65%);
+      color: var(--c-white);
     }
 
     .home__primary-nav {

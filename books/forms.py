@@ -50,12 +50,17 @@ class EmailPostForm(forms.Form):
 
 from .models import Review
 class ReviewForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Add the autofocus attribute to the title field
+        self.fields['title'].widget.attrs.update({'autofocus': True, 'onfocus': 'this.select();'})
+
     class Meta:
         model = Review
         # fields = ('user', 'book', 'title', 'body')
         fields = ['title', 'body', 'rating']
         widgets = {
-            'body': forms.Textarea(attrs={'rows': 5})
+            'body': forms.Textarea(attrs={'rows': 15})
         }
 
 # full text search

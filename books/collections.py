@@ -61,7 +61,7 @@ COLLECTIONS = {
 
   "children-young-adult": {
     "title": "Children's and Young Adult",
-    "description": "Beloved children’s stories and young adult fiction for curious, adventurous readers.",
+    "description": "Beloved children's stories and young adult fiction for curious, adventurous readers.",
     "tags": [
       "children's", "middle grade",
       "teen", "young adult"
