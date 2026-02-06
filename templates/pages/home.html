@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block extra_js %}
-
+  <script src="{% static 'js/autocomplete_redux.js' %}" defer></script>
 {% endblock %}
 
 {% block header %}
@@ -46,17 +46,31 @@
         </p>
       </div>
 
-      <section class="home__search" aria-labelledby="search-heading">
+      <section class="home__search" aria-labelledby="search-heading" data-autocomplete data-autocomplete-url="{% url 'autocomplete_books' %}">
         <h2 id="search-heading" class="visually-hidden">Search the catalogue</h2>
 
-        <form class="home__form" role="search">
-          <input type="search" placeholder="Search by title, author..." />
-          <button type="submit">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </button>
+        <form class="home__form" role="search" action="{% url 'book_search_redux' %}" method="get" role="search" autocomplete="off">
+          <div class="home__search-control">
+            <input type="text" name="q" minlength="3" maxlength="64" required placeholder="Search by title, author..." role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="home-autocomplete" class="home__search-input" autofocus />
+
+            <button type="button" class="home__clear-button search__clear-button" aria-label="Clear search">
+              <svg class="icon search__clear-icon" width="25" height="26" viewBox="0 0 25 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M24.1955 0.706895L0.711294 24.7008" stroke="#b4b5b9ff" stroke-width="2" />
+                <path d="M0.723022 0.706909L24.1838 24.7008" stroke="#b4b5b9ff" stroke-width="2" />
+              </svg>
+            </button>
+
+            <div class="home__submit-button-wrapper">
+              <button type="submit" class="home__submit-button" aria-label="Search">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <ul class="home__autocomplete search__autocomplete" id="home-autocomplete" role="listbox" hidden></ul>
         </form>
       </section>
 

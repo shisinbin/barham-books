@@ -138,7 +138,7 @@ def index(request):
     return render(request, 'books/books.html', context)
 
 def autocomplete_books(request):
-    MAX_NUM_RESULTS = 5
+    MAX_NUM_RESULTS = 10
 
     raw = request.GET.get('term', '')[:80].strip()
     terms = normalise_query(raw)
