@@ -1,0 +1,45 @@
+{% extends 'site_base.html' %}
+{% load static %}
+{% load thumbnail %}
+
+{% block title %}
+  Featured - Barham Books
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/recently-added.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/components/book-grid.css' %}" />
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}
+
+{% block content %}
+  <div class="recent">
+    <div class="wrapper">
+      <h1 class="recent__title">Recently Added</h1>
+      <p class="recent__lede">The latest additions to the Barham Books collection.</p>
+      <br />
+      {% for month, data in months.items %}
+        <h2 class="recent__month-title">{{ month }}</h2>
+        <p class="recent__meta">
+          <span>{{ data.books|length }} book{{ data.books|length|pluralize }} added</span>
+
+          {% if data.authors_new|length > 0 %}
+            <span class="recent__meta-item">{{ data.authors_new|length }} <span class="recent__meta-new">new</span> author{{ data.authors_new|length|pluralize }}</span>
+          {% endif %}
+
+          {% if data.books|length > 1 %}
+            <span class="recent__meta-item recent__meta-tags">
+              Most common genre:
+              <span class="recent__meta-tag">{{ data.top_genre }}</span>
+            </span>
+          {% endif %}
+        </p>
+
+        {% include 'components/book_grid.html' with books=data.books %}
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

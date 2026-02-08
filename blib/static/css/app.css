@@ -104,6 +104,7 @@
 */
   :root {
     --hue-primary: 230;
+    --hue-secondary: 180;
 
     --c-white: hsl(0, 0%, 96%);
     --c-white-bone: hsl(0, 10%, 90%);

@@ -3,7 +3,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from .choices import language_choices, a_z
 from django.contrib import messages
 from taggit.models import Tag
-from django.db.models import Count, Q, Min
+from django.db.models import Count, Q, Min, OuterRef, Subquery
 from django.db.models.functions import Random
 from authors.models import Author
 from .models import Book, BookInstance2, Review, Category, BookTags, Series, BookInterest, BookTag
@@ -1823,7 +1823,7 @@ class StaffRemoveCopyView(UserPassesTestMixin, View):
         messages.success(request, "Most recent copy removed.")
         return redirect(self.book)
 
-from .editorial import FALLBACK_FEATURES
+from .editorial import FALLBACK_FEATURES, GENERIC_FALLBACK_COPY
 
 def featured_books(request):
     HERO_COUNT = 2
@@ -1880,7 +1880,7 @@ def featured_books(request):
         for book in replacements:
             hero_books.append({
                 "book": book,
-                "copy": "A compelling and thoughtfully written story that draws readers into its world from the very first page. With memorable characters and carefully built tension, this book offers a rewarding reading experience that lingers long after the final chapter."
+                "copy": GENERIC_FALLBACK_COPY,
             })
     
     hero_slugs = {item["book"].slug for item in hero_books}
@@ -1923,3 +1923,78 @@ def featured_books(request):
         'short_reads': short_reads,
     }
     return render(request, 'books/featured_books.html', context)
+
+from collections import OrderedDict, Counter
+
+def recently_added(request):
+    RECENT_LIMIT = 100
+
+    first_book_date = Book.objects.filter(
+        author=OuterRef('author')
+    ).values('author').annotate(
+        first_date=Min('created')
+    ).values('first_date')
+
+    books = (
+        Book.objects
+        .select_related('author')
+        .prefetch_related('book_tags')
+        .annotate(author_first_book_date=Subquery(first_book_date))
+        .order_by('-created')[:RECENT_LIMIT]
+    )
+
+    # Group by month
+    grouped = OrderedDict()
+    for book in books:
+        dt = timezone.localtime(book.created)
+        month_key = dt.strftime("%B %Y") # e.g. "February 2026"
+
+        if month_key not in grouped:
+            grouped[month_key] = {
+                "books": [],
+                "authors": set(),
+                "authors_new": [],
+                "tags": []
+            }
+
+        grouped[month_key]["books"].append(book)
+        if book.author:
+            grouped[month_key]["authors"].add(book.author)
+        if book.author and book.created.date() == book.author_first_book_date.date():
+            grouped[month_key]["authors_new"].append(book.author)
+
+        for tag in book.book_tags.all():
+            grouped[month_key]["tags"].append(tag)
+
+    # Compute monthly stats
+    for month, data in grouped.items():
+        # data["count"] = len(data["books"])
+        # data["author_count"] = len(data["authors"])
+        # data["author_new_count"] = len(data["authors_new"])
+
+        if data["tags"]:
+            tag_counts = Counter(t.name for t in data["tags"])
+            data["top_genre"] = tag_counts.most_common(1)[0][0]
+        else:
+            data["top_genre"] = None
+    '''
+       grouped = {
+         "February 2026": {
+           "books": [book1, book2, ...],
+           "authors": [author1, author2, ...],
+           "authors_new": [author1, author2, ...],
+           "tags": ["thriller", "thriller", "crime", ...]
+           "count": 12,
+           "author_count": 10,
+           "author_new_count": 4,
+           "top_genre": "thriller"
+         },
+         "January 2026": { ... },
+         ...
+       }
+    '''
+
+    return render(request, 'books/recently_added.html', {
+        "months": grouped
+    })
+    

@@ -109,6 +109,7 @@ urlpatterns += [
 
 urlpatterns += [
     path('featured/', views.featured_books, name='featured_books'),
+    path('recently-added/', views.recently_added, name='recently_added'),
 ]
 
 # temporary production book page

@@ -15,7 +15,7 @@
     </div>
   {% endif %}
   <div class="review__content">
-    <heading class="review__heading">
+    <header class="review__heading">
       <div class="review__title-wrapper">
         {% if is_account_page_reviews %}
         <a class="review__title-link" href="{{ review.book.get_absolute_url }}">
@@ -42,7 +42,7 @@
           {% endfor %}
         </div>
       {% endif %}
-    </heading>
+    </header>
     <p class="review__body">{{ review.body|linebreaksbr }}</p>
     <small>
       {% if not is_account_page_reviews|default:False %}

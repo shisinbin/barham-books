@@ -163,7 +163,7 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
-LOGIN_REDIRECT_URL = 'explore_books'
+LOGIN_REDIRECT_URL = 'account_home'
 LOGOUT_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
 

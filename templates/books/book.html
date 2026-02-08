@@ -220,14 +220,14 @@
 
       {% if user.is_authenticated or book.reviews.count > 0 %}
         <aside class="book__reviews">
-          <heading class="book__reviews-heading">
+          <header class="book__reviews-heading">
 
             <h2 class="book__subheading book__reviews-title">Reviews</h2>
             
             {% if user.is_authenticated and has_not_reviewed %}
             <a href="{% url 'review_add' book.id %}" class="button secondary">Write a review</a>
             {% endif %}
-          </heading>
+          </header>
 
           {% for review in book.reviews.all %}
             {% include 'components/review.html' %}
