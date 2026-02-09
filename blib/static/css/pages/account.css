@@ -47,8 +47,22 @@
       }
     }
 
-    .account__section h2 {
+    .account__section-title,
+    .account__section-header {
       margin-block: 64px 32px;
+    }
+
+    .account__section-meta {
+      margin-block-start: 16px;
+      color: var(--c-gray-medium);
+      font-style: italic;
+    }
+
+    .account__reviews-link {
+      margin-block-start: 24px;
+      margin-inline: auto;
+      display: block;
+      width: fit-content;
     }
   }
 }

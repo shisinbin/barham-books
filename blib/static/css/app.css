@@ -402,6 +402,10 @@
     inset: 0;
   }
 
+  .text-muted {
+    color: var(--c-gray-medium-light);
+  }
+
   #app {
     display: grid;
     grid-template-rows: auto 1fr auto;

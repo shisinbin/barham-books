@@ -35,7 +35,7 @@
         </div>
 
         {% include 'components/book_stack.html' with books=books list_name_id='search-results-title' %}
-        {% include 'components/pagination.html' with books=books query=query base_querystring=base_querystring %}
+        {% include 'components/pagination.html' with items=books query=query base_querystring=base_querystring %}
       {% else %}
         <h1 class="search-results__title">No results for "{{ query }}"</h1>
         <div class="search-results__error-body">

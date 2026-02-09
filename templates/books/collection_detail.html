@@ -74,7 +74,7 @@
 
     {% include 'components/book_grid.html' with books=books %}
 
-    {% include 'components/pagination.html' with books=books sort=sort base_querystring=base_querystring %}
+    {% include 'components/pagination.html' with items=books sort=sort base_querystring=base_querystring %}
 
   </div>
 {% endblock %}

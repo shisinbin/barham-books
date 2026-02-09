@@ -2,7 +2,7 @@
 {% load thumbnail %}
 
 <article class="review">
-  {% if is_account_page_reviews %}
+  {% if is_user_review_archive %}
     <div class="review__image-wrapper">
       <a class="review__image-link" href="{{ review.book.get_absolute_url }}">
         <span class="visually-hidden">{{ review.book.title }}</span>
@@ -17,9 +17,8 @@
   <div class="review__content">
     <header class="review__heading">
       <div class="review__title-wrapper">
-        {% if is_account_page_reviews %}
-        <a class="review__title-link" href="{{ review.book.get_absolute_url }}">
-          <h3 class="review__book-title">{{ review.book.title }}</h3></a>
+        {% if is_user_review_archive %}
+          <a class="review__title-link" href="{{ review.book.get_absolute_url }}"><h3 class="review__book-title">{{ review.book.title }}</h3></a>
         {% endif %}
         <h3>{{ review.title }}</h3>
       </div>
@@ -31,7 +30,35 @@
               width="24"
               height="24"
               viewBox="0 0 24 24"
-              fill="{% if num <= review.rating %}gold{% else %}none{% endif %}"
+              fill="{% if num <= review.rating %}
+                
+                
+                
+                
+                
+                
+                gold
+
+
+
+
+
+
+              {% else %}
+                
+                
+                
+                
+                
+                
+                none
+
+
+
+
+
+
+              {% endif %}"
               stroke="currentColor"
               stroke-width="2"
               stroke-linecap="round"
@@ -45,10 +72,14 @@
     </header>
     <p class="review__body">{{ review.body|linebreaksbr }}</p>
     <small>
-      {% if not is_account_page_reviews|default:False %}
-        {{ review.user.username }} ·
+      {% if not is_user_review_archive|default:False %}
+        <a class="review__user-link" href="{% url 'user_reviews' review.user.username %}">{{ review.user.username }}</a> ·
       {% endif %}
       {{ review.created|date:'j M Y' }}
+
+      {% if review.is_edited %}
+        <span class="text-muted" style="margin-left:8px;">(Edited: {{ review.updated|date:'j M Y' }})</span>
+      {% endif %}
     </small>
 
     {% if review.user == user %}

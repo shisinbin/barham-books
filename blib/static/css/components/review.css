@@ -86,6 +86,17 @@
       margin-block: 12px;
     }
 
+    .review__user-link {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color 150ms ease-in-out;
+
+      &:hover {
+        text-decoration: none;
+        color: var(--c-magenta);
+      }
+    }
+
     .review__tools {
       display: flex;
       gap: 16px;

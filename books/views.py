@@ -1997,4 +1997,27 @@ def recently_added(request):
     return render(request, 'books/recently_added.html', {
         "months": grouped
     })
+
+from django.contrib.auth.models import User
     
+def user_reviews(request, username):
+    user_obj = get_object_or_404(User, username__iexact=username)
+
+    reviews = (
+        user_obj.reviews
+        .filter(active=True)
+        .select_related('book')
+        .order_by('-updated')
+    )
+
+    paginator = Paginator(reviews, 10)
+    page = request.GET.get('page')
+    page_obj = paginator.get_page(page)
+
+    context = {
+        "profile_user": user_obj,
+        "reviews": page_obj,
+        "review_count": reviews.count(),
+    }
+
+    return render(request, "books/user_reviews.html", context)

@@ -43,7 +43,7 @@
       </section>
 
       <section class="account__section">
-        <h2>Registered Interests</h2>
+        <h2 class="account__section-title">Registered Interests</h2>
 
         {% if interested_books %}
           {% include 'components/book_grid.html' with books=interested_books is_book_interest=True %}
@@ -53,7 +53,7 @@
       </section>
 
       <section class="account__section">
-        <h2>Liked books</h2>
+        <h2 class="account__section-title">Liked books</h2>
 
         {% if liked_books %}
           {% include 'components/book_grid.html' with books=liked_books %}
@@ -63,13 +63,23 @@
       </section>
 
       <section class="account__section">
-        <h2>Reviews</h2>
+        <header class="account__section-header">
+          <h2>Reviews</h2>
 
-        {% for review in reviews %}
-          {% include 'components/review.html' with is_account_page_reviews=True %}
+          {% if reviews|length > 3 %}
+            <p class="account__section-meta">Showing 3 of {{ reviews|length }} reviews</p>
+          {% endif %}
+        </header>
+
+        {% for review in reviews|slice:':3' %}
+          {% include 'components/review.html' with is_user_review_archive=True %}
         {% empty %}
           <p>You haven't written any reviews yet.</p>
         {% endfor %}
+
+        {% if reviews|length > 3 %}
+          <a href="{% url 'user_reviews' request.user.username %}" class="button secondary account__reviews-link">See all reviews</a>
+        {% endif %}
       </section>
     </div>
   </section>

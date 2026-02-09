@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from datetime import date
+from datetime import date, timedelta
 
 from authors.models import Author
 
@@ -378,6 +378,8 @@ class Review(models.Model):
         ]
     def __str__(self):
         return f"Review by {self.user} on {self.book}"
+    def is_edited(self):
+        return self.updated > self.created + timedelta(minutes=30)
 
 class Category(models.Model):
     name = models.CharField(max_length=100)

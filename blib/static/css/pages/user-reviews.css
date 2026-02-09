@@ -1,0 +1,43 @@
+@layer component {
+  .user {
+    .user__heading {
+      display: grid;
+      gap: 16px;
+      margin-block-end: 32px;
+    }
+
+    .user__title-wrapper {
+      display: grid;
+    }
+
+    .user__label {
+      font-size: calc(14 / 16 * 1rem);
+      color: var(--c-magenta);
+      text-transform: uppercase;
+    }
+
+    .user__title {
+      font-size: calc(48 / 16 * 1rem);
+    }
+
+    .user__username {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: hsl(var(--hue-primary), 90%, 85%) 3px underline;
+      text-underline-offset: 4px;
+    }
+
+    .user__staff-icon {
+      width: calc(24 / 16 * 1rem);
+      height: calc(24 / 16 * 1rem);
+      fill: hsl(var(--hue-primary), 90%, 85%);
+      stroke: hsl(var(--hue-primary), 90%, 20%);
+    }
+
+    .user__username-no-reviews {
+      text-decoration: hsl(var(--hue-primary), 90%, 85%) 2px underline;
+      text-underline-offset: 3px;
+    }
+  }
+}

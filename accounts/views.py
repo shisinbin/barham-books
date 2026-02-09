@@ -334,7 +334,7 @@ def register(request):
 def account_home(request):
     liked_books = request.user.books_liked.all()
     interested_books = Book.objects.filter(interests__user=request.user)
-    reviews = request.user.reviews.all()
+    reviews = request.user.reviews.filter(active=True).order_by('-updated')
     review_nums = [1, 2, 3, 4, 5]
     return render(request, "accounts/account_home.html", {
         "liked_books": liked_books,
