@@ -79,6 +79,11 @@
       opacity: 0;
       cursor: pointer;
 
+      &:hover + .collection__select-presentational {
+        background-color: hsl(var(--hue-primary), 10%, 92%);
+        border: 1px solid hsl(var(--hue-primary), 10%, 80%);
+      }
+
       &:focus + .collection__select-presentational {
         outline: 2px solid AccentColor;
         outline: 2px solid -webkit-focus-ring-color;
@@ -87,10 +92,13 @@
     }
 
     .collection__select-presentational {
-      background-color: var(--c-white-bone);
+      background-color: hsl(var(--hue-primary), 10%, 94%);
+      border: 1px solid hsl(var(--hue-primary), 10%, 88%);
       padding: 12px 16px;
       padding-right: 52px;
       border-radius: 8px;
+      transition: 100ms ease-in-out;
+      transition-property: background-color, border-color;
     }
 
     .collection__select-value {

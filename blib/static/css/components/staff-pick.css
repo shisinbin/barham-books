@@ -1,0 +1,142 @@
+@layer component {
+  .staff-pick {
+    --image-width: 220px;
+
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+
+    max-width: 800px;
+    width: 100%;
+    margin-inline: auto;
+
+    display: grid;
+    grid-template-columns: var(--image-width) 1fr;
+    gap: 20px 32px;
+    /* border: 2px solid hsl(6, 0%, 87%); */
+    border-radius: 16px;
+    backdrop-filter: blur(8px);
+    background: hsl(0, 0%, 100%, 0.2);
+    padding: 32px;
+    /* box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px; */
+    box-shadow:
+      rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
+      rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+
+    @media (width < calc(768 / 16 * 1rem)) {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .staff-pick__backdrop {
+      position: absolute;
+      inset: 0;
+      background: hsl(0, 0%, 100%);
+      opacity: 0.3;
+    }
+
+    .staff-pick__book-identity {
+      position: relative;
+      max-width: var(--image-width);
+      text-align: center;
+
+      &:hover .staff-pick__book-title {
+        text-decoration: 2px underline;
+      }
+
+      &:hover .staff-pick__cover-image {
+        filter: brightness(105%);
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+      }
+
+      @media (width < calc(768 / 16 * 1rem)) {
+        align-self: center;
+      }
+    }
+
+    .staff-pick__cover-image {
+      /* max-height: 300px; */
+      filter: brightness(97%);
+      transition: 100ms ease-in-out;
+      transition-property: filter, box-shadow;
+      will-change: filter, box-shadow;
+      border-radius: 4px;
+    }
+
+    .staff-pick__book-identity figcaption {
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+    }
+
+    .staff-pick__book-title {
+      font-size: calc(22 / 16 * 1rem);
+      font-weight: 500;
+      text-underline-offset: 3px;
+      margin-block-start: 16px;
+    }
+
+    .staff-pick__book-author {
+      color: var(--c-gray-medium-light);
+    }
+
+    .staff-pick__content {
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      position: relative;
+    }
+
+    .staff-pick__review-title {
+      margin-block-start: 4px;
+      font-size: calc(28 / 16 * 1rem);
+      font-weight: 500;
+
+      @media (width < calc(768 / 16 * 1rem)) {
+        margin-block-start: 24px;
+      }
+    }
+
+    .staff-pick__review-body {
+      font-size: calc(18 / 16 * 1rem);
+      text-rendering: optimizeLegibility;
+    }
+
+    .staff-pick__view-book-link {
+      align-self: flex-end;
+
+      display: inline-flex;
+      align-items: center;
+      margin-block-start: auto;
+
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+
+      background-color: hsl(var(--hue-picks), 50%, 94%);
+      border: 1px solid hsl(var(--hue-picks), 50%, 88%);
+
+      transition: 100ms ease-in-out;
+      transition-property: background-color, border-color;
+
+      &:hover {
+        background-color: hsl(var(--hue-picks), 50%, 92%);
+        border-color: hsl(var(--hue-picks), 50%, 80%);
+      }
+
+      &:hover .staff-pick__arrow-link-icon {
+        transform: translateX(4px);
+      }
+    }
+
+    .staff-pick__arrow-link-icon {
+      display: inline-block;
+      stroke-width: 2;
+      width: calc(16 / 16 * 1rem);
+      margin-inline-start: 6px;
+      transform: translateX(-2px);
+      transition: transform 150ms ease-in-out;
+    }
+  }
+}

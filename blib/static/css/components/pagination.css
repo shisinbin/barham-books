@@ -24,7 +24,7 @@
 
       &:hover,
       &:focus-visible {
-        background-color: var(--c-white-bone);
+        background-color: hsl(var(--hue-primary), 35%, 92%);
       }
 
       @media (width >= calc(600 / 16 * 1rem)) {
@@ -64,7 +64,7 @@
 
       &:not(.pagination__page--current):hover,
       &:not(.pagination__page--current):focus-visible {
-        background-color: var(--c-white-bone);
+        background-color: hsl(var(--hue-primary), 35%, 92%);
       }
     }
 

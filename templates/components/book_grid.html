@@ -4,8 +4,6 @@
 <ul class="book-grid">
   {% for book in books %}
     <li class="book-grid__book" data-book="{{ book.id }}">
-      <a href="{{ book.get_absolute_url }}" class="book-grid__book-link"><span class="visually-hidden">{{ book.title }}</span></a>
-
       <div class="book-grid__image-wrapper">
         {% if book.photo %}
           <img src="{{ book.photo|thumbnail_url:'default' }}" alt="" class="book-grid__cover-image" />
@@ -15,7 +13,12 @@
       </div>
 
       <div class="book-grid__book-body">
-        <h3 class="book-grid__book-title">{{ book.title }}</h3>
+        <h3 class="book-grid__book-title">
+          <a href="{{ book.get_absolute_url }}">
+            <span class="absolute-inset-0" aria-hidden="true"></span>
+            {{ book.title }}
+          </a>
+        </h3>
 
         {% if not hide_author %}
           <p class="book-grid__book-author">{{ book.author }}</p>

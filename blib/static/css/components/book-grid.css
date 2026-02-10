@@ -8,32 +8,49 @@
     padding: 0;
 
     .book-grid__book {
-      --card-bg: var(--c-white-bone, lightgray);
+      --card-hue: var(--hue-primary);
+      --card-bg: hsl(var(--card-hue), 10%, 94%);
+      --card-border: hsl(var(--card-hue), 10%, 88%);
 
       background-color: var(--card-bg);
       border-radius: 12px;
-      padding: 14px 10px 24px;
+      border: 1px solid var(--card-border);
+      padding: 14px 10px;
       display: grid;
       grid-template-rows: subgrid;
       grid-row: span 2;
-      transition: 300ms ease;
+      transition: 150ms ease-in-out;
       transition-property: transform, filter;
       position: relative;
       isolation: isolate;
+      margin-block-start: 8px;
+      transition: background-color 150ms ease-in-out;
+      transition-property: background-color, border-color;
+
+      &:hover .book-grid__cover-image {
+        filter: brightness(105%);
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+      }
+
+      &:hover {
+        background-color: hsl(var(--card-hue), 15%, 92%);
+        border-color: hsl(var(--card-hue), 10%, 80%);
+      }
     }
 
     .book-grid__image-wrapper {
       place-self: center;
-      height: fit-content;
-      width: calc(100 / 16 * 1rem);
+      height: calc(150 / 16 * 1rem);
     }
 
     .book-grid__cover-image {
-      height: auto;
-      width: 100%;
-      will-change: filter;
-      filter: brightness(95%);
-      transition: filter 150ms ease-in-out;
+      height: 100%;
+      width: auto;
+      will-change: filter, box-shadow;
+      filter: brightness(97%);
+      transition: 150ms ease-in-out;
+      transition-property: filter, box-shadow;
+      border-radius: 2px;
     }
 
     .book-grid__book-body {
@@ -45,26 +62,6 @@
       font-size: var(--font-size-book-title);
       margin-block-end: 10px;
       font-weight: 500;
-    }
-
-    .book-grid__book-link {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-
-      &:hover ~ .book-grid__image-wrapper .book-grid__cover-image {
-        filter: brightness(105%);
-      }
-
-      &:hover ~ .book-grid__book-body .book-grid__book-title {
-        text-decoration: underline 2px;
-        text-underline-offset: 3px;
-      }
-
-      &:focus-visible {
-        outline: 3px solid AccentColor;
-        outline-offset: 3px;
-      }
     }
 
     .book-grid__book-author {

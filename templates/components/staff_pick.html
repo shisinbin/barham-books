@@ -1,0 +1,45 @@
+{% load static %}
+{% load thumbnail %}
+
+<article class="staff-pick">
+  <div class="staff-pick__backdrop"></div>
+
+  <figure class="staff-pick__book-identity">
+    {% if review.book.photo %}
+      <img src="{{ review.book.photo.url }}" alt="" class="staff-pick__cover-image" />
+    {% else %}
+      <img src="{% static 'img/open_book.svg' %}" alt="" class="staff-pick__cover-image" />
+    {% endif %}
+
+    <figcaption>
+      <h3 class="staff-pick__book-title">
+        <a href="{{ review.book.get_absolute_url }}">
+          <span class="absolute-inset-0" aria-hidden="true"></span>
+          {{ review.book.title }}
+        </a>
+      </h3>
+      <p class="staff-pick__book-author">by {{ review.book.author }}</p>
+    </figcaption>
+  </figure>
+
+  <div class="staff-pick__content">
+    {% if review.title %}
+      <h3 class="staff-pick__review-title">{{ review.title }}</h3>
+    {% endif %}
+
+    <div class="staff-pick__review-body">{{ review.body|linebreaksbr|truncatewords:150 }}</div>
+
+    <a href="{{ review.book.get_absolute_url }}" class="staff-pick__view-book-link">
+      View Book<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right staff-pick__arrow-link-icon">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
+    </a>
+
+    {% comment %} <div class="staff-pick__meta">
+      {% if review.user %}
+        <a href="{% url 'user_reviews' review.user.username %}">{{ review.user.username }}</a>
+      {% endif %}· {{ review.updated|date:'j M Y' }}
+    </div> {% endcomment %}
+  </div>
+</article>

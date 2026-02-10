@@ -4,12 +4,103 @@
     --blue-darker: hsl(230deg 40% 24%);
     --blue-dark: hsl(230deg 40% 28%);
 
-    --pink-bg: hsl(6, 30%, 94%);
-    --pink-dark: hsl(6, 30%, 92%);
-    --pink-darker: hsl(6, 30%, 90%);
+    --hue-picks: 230;
+
+    --color-picks-bg: hsl(var(--hue-picks), 30%, 94%);
+    --color-picks-dark: hsl(var(--hue-picks), 30%, 92%);
+    --color-picks-darker: hsl(var(--hue-picks), 30%, 90%);
 
     .hero-featured {
-      background: var(--pink-bg);
+      background: var(--color-picks-bg);
+    }
+
+    .staff-picks {
+      min-height: calc(100dvh - var(--header-height));
+      background: linear-gradient(
+        to bottom,
+        var(--color-picks-bg) 49.9%,
+        var(--color-picks-dark) 50%
+      );
+    }
+
+    .staff-picks__bg {
+      height: 100%;
+      background:
+        linear-gradient(
+          calc(180deg - 20deg),
+          transparent 0%,
+          transparent 49.99%,
+          var(--color-picks-dark) 50%,
+          var(--color-picks-dark) 100%
+        ),
+        linear-gradient(
+          calc(180deg + 20deg),
+          transparent 0%,
+          transparent 49.99%,
+          var(--color-picks-darker) 50%,
+          var(--color-picks-darker) 100%
+        );
+
+      height: 100%;
+    }
+
+    .staff-picks__wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .staff-picks__header {
+      text-align: center;
+      display: grid;
+      gap: 16px;
+      margin-block-end: 32px;
+    }
+
+    .staff-picks__lede {
+      font-size: calc(20 / 16 * 1rem);
+    }
+
+    .staff-picks__all-link {
+      align-self: center;
+      margin-block-start: 48px;
+      width: fit-content;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: calc(20 / 16 * 1rem);
+      display: inline-flex;
+      gap: 8px;
+
+      background-color: hsl(var(--hue-picks), 60%, 92%);
+      border: 1px solid hsl(var(--hue-picks), 60%, 82%);
+      box-shadow:
+        rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
+        rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+
+      transition: 100ms ease-in-out;
+      transition-property: background-color, border-color;
+
+      &:hover {
+        background-color: hsl(var(--hue-picks), 60%, 88%);
+        border-color: hsl(var(--hue-picks), 60%, 76%);
+      }
+
+      &:hover .staff-picks__arrow-link-icon {
+        transform: translateX(4px);
+      }
+    }
+
+    .staff-picks__arrow-link-icon {
+      display: inline-block;
+      stroke-width: 2;
+      width: calc(20 / 16 * 1rem);
+      margin-inline-start: 6px;
+      transform: translateX(-4px);
+      transition: transform 150ms ease-in-out;
+    }
+
+    .staff-picks__grid {
+      display: grid;
+      gap: 32px;
     }
 
     .hero__bg {
@@ -18,15 +109,15 @@
           calc(180deg - 20deg),
           transparent 0%,
           transparent 49.99%,
-          var(--pink-dark) 50%,
-          var(--pink-dark) 100%
+          var(--color-picks-dark) 50%,
+          var(--color-picks-dark) 100%
         ),
         linear-gradient(
           calc(180deg + 20deg),
           transparent 0%,
           transparent 49.99%,
-          var(--pink-darker) 50%,
-          var(--pink-darker) 100%
+          var(--color-picks-darker) 50%,
+          var(--color-picks-darker) 100%
         );
 
       /* background-size: cover;
@@ -211,11 +302,21 @@
       }
     }
 
-    .popular-wrapper {
-      padding-block: 72px 32px;
+    .highlights {
+      background-image: linear-gradient(
+        var(--color-picks-dark),
+        var(--color-main-bg)
+      );
     }
 
     .popular {
+      margin-block-end: 64px;
+    }
+
+    .popular-wrapper {
+      margin-block-start: 48px;
+      border-block-start: 2px solid var(--c-gray-lighter);
+      padding-block: 64px 32px;
       display: flex;
       flex-direction: column;
 
@@ -229,6 +330,7 @@
 
       @media (width >= calc(1000 / 16 * 1rem)) {
         flex-direction: row;
+        padding-block-start: 80px;
 
         & > * {
           flex: 1;
@@ -268,7 +370,7 @@
       z-index: 2;
 
       &:hover ~ .popular__item-content {
-        background: hsl(6, 30%, 92%);
+        background: hsl(var(--hue-picks), 30%, 92%);
       }
 
       &:hover ~ .popular__item-content .popular__name {
@@ -395,6 +497,10 @@
       max-height: calc(50 / 16 * 1rem);
       width: auto;
       /* transition: margin-inline-end 150ms ease-in-out; */
+    }
+
+    .short-reads__wrapper {
+      margin-block-end: 64px;
     }
   }
 }

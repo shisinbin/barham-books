@@ -1825,32 +1825,33 @@ class StaffRemoveCopyView(UserPassesTestMixin, View):
 
 from .editorial import FALLBACK_FEATURES, GENERIC_FALLBACK_COPY
 
+def build_fallback_review(book, copy):
+    return {
+        "is_fallback": True,
+        "book": book,
+        "body": copy,
+        "title": None,
+        "user": None,
+    }
+
 def featured_books(request):
-    HERO_COUNT = 2
+    STAFF_PICK_COUNT = 2
     FEATURED_COUNT = 16
     AUTHOR_COUNT = 10
     SERIES_COUNT = 10
     SHORT_READS_COUNT = 16
 
-    # Attempt to fetch the most recent 2 staff reviews
-    staff_reviews = (
+    staff_picks = (
         Review.objects
-        .filter(user__is_staff=True)
-        .select_related('book')
-        .order_by('-updated')[:HERO_COUNT]
+        .filter(user__is_staff=True, active=True)
+        .select_related('book', 'user')
+        .order_by('-updated')[:STAFF_PICK_COUNT]
     )
 
-    hero_books = []
+    staff_picks_list = list(staff_picks)
 
-    for review in staff_reviews:
-        hero_books.append({
-            "book": review.book,
-            "copy": review.body,
-        })
-
-    # Attempt to replenish hero_books using fallbacks if necessary
-    if len(hero_books) < HERO_COUNT:
-        existing_slugs = {item["book"].slug for item in hero_books}
+    if len(staff_picks_list) < STAFF_PICK_COUNT:
+        existing_slugs = {r.book.slug for r in staff_picks_list}
 
         for fallback in FALLBACK_FEATURES:
             if fallback["slug"] in existing_slugs:
@@ -1861,34 +1862,31 @@ def featured_books(request):
             except Book.DoesNotExist:
                 continue
             
-            hero_books.append({
-                "book": book,
-                "copy": fallback["copy"],
-            })
+            staff_picks_list.append(
+                build_fallback_review(book, fallback["copy"])
+            )
 
-            if len(hero_books) == HERO_COUNT:
+            if len(staff_picks_list) == STAFF_PICK_COUNT:
                 break
 
     # In case fallbacks don't work, replenish with random books
-    if len(hero_books) < HERO_COUNT:
-        needed = HERO_COUNT - len(hero_books)
+    if len(staff_picks_list) < STAFF_PICK_COUNT:
+        needed = STAFF_PICK_COUNT - len(staff_picks_list)
 
-        existing_slugs = {item["book"].slug for item in hero_books}
+        existing_slugs = {r.book.slug for r in staff_picks_list}
 
         replacements = Book.objects.exclude(slug__in=existing_slugs).order_by('?')[:needed]
 
         for book in replacements:
-            hero_books.append({
-                "book": book,
-                "copy": GENERIC_FALLBACK_COPY,
-            })
+            staff_books_list.append(
+                build_fallback_review(book, GENERIC_FALLBACK_COPY)
+            )
     
-    hero_slugs = {item["book"].slug for item in hero_books}
-
+    staff_picks_slugs = {r.book.slug for r in staff_picks_list}
     featured_books = (
         Book.objects
         .filter(is_featured=True)
-        .exclude(slug__in=hero_slugs)
+        .exclude(slug__in=staff_picks_slugs)
         .order_by('-updated', '-created')[:FEATURED_COUNT]
     )
 
@@ -1915,8 +1913,9 @@ def featured_books(request):
     )
 
     context = {
-        'hero_one': hero_books[0],
-        'hero_two': hero_books[1],
+        # 'hero_one': hero_books[0],
+        # 'hero_two': hero_books[1],
+        'staff_picks': staff_picks_list,
         'featured_books': featured_books,
         'popular_authors': popular_authors,
         'popular_series': popular_series,

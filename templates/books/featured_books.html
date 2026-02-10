@@ -8,6 +8,7 @@
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/pages/featured.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/components/staff-pick.css' %}" />
   <link rel="stylesheet" href="{% static 'css/components/carousel.css' %}" />
 {% endblock %}
 
@@ -17,7 +18,7 @@
 
 {% block content %}
   <div class="featured">
-    <div class="hero-featured">
+    {% comment %} <div class="hero-featured">
       <div class="hero__bg">
         <div class="wrapper hero__wrapper">
           <article class="hero__article">
@@ -49,10 +50,41 @@
           {% include 'components/carousel.html' with books=featured_books title='Other Recommendations' tag='section' %}
         </div>
       </div>
+    </div> {% endcomment %}
+
+    <section class="staff-picks">
+      <div class="staff-picks__bg">
+        <div class="wrapper staff-picks__wrapper">
+          <header class="staff-picks__header">
+            <h2 class="staff-picks__title">Staff Picks</h2>
+
+            <p class="staff-picks__lede">Handpicked recommendations from our library team.</p>
+          </header>
+
+          <div class="staff-picks__grid">
+            {% for review in staff_picks %}
+              {% include 'components/staff_pick.html' %}
+            {% endfor %}
+          </div>
+
+          <a href="{% url 'user_reviews' 'shiv' %}" class="staff-picks__all-link">
+            View all staff reviews<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right staff-picks__arrow-link-icon" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <div class="highlights">
+      <div class="wrapper">
+        {% include 'components/carousel.html' with books=featured_books title='Other Library Highlights' tag='section' %}
+      </div>
     </div>
 
-    <div class="wrapper popular-wrapper">
-      <div class="popular">
+    <div class="popular">
+      <div class="wrapper popular-wrapper">
         <section class="authors">
           <h2 class="popular__title">Popular Authors</h2>
 
