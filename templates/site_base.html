@@ -27,8 +27,8 @@
     <meta property="og:site_name" content="Barham Books" />
     <meta property="og:url" content="{{ request.build_absolute_uri }}" />
     <meta property="og:locale" content="en_GB" />
-    <meta name="geo.region" content="GB-BRN">
-    <meta name="geo.placename" content="Wembley">
+    <meta name="geo.region" content="GB-BRN" />
+    <meta name="geo.placename" content="Wembley" />
     <meta name="theme-color" content="hsl(232, 58%, 55%)" />
 
     <link rel="canonical" href="{{ request.build_absolute_uri }}" />
@@ -39,11 +39,11 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/branding/apple-touch-icon.png' %}" />
     <link rel="icon" type="image/png" sizes="192x192" href="{% static 'img/branding/android-chrome-192x192.png' %}" />
 
-    
     {% comment %} <link rel="preload" href="{% static 'fonts/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-mu0SC55I.woff2' %}" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="{% static 'fonts/0QIvMX1D_JOuMwr7I_FMl_E.woff2' %}" as="font" type="font/woff2" crossorigin /> {% endcomment %}
 
     <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/components/nav-menu.css' %}" />
     <link rel="stylesheet" href="{% static 'css/components/staff-tools.css' %}" />
     {% block extra_css %}
 
@@ -60,7 +60,6 @@
   </head>
   <body>
     <div id="app">
-      
       {% block header %}
         <a id="skip-header-link" class="visually-hidden skip" href="#main">Skip to main content</a>
         {% include 'components/header.html' %}
@@ -77,9 +76,21 @@
       {% endblock %}
 
       {% include 'components/toasts.html' %}
+
       {% if user.is_staff %}
-        {% include 'components/staff_tools.html' %}
+        {% include 'components/staff_trigger.html' %}
       {% endif %}
     </div>
+
+    <!-- Backdrop -->
+    <div id="uiBackdrop" class="ui-backdrop" hidden></div>
+
+    <!-- Nav Menu -->
+    {% include 'components/nav_menu.html' %}
+
+    {% if user.is_staff %}
+      <!-- Staff Menu -->
+      {% include 'components/staff_menu.html' %}
+    {% endif %}
   </body>
 </html>

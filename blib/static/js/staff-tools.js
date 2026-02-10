@@ -7,36 +7,28 @@ function initStaffControls() {
     return;
   }
 
+  const staffInvertable = [
+    document.querySelector('#app'),
+    document.querySelector('#modalNav'),
+  ];
+
+  const staffConfig = {
+    element: drawer,
+    inert: staffInvertable,
+    onOpen: () => closeBtn.focus(),
+    onClose: () => triggerBtn.focus(),
+  };
+
   function openDrawer() {
-    drawer.classList.add('open');
-    closeBtn.focus();
-    document.body.style.overflow = 'hidden';
+    openPanel(staffConfig);
   }
 
   function closeDrawer() {
-    drawer.classList.remove('open');
-    triggerBtn.focus();
-    document.body.style.overflow = '';
+    closePanel();
   }
 
   triggerBtn.addEventListener('click', openDrawer);
   closeBtn.addEventListener('click', closeDrawer);
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && drawer.classList.contains('open')) {
-      closeDrawer();
-    }
-  });
-
-  window.addEventListener('click', (e) => {
-    if (
-      drawer.classList.contains('open') &&
-      !drawer.contains(e.target) &&
-      !triggerBtn.contains(e.target)
-    ) {
-      closeDrawer();
-    }
-  });
 }
 
 initStaffControls();

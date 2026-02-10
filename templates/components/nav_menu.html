@@ -1,0 +1,36 @@
+{% load static %}
+
+<div class="modal-nav" id="modalNav" role="dialog" aria-modal="true" aria-labelledby="modalNavTitle">
+  <header class="modal-nav__header">
+    <button id="btnClose" class="modal-nav__close-btn tap-target" aria-label="Close menu"><img src="{% static 'img/icons/close-button.svg' %}" alt="" width="25" height="26" class="modal-nav__close-icon" /></button>
+  </header>
+
+  <nav>
+    <h2 id="modalNavTitle" class="visually-hidden">Navigation</h2>
+
+    <ul class="modal-nav__list">
+      <li class="modal-nav__item">
+        <a href="/" class="modal-nav__link">Home</a>
+      </li>
+      <li class="modal-nav__item">
+        <a href="{% url 'collections' %}" class="modal-nav__link">Collections</a>
+      </li>
+      <li class="modal-nav__item">
+        <a href="{% url 'books_a_z' %}" class="modal-nav__link">A—Z</a>
+      </li>
+      <li class="modal-nav__item">
+        <a href="{% url 'featured_books' %}" class="modal-nav__link">Featured</a>
+      </li>
+      <li class="modal-nav__item">
+        <a href="{% url 'recently_added' %}" class="modal-nav__link">Recent</a>
+      </li>
+      <li class="modal-nav__item">
+        {% if user.is_authenticated %}
+          <a href="{% url 'account_home' %}" class="modal-nav__link modal-nav__account-link">Account</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="modal-nav__link modal-nav__account-link">Login</a>
+        {% endif %}
+      </li>
+    </ul>
+  </nav>
+</div>

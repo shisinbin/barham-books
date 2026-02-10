@@ -6,23 +6,20 @@
   <div class="wrapper topnav__wrapper">
     <a href="/" class="topnav__homelink"><img src="{% static 'img/branding/logo-barham-books-compact.svg' %}" alt="Barham homepage" class="topnav__logo" height="50" width="307" /></a>
 
-    <nav>
-      <span id="nav-label" hidden>Navigation</span>
-      <span id="close-label" hidden>Close Navigation</span>
+    <nav class="topnav__nav">
+      {% comment %} <span id="nav-label" hidden>Navigation</span>
+      <span id="close-label" hidden>Close Navigation</span> {% endcomment %}
 
-      <div class="topnav__overlay"></div>
+      {% comment %} <div class="topnav__overlay"></div> {% endcomment %}
 
       <button id="btnOpen" class="topnav__open-btn tap-target" aria-labelledby="nav-label" aria-expanded="false"><img src="{% static 'img/icons/hamburger.svg' %}" alt="" width="30" height="23" class="topnav__open-icon" /></button>
 
-      <div class="topnav__menu" id="menuTopNav" aria-labelledby="nav-label">
+      {% comment %} <div class="topnav__menu" id="menuTopNav" aria-labelledby="nav-label">
         <button id="btnClose" class="topnav__close-btn tap-target" aria-labelledby="close-label"><img src="{% static 'img/icons/close-button.svg' %}" alt="" width="25" height="26" class="topnav__open-icon" /></button>
 
         <ul class="topnav__links">
           <li class="topnav__item">
             <a href="/" class="topnav__link">Home</a>
-          </li>
-          <li class="topnav__item">
-            <a href="{% url 'explore_books' %}" class="topnav__link">Explore</a>
           </li>
           <li class="topnav__item">
             <a href="{% url 'collections' %}" class="topnav__link">Collections</a>
@@ -31,39 +28,53 @@
             <a href="{% url 'books_a_z' %}" class="topnav__link">A—Z</a>
           </li>
           <li class="topnav__item">
-            <a href="{% url 'contact' %}" class="topnav__link">Contact</a>
+            <a href="{% url 'featured_books' %}" class="topnav__link">Featured</a>
           </li>
           <li class="topnav__item">
-            <a href="{% if user.is_authenticated %}
-                {% url 'account_home' %}
-              {% else %}
-                {% url 'login' %}
-              {% endif %}"
-              class="topnav__link topnav__account-link">
-              <span class="topnav__account-text">
-                {% if user.is_authenticated %}
-                  Account
-                {% else %}
-                  Login
-                {% endif %}
-              </span>
-              <div class="topnav__account-icon-wrapper">
-                <span class="visually-hidden">
-                  {% if user.is_authenticated %}
-                    Account
-                  {% else %}
-                    Login
-                  {% endif %}
-                </span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="account-icon">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-              </div>
-            </a>
+            <a href="{% url 'recently_added' %}" class="topnav__link">Recent</a>
+          </li>
+          <li class="topnav__item">
+            {% if user.is_authenticated %}
+              <a href="{% url 'account_home' %}" class="topnav__link topnav__account-link">Account</a>
+            {% else %}
+              <a href="{% url 'login' %}" class="topnav__link topnav__account-link">Login</a>
+            {% endif %}
           </li>
         </ul>
-      </div>
+      </div> {% endcomment %}
     </nav>
+
+    <div class="topnav__actions">
+      <div class="topnav__search">
+        <button class="topnav__search-btn" aria-expanded="false" aria-controls="search-overlay">
+          <span class="visually-hidden">Open search</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search topnav__search-icon">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+      </div>
+
+      <a href="{% if user.is_authenticated %}
+          {% url 'account_home' %}
+        {% else %}
+          {% url 'login' %}
+        {% endif %}"
+        class="topnav__link topnav__account-link">
+        <div class="topnav__account-icon-wrapper">
+          <span class="visually-hidden">
+            {% if user.is_authenticated %}
+              Account
+            {% else %}
+              Login
+            {% endif %}
+          </span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="account-icon">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+      </a>
+    </div>
   </div>
 </header>

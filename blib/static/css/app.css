@@ -426,6 +426,26 @@
 }
 
 @layer component {
+  .ui-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: hsl(0, 0%, 0%, 0.75);
+    opacity: 0;
+    transition: opacity 250ms ease-in-out;
+    z-index: 100;
+
+    &.is-visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    &[hidden] {
+      display: block;
+      pointer-events: none;
+      opacity: 0;
+    }
+  }
+
   .button {
     /* display: inline-flex;
     align-items: center;
@@ -490,40 +510,29 @@
   .topnav {
     position: sticky;
     top: 0;
-    z-index: 110;
+    z-index: 100;
     background-color: var(--color-header-bg);
     height: var(--header-height);
     display: grid;
     align-content: center;
 
-    &.is-open {
-      .topnav__overlay {
-        opacity: 1;
-        pointer-events: all;
-      }
-
-      .topnav__menu {
-        translate: 0 0;
-
-        @media (prefers-reduced-motion) {
-          opacity: 1;
-        }
-      }
-    }
-
     .topnav__wrapper {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      grid-template-areas: 'logo . actions nav';
+
       padding-block: 0;
 
       @media (width >= calc(600 / 16 * 1rem)) {
-        /* padding-block: 20px; */
+        grid-template-columns: 1fr auto 1fr;
+        grid-template-areas: 'logo nav actions';
       }
     }
 
     .topnav__homelink {
+      grid-area: logo;
+      justify-self: start;
+
       &:hover {
         opacity: 0.8;
       }
@@ -538,26 +547,13 @@
       }
     }
 
-    .topnav__overlay {
-      opacity: 0;
-      pointer-events: none;
-
-      @media (width < calc(600 / 16 * 1rem)) {
-        position: fixed;
-        inset: 0;
-        background-color: var(--color-topnav-menu-overlay);
-        z-index: 100;
-        transition: opacity 250ms ease-in-out;
-
-        /* &:has(+ .topnav__open-btn[aria-expanded='true']) {
-          opacity: 1;
-          pointer-events: all;
-        } */
-      }
+    .topnav__nav {
+      grid-area: nav;
+      justify-self: center;
+      align-self: center;
     }
 
-    .topnav__open-btn,
-    .topnav__close-btn {
+    .topnav__open-btn {
       display: none;
 
       @media (width < calc(600 / 16 * 1rem)) {
@@ -582,93 +578,13 @@
       }
     }
 
-    .topnav__open-btn {
-      /* &[aria-expanded='true'] {
-        & + .topnav__menu {
-          translate: 0 0;
-
-          @media (prefers-reduced-motion) {
-            opacity: 1;
-          }
-        }
-      } */
-    }
-
     .topnav__open-icon {
-    }
-
-    .topnav__menu {
-      @media (width < calc(600 / 16 * 1rem)) {
-        position: fixed;
-        inset: 0 0 auto 0;
-        z-index: 120;
-        background-color: var(--color-topnav-menu-bg);
-        border-radius: 0 0 20px 20px;
-        box-shadow: 0 12px 12px var(--color-topnav-menu-shadow);
-        translate: 0 -110%;
-
-        &.animating {
-          transition: translate 250ms ease-in-out;
-
-          @media (prefers-reduced-motion) {
-            transition-property: opacity;
-          }
-        }
-      }
-    }
-
-    .topnav__close-btn {
-      position: absolute;
-      top: 20px;
-      right: var(--vertical-padding);
-    }
-
-    .topnav__close-icon {
-    }
-
-    .topnav__links {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-
-      @media (width < calc(600 / 16 * 1rem)) {
-        gap: 40px;
-        flex-direction: column;
-        align-items: center;
-        padding-block: 120px;
-      }
-    }
-
-    .topnav__item:first-child {
-      display: none;
-
-      @media (width < calc(600 / 16 * 1rem)) {
-        display: revert;
-      }
-    }
-
-    .topnav__link {
-      color: var(--color-text-light);
-      font-size: var(--font-size-topnav);
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-
-      &:hover {
-        text-decoration: underline 2px;
-        text-underline-offset: 4px;
-      }
-
-      @media (width < calc(600 / 16 * 1rem)) {
-        text-transform: revert;
-      }
     }
 
     .topnav__account-link {
       position: relative;
       isolation: isolate;
       display: block;
-      margin-inline-start: 8px;
 
       @media (width >= calc(600 / 16 * 1rem)) {
         &::after {
@@ -689,13 +605,6 @@
       }
     }
 
-    .topnav__account-text {
-      display: none;
-      @media (width < calc(600 / 16 * 1rem)) {
-        display: revert;
-      }
-    }
-
     .topnav__account-icon-wrapper {
       @media (width < calc(600 / 16 * 1rem)) {
         display: none;
@@ -705,6 +614,23 @@
     .account-icon {
       fill: var(--color-text-light);
       stroke: var(--color-text-light);
+      height: 28px;
+      width: 28px;
+    }
+
+    .topnav__actions {
+      grid-area: actions;
+      justify-self: end;
+      align-self: center;
+
+      display: flex;
+      gap: 12px;
+    }
+
+    .topnav__search-icon {
+      height: 28px;
+      width: 28px;
+      color: var(--c-white);
     }
   }
 
@@ -1155,12 +1081,14 @@
 }
 
 /* 
-  z-index:
-  - 210: staff menu
-  - 200: staff trigger
+  APP Z-INDEXES:
+  - staff trigger: 200
   - 150: skip link (even though it'll be inerted by js)
-  - 120: mobile menu
-  - 110: sticky header (header below menu, above overlay)
-  - 100: overlay (for mobile menu)
+  - 100: sticky header (header below menu, above overlay)
   - 80: sticky search bar
+
+  MODALS Z-INDEXES:
+  - backdrop: 100
+  - nav: 200
+  - staff menu: 200
 */

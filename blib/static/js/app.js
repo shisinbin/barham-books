@@ -1,120 +1,128 @@
 // document.getElementById('current-year').textContent =
 //   new Date().getFullYear();
 
-const main = document.querySelector('#main');
-const footer = document.querySelector('#footer');
-const header = document.querySelector('#header');
+/* ~~~~~~~~~~~ BACKDROP ~~~~~~~~~~~~~ */
+const backdrop = document.getElementById('uiBackdrop');
+
+let activePanel = null;
+
+function openPanel(config) {
+  if (activePanel) {
+    closePanel();
+  }
+
+  const { element, inert = [], onOpen } = config;
+
+  element.classList.add('open');
+  backdrop.hidden = false;
+  backdrop.classList.add('is-visible');
+  document.body.style.overflow = 'hidden';
+
+  // inert specified elements
+  inert.forEach((el) => el?.setAttribute('inert', ''));
+
+  if (onOpen) onOpen();
+
+  activePanel = config;
+}
+
+function closePanel() {
+  if (!activePanel) return;
+
+  const { element, inert = [], onClose } = activePanel;
+
+  element.classList.remove('open');
+  backdrop.classList.remove('is-visible');
+  backdrop.hidden = true;
+  document.body.style.overflow = '';
+
+  // reactivate
+  inert.forEach((el) => el?.removeAttribute('inert'));
+
+  if (onClose) onClose();
+
+  activePanel = null;
+}
+
+backdrop.addEventListener('click', closePanel);
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closePanel();
+  }
+});
+
+/* ~~~~~~~~~~~~~~~ END BACKDROP ~~~~~~~~~~~~~~~~ */
+
 const btnOpen = document.querySelector('#btnOpen');
 const btnClose = document.querySelector('#btnClose');
-const menuTopNav = document.querySelector('#menuTopNav');
+const modalNav = document.querySelector('#modalNav');
 const breakpoint = window.matchMedia('(width < 600px)');
 
-const inertable = [
-  main,
-  footer,
-  document.querySelector('.topnav__homelink'),
-  btnOpen,
-  document.querySelector('#skip-header-link'),
+const navInertable = [
+  document.querySelector('#app'),
+  document.querySelector('#staffDrawer'),
 ];
 
-let isMenuOpen = false;
+const navConfig = {
+  element: modalNav,
+  inert: navInertable,
+  onOpen: () => {
+    modalNav.classList.add('animating');
+    setTimeout(() => {
+      modalNav.classList.remove('animating');
+    }, 300);
+
+    modalNav.removeAttribute('inert');
+    btnOpen.setAttribute('aria-expanded', 'true');
+    btnClose.focus();
+  },
+  onClose: () => {
+    modalNav.classList.add('animating');
+    setTimeout(() => {
+      modalNav.classList.remove('animating');
+    }, 300);
+
+    modalNav.setAttribute('inert', '');
+    btnOpen.setAttribute('aria-expanded', 'false');
+    btnOpen.focus();
+  },
+};
+
+// let isMenuOpen = false;
 
 btnOpen.addEventListener('click', openMobileMenu);
 btnClose.addEventListener('click', closeMobileMenu);
 breakpoint.addEventListener('change', setupTopNav);
 
 function openMobileMenu() {
-  if (isMenuOpen) return;
-  isMenuOpen = true;
-
-  animateMenu();
-
-  header.classList.add('is-open');
-  btnOpen.setAttribute('aria-expanded', 'true');
-  menuTopNav.removeAttribute('inert');
-
-  setInertAll(true);
-
-  bodyScrollLockUpgrade.disableBodyScroll(menuTopNav);
-  attachGlobalMenuListeners();
-
-  btnClose.focus();
+  openPanel(navConfig);
 }
 
 function closeMobileMenu() {
-  if (!isMenuOpen) return;
-  isMenuOpen = false;
-
-  animateMenu();
-
-  header.classList.remove('is-open');
-  btnOpen.setAttribute('aria-expanded', 'false');
-  menuTopNav.setAttribute('inert', '');
-
-  setInertAll(false);
-
-  bodyScrollLockUpgrade.enableBodyScroll(menuTopNav);
-  detachGlobalMenuListeners();
-
-  btnOpen.focus();
+  closePanel();
 }
 
 function setupTopNav() {
   if (breakpoint.matches) {
     // console.log('is mobile');
-    menuTopNav.setAttribute('inert', '');
+    modalNav.setAttribute('inert', '');
   } else {
     // console.log('is desktop');
-    if (isMenuOpen) {
-      closeMobileMenu();
+    if (activePanel === navConfig) {
+      closePanel();
     }
-    menuTopNav.removeAttribute('inert');
+    modalNav.removeAttribute('inert');
   }
 }
 
-function animateMenu() {
-  menuTopNav.classList.add('animating');
+// function animateMenu() {
+//   modalNav.classList.add('animating');
 
-  setTimeout(() => {
-    menuTopNav.classList.remove('animating');
-  }, 300);
-}
-
-function handleKeydown(e) {
-  if (!isMenuOpen) return;
-
-  if (e.key === 'Escape') {
-    e.preventDefault();
-    closeMobileMenu();
-  }
-}
-
-function handleClickOutside(e) {
-  if (!isMenuOpen) return;
-
-  if (!menuTopNav.contains(e.target) && !btnOpen.contains(e.target)) {
-    closeMobileMenu();
-  }
-}
-
-function attachGlobalMenuListeners() {
-  document.addEventListener('keydown', handleKeydown);
-  document.addEventListener('click', handleClickOutside);
-}
-
-function detachGlobalMenuListeners() {
-  document.removeEventListener('keydown', handleKeydown);
-  document.removeEventListener('click', handleClickOutside);
-}
-
-function setInertAll(state) {
-  inertable.forEach((el) => {
-    if (!el) return;
-    state
-      ? el.setAttribute('inert', '')
-      : el.removeAttribute('inert');
-  });
-}
+//   setTimeout(() => {
+//     modalNav.classList.remove('animating');
+//   }, 300);
+// }
 
 setupTopNav();
 
@@ -138,7 +146,7 @@ setupTopNav();
 
   So then, here we'd do something like:
 
-  const trap = focusTrap.createFocusTrap(menuTopNav, {
+  const trap = focusTrap.createFocusTrap(modalNav, {
     onDeactivate: () => {
       closeMobileMenu();
     },

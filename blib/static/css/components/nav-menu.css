@@ -1,0 +1,71 @@
+@layer component {
+  .modal-nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 200;
+    background-color: hsl(230, 25%, 50%);
+    border-radius: 0 0 20px 20px;
+    box-shadow:
+      rgba(0, 0, 0, 0.1) 0px 10px 15px -3px,
+      rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+    translate: 0 -110%;
+
+    display: grid;
+
+    &.open {
+      translate: 0 0;
+
+      @media (prefers-reduced-motion) {
+        opacity: 1;
+      }
+    }
+
+    &.animating {
+      transition: translate 250ms ease-in-out;
+
+      @media (prefers-reduced-motion) {
+        transition-property: opacity;
+      }
+    }
+
+    .modal-nav__header {
+      height: var(--header-height);
+      display: flex;
+      justify-content: flex-end;
+      padding-inline: var(--vertical-padding);
+    }
+
+    .modal-nav__close-btn {
+      cursor: pointer;
+    }
+
+    .modal-nav__close-icon {
+    }
+
+    .modal-nav__list {
+      padding: 0;
+      list-style: none;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      padding-block: calc(96px - var(--header-height)) 96px;
+    }
+
+    .modal-nav__item {
+    }
+
+    .modal-nav__link {
+      font-size: var(--font-size-topnav);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--c-white);
+
+      &:hover {
+        text-decoration: underline 2px;
+        text-underline-offset: 4px;
+      }
+    }
+  }
+}
