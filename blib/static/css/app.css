@@ -553,6 +553,34 @@
       align-self: center;
     }
 
+    .topnav__desktop-nav-list {
+      padding: 0;
+      list-style: none;
+
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      color: var(--c-white);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+
+      @media (width < calc(600 / 16 * 1rem)) {
+        display: none;
+      }
+    }
+
+    .topnav__desktop-nav-item {
+      text-underline-offset: 3px;
+
+      &:hover {
+        text-decoration: 2px underline;
+      }
+    }
+
+    .topnav__desktop-nav-link {
+    }
+
     .topnav__open-btn {
       display: none;
 
@@ -640,7 +668,6 @@
 
     .hero__wrapper {
       position: relative;
-      /* padding-block: 60px 80px; */
       padding-block: 120px 150px;
       display: grid;
       grid-template-columns: 1fr;
@@ -651,7 +678,6 @@
 
       @media (width >= calc(1000 / 16 * 1rem)) {
         grid-template-columns: 1fr 1fr;
-        /* padding-block: 100px 120px; */
       }
     }
 

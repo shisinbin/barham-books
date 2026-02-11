@@ -7,41 +7,22 @@
     <a href="/" class="topnav__homelink"><img src="{% static 'img/branding/logo-barham-books-compact.svg' %}" alt="Barham homepage" class="topnav__logo" height="50" width="307" /></a>
 
     <nav class="topnav__nav">
-      {% comment %} <span id="nav-label" hidden>Navigation</span>
-      <span id="close-label" hidden>Close Navigation</span> {% endcomment %}
+      <button id="navOpenBtn" class="topnav__open-btn tap-target" aria-labelledby="nav-label" aria-expanded="false"><img src="{% static 'img/icons/hamburger.svg' %}" alt="" width="30" height="23" class="topnav__open-icon" /></button>
 
-      {% comment %} <div class="topnav__overlay"></div> {% endcomment %}
-
-      <button id="btnOpen" class="topnav__open-btn tap-target" aria-labelledby="nav-label" aria-expanded="false"><img src="{% static 'img/icons/hamburger.svg' %}" alt="" width="30" height="23" class="topnav__open-icon" /></button>
-
-      {% comment %} <div class="topnav__menu" id="menuTopNav" aria-labelledby="nav-label">
-        <button id="btnClose" class="topnav__close-btn tap-target" aria-labelledby="close-label"><img src="{% static 'img/icons/close-button.svg' %}" alt="" width="25" height="26" class="topnav__open-icon" /></button>
-
-        <ul class="topnav__links">
-          <li class="topnav__item">
-            <a href="/" class="topnav__link">Home</a>
-          </li>
-          <li class="topnav__item">
-            <a href="{% url 'collections' %}" class="topnav__link">Collections</a>
-          </li>
-          <li class="topnav__item">
-            <a href="{% url 'books_a_z' %}" class="topnav__link">A—Z</a>
-          </li>
-          <li class="topnav__item">
-            <a href="{% url 'featured_books' %}" class="topnav__link">Featured</a>
-          </li>
-          <li class="topnav__item">
-            <a href="{% url 'recently_added' %}" class="topnav__link">Recent</a>
-          </li>
-          <li class="topnav__item">
-            {% if user.is_authenticated %}
-              <a href="{% url 'account_home' %}" class="topnav__link topnav__account-link">Account</a>
-            {% else %}
-              <a href="{% url 'login' %}" class="topnav__link topnav__account-link">Login</a>
-            {% endif %}
-          </li>
-        </ul>
-      </div> {% endcomment %}
+      <ul class="topnav__desktop-nav-list">
+        <li class="topnav__desktop-nav-item">
+          <a href="{% url 'collections' %}" class="topnav__desktop-nav-link">Collections</a>
+        </li>
+        <li class="topnav__desktop-nav-item">
+          <a href="{% url 'books_a_z' %}" class="topnav__desktop-nav-link">A—Z</a>
+        </li>
+        <li class="topnav__desktop-nav-item">
+          <a href="{% url 'featured_books' %}" class="topnav__desktop-nav-link">Featured</a>
+        </li>
+        <li class="topnav__desktop-nav-item">
+          <a href="{% url 'recently_added' %}" class="topnav__desktop-nav-link">Recent</a>
+        </li>
+      </ul>
     </nav>
 
     <div class="topnav__actions">

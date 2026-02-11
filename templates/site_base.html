@@ -49,10 +49,12 @@
 
     {% endblock %}
 
-    <!-- Body scroll lock -->
-    <script src="https://cdn.jsdelivr.net/gh/rick-liruixin/body-scroll-lock-upgrade@v1.1.0/lib/index.umd.js"></script>
+    <!-- Body scroll lock (not needed anymore) -->
+    {% comment %} <script src="https://cdn.jsdelivr.net/gh/rick-liruixin/body-scroll-lock-upgrade@v1.1.0/lib/index.umd.js"></script> {% endcomment %}
     <script src="{% static 'js/csrf.js' %}" defer></script>
     <script src="{% static 'js/app.js' %}" defer></script>
+    <script src="{% static 'js/nav.js' %}" defer></script>
+    <script src="{% static 'js/toasts.js' %}" defer></script>
     <script src="{% static 'js/staff-tools.js' %}" defer></script>
     {% block extra_js %}
 
