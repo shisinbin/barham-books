@@ -7,7 +7,15 @@
     <a href="/" class="topnav__homelink"><img src="{% static 'img/branding/logo-barham-books-compact.svg' %}" alt="Barham homepage" class="topnav__logo" height="50" width="307" /></a>
 
     <nav class="topnav__nav">
-      <button id="navOpenBtn" class="topnav__open-btn tap-target" aria-labelledby="nav-label" aria-expanded="false"><img src="{% static 'img/icons/hamburger.svg' %}" alt="" width="30" height="23" class="topnav__open-icon" /></button>
+      <button id="navOpenBtn" class="topnav__open-btn tap-target" aria-expanded="false">
+        <span class="visually-hidden">Open navigation</span>
+        {% comment %} <img src="{% static 'img/icons/hamburger.svg' %}" alt="" width="30" height="23" class="topnav__open-icon" aria-hidden="true" /> {% endcomment %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu topnav__open-icon" aria-hidden="true">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
 
       <ul class="topnav__desktop-nav-list">
         <li class="topnav__desktop-nav-item">
@@ -27,9 +35,9 @@
 
     <div class="topnav__actions">
       <div class="topnav__search">
-        <button class="topnav__search-btn" aria-expanded="false" aria-controls="search-overlay">
+        <button id="searchOpenBtn" class="topnav__search-btn" aria-expanded="false">
           <span class="visually-hidden">Open search</span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search topnav__search-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search topnav__search-icon" aria-hidden="true">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
@@ -50,7 +58,7 @@
               Login
             {% endif %}
           </span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="account-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="topnav__account-icon" aria-hidden="true">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
             <circle cx="12" cy="7" r="4"></circle>
           </svg>

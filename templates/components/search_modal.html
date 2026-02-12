@@ -1,0 +1,42 @@
+{% load static %}
+
+<div class="modal-search" id="modalSearch" role="dialog" aria-modal="true" aria-labelledby="modalSearchLabel" data-autocomplete data-autocomplete-url="{% url 'autocomplete_books' %}" inert>
+  <div class="modal-search__header wrapper">
+    <div class="modal-search__close-wrapper">
+      <button id="searchCloseBtn" class="modal-search__close" aria-label="Close search" type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left modal-search__icon-close">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <form action="{% url 'book_search_redux' %}" method="get" class="modal-search__form" role="search" autocomplete="off">
+      <label id="modalSearchLabel" class="visually-hidden">Search books</label>
+
+      <!-- INPUT WRAPPER -->
+      <div class="modal-search__input-wrapper">
+        <!-- ICON -->
+        {% comment %} <div class="modal-search__icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search modal-search__icon-search" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div> {% endcomment %}
+        <!-- INPUT -->
+        <input name="q" minlength="3" maxlength="64" required id="searchModalInput" class="modal-search__input" type="text" placeholder="Search by title, author..." autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="modal-autocomplete" />
+        <!-- CLEAR BUTTON -->
+        <button class="search__clear-button modal-search__clear" type="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x modal-search__icon-clear">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </form>
+  </div>
+  <!-- AUTOCOMPLETE -->
+  <div class="wrapper modal-search__autocomplete-wrapper">
+    <ul id="modal-autocomplete" class="search__autocomplete modal-search__autocomplete" role="listbox" hidden></ul>
+  </div>
+</div>

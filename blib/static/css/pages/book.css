@@ -5,6 +5,7 @@
     isolation: isolate;
 
     .book__wrapper {
+      padding-block-start: 32px;
       display: grid;
       grid-template-columns: 1fr;
       grid-template-areas:
@@ -20,6 +21,7 @@
         'reviews';
 
       @media (width >= calc(768 / 16 * 1rem)) {
+        padding-block-start: 60px;
         grid-template-columns: calc(260 / 16 * 1rem) 1fr;
         grid-template-areas:
           '.        breadcrumb'
@@ -47,10 +49,12 @@
       display: inline-flex;
       gap: 10px;
       align-items: center;
+      color: var(--c-gray-medium);
 
       .icon {
         width: calc(20 / 16 * 1rem);
         height: calc(20 / 16 * 1rem);
+        stroke: var(--c-gray-medium);
       }
 
       &:hover {

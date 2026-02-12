@@ -17,10 +17,6 @@
   <link rel="stylesheet" href="{% static 'css/components/pagination.css' %}" />
 {% endblock %}
 
-{% block extra_js %}
-  <script src="{% static 'js/autocomplete_redux.js' %}" defer></script>
-{% endblock %}
-
 {% block content %}
   <label for="search-input" class="visually-hidden">Search for books using title or author name</label>
   {% include 'components/search_bar.html' %}

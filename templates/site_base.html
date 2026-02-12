@@ -44,6 +44,7 @@
 
     <link rel="stylesheet" href="{% static 'css/app.css' %}" />
     <link rel="stylesheet" href="{% static 'css/components/nav-menu.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/components/search-modal.css' %}" />
     <link rel="stylesheet" href="{% static 'css/components/staff-tools.css' %}" />
     {% block extra_css %}
 
@@ -54,6 +55,8 @@
     <script src="{% static 'js/csrf.js' %}" defer></script>
     <script src="{% static 'js/app.js' %}" defer></script>
     <script src="{% static 'js/nav.js' %}" defer></script>
+    <script src="{% static 'js/search-modal.js' %}" defer></script>
+    <script src="{% static 'js/autocomplete_redux.js' %}" defer></script>
     <script src="{% static 'js/toasts.js' %}" defer></script>
     <script src="{% static 'js/staff-tools.js' %}" defer></script>
     {% block extra_js %}
@@ -85,10 +88,13 @@
     </div>
 
     <!-- Backdrop -->
-    <div id="uiBackdrop" class="ui-backdrop" hidden></div>
+    <div id="uiBackdrop" class="ui-backdrop" hidden aria-hidden="true"></div>
 
     <!-- Nav Menu -->
     {% include 'components/nav_menu.html' %}
+
+    <!-- Search Menu -->
+    {% include 'components/search_modal.html' %}
 
     {% if user.is_staff %}
       <!-- Staff Menu -->

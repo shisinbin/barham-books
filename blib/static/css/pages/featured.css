@@ -70,8 +70,8 @@
       display: inline-flex;
       gap: 8px;
 
-      background-color: hsl(var(--hue-picks), 60%, 92%);
-      border: 1px solid hsl(var(--hue-picks), 60%, 82%);
+      background-color: hsl(var(--hue-picks), 60%, 98%);
+      border: 1px solid hsl(var(--hue-picks), 60%, 88%);
       box-shadow:
         rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
         rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
@@ -80,8 +80,8 @@
       transition-property: background-color, border-color;
 
       &:hover {
-        background-color: hsl(var(--hue-picks), 60%, 88%);
-        border-color: hsl(var(--hue-picks), 60%, 76%);
+        background-color: hsl(var(--hue-picks), 60%, 94%);
+        border-color: hsl(var(--hue-picks), 60%, 82%);
       }
 
       &:hover .staff-picks__arrow-link-icon {

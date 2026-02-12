@@ -1,8 +1,14 @@
 {% load static %}
 
-<div class="modal-nav" id="modalNav" role="dialog" aria-modal="true" aria-labelledby="modalNavTitle">
+<div class="modal-nav" id="modalNav" role="dialog" aria-modal="true" aria-labelledby="modalNavTitle" inert>
   <header class="modal-nav__header">
-    <button id="navCloseBtn" class="modal-nav__close-btn tap-target" aria-label="Close menu"><img src="{% static 'img/icons/close-button.svg' %}" alt="" width="25" height="26" class="modal-nav__close-icon" /></button>
+    <button id="navCloseBtn" class="modal-nav__close-btn tap-target" aria-label="Close menu">
+      {% comment %} <img src="{% static 'img/icons/close-button.svg' %}" alt="" width="25" height="26" class="modal-nav__close-icon" /> {% endcomment %}
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x modal-nav__close-icon">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
   </header>
 
   <nav>

@@ -32,7 +32,7 @@
       position: absolute;
       inset: 0;
       background: hsl(0, 0%, 100%);
-      opacity: 0.3;
+      opacity: 0.8;
     }
 
     .staff-pick__book-identity {
@@ -114,15 +114,15 @@
       border-radius: 8px;
       border: 1px solid #ddd;
 
-      background-color: hsl(var(--hue-picks), 50%, 94%);
-      border: 1px solid hsl(var(--hue-picks), 50%, 88%);
+      background-color: hsl(var(--hue-picks), 50%, 96%);
+      border: 1px solid hsl(var(--hue-picks), 50%, 90%);
 
       transition: 100ms ease-in-out;
       transition-property: background-color, border-color;
 
       &:hover {
-        background-color: hsl(var(--hue-picks), 50%, 92%);
-        border-color: hsl(var(--hue-picks), 50%, 80%);
+        background-color: hsl(var(--hue-picks), 50%, 94%);
+        border-color: hsl(var(--hue-picks), 50%, 82%);
       }
 
       &:hover .staff-pick__arrow-link-icon {

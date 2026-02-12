@@ -13,7 +13,7 @@ function initNavModal() {
 
   const navConfig = {
     element: modalNav,
-    inert: [app, staffDrawer],
+    inert: [app, staffDrawer].filter(Boolean),
     onOpen: () => {
       modalNav.classList.add('animating');
       setTimeout(() => {

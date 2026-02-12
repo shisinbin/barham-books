@@ -585,8 +585,10 @@
       display: none;
 
       @media (width < calc(600 / 16 * 1rem)) {
-        display: revert;
+        display: grid;
+        place-content: center;
         cursor: pointer;
+        margin-inline-start: 16px;
 
         position: relative;
         --click-target-minimum: 44px;
@@ -607,14 +609,23 @@
     }
 
     .topnav__open-icon {
+      width: 32px;
+      stroke: var(--c-white);
+    }
+
+    .topnav__search-btn {
+      cursor: pointer;
+      display: grid;
+      place-content: center;
     }
 
     .topnav__account-link {
       position: relative;
       isolation: isolate;
-      display: block;
+      display: none;
 
       @media (width >= calc(600 / 16 * 1rem)) {
+        display: block;
         &::after {
           content: '';
           position: absolute;
@@ -634,15 +645,13 @@
     }
 
     .topnav__account-icon-wrapper {
-      @media (width < calc(600 / 16 * 1rem)) {
-        display: none;
-      }
+      display: grid;
+      place-content: center;
     }
 
-    .account-icon {
+    .topnav__account-icon {
       fill: var(--color-text-light);
       stroke: var(--color-text-light);
-      height: 28px;
       width: 28px;
     }
 
@@ -652,11 +661,10 @@
       align-self: center;
 
       display: flex;
-      gap: 12px;
+      gap: 16px;
     }
 
     .topnav__search-icon {
-      height: 28px;
       width: 28px;
       color: var(--c-white);
     }

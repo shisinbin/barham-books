@@ -11,13 +11,14 @@ function initStaffControls() {
 
   const staffConfig = {
     element: drawer,
-    inert: [app, modalNav],
+    inert: [app, modalNav].filter(Boolean),
     onOpen: () => {
       drawer.classList.add('animating');
       setTimeout(() => {
         drawer.classList.remove('animating');
       }, 300);
 
+      drawer.removeAttribute('inert');
       closeBtn.focus();
     },
     onClose: () => {
@@ -26,6 +27,7 @@ function initStaffControls() {
         drawer.classList.remove('animating');
       }, 300);
 
+      drawer.setAttribute('inert', '');
       triggerBtn.focus();
     },
   };
