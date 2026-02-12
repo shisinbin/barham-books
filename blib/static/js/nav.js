@@ -9,7 +9,7 @@ function initNavModal() {
     return;
   }
 
-  const breakpoint = window.matchMedia('(width < 600px)');
+  const breakpoint = window.matchMedia('(width < 768px)');
 
   const navConfig = {
     element: modalNav,

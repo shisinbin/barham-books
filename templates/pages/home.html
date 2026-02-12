@@ -37,7 +37,7 @@
     <div class="home__inner">
       <div class="home__brand">
         <h1 class="home__logo">Barham Books</h1>
-        <p class="home__lede">
+        <p class="home__lede medium">
           Explore the general book collection at <span class="home__name">Barham Community Library</span>.
         </p>
       </div>
@@ -73,16 +73,16 @@
       <nav class="home__primary-nav" aria-label="Catalogue navigation">
         <ul>
           <li>
-            <a href="{% url 'collections' %}">Collections</a>
-          </li>
-          <li>
-            <a href="{% url 'books_a_z' %}">Browse A—Z</a>
-          </li>
-          <li>
             <a href="{% url 'featured_books' %}">Featured</a>
           </li>
           <li>
             <a href="{% url 'recently_added' %}">Recently added</a>
+          </li>
+          <li>
+            <a href="{% url 'collections' %}">Collections</a>
+          </li>
+          <li>
+            <a href="{% url 'books_a_z' %}">Browse A—Z</a>
           </li>
         </ul>
       </nav>

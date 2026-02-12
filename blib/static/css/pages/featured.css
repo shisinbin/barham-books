@@ -53,11 +53,10 @@
       text-align: center;
       display: grid;
       gap: 16px;
-      margin-block-end: 32px;
+      margin-block-end: 48px;
     }
 
     .staff-picks__lede {
-      font-size: calc(20 / 16 * 1rem);
     }
 
     .staff-picks__all-link {
@@ -100,7 +99,7 @@
 
     .staff-picks__grid {
       display: grid;
-      gap: 32px;
+      gap: 48px;
     }
 
     .hero__bg {

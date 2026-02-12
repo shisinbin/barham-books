@@ -65,14 +65,22 @@
     --fs-22: calc(22 / 16 * 1rem);
     --fs-24: calc(24 / 16 * 1rem);
     --fs-28: calc(28 / 16 * 1rem);
+    --fs-30: calc(30 / 16 * 1rem);
+    --fs-32: calc(32 / 16 * 1rem);
+    --fs-34: calc(34 / 16 * 1rem);
     --fs-36: calc(36 / 16 * 1rem);
+    --fs-38: calc(38 / 16 * 1rem);
+    --fs-40: calc(40 / 16 * 1rem);
     --fs-42: calc(42 / 16 * 1rem);
     --fs-48: calc(48 / 16 * 1rem);
+    --fs-56: calc(56 / 16 * 1rem);
     --fs-72: calc(72 / 16 * 1rem);
 
     --font-size-topnav: var(--fs-20);
-    --font-size-h1: var(--fs-42);
-    --font-size-h2: var(--fs-36);
+    /* --font-size-h1: var(--fs-42); */
+    --font-size-h1: var(--fs-36);
+    /* --font-size-h2: var(--fs-36); */
+    --font-size-h2: var(--fs-30);
     --font-size-h3: var(--fs-24);
     --font-size-button: var(--fs-18);
     --font-size-quote: var(--fs-24);
@@ -84,10 +92,13 @@
     --font-size-book-card-heading: var(--fs-22);
 
     @media (width >= calc(600 / 16 * 1rem)) {
-      --font-size-topnav: var(--fs-16);
-      --font-size-h1: var(--fs-72);
-      --font-size-h2: var(--fs-48);
-      --font-size-quote: var(--fs-36);
+      --font-size-topnav: var(--fs-20);
+      /* --font-size-h1: var(--fs-72); */
+      --font-size-h1: var(--fs-56);
+      /* --font-size-h2: var(--fs-48); */
+      --font-size-h2: var(--fs-40);
+      /* --font-size-quote: var(--fs-36); */
+      --font-size-quote: var(--fs-32);
       /* --font-size-book-title: var(--fs-24);
       --font-size-book-author: var(--fs-18); */
       --font-size-form-label: var(--fs-24);
@@ -523,7 +534,7 @@
 
       padding-block: 0;
 
-      @media (width >= calc(600 / 16 * 1rem)) {
+      @media (width >= calc(768 / 16 * 1rem)) {
         grid-template-columns: 1fr auto 1fr;
         grid-template-areas: 'logo nav actions';
       }
@@ -542,7 +553,7 @@
       height: 30px;
       width: auto;
 
-      @media (width >= calc(600 / 16 * 1rem)) {
+      @media (width >= calc(768 / 16 * 1rem)) {
         height: 40px;
       }
     }
@@ -562,10 +573,11 @@
       gap: 32px;
       color: var(--c-white);
       text-transform: uppercase;
-      font-weight: 600;
+      font-weight: 500;
       letter-spacing: 0.05em;
+      font-size: calc(18 / 16 * 1rem);
 
-      @media (width < calc(600 / 16 * 1rem)) {
+      @media (width < calc(768 / 16 * 1rem)) {
         display: none;
       }
     }
@@ -584,7 +596,7 @@
     .topnav__open-btn {
       display: none;
 
-      @media (width < calc(600 / 16 * 1rem)) {
+      @media (width < calc(768 / 16 * 1rem)) {
         display: grid;
         place-content: center;
         cursor: pointer;
@@ -617,6 +629,25 @@
       cursor: pointer;
       display: grid;
       place-content: center;
+      position: relative;
+
+      @media (width >= calc(768 / 16 * 1rem)) {
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -4px;
+          left: 0;
+          right: 0;
+          height: 2px;
+          background-color: var(--color-text-light);
+          opacity: 0;
+          transition: opacity 50ms ease-in-out;
+        }
+
+        &:hover::after {
+          opacity: 1;
+        }
+      }
     }
 
     .topnav__account-link {
@@ -624,7 +655,7 @@
       isolation: isolate;
       display: none;
 
-      @media (width >= calc(600 / 16 * 1rem)) {
+      @media (width >= calc(768 / 16 * 1rem)) {
         display: block;
         &::after {
           content: '';

@@ -9,7 +9,7 @@
       display: grid;
       grid-template-columns: 1fr;
       grid-template-areas:
-        'breadcrumb'
+        /* 'breadcrumb' */
         'image'
         'title'
         'actions'
@@ -24,7 +24,7 @@
         padding-block-start: 60px;
         grid-template-columns: calc(260 / 16 * 1rem) 1fr;
         grid-template-areas:
-          '.        breadcrumb'
+          /* '.        breadcrumb' */
           'sidebar  title'
           'sidebar  summary'
           'sidebar  meta'
@@ -40,7 +40,7 @@
       }
     }
 
-    .book__nav {
+    /* .book__nav {
       grid-area: breadcrumb;
       margin-block-end: 20px;
     }
@@ -61,7 +61,7 @@
         text-decoration: underline 1px;
         text-underline-offset: 4px;
       }
-    }
+    } */
 
     .sticky-container {
       display: contents;
@@ -126,11 +126,11 @@
     }
 
     .book__title {
-      font-size: calc(62 / 16 * 1rem);
+      font-size: calc(60 / 16 * 1rem);
       margin-block-end: 12px;
 
       @media (width < calc(768 / 16 * 1rem)) {
-        font-size: calc(32 / 16 * 1rem);
+        font-size: calc(36 / 16 * 1rem);
       }
     }
 
@@ -254,6 +254,10 @@
     .book__subheading {
       font-size: calc(36 / 16 * 1rem);
       margin-block-end: 24px;
+
+      @media (width < calc(768 / 16 * 1rem)) {
+        font-size: calc(30 / 16 * 1rem);
+      }
     }
 
     .book__collections {

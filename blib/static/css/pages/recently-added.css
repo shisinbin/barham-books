@@ -5,7 +5,6 @@
 
     .recent__lede {
       margin-block: 24px;
-      font-size: calc(24 / 16 * 1rem);
     }
 
     .recent__month-title:not(:first-of-type) {
@@ -16,7 +15,7 @@
       text-wrap: wrap;
       color: hsl(var(--hue-primary), 14%, 55%);
       font-size: calc(18 / 16 * 1rem);
-      margin-block: 16px 32px;
+      margin-block: 16px;
       font-style: italic;
       font-weight: 400;
     }

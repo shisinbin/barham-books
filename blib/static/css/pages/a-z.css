@@ -1,26 +1,24 @@
 @layer component {
   .a-z {
-    .a-z__heading {
-      margin-block-end: 40px;
-    }
-
     .a-z__title {
-      margin-block-end: 16px;
+      margin-block-end: 48px;
+      text-align: center;
     }
 
     .a-z__meta {
       font-style: italic;
       font-weight: 300;
+      margin-block-end: 24px;
     }
 
     .a-z__alphabet-container {
       overflow-x: auto;
       scroll-behavior: smooth;
       padding-block-end: 8px;
-      margin-block-end: 48px;
+      margin-block-end: 32px;
 
       @media (width >= calc(600 / 16 * 1rem)) {
-        margin: 0 auto 48px;
+        margin: 0 auto 32px;
         max-width: 800px;
         padding-block-end: 0;
       }

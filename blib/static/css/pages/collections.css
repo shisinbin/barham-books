@@ -5,6 +5,7 @@
     }
     .collections__title {
       margin-block-end: 40px;
+      text-align: center;
 
       @media (width >= calc(600 / 16 * 1rem)) {
         margin-block-end: 60px;

@@ -15,8 +15,14 @@
       <nav class="footer__nav-item">
         <h3 class="footer__nav-title">Books</h3>
         <ul class="footer__nav-list">
-          <li>
+          {% comment %} <li>
             <a href="{% url 'explore_books' %}" class="footer__link">Explore</a>
+          </li> {% endcomment %}
+          <li>
+            <a href="{% url 'featured_books' %}" class="footer__link">Featured</a>
+          </li>
+          <li>
+            <a href="{% url 'recently_added' %}" class="footer__link">Recently added</a>
           </li>
           <li>
             <a href="{% url 'collections' %}" class="footer__link">Collections</a>
@@ -24,9 +30,6 @@
           <li>
             <a href="{% url 'books_a_z' %}" class="footer__link">A—Z</a>
           </li>
-          {% comment %} <li>
-            <a href="#" class="footer__link">Search</a>
-          </li> {% endcomment %}
         </ul>
       </nav>
 
