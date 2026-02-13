@@ -1,6 +1,10 @@
 {% extends 'site_base.html' %}
 {% load static %}
 
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/home-magazine.css' %}" />
+{% endblock %}
+
 {% block content %}
   <section class="hero">
     <div class="wrapper hero__wrapper">

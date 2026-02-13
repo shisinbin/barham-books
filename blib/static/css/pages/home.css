@@ -28,7 +28,7 @@
       --pad-inline-start-input: 26px;
       --pad-inline-end-input: 8px;
 
-      --font-size-lede: var(--fs-20);
+      --font-size-lede: var(--fs-24);
       --font-size-search: var(--fs-20);
       --font-size-nav-1: var(--fs-16);
       --font-size-nav-2: var(--fs-20);
@@ -146,6 +146,12 @@
     }
 
     .home__logo {
+      width: clamp(
+        18.75rem,
+        9.722222222222223rem + 37.03703703703704vw,
+        37.5rem
+      );
+      margin-inline: auto;
     }
 
     .home__lede {
@@ -154,6 +160,7 @@
       max-width: 42ch;
       justify-self: center;
       line-height: 1.5;
+      font-size: var(--font-size-lede);
 
       @media (width >= calc(600 / 16 * 1rem)) {
         margin-block-start: var(--space-2);
