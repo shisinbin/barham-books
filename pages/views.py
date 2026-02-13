@@ -28,14 +28,14 @@ def send_formatted_email(data):
         fail_silently=False,
     )
 
-def index(request):
+def home(request):
     featured_collections = {
         slug: c
         for slug, c in COLLECTIONS.items()
         if c.get("featured") is True
     }
     
-    return render(request, 'pages/index.html', { 'featured_collections': featured_collections})
+    return render(request, 'pages/home_magazine.html', { 'featured_collections': featured_collections})
 
 def about(request):
 	return render(request, 'pages/about.html')
@@ -67,5 +67,5 @@ def contact(request):
 def contact_thanks(request):
     return render(request, 'pages/contact_thanks.html')
 
-def home(request):
-    return render(request, 'pages/home.html')
+def index(request):
+    return render(request, 'pages/index.html')

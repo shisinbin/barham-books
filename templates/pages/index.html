@@ -1,90 +1,107 @@
 {% extends 'site_base.html' %}
 {% load static %}
 
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/home.css' %}" />
+{% endblock %}
+
+{% block header %}
+
+{% endblock %}
+
 {% block content %}
-  <section class="hero">
-    <div class="wrapper hero__wrapper">
-      <div class="hero__backdrop" aria-hidden="true"></div>
+  <div class="home">
+    <header class="home__utility">
+      <nav aria-label="Account">
+        <a href="{% if user.is_authenticated %}
+            {% url 'account_home' %}
+          {% else %}
+            {% url 'login' %}
+          {% endif %}"
+          class="home__account-link">
+          <span class="visually-hidden">
+            {% if user.is_authenticated %}
+              Account
+            {% else %}
+              Login
+            {% endif %}
+          </span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="home__account-icon">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </a>
+      </nav>
+    </header>
 
-      <div class="hero__content">
-        <h1 class="hero__title">Barham Books</h1>
-        <p class="hero__subtitle medium">The general book collection at Barham Community Library</p>
-        <a href="{% url 'explore_books' %}" class="button primary hero__link">Start exploring</a>
+    <div class="home__inner">
+      <div class="home__brand">
+        <h1 class="home__logo">Barham Books</h1>
+        <p class="home__lede medium">
+          Explore the general book collection at <span class="home__name">Barham Community Library</span>.
+        </p>
       </div>
-    </div>
-  </section>
 
-  <section class="collections">
-    <div class="wrapper collections__wrapper">
-      <div class="collections__top-row">
-        <h2 class="collections__title">Discover something new</h2>
-        <p>Not sure where to begin? Explore one of our curated collections.</p>
-      </div>
+      <section class="home__search" aria-labelledby="search-heading" data-autocomplete data-autocomplete-url="{% url 'autocomplete_books' %}">
+        <h2 id="search-heading" class="visually-hidden">Search the catalogue</h2>
 
-      <ul class="collections__container">
-        {% for slug, collection in featured_collections.items %}
-          <li class="collections__item clickable-parent">
-            <h3 class="collections__item-title"><a href="{% url 'collection_detail' slug=slug %}" class="collections__item-link clickable-parent-link">{{ collection.title }}</a></h3>
+        <form class="home__form" role="search" action="{% url 'book_search_redux' %}" method="get" role="search" autocomplete="off">
+          <div class="home__search-control">
+            <input type="text" name="q" minlength="3" maxlength="64" required placeholder="Search by title, author..." role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="home-autocomplete" class="home__search-input" autofocus />
+
+            <button type="button" class="home__clear-button search__clear-button" aria-label="Clear search">
+              <svg class="icon search__clear-icon" width="25" height="26" viewBox="0 0 25 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M24.1955 0.706895L0.711294 24.7008" stroke="#b4b5b9ff" stroke-width="2" />
+                <path d="M0.723022 0.706909L24.1838 24.7008" stroke="#b4b5b9ff" stroke-width="2" />
+              </svg>
+            </button>
+
+            <div class="home__submit-button-wrapper">
+              <button type="submit" class="home__submit-button" aria-label="Search">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <ul class="home__autocomplete search__autocomplete" id="home-autocomplete" role="listbox" hidden></ul>
+        </form>
+      </section>
+
+      <nav class="home__primary-nav" aria-label="Catalogue navigation">
+        <ul>
+          <li>
+            <a href="{% url 'featured_books' %}">Featured</a>
           </li>
-        {% endfor %}
-      </ul>
+          <li>
+            <a href="{% url 'recently_added' %}">Recently added</a>
+          </li>
+          <li>
+            <a href="{% url 'collections' %}">Collections</a>
+          </li>
+          <li>
+            <a href="{% url 'books_a_z' %}">Browse A—Z</a>
+          </li>
+        </ul>
+      </nav>
 
-      <div class="collections__cta">
-        <a href="{% url 'collections' %}" class="button secondary collections__cta-link">Browse all collections</a>
-      </div>
+      <!-- Secondary navigation -->
+      <nav class="home__secondary-nav" aria-label="Information">
+        <ul>
+          <li>
+            <a href="{% url 'about' %}">About</a>
+          </li>
+          <li>
+            <a href="{% url 'contact' %}">Contact</a>
+          </li>
+        </ul>
+      </nav>
     </div>
-  </section>
+  </div>
+{% endblock %}
 
-  <section class="fw-about fullwidth">
-    <div class="wrapper fullwidth__wrapper">
-      <h2 class="fullwidth__title">About the library</h2>
+{% block footer %}
 
-      <p class="fullwidth__text">Barham Community Library is a volunteer-run library in Wembley, built around shared books, shared space, and local people.</p>
-
-      <div class="fw-about__img-wrapper">
-        <img src="{% static 'img/parade.jpg' %}" alt="Local residents posing for photo outside library entrance" height="968" width="1296" class="fw-about__image" />
-      </div>
-
-      <p class="fullwidth__text">Our collection grows through donations, and our space hosts talks, group activities, and small community events.</p>
-
-      <a href="{% url 'about' %}" class="fw-about__link button primary">Learn more</a>
-    </div>
-  </section>
-
-  <section class="testimonial">
-    <h2 class="visually-hidden">Testimonial</h2>
-
-    <div class="wrapper testimonial__wrapper">
-      <figure class="testimonial__figure">
-        <svg class="testimonial__icon" width="78" height="66" viewBox="0 0 78 66" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M17.8829 66C11.922 66 7.41951 63.8319 4.37561 59.4957C1.45854 55.0319 0 48.8463 0 40.9391C0 31.8841 2.21951 23.913 6.65854 17.0261C11.0975 10.1391 17.8829 4.46377 27.0146 0L33.1024 12.2435C27.3951 15.1768 23.0829 18.5565 20.1659 22.3826C17.3756 26.0811 15.9805 30.8 15.9805 36.5391C16.361 36.4116 16.9951 36.3478 17.8829 36.3478C21.9414 36.3478 25.3658 37.6232 28.1561 40.1739C31.0731 42.5971 32.5317 45.9768 32.5317 50.313C32.5317 55.1594 31.1366 58.9855 28.3463 61.7913C25.5561 64.5971 22.0683 66 17.8829 66ZM62.7805 66C56.8195 66 52.3171 63.8319 49.2732 59.4957C46.3561 55.0319 44.8976 48.8463 44.8976 40.9391C44.8976 31.8841 47.1171 23.913 51.5561 17.0261C55.9951 10.1391 62.7805 4.46377 71.9122 0L78 12.2435C72.2927 15.1768 67.9805 18.5565 65.0634 22.3826C62.2731 26.0811 60.8781 30.8 60.8781 36.5391C61.2585 36.4116 61.8927 36.3478 62.7805 36.3478C66.839 36.3478 70.2634 37.6232 73.0537 40.1739C75.9707 42.5971 77.4293 45.9768 77.4293 50.313C77.4293 55.1594 76.0342 58.9855 73.2439 61.7913C70.4536 64.5971 66.9659 66 62.7805 66Z" fill="#00D3D4" />
-        </svg>
-
-        <blockquote class="testimonial__quote-text">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eum mollitia temporibus autem porro. Cumque quos aut repudiandae temporibus animi aliquid consequatur, enim obcaecati.</blockquote>
-
-        <figcaption class="testimonial__author-wrapper">
-          <img src="{% static 'img/author-1x.png' %}" srcset="
-              {% static 'img/author-1x.png' %} 1x,
-              {% static 'img/author-2x.png' %} 2x" alt="Headshot of Paul Lorber" class="testimonial__author-image" width="120" height="120" />
-          <p class="testimonial__author-description medium">
-            Paul Lorber<br />Trustee and Director, Barham Library
-          </p>
-        </figcaption>
-
-        <svg class="testimonial__icon" width="78" height="66" viewBox="0 0 78 66" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M17.8829 66C11.922 66 7.41951 63.8319 4.37561 59.4957C1.45854 55.0319 0 48.8463 0 40.9391C0 31.8841 2.21951 23.913 6.65854 17.0261C11.0975 10.1391 17.8829 4.46377 27.0146 0L33.1024 12.2435C27.3951 15.1768 23.0829 18.5565 20.1659 22.3826C17.3756 26.0811 15.9805 30.8 15.9805 36.5391C16.361 36.4116 16.9951 36.3478 17.8829 36.3478C21.9414 36.3478 25.3658 37.6232 28.1561 40.1739C31.0731 42.5971 32.5317 45.9768 32.5317 50.313C32.5317 55.1594 31.1366 58.9855 28.3463 61.7913C25.5561 64.5971 22.0683 66 17.8829 66ZM62.7805 66C56.8195 66 52.3171 63.8319 49.2732 59.4957C46.3561 55.0319 44.8976 48.8463 44.8976 40.9391C44.8976 31.8841 47.1171 23.913 51.5561 17.0261C55.9951 10.1391 62.7805 4.46377 71.9122 0L78 12.2435C72.2927 15.1768 67.9805 18.5565 65.0634 22.3826C62.2731 26.0811 60.8781 30.8 60.8781 36.5391C61.2585 36.4116 61.8927 36.3478 62.7805 36.3478C66.839 36.3478 70.2634 37.6232 73.0537 40.1739C75.9707 42.5971 77.4293 45.9768 77.4293 50.313C77.4293 55.1594 76.0342 58.9855 73.2439 61.7913C70.4536 64.5971 66.9659 66 62.7805 66Z" fill="#00D3D4" />
-        </svg>
-      </figure>
-    </div>
-  </section>
-
-  <section class="fw-cta fullwidth">
-    <div class="wrapper fullwidth__wrapper">
-      <h2 class="fullwidth__title fw-cta__title">Get in touch</h2>
-      <p class="fullwidth__text large">Have a question, a donation, or an idea for using our space?</p>
-      <a href="{% url 'contact' %}" class="button tertiary">Send a message</a>
-    </div>
-  </section>
-
-  {% comment %} <section id="padding"></section> {% endcomment %}
 {% endblock %}
