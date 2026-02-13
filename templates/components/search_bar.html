@@ -1,25 +1,29 @@
 {% load static %}
 
-<div class="search" data-autocomplete data-autocomplete-url="{% url 'autocomplete_books' %}">
-  <div class="wrapper search__wrapper">
-    <form action="{% url 'book_search_redux' %}" method="get" class="search__form" autocomplete="off">
-      <div class="search__input-wrapper">
-        <input class="search__form-input" type="text" name="q" id="search-input" placeholder="1984 orwell..." minlength="3" maxLength="64" required role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-autocomplete" value="{% if query %}{{ query }}{% endif %}" />
-        <button type="button" class="search__clear-button">
+<div class="search-bar" data-autocomplete data-autocomplete-url="{% url 'autocomplete_books' %}">
+  <div class="wrapper search-bar__wrapper">
+    <form action="{% url 'book_search_redux' %}" method="get" class="search-bar__form" autocomplete="off">
+      <div class="search-bar__control">
+        <input class="search-bar__form-input" type="text" name="q" id="search-input" placeholder="1984 orwell..." minlength="3" maxLength="64" required role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-autocomplete" value="{% if query %}{{ query }}{% endif %}" />
+
+        <button type="button" class="search__clear-button search-bar__clear-button">
           <span class="visually-hidden">Clear</span>
-          <svg class="icon search__clear-icon" width="25" height="26" viewBox="0 0 25 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg class="icon search-bar__clear-icon" width="25" height="26" viewBox="0 0 25 26" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M24.1955 0.706895L0.711294 24.7008" stroke="#b4b5b9ff" stroke-width="2" />
             <path d="M0.723022 0.706909L24.1838 24.7008" stroke="#b4b5b9ff" stroke-width="2" />
           </svg>
         </button>
-      </div>
-      <button type="submit" class="button tertiary search__submit-button">
-        <img src="{% static 'img/icons/search.svg' %}" alt="" height="24" width="24" aria-hidden="true" class="search__icon" />
-        <span class="visually-hidden">Search</span>
-        {% comment %} <span class="search__button-text">Search</span> {% endcomment %}
-      </button>
 
-      <ul class="search__autocomplete" id="search-autocomplete" role="listbox" hidden></ul>
+        <div class="search-bar__submit-button-wrapper">
+          <button type="submit" class="search-bar__submit-button">
+            <img src="{% static 'img/icons/search.svg' %}" alt="" height="24" width="24" aria-hidden="true" class="search-bar__icon" />
+            <span class="visually-hidden">Search</span>
+            {% comment %} <span class="search-bar__button-text">Search</span> {% endcomment %}
+          </button>
+        </div>
+      </div>
+
+      <ul class="search__autocomplete search-bar__autocomplete" id="search-autocomplete" role="listbox" hidden></ul>
     </form>
   </div>
 </div>

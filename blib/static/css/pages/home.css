@@ -246,8 +246,7 @@
     }
 
     .home__clear-button {
-      flex-shrink: 0;
-      background: none;
+      background: transparent;
       border: none;
       cursor: pointer;
 
@@ -276,7 +275,7 @@
       width: var(--clear-icon-size);
 
       & path {
-        transition: stroke 150ms ease-in-out;
+        transition: stroke 100ms ease-in-out;
       }
     }
 

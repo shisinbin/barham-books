@@ -1,72 +1,90 @@
 @layer component {
-  .search {
+  .search-bar {
     --clear-button-height: calc(32 / 16 * 1rem);
-    --clear-icon-size: calc(20 / 16 * 1rem);
+    --icon-size: calc(20 / 16 * 1rem);
 
     position: sticky;
     isolation: isolate;
     top: var(--header-height);
     z-index: 80;
-    background-color: var(--color-sticky-search-bg);
-    backdrop-filter: var(--backdrop-filter-sticky-search);
+    background-color: hsl(var(--hue-primary), 15%, 90%);
 
-    .search__wrapper {
-      padding-block: 0;
-    }
-
-    .search__form {
-      display: flex;
-      gap: 12px;
+    .search-bar__wrapper {
       padding-block: 16px;
-      font-size: var(--font-size-form);
-      position: relative;
 
       @media (width >= calc(600 / 16 * 1rem)) {
         padding-block: 24px;
+        --icon-size: calc(24 / 16 * 1rem);
       }
     }
 
-    .search__input-wrapper {
-      flex: 1;
-      display: flex;
+    .search-bar__form {
+      font-size: var(--font-size-form);
       position: relative;
     }
 
-    .search__form-input {
-      background: var(--color-form-input-bg);
-      padding: 8px 50px 8px 20px;
-      border-radius: 5px;
-      width: 0;
-      min-width: 0;
-      flex: 1;
-      box-shadow: 0 4px 8px hsl(0 0% 0% / 0.1);
+    .search-bar__control {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      border-radius: 8px;
+      overflow: hidden;
+      background: white;
+      box-shadow:
+        0 0 0 1px hsl(var(--hue-primary), 15%, 85%),
+        0 12px 30px -10px hsl(var(--hue-primary), 40%, 50%, 0.15);
 
-      &:not(:placeholder-shown) + .search__clear-button {
+      transition: 50ms ease-in-out;
+      transition-property: box-shadow, border-radius;
+
+      &:focus-within {
+        box-shadow:
+          0 0 0 1px hsl(var(--hue-primary), 40%, 50%, 0.4),
+          0 0 0 1px hsl(var(--hue-primary), 15%, 85%),
+          0 12px 30px -10px hsl(var(--hue-primary), 40%, 50%, 0.15);
+      }
+
+      &:has(+ .search__autocomplete:not([hidden])) {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+    }
+
+    .search-bar__form-input {
+      border: none;
+      background: transparent;
+      padding-block: 8px;
+      padding-inline: 16px;
+      font-size: var(--icon-size);
+
+      outline: none;
+      min-width: 0;
+
+      &:not(:placeholder-shown) + .search-bar__clear-button {
         opacity: 1;
         pointer-events: auto;
       }
 
-      &:focus-visible {
-        outline: 2px solid var(--color-sticky-search-focus-ring);
-        outline-offset: 2px;
+      @media (width >= calc(600 / 16 * 1rem)) {
+        padding-block: 16px;
       }
     }
 
-    .search__clear-button {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      right: 8px;
-      height: var(--clear-button-height);
-      width: var(--clear-button-height);
+    .search-bar__clear-button {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      height: 32px;
+      width: 32px;
+      margin-inline-end: 8px;
       display: grid;
       place-content: center;
-      cursor: pointer;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 150ms ease;
+      transition: 100ms ease-in-out;
+      transition-property: opacity;
 
-      &:hover .search__clear-icon path {
+      &:hover .search-bar__clear-icon path {
         stroke: var(--color-clear-button-hover);
       }
 
@@ -75,43 +93,66 @@
         pointer-events: auto;
       }
 
-      &:focus-visible {
-        outline: 2px solid var(--color-sticky-search-focus-ring);
-        outline-offset: 2px;
+      @media (width >= calc(600 / 16 * 1rem)) {
+        margin-inline-end: 16px;
       }
     }
 
-    .search__clear-icon {
-      width: var(--clear-icon-size);
-      height: var(--clear-icon-size);
+    .search-bar__clear-icon {
+      width: var(--icon-size);
 
       & path {
-        transition: stroke 150ms ease-in-out;
+        transition: stroke 100ms ease-in-out;
       }
     }
 
-    .search__submit-button {
+    .search-bar__submit-button-wrapper {
+      background: hsl(var(--hue-primary), 60%, 92%);
+      height: 100%;
+      transition: 150ms ease-in-out;
+      transition-property: background;
+
+      &:hover,
+      &:focus-within {
+        background: hsl(var(--hue-primary), 60%, 88%);
+      }
+    }
+
+    .search-bar__submit-button {
+      border: none;
       cursor: pointer;
-      box-shadow: 0 4px 8px hsl(0 0% 0% / 0.1);
 
-      &:focus-visible {
-        outline: 2px solid var(--color-sticky-search-focus-ring);
-        outline-offset: 2px;
+      padding-inline: 16px;
+      height: 100%;
+      border-radius: 0 8px 8px 0;
+
+      &:focus {
+        outline-offset: -2px;
       }
     }
 
-    .search__autocomplete {
+    .search-bar__icon {
+      width: calc(var(--icon-size) + 0.25rem);
+    }
+
+    .search-bar__autocomplete {
       position: absolute;
       top: 100%;
       left: 0;
-      border: 1px solid #ddd;
-      border-top: none;
+      right: 0;
+
       list-style: none;
-      border-radius: 0 0 12px 12px;
-      width: fit-content;
       padding: 0;
-      padding-block-end: 12px;
-      background: var(--color-sticky-search-bg);
+
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      padding-block: 8px 12px;
+      background: hsl(var(--hue-primary), 40%, 90%);
+
+      box-shadow:
+        0 0 0 1px hsl(var(--hue-primary), 40%, 50%, 0.4),
+        0 0 0 1px hsl(var(--hue-primary), 15%, 85%),
+        0 12px 30px -10px hsl(var(--hue-primary), 40%, 50%, 0.15);
 
       /* max-height: 240px;
       overflow-y: auto;
@@ -120,15 +161,16 @@
       scrollbar-color: #888 #eee; */
     }
 
-    .search__autocomplete li {
-      padding: 8px 20px;
+    .search-bar__autocomplete li {
+      padding: 8px 16px;
       cursor: pointer;
+      font-size: 24px;
     }
 
-    .search__autocomplete li.active,
-    .search__autocomplete li:hover {
-      background: var(--color-sticky-search-autocomplete-hover-bg);
-      color: var(--color-sticky-search-autocomplete-hover-text);
+    .search-bar__autocomplete li.active,
+    .search-bar__autocomplete li:hover {
+      background: hsl(var(--hue-primary), 48%, 65%);
+      color: var(--c-white);
     }
   }
 }
