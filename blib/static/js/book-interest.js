@@ -1,5 +1,5 @@
 document.addEventListener('click', async (e) => {
-  const btn = e.target.closest('.interest-btn');
+  const btn = e.target.closest('.js-register-interest');
   if (!btn || btn.disabled || btn.classList.contains('is-loading')) {
     return;
   }
@@ -28,7 +28,7 @@ document.addEventListener('click', async (e) => {
     btn.disabled = true;
     createToast(
       "Interest registered - we'll be in touch soon!",
-      'success'
+      'success',
     );
   } catch (err) {
     btn.classList.remove('is-loading');

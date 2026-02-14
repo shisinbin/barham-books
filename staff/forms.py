@@ -3,7 +3,7 @@ from PIL import Image
 from django import forms
 from django.contrib.auth.models import User
 # from accounts.models import Profile
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from books.models import BookInstance2, Book, BookTags, Series, Category
 from authors.models import Author
 from PIL import Image

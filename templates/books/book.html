@@ -134,7 +134,7 @@
             <div class="book-interest" data-interest data-book-id="{{ book.id }}" data-url="{% url 'register_interest' %}">
               {% if num_copies > 0 %}
               {% if user.is_authenticated %}
-                <button class="interest-btn" aria-pressed="{% if interest %}true{% else %}false{% endif %}" {% if interest %}disabled{% endif %}>
+                <button class="interest-btn js-register-interest" aria-pressed="{% if interest %}true{% else %}false{% endif %}" {% if interest %}disabled{% endif %}>
                   
                   <span class="interested-text" style="text-wrap: balance;">
                     Interested:
