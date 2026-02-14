@@ -36,7 +36,7 @@
 
     <div class="home__inner">
       <div class="home__brand">
-        {% comment %} <h1 class="home__logo">Barham Books</h1> {% endcomment %}
+        <h1 class="visually-hidden">Barham Books</h1>
         <img src="{% static 'img/branding/logo-barham-books-color.svg' %}" alt="Barham Books" class="home__logo" />
         <p class="home__lede medium">
           Explore the general book collection at <span class="home__name">Barham Community Library</span>.
@@ -72,6 +72,7 @@
       </section>
 
       <nav class="home__primary-nav" aria-label="Catalogue navigation">
+        <h2 class="visually-hidden">Main categories</h2>
         <ul>
           <li>
             <a href="{% url 'featured_books' %}">Featured</a>
@@ -88,8 +89,8 @@
         </ul>
       </nav>
 
-      <!-- Secondary navigation -->
       <nav class="home__secondary-nav" aria-label="Information">
+        <h2 class="visually-hidden">About and Contact</h2>
         <ul>
           <li>
             <a href="{% url 'about' %}">About</a>
