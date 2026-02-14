@@ -4,7 +4,7 @@
   <div class="wrapper search-bar__wrapper">
     <form action="{% url 'book_search_redux' %}" method="get" class="search-bar__form" autocomplete="off">
       <div class="search-bar__control">
-        <input class="search-bar__form-input" type="text" name="q" id="search-input" placeholder="1984 orwell..." minlength="3" maxLength="64" required role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-autocomplete" value="{% if query %}{{ query }}{% endif %}" />
+        <input class="search-bar__form-input" type="text" name="q" id="search-input" placeholder="Search by title, author..." minlength="3" maxLength="64" required role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-autocomplete" value="{% if query %}{{ query }}{% endif %}" />
 
         <button type="button" class="search__clear-button search-bar__clear-button">
           <span class="visually-hidden">Clear</span>

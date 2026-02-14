@@ -1,7 +1,7 @@
 @layer component {
   .search-bar {
     --clear-button-height: calc(32 / 16 * 1rem);
-    --icon-size: calc(20 / 16 * 1rem);
+    --icon-size: calc(18 / 16 * 1rem);
 
     position: sticky;
     isolation: isolate;
@@ -14,7 +14,7 @@
 
       @media (width >= calc(600 / 16 * 1rem)) {
         padding-block: 24px;
-        --icon-size: calc(24 / 16 * 1rem);
+        --icon-size: calc(20 / 16 * 1rem);
       }
     }
 
