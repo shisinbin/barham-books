@@ -1,7 +1,7 @@
 @layer component {
   .auth {
     width: min(420px, 100%);
-    margin: 80px auto;
+    margin-inline: auto;
     display: grid;
     gap: 24px;
   }
