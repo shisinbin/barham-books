@@ -4,11 +4,11 @@
       padding-block-end: 100px;
     }
     .collections__title {
-      margin-block-end: 40px;
+      margin-block-end: 32px;
       text-align: center;
 
       @media (width >= calc(600 / 16 * 1rem)) {
-        margin-block-end: 60px;
+        margin-block-end: 48px;
       }
     }
 

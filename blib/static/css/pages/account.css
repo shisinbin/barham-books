@@ -8,12 +8,7 @@
     }
 
     .account__title {
-      font-size: calc(36 / 16 * 1rem);
       margin-block-end: 32px;
-
-      @media (width >= calc(600 / 16 * 1rem)) {
-        font-size: calc(48 / 16 * 1rem);
-      }
     }
 
     .account__meta {
@@ -49,7 +44,11 @@
 
     .account__section-title,
     .account__section-header {
-      margin-block: 64px 32px;
+      margin-block: 48px 24px;
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        margin-block: 64px 32px;
+      }
     }
 
     .account__section-meta {

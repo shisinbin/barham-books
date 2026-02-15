@@ -10,7 +10,7 @@
     }
 
     .contact__lead {
-      font-size: calc(32 / 16 * 1rem);
+      /* font-size: calc(32 / 16 * 1rem); */
       margin-block-end: 20px;
     }
 

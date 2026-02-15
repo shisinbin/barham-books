@@ -406,7 +406,11 @@
 
     .home__secondary-nav {
       grid-area: nav-secondary;
-      margin-block: var(--space-4) var(--space-2);
+      margin-block: var(--space-3) var(--space-2);
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        margin-block: var(--space-4) var(--space-2);
+      }
     }
 
     .home__secondary-nav ul {

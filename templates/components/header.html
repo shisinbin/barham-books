@@ -19,16 +19,16 @@
 
       <ul class="topnav__desktop-nav-list">
         <li class="topnav__desktop-nav-item">
-          <a href="{% url 'featured_books' %}" class="topnav__desktop-nav-link">Featured</a>
+          <a href="{% url 'featured_books' %}" class="topnav__desktop-nav-link {% if 'books/featured/' in request.path %}active{% endif %}">Featured</a>
         </li>
         <li class="topnav__desktop-nav-item">
-          <a href="{% url 'recently_added' %}" class="topnav__desktop-nav-link">New</a>
+          <a href="{% url 'recently_added' %}" class="topnav__desktop-nav-link {% if 'books/recently-added/' in request.path %}active{% endif %}">New</a>
         </li>
         <li class="topnav__desktop-nav-item">
-          <a href="{% url 'collections' %}" class="topnav__desktop-nav-link">Collections</a>
+          <a href="{% url 'collections' %}" class="topnav__desktop-nav-link {% if 'books/collections/' in request.path %}active{% endif %}">Collections</a>
         </li>
         <li class="topnav__desktop-nav-item">
-          <a href="{% url 'books_a_z' %}" class="topnav__desktop-nav-link">A—Z</a>
+          <a href="{% url 'books_a_z' %}" class="topnav__desktop-nav-link {% if 'books/a-z/' in request.path %}active{% endif %}">A—Z</a>
         </li>
       </ul>
     </nav>

@@ -4,7 +4,11 @@
     }
 
     .recent__lede {
-      margin-block: 24px;
+      margin-block: 16px 16px;
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        margin-block: 24px 24px;
+      }
     }
 
     .recent__month-title:not(:first-of-type) {

@@ -53,7 +53,12 @@
       text-align: center;
       display: grid;
       gap: 16px;
-      margin-block-end: 48px;
+      margin-block-end: 24px;
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        gap: 24px;
+        margin-block-end: 32px;
+      }
     }
 
     .staff-picks__lede {
@@ -102,7 +107,7 @@
       gap: 48px;
     }
 
-    .hero__bg {
+    /* .hero__bg {
       background:
         linear-gradient(
           calc(180deg - 20deg),
@@ -118,38 +123,6 @@
           var(--color-picks-darker) 50%,
           var(--color-picks-darker) 100%
         );
-
-      /* background-size: cover;
-      background-color: #f6f6f6;
-      background-position: 0 0;
-      background-repeat: no-repeat;
-
-      background-image: url('../../img/pink-blobs.jpg');
-
-      background-image: url('../../img/pink-blobs.jpg'),
-        -moz-linear-gradient(45deg, #f6f6f6 0, rgba(
-                246,
-                246,
-                246,
-                0.1
-              )
-              80%);
-
-      background-image: url('../../img/pink-blobs.jpg'),
-        linear-gradient(
-          45deg,
-          #f6f6f6 0,
-          rgba(246, 246, 246, 0.1) 80%
-        );
-
-      background-image: url('../../img/pink-blobs.jpg'),
-        -moz-linear-gradient(45deg, #f6f6f6 0, rgba(
-                246,
-                246,
-                246,
-                0.1
-              )
-              80%); */
     }
 
     .hero__wrapper {
@@ -228,7 +201,6 @@
     }
 
     .hero__lede {
-      /* text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05); */
       @media (width < calc(600 / 16 * 1rem)) {
         text-wrap: wrap;
       }
@@ -286,8 +258,6 @@
       width: 100%;
       text-align: center;
       font-size: calc(16 / 16 * 1rem);
-      /* text-transform: uppercase; */
-      /* font-style: italic; */
       position: relative;
       z-index: 2;
     }
@@ -299,7 +269,7 @@
       &:hover {
         color: var(--c-magenta);
       }
-    }
+    } */
 
     .highlights {
       background-image: linear-gradient(
@@ -309,13 +279,12 @@
     }
 
     .popular {
-      margin-block-end: 64px;
     }
 
     .popular-wrapper {
       margin-block-start: 48px;
       border-block-start: 2px solid var(--c-gray-lighter);
-      padding-block: 64px 32px;
+      padding-block-start: 64px;
       display: flex;
       flex-direction: column;
 
@@ -380,17 +349,6 @@
       &:hover ~ .popular__item-content .popular__book-thumbs::after {
         opacity: 0;
       }
-
-      /* &:hover
-        ~ .popular__item-content
-        .popular__book-thumbs
-        .popular__book-thumb:not(:last-of-type) {
-        margin-inline-end: 4px;
-      } */
-
-      /* &:hover ~ .popular__item-content .popular__book-thumbs {
-        mask-image: none;
-      } */
     }
 
     .popular__item-content {
