@@ -128,7 +128,6 @@
     --c-gray-light: hsl(229, 14%, 85%);
     --c-gray-lighter: hsl(233, 14%, 90%);
     --c-purple: hsl(232, 58%, 55%);
-    /* --c-purple: green; */
     --c-purple-60: hsl(232, 58%, 35%, 60%);
     --c-purple-light: hsl(232, 58%, 65%);
     --c-purple-light-pastel: hsl(232, 25%, 88%);
@@ -138,7 +137,6 @@
     --c-magenta: hsl(320, 85%, 41%);
 
     --color-main-bg: hsl(var(--hue-primary), 5%, 96%);
-    /* --color-main-bg: var(--c-white); */
     --color-text-dark: var(--c-gray-dark);
     --color-text-light: var(--c-white);
     --color-text-muted: var(--c-gray-medium);
