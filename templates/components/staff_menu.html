@@ -15,7 +15,7 @@
 
     <a href="{% url 'staff_book_interests' %}" class="staff-drawer__action">Manage Book Interests</a>
 
-    {% if interest %}
+    {% comment %} {% if interest %}
       {% if not interest.handled %}
         <form method="post" action="{% url 'staff_mark_interest_handled' interest.id %}">
           {% csrf_token %}
@@ -24,7 +24,7 @@
       {% endif %}
 
       <a href="{% url 'staff_delete_interest' interest.id %}" class="staff-drawer__action">Delete interest</a>
-    {% endif %}
+    {% endif %} {% endcomment %}
 
     <hr class="staff-drawer__divider" />
 
