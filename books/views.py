@@ -1555,6 +1555,10 @@ def book(request, book_id, slug):
     return render(request, "books/book.html", context)
 
 from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from smtplib import SMTPException
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 @login_required
 @require_POST
@@ -1566,19 +1570,44 @@ def register_interest(request):
         user=request.user,
     )
 
+    mail_sent = False
+
     if created:
-        send_mail(
-            f'Book interest: {book.title}',
-            f'{request.user.username} is interested in "{book.title}.',
-            settings.EMAIL_HOST_USER,
-            ['sb1664@gmail.com'],
-            fail_silently=True,
-        )
+        subject = f'Barham Library: Interest registered — "{book.title}"'
+
+        data = {
+            "username": request.user.get_username(),
+            "email": request.user.email or "",
+            "book": book.title,
+            "bookUrl": request.build_absolute_uri(book.get_absolute_url()),
+            "date": timezone.now().strftime("%b %d, %I:%M %p"),
+        }
+
+        html_message = render_to_string('emails/interest_registered_message.html', { 'data': data })
+
+        text_message = strip_tags(html_message)
+
+        reply_to = [data["email"]] if data["email"] else None
+
+        try:
+            email = EmailMultiAlternatives(
+                subject=subject,
+                body=text_message,
+                from_email=settings.EMAIL_HOST_USER,
+                to=settings.EMAIL_STAFF_RECIPIENTS,
+                reply_to=reply_to,
+            )
+            email.attach_alternative(html_message, "text/html")
+            email.send(fail_silently=False)
+            mail_sent=True
+        except SMTPException as e:
+            mail_sent=False #explicit, even though it already is False
     
     return JsonResponse({
         'status': 'ok',
         'created': created,
         'handled': interest.handled,
+        'mail_sent': mail_sent if created else None,
     })
 
 @require_POST

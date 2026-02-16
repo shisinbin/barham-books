@@ -20,18 +20,38 @@ document.addEventListener('click', async (e) => {
       body: formData,
     });
 
-    const data = await res.json();
-    if (data.status !== 'ok' || !data.created) return;
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-    btn.classList.remove('is-loading');
+    const data = await res.json();
+
+    if (data.status !== 'ok') {
+      createToast('Something went wrong. Please try again', 'error');
+      return;
+    }
+
+    if (!data.created) {
+      return;
+    }
+
     btn.setAttribute('aria-pressed', 'true');
     btn.disabled = true;
-    createToast(
-      "Interest registered - we'll be in touch soon!",
-      'success',
-    );
+
+    const isMailSent = data?.mail_sent === true;
+
+    if (isMailSent) {
+      createToast(
+        "Interest registered - we'll be in touch soon!",
+        'success',
+      );
+    } else {
+      createToast(
+        "Interest registered, but we couldn't notify staff automatically. Please contact the library if you don't hear back soon.",
+        'warning',
+      );
+    }
   } catch (err) {
-    btn.classList.remove('is-loading');
     createToast('Something went wrong. Please try again', 'error');
+  } finally {
+    btn.classList.remove('is-loading');
   }
 });

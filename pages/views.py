@@ -3,30 +3,40 @@ from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.core.mail import EmailMultiAlternatives
+from smtplib import SMTPException
 from django.http import HttpResponse
 from django.conf import settings
 from django.contrib import messages
-# from books.choices import language_choices
-# from books.models import Book
-# from blog.models import Post
 from .forms import ContactForm
 from books.collections import COLLECTIONS
 
-def send_formatted_email(data):
+def send_formatted_email(data) -> bool:
+    """
+    Returns True if the email was sent successfully, otherwise False.
+    """
     subject = f"Library contact from {data['name']}"
 
-    html_content = render_to_string('emails/contact_message.html', { 'data': data})
+    html_content = render_to_string('emails/contact_message.html', { 'data': data })
 
     text_content = strip_tags(html_content)
 
-    send_mail(
-        subject,
-        text_content,
-        settings.EMAIL_HOST_USER,
-        ['sb1664@gmail.com'],
-        html_message=html_content,
-        fail_silently=False,
-    )
+    reply_to = [data["email"]] if data.get("email") else None
+
+    try:
+        email = EmailMultiAlternatives(
+            subject=subject,
+            body=text_content,
+            from_email=settings.EMAIL_HOST_USER,
+            to=settings.EMAIL_STAFF_RECIPIENTS,
+            reply_to=reply_to,
+        )
+        email.attach_alternative(html_content, "text/html")
+        email.send(fail_silently=False)
+        return True
+
+    except SMTPException:
+        return False
 
 def home(request):
     featured_collections = {
@@ -51,11 +61,15 @@ def contact(request):
 
         if form.is_valid():
             data = form.cleaned_data
-            send_formatted_email(data)
 
-            request.session["contact_last_submit"] = time.time()
-            return redirect('contact_thanks')
-    
+            sent_ok = send_formatted_email(data)
+
+            if sent_ok:
+                request.session["contact_last_submit"] = time.time()
+                return redirect('contact_thanks')
+
+            messages.error(request, "Sorry — we couldn't send your message right now. Please try again in a moment.")
+
     else:
         initial = {}
         if request.user.is_authenticated:
