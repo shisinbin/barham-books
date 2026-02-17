@@ -183,12 +183,13 @@ TAGGIT_CASE_INSENSITIVE = True
 # }
 
 # For development only - in production this will be overwritten in local_settings
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        "LOCATION": "blib-local",
-    }
-}
+# turning off for now as ratelimit using redis cache on backend was difficult to get working
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+#         "LOCATION": "blib-local",
+#     }
+# }
 
 # # Tell select2 which cache configuration to use:
 # SELECT2_CACHE_BACKEND = "select2"
