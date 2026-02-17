@@ -8,8 +8,10 @@ from smtplib import SMTPException
 from django.http import HttpResponse
 from django.conf import settings
 from django.contrib import messages
-from .forms import ContactForm
+from django_ratelimit.decorators import ratelimit
+
 from books.collections import COLLECTIONS
+from .forms import ContactForm
 
 def send_formatted_email(data) -> bool:
     """
@@ -50,9 +52,16 @@ def home(request):
 def about(request):
 	return render(request, 'pages/about.html')
 
+@ratelimit(key="ip", rate="5/m", method="POST", block=False)
+@ratelimit(key="post:email", rate="3/m", method="POST", block=False)
 def contact(request):
+    # If either ratelimit triggers, django-ratelimit sets request.limited = True
+    if getattr(request, "limited", False):
+        messages.error(request, "Too many messages in a short time — please try again in a minute.")
+        return redirect("contact")
+
     last_submit = request.session.get('contact_last_submit')
-    if last_submit and time.time() - last_submit < 30:
+    if last_submit and time.time() - last_submit < 1:
         messages.error(request, "Please wait a moment before sending another message.")
         return redirect('index')
 
