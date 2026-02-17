@@ -14,7 +14,7 @@ def upload_location(instance, filename):
 
 
 class Author(models.Model):
-    first_name = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100, db_index=True)
     middle_names = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, db_index=True)
     slug = models.SlugField(max_length=300,
