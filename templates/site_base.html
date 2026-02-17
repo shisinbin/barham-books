@@ -29,7 +29,7 @@
     <meta property="og:locale" content="en_GB" />
     <meta name="geo.region" content="GB-BRN" />
     <meta name="geo.placename" content="Wembley" />
-    <meta name="theme-color" content="hsl(232, 58%, 55%)" />
+    <meta name="theme-color" content="hsl(230, 58%, 55%)" />
 
     <link rel="canonical" href="{{ request.build_absolute_uri }}" />
     <!-- Favicons+ -->
@@ -86,6 +86,9 @@
         {% include 'components/staff_trigger.html' %}
       {% endif %}
     </div>
+
+    {% comment %} <!-- Noise -->
+    <div class="noise"></div> {% endcomment %}
 
     <!-- Backdrop -->
     <div id="uiBackdrop" class="ui-backdrop" hidden aria-hidden="true"></div>

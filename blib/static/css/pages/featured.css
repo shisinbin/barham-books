@@ -1,10 +1,6 @@
 @layer component {
   .featured {
-    --blue-bg: hsl(230deg 40% 20%);
-    --blue-darker: hsl(230deg 40% 24%);
-    --blue-dark: hsl(230deg 40% 28%);
-
-    --hue-picks: 230;
+    --hue-picks: var(--hue-primary);
 
     --color-picks-bg: hsl(var(--hue-picks), 30%, 94%);
     --color-picks-dark: hsl(var(--hue-picks), 30%, 92%);

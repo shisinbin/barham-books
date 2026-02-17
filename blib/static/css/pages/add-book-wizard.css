@@ -1,10 +1,10 @@
 @layer component {
   .wizard {
-    --c-panel-bg: hsl(232, 20%, 97%);
+    --c-panel-bg: hsl(var(--hue-primary), 20%, 97%);
     --c-panel-border: hsl(0, 0%, 88%);
 
     --c-field-bg: hsl(0, 0%, 99%);
-    --c-field-border: hsl(233, 14%, 80%);
+    --c-field-border: hsl(var(--hue-primary), 14%, 80%);
 
     --shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.06);
     /* --shadow-panel:
@@ -100,8 +100,8 @@
 
     .wizard__divider {
       --flourish-length: 70px;
-      --inner-c: hsl(233, 14%, 65%);
-      --outer-c: hsl(233, 14%, 85%);
+      --inner-c: hsl(var(--hue-primary), 14%, 65%);
+      --outer-c: hsl(var(--hue-primary), 14%, 85%);
 
       display: inline-block;
       position: relative;
@@ -229,13 +229,13 @@
     }
 
     /* .book-card:hover {
-      border-color: hsl(233, 14%, 65%);
+      border-color: hsl(var(--hue-primary), 14%, 65%);
     } */
 
     .book-card:has(input:checked),
     .book-card:hover {
       border-color: var(--c-purple);
-      background: hsla(232, 58%, 55%, 0.05);
+      background: hsl(var(--hue-primary), 58%, 55%, 0.05);
     }
 
     .book-card:has(input:focus-visible) {
@@ -266,7 +266,7 @@
       font-size: calc(14 / 16 * 1rem);
       color: var(--color-text-light);
       border-radius: 4px;
-      background: hsl(232, 58%, 55%);
+      background: hsl(var(--hue-primary), 58%, 55%);
     }
 
     .book-card__header {

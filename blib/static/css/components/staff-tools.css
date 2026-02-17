@@ -130,7 +130,7 @@
     background-color: hsl(var(--hue-primary), 100%, 40%, 0.1);
     border: 1px solid hsl(var(--hue-primary), 70%, 60%);
     font-weight: 600;
-    color: hsl(230, 23%, 5%);
+    color: hsl(var(--hue-primary), 23%, 5%);
 
     transition: 100ms ease-in-out;
     transition-property: background-color, border-color;

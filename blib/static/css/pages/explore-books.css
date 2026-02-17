@@ -32,9 +32,9 @@
   }
 
   .explore {
-    --blue-bg: hsl(230deg 40% 20%);
-    --blue-darker: hsl(230deg 40% 24%);
-    --blue-dark: hsl(230deg 40% 28%);
+    --blue-bg: hsl(var(--hue-primary) 40% 20%);
+    --blue-darker: hsl(var(--hue-primary) 40% 24%);
+    --blue-dark: hsl(var(--hue-primary) 40% 28%);
 
     --pink-bg: hsl(6, 30%, 94%);
     --pink-dark: hsl(6, 30%, 92%);

@@ -11,7 +11,7 @@
     position: fixed;
     inset: 0 0 auto 0;
     z-index: 200;
-    background-color: hsl(230, 25%, 50%);
+    background-color: hsl(var(--hue-primary), 25%, 50%);
 
     opacity: 0;
     translate: 0 -110%;

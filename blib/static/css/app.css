@@ -114,34 +114,34 @@
   then one for where they'll actually be used
 */
   :root {
-    --hue-primary: 230;
-    --hue-secondary: 180;
-    --hue-beige: 40;
+    --hue-primary: 230; /* purpley blue */
+    --hue-secondary: 180; /* teal */
+    --hue-tertiary: 320; /* magenta */
 
     --c-white: hsl(0, 0%, 96%);
     --c-white-bone: hsl(0, 10%, 90%);
     --c-white-dark: hsl(0, 0%, 91%);
-    --c-gray-dark: hsl(233, 14%, 25%);
-    --c-gray-dark-40: hsl(233, 14%, 25%, 38%);
-    --c-gray-medium: hsl(233, 14%, 45%);
-    --c-gray-medium-light: hsl(233, 14%, 55%);
-    --c-gray-light: hsl(229, 14%, 85%);
-    --c-gray-lighter: hsl(233, 14%, 90%);
-    --c-purple: hsl(232, 58%, 55%);
-    --c-purple-60: hsl(232, 58%, 35%, 60%);
-    --c-purple-light: hsl(232, 58%, 65%);
-    --c-purple-light-pastel: hsl(232, 25%, 88%);
-    --c-teal: hsl(180, 100%, 42%);
-    --c-teal-dark: hsl(180, 100%, 37%);
+    --c-gray-dark: hsl(var(--hue-primary), 14%, 25%);
+    --c-gray-dark-40: hsl(var(--hue-primary), 14%, 25%, 38%);
+    --c-gray-medium: hsl(var(--hue-primary), 14%, 45%);
+    --c-gray-medium-light: hsl(var(--hue-primary), 14%, 55%);
+    --c-gray-light: hsl(var(--hue-primary), 14%, 85%);
+    --c-gray-lighter: hsl(var(--hue-primary), 14%, 90%);
+    --c-purple: hsl(var(--hue-primary), 58%, 55%);
+    --c-purple-60: hsl(var(--hue-primary), 58%, 35%, 60%);
+    --c-purple-light: hsl(var(--hue-primary), 58%, 65%);
+    --c-purple-light-pastel: hsl(var(--hue-primary), 25%, 88%);
+    --c-teal: hsl(var(--hue-secondary), 100%, 42%);
+    --c-teal-dark: hsl(var(--hue-secondary), 100%, 37%);
     --c-transparent: transparent;
-    --c-magenta: hsl(320, 85%, 41%);
+    --c-magenta: hsl(var(--hue-tertiary), 85%, 41%);
 
     --color-main-bg: hsl(var(--hue-primary), 5%, 96%);
     --color-text-dark: var(--c-gray-dark);
     --color-text-light: var(--c-white);
     --color-text-muted: var(--c-gray-medium);
 
-    --color-header-bg: var(--c-purple);
+    --color-header-bg: hsl(var(--hue-primary), 58%, 55%);
     --color-topnav-menu-bg: var(--c-purple);
     --color-topnav-menu-overlay: var(--c-gray-dark-40);
     --color-topnav-menu-shadow: var(--c-purple-60);
@@ -419,6 +419,22 @@
   .text-muted {
     color: var(--c-gray-medium-light);
   }
+
+  /* @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+  } */
+
+  /* .noise {
+    background-image: url('../img/noise.png');
+    position: absolute;
+    inset: 0;
+    background-size: calc(2px * 64);
+    pointer-events: none;
+    opacity: 0.012;
+    animation: fadeIn 4s;
+  } */
 
   #app {
     display: grid;

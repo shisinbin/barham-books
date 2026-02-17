@@ -26,13 +26,13 @@
           {{ form.non_field_errors }}
 
           <div class="contact__field">{{ form.name.label_tag }}
-            {{ form.name }}</div>
+            {{ form.name }}{{ form.name.errors }}</div>
 
           <div class="contact__field">{{ form.email.label_tag }}
-            {{ form.email }}</div>
+            {{ form.email }}{{ form.email.errors }}</div>
 
           <div class="contact__field">{{ form.message.label_tag }}
-            {{ form.message }}</div>
+            {{ form.message }}{{ form.message.errors }}</div>
 
           <button type="submit" class="button primary contact__button">Send message</button>
         </form>

@@ -6,7 +6,7 @@
 
     display: grid;
 
-    background-color: hsl(230, 25%, 50%);
+    background-color: hsl(var(--hue-primary), 25%, 50%);
     border-radius: 0 0 20px 20px;
     box-shadow:
       rgba(0, 0, 0, 0.1) 0px 10px 15px -3px,
