@@ -21,16 +21,18 @@
           {{ form.non_field_errors }}
 
           <div>{{ form.username.label_tag }}
-            {{ form.username }}</div>
+            {{ form.username }}{{ form.username.errors }}</div>
 
           <div>{{ form.email.label_tag }}
-            {{ form.email }}</div>
+            {{ form.email }}{{ form.email.errors }}</div>
 
           <div>{{ form.password.label_tag }}
-            {{ form.password }}</div>
+            {{ form.password }}{{ form.password.errors }}</div>
 
           <div>{{ form.password2.label_tag }}
-            {{ form.password2 }}</div>
+            {{ form.password2 }}{{ form.password2.errors }}</div>
+
+          <div>{{ form.turnstile }}{{ form.turnstile.errors }}</div>
 
           <div class="form__actions">
             <button class="button primary" type="submit">Create account</button>
