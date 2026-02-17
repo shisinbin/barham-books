@@ -126,6 +126,15 @@ class BookTag(ItemBase):
             BookTags,
             on_delete=models.CASCADE,
             related_name="book_tags")
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["tag", "content_object"], name="booktag_tag_book_idx"),
+            models.Index(fields=["content_object", "tag"], name="booktag_book_tag_idx"),
+        ]
+        constraints = [
+            models.UniqueConstraint(fields=["content_object", "tag"], name="uniq_booktag"),
+        ]
     
 class SaleCategory(models.Model):
     name = models.CharField(max_length=100)
@@ -233,6 +242,10 @@ class Book(models.Model):
 
     class Meta:
         ordering = ('title',)
+        indexes = [
+            models.Index(fields=["-created"], name="book_created_desc_idx"),
+            models.Index(fields=["author", "created"], name="book_author_created_idx"),
+        ]
 
     def get_absolute_url(self):
         """Returns the url to access a detail record for this book."""

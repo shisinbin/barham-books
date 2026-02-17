@@ -6,7 +6,7 @@
 
   <figure class="staff-pick__book-identity">
     {% if review.book.photo %}
-      <img src="{{ review.book.photo.url }}" alt="" class="staff-pick__cover-image" />
+      <img src="{{ review.book.photo.url }}" alt="" class="staff-pick__cover-image" loading="eager" />
     {% else %}
       <img src="{% static 'img/open_book.svg' %}" alt="" class="staff-pick__cover-image" />
     {% endif %}

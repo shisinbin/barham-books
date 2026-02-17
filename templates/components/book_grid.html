@@ -6,9 +6,9 @@
     <li class="book-grid__book" data-book="{{ book.id }}">
       <div class="book-grid__image-wrapper">
         {% if book.photo %}
-          <img src="{{ book.photo|thumbnail_url:'default' }}" alt="" class="book-grid__cover-image" />
+          <img src="{{ book.photo|thumbnail_url:'default' }}" alt="" class="book-grid__cover-image" loading="lazy" />
         {% else %}
-          <img src="{% static 'img/branding/book-cover-muted.jpg' %}" alt="" class="book-grid__cover-image" />
+          <img src="{% static 'img/branding/book-cover-muted.jpg' %}" alt="" class="book-grid__cover-image" loading="lazy" />
         {% endif %}
       </div>
 

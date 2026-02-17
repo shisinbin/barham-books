@@ -35,11 +35,11 @@
           <li class="carousel__slide">
             {% if book.photo %}
               <div class="carousel__image-wrapper">
-                <img src="{{ book.photo|thumbnail_url:'default' }}" alt="" class="carousel__image" />
+                <img src="{{ book.photo|thumbnail_url:'default' }}" alt="" class="carousel__image" loading="lazy" />
               </div>
             {% else %}
               <div class="carousel__image-wrapper">
-                <img src="{% static 'img/branding/book-cover-muted.jpg' %}" alt="" class="carousel__image" />
+                <img src="{% static 'img/branding/book-cover-muted.jpg' %}" alt="" class="carousel__image" loading="lazy" />
               </div>
             {% endif %}
 

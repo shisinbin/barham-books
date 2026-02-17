@@ -148,9 +148,17 @@ def autocomplete_books(request):
 
     q = build_search_filter(terms, allow_prefix=True)
 
+    # books_qs = (
+    #     Book.objects
+    #     .filter(q, instances__isnull=False)
+    #     .distinct()[:20]
+    # )
+
     books_qs = (
         Book.objects
-        .filter(q, instances__isnull=False)
+        .select_related("author")
+        .only("id", "slug", "title", "author__first_name", "author__last_name")
+        .filter(q)
         .distinct()[:20]
     )
 
@@ -1389,10 +1397,16 @@ def book_search_redux(request):
 
     q = build_search_filter(terms)
 
-    books_qs = Book.objects.filter(q)
+    # books_qs = Book.objects.filter(q)
+    books_qs = (
+        Book.objects
+        .select_related("author")
+        .only("id", "slug", "title", "author__first_name", "author__last_name")
+        .filter(q)
+    )
 
-    if not request.user.is_staff:
-        books_qs = books_qs.filter(instances__isnull=False)
+    # if not request.user.is_staff:
+    #     books_qs = books_qs.filter(instances__isnull=False)
     
     books_list = list(books_qs.distinct())
     scored_books = []

@@ -15,9 +15,9 @@
 
       <div class="book-stack__image-wrapper">
         {% if book.photo %}
-          <img src="{{ book.photo|thumbnail_url:'default' }}" alt="" class="book-stack__cover-image" />
+          <img src="{{ book.photo|thumbnail_url:'default' }}" alt="" class="book-stack__cover-image" loading="lazy" />
         {% else %}
-          <img src="{% static 'img/branding/book-cover-muted.jpg' %}" alt="" class="book-stack__cover-image" />
+          <img src="{% static 'img/branding/book-cover-muted.jpg' %}" alt="" class="book-stack__cover-image" loading="lazy" />
         {% endif %}
       </div>
 
