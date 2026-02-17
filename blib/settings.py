@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'taggit',
     'easy_thumbnails',
     'crispy_forms',
+    'turnstile',
     #'django_select2',
 
     # postgres thing to help with search

@@ -40,13 +40,4 @@
   .auth a {
     text-align: center;
   }
-
-  .auth .errorlist {
-    margin-block-start: 4px;
-    color: #b00020;
-    padding: 0;
-    list-style: none;
-    display: grid;
-    gap: 10px;
-  }
 }

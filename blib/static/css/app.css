@@ -420,6 +420,15 @@
     color: var(--c-gray-medium-light);
   }
 
+  .errorlist {
+    margin-block-start: 4px;
+    color: hsl(350, 100%, 35%);
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+
   /* @keyframes fadeIn {
     from {
       opacity: 0;

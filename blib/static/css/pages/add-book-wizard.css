@@ -446,14 +446,5 @@
       margin-left: 0 !important;
       background: var(--c-field-bg) !important;
     }
-
-    .errorlist {
-      margin-block-start: 4px;
-      color: #b00020;
-      padding: 0;
-      list-style: none;
-      display: grid;
-      gap: 10px;
-    }
   }
 }
