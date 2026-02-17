@@ -141,7 +141,7 @@
     --color-text-light: var(--c-white);
     --color-text-muted: var(--c-gray-medium);
 
-    --color-header-bg: hsl(var(--hue-primary), 58%, 55%);
+    --color-header-bg: hsl(var(--hue-primary), 60%, 51%, 0.9);
     --color-topnav-menu-bg: var(--c-purple);
     --color-topnav-menu-overlay: var(--c-gray-dark-40);
     --color-topnav-menu-shadow: var(--c-purple-60);
@@ -550,6 +550,7 @@
     top: 0;
     z-index: 100;
     background-color: var(--color-header-bg);
+    backdrop-filter: blur(10px) saturate(1.15);
     height: var(--header-height);
     display: grid;
     align-content: center;
