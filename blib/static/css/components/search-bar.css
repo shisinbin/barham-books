@@ -7,7 +7,8 @@
     isolation: isolate;
     top: var(--header-height);
     z-index: 80;
-    background-color: hsl(var(--hue-primary), 15%, 90%);
+    background-color: hsl(var(--hue-primary), 20%, 90%, 0.8);
+    backdrop-filter: blur(10px) saturate(1.15);
 
     .search-bar__wrapper {
       padding-block: 16px;
@@ -153,12 +154,6 @@
         0 0 0 1px hsl(var(--hue-primary), 40%, 50%, 0.4),
         0 0 0 1px hsl(var(--hue-primary), 15%, 85%),
         0 12px 30px -10px hsl(var(--hue-primary), 40%, 50%, 0.15);
-
-      /* max-height: 240px;
-      overflow-y: auto;
-      scrollbar-gutter: stable;
-      scrollbar-width: auto;
-      scrollbar-color: #888 #eee; */
     }
 
     .search-bar__autocomplete li {

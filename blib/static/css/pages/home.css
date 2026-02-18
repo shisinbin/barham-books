@@ -35,29 +35,10 @@
       --font-size-nav-3: var(--fs-22);
     }
 
+    /* OG background */
     /* background-color: var(--color-main-bg);
-    background-image:
-      radial-gradient(
-        at 0% 0%,
-        hsla(232, 30%, 92%, 0.5) 0px,
-        transparent 50%
-      ),
-      radial-gradient(
-        at 100% 0%,
-        hsla(232, 30%, 92%, 0.5) 0px,
-        transparent 50%
-      ),
-      radial-gradient(
-        at 50% 100%,
-        hsla(232, 30%, 92%, 0.5) 0px,
-        transparent 50%
-      ),
-      radial-gradient(
-        at 50% 40%,
-        hsla(232, 30%, 92%, 0.5) 0px,
-        transparent 50%
-      ); */
-    /* background: hsl(232, 20%, 96%); */
+
+    /* Subtle lightness-based Linear Gradient */
     background: linear-gradient(
       to bottom,
       hsl(var(--hue-primary), 25%, 95%) 0%,
@@ -65,13 +46,32 @@
       hsl(var(--hue-primary), 15%, 91%) 100%
     );
 
-    /* --tint: hsl(232, 12%, 95%);
-    background-color: var(--tint);
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    background-size: 200px;
-    background-repeat: repeat;
-    background-blend-mode: overlay;
-    opacity: 0.98; */
+    /* Similar to previous, but more color-based shifting */
+    /* background: linear-gradient(
+      to bottom,
+      hsl(var(--hue-primary), 30%, 96%) 0%,
+      hsl(calc(var(--hue-primary) + 5), 25%, 94%) 50%,
+      hsl(calc(var(--hue-primary) - 5), 20%, 92%) 100%
+    ); */
+
+    /* Purple and Magenta BLOBS - worth experimenting with! */
+    /* background:
+      radial-gradient(
+        600px circle at 20% 10%,
+        hsl(230, 70%, 80%, 0.15),
+        transparent 70%
+      ),
+      radial-gradient(
+        500px circle at 80% 30%,
+        hsl(320, 70%, 75%, 0.1),
+        transparent 70%
+      ),
+      linear-gradient(
+        to bottom,
+        hsl(var(--hue-primary), 30%, 96%) 0%,
+        hsl(calc(var(--hue-primary) + 5), 25%, 94%) 50%,
+        hsl(calc(var(--hue-primary) - 5), 20%, 92%) 100%
+      ); */
 
     display: grid;
     min-height: 100dvh;
@@ -206,19 +206,15 @@
       background: white;
       box-shadow:
         0 0 0 1px hsl(var(--hue-primary), 15%, 85%),
-        0 12px 30px -10px hsl(var(--hue-primary), 40%, 50%, 0.15);
+        0 10px 25px -12px hsl(var(--hue-primary), 30%, 40%, 0.12);
 
       transition: 50ms ease-in-out;
       transition-property: box-shadow, border-radius;
 
       &:focus-within {
-        /* box-shadow:
-          0 0 0 1px hsla(var(--hue-primary), 15%, 90%, 0.8),
-          0 10px 30px -10px hsla(var(--hue-primary), 40%, 50%, 0.15); */
         box-shadow:
-          0 0 0 1px hsl(var(--hue-primary), 40%, 50%, 0.4),
-          0 0 0 1px hsl(var(--hue-primary), 15%, 85%),
-          0 12px 30px -10px hsl(var(--hue-primary), 40%, 50%, 0.15);
+          0 0 0 1px hsl(var(--hue-primary), 45%, 50%, 0.5),
+          0 12px 30px -10px hsl(var(--hue-primary), 40%, 50%, 0.18);
       }
 
       &:has(+ .search__autocomplete:not([hidden])) {
@@ -319,27 +315,9 @@
       background: hsl(var(--hue-primary), 40%, 90%);
       text-align: start;
 
-      /* box-shadow:
-        0 0 0 1px hsl(var(--hue-primary), 15%, 85%),
-        0 12px 30px -10px hsl(var(--hue-primary), 40%, 50%, 0.15); */
-      /* box-shadow:
-        0 0 0 1px hsl(var(--hue-primary), 40%, 50%, 0.4),
-        0 0 0 1px hsl(var(--hue-primary), 15%, 85%),
-        0 12px 30px -10px hsl(var(--hue-primary), 40%, 50%, 0.15); */
-      /* box-shadow:
-        0 0 1px hsl(var(--hue-primary), 60%, 70%, 0.4),
-        0 0 0 2px hsl(var(--hue-primary), 25%, 85%),
-        0 12px 30px -10px hsl(var(--hue-primary), 40%, 50%, 0.15); */
       box-shadow:
-        0 0 0 1px hsl(var(--hue-primary), 40%, 50%, 0.4),
-        0 0 0 1px hsl(var(--hue-primary), 15%, 85%),
-        0 12px 30px -10px hsl(var(--hue-primary), 40%, 50%, 0.15);
-
-      /* max-height: 240px;
-      overflow-y: auto;
-      scrollbar-gutter: stable;
-      scrollbar-width: auto;
-      scrollbar-color: #888 #eee; */
+        0 0 0 1px hsl(var(--hue-primary), 45%, 50%, 0.5),
+        0 12px 30px -10px hsl(var(--hue-primary), 40%, 50%, 0.18);
     }
 
     .search__autocomplete li {
