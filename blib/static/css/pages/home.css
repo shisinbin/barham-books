@@ -373,6 +373,7 @@
       transition: 150ms ease-in-out;
       transition-property: background, border-color;
       height: 100%;
+      word-break: break-word;
 
       &:hover {
         background: hsl(var(--hue-primary), 30%, 96%);
