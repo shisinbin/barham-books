@@ -379,8 +379,10 @@
         border-color: hsl(var(--hue-primary), 45%, 75%);
       }
 
-      &:hover svg {
-        transform: translateX(4px);
+      @media (hover: hover) {
+        & svg {
+          transform: translateX(4px);
+        }
       }
 
       @media (width >= calc(600 / 16 * 1rem)) {
