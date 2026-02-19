@@ -485,10 +485,6 @@
   }
 
   .button {
-    /* display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5ch; */
     display: inline-block;
     cursor: pointer;
 
@@ -614,16 +610,14 @@
     }
 
     .topnav__desktop-nav-link {
-      --c-teal: hsl(180, 100%, 42%);
-      --c-transparent: transparent;
-      --c-magenta: hsl(320, 85%, 41%);
-      --c-yellow: hsl(50, 99%, 53%);
+      --color-inactive: hsl(0, 0%, 90%);
+      --color-active: hsl(0, 0%, 98%);
       position: relative;
       text-transform: uppercase;
       font-size: calc(18 / 16 * 1rem);
       font-weight: 500;
       letter-spacing: 0.05em;
-      color: var(--color-text-light);
+      color: var(--color-inactive);
 
       &::after {
         content: '';
@@ -632,13 +626,22 @@
         left: 0;
         right: 0;
         height: 2px;
-        background-color: var(--color-text-light);
+        background-color: currentColor;
         opacity: 0;
-        transition: opacity 50ms ease-in-out;
+        transition: 100ms ease-in-out;
+        transition-property: opacity, background-color;
+      }
+
+      &:hover {
+        color: var(--color-active);
       }
 
       &:hover::after {
         opacity: 1;
+      }
+
+      &.active {
+        color: var(--color-active);
       }
 
       &.active::after {
@@ -694,7 +697,7 @@
           height: 2px;
           background-color: var(--color-text-light);
           opacity: 0;
-          transition: opacity 50ms ease-in-out;
+          transition: opacity 100ms ease-in-out;
         }
 
         &:hover::after {
@@ -719,7 +722,7 @@
           height: 2px;
           background-color: var(--color-text-light);
           opacity: 0;
-          transition: opacity 50ms ease-in-out;
+          transition: opacity 100ms ease-in-out;
         }
 
         &:hover::after {

@@ -3,9 +3,14 @@
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    gap: 1em;
+    gap: 4px;
     margin-block-start: 32px;
     font-size: calc(18 / 16 * 1rem);
+
+    @media (width >= calc(768 / 16 * 1rem)) {
+      margin-block-start: 48px;
+      font-size: calc(20 / 16 * 1rem);
+    }
 
     .pagination__control {
       display: flex;
@@ -49,10 +54,14 @@
       justify-self: center;
       display: flex;
       align-items: baseline;
-      gap: 6px;
+      gap: 4px;
       list-style: none;
       padding: 0;
       margin: 0;
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        gap: 8px;
+      }
     }
 
     .pagination__page {

@@ -18,10 +18,14 @@
     .recent__meta {
       text-wrap: wrap;
       color: hsl(var(--hue-primary), 14%, 55%);
-      font-size: calc(18 / 16 * 1rem);
       margin-block: 16px;
       font-style: italic;
       font-weight: 400;
+      font-size: var(--fs-18);
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        font-size: var(--fs-20);
+      }
     }
 
     .recent__meta-item {

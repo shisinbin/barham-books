@@ -13,6 +13,11 @@
       font-style: italic;
       font-weight: 300;
       margin-block-end: 24px;
+      font-size: var(--fs-18);
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        font-size: var(--fs-20);
+      }
     }
 
     .a-z__alphabet-container {
