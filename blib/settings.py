@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'taggit',
     'easy_thumbnails',
     'crispy_forms',
+    'crispy_bootstrap4',
     'turnstile',
     #'django_select2',
 
@@ -194,6 +195,7 @@ TAGGIT_CASE_INSENSITIVE = True
 # # Tell select2 which cache configuration to use:
 # SELECT2_CACHE_BACKEND = "select2"
 
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
