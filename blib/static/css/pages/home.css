@@ -380,7 +380,7 @@
       }
 
       @media (hover: hover) {
-        & svg {
+        &:hover svg {
           transform: translateX(4px);
         }
       }
