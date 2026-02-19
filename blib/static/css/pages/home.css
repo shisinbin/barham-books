@@ -12,6 +12,8 @@
     --clear-button-height: calc(32 / 16 * 1rem);
     --clear-icon-size: calc(20 / 16 * 1rem);
 
+    --chevron-icon-width: calc(24 / 16 * 1rem);
+
     --pad-inline-start-input: 16px;
     --pad-inline-end-input: 16px;
 
@@ -24,6 +26,8 @@
     @media (width >= calc(600 / 16 * 1rem)) {
       --br-search: 32px;
       --br-nav: 12px;
+
+      --chevron-icon-width: calc(26 / 16 * 1rem);
 
       --pad-inline-start-input: 26px;
       --pad-inline-end-input: 8px;
@@ -185,14 +189,6 @@
       max-width: 680px;
       margin-inline: auto;
       position: relative;
-      /* border-radius: var(--br-search); */
-      /* box-shadow:
-        0 2px 4px hsla(var(--hue-primary), 20%, 30%, 0.04),
-        0 8px 16px hsla(var(--hue-primary), 20%, 30%, 0.04),
-        0 16px 32px hsla(var(--hue-primary), 20%, 30%, 0.04); */
-      /* box-shadow:
-        0 0 0 1px hsla(var(--hue-primary), 15%, 90%, 0.8),
-        0 10px 30px -10px hsla(var(--hue-primary), 40%, 50%, 0.15); */
     }
 
     .home__search-control {
@@ -340,12 +336,16 @@
     .home__primary-nav ul {
       display: grid;
       grid-auto-rows: 1fr;
-      gap: 1rem;
+      gap: 12px;
       grid-template-columns: repeat(2, 1fr);
       max-width: 640px;
       margin-inline: auto;
       padding: 0;
       list-style: none;
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        gap: 16px;
+      }
     }
 
     .home__primary-nav li,
@@ -360,6 +360,8 @@
 
     .home__primary-nav a {
       display: grid;
+      grid-template-columns: auto var(--chevron-icon-width);
+      gap: 4px;
       place-content: center;
       padding: 16px;
       background: hsl(var(--hue-primary), 5%, 98%);
@@ -377,9 +379,22 @@
         border-color: hsl(var(--hue-primary), 45%, 75%);
       }
 
+      &:hover svg {
+        transform: translateX(4px);
+      }
+
       @media (width >= calc(600 / 16 * 1rem)) {
         padding: 22px;
       }
+    }
+
+    .home__primary-nav svg {
+      flex-shrink: 0;
+      width: var(--chevron-icon-width);
+      align-self: center;
+      stroke-width: 1.5;
+      transition: transform 150ms ease-in-out;
+      will-change: transform;
     }
 
     .home__secondary-nav {
