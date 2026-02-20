@@ -186,7 +186,7 @@
     }
 
     .home__form {
-      max-width: 680px;
+      max-width: 800px;
       margin-inline: auto;
       position: relative;
     }
@@ -431,12 +431,12 @@
       text-decoration: none;
       color: hsl(var(--hue-primary), 14%, 60%);
       margin: 0 0.75rem;
-      text-underline-offset: 2px;
+      text-underline-offset: 3px;
       transition: color 100ms ease-in-out;
 
       &:hover {
         color: hsl(var(--hue-primary), 14%, 40%);
-        text-decoration: underline;
+        text-decoration: 2px underline;
       }
     }
   }
