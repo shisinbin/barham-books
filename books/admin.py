@@ -126,8 +126,9 @@ from .models import BookForSale, SaleCategory
 
 @admin.register(BookForSale)
 class BookForSaleAdmin(admin.ModelAdmin):
-    list_display = ('slug', 'title', 'author')
-    prepopulated_fields = { 'slug': ('title',)}
+    # list_display = ('slug', 'title', 'author')
+    # prepopulated_fields = { 'slug': ('title',)}
+    readonly_fields = ('slug',)
     search_fields = ('title', 'author__name')
 
 @admin.register(SaleCategory)

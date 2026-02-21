@@ -183,15 +183,33 @@ class BookForSale(models.Model):
         return reverse("book_for_sale_detail", kwargs={'slug': self.slug})
     
     def save(self, *args, **kwargs):
-        if not self.slug or self.title != BookForSale.objects.get(pk=self.pk).title:
-            original_slug = slugify(self.title, allow_unicode=True)
-            slug = original_slug
-            # Check for conflicts
+        is_new = self.pk is None
+        old_title = None
+
+        if not is_new:
+            old_title = (
+                BookForSale.objects.
+                filter(pk=self.pk)
+                .values_list("title", flat=True)
+                .first()
+            )
+
+        # Only slugify if it's new, title has changed, or slug is somehow missing
+        if is_new or (old_title != self.title) or not self.slug:
+            base = slugify(self.title, allow_unicode=True) or "book"
+            slug = base
             num = 1
-            while BookForSale.objects.filter(slug=slug).exists():
-                slug = f'{original_slug}-{num}'
+
+            qs = BookForSale.objects.all()
+            if self.pk:
+                qs = qs.exclude(pk=self.pk)
+
+            while qs.filter(slug=slug).exists():
+                slug = f"{base}-{num}"
                 num += 1
+            
             self.slug = slug
+            
         super().save(*args, **kwargs)
     
 
