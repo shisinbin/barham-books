@@ -1,12 +1,13 @@
 @layer component {
   .wizard {
-    --c-panel-bg: hsl(var(--hue-primary), 20%, 97%);
-    --c-panel-border: hsl(0, 0%, 88%);
+    --c-panel-bg: hsl(var(--hue-primary), 20%, 94%);
+    --c-panel-border: hsl(0, 0%, 75%);
 
-    --c-field-bg: hsl(0, 0%, 99%);
-    --c-field-border: hsl(var(--hue-primary), 14%, 80%);
+    --c-field-bg: hsl(0, 0%, 98%);
+    --c-field-border: hsl(var(--hue-primary), 14%, 75%);
 
     --shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.06);
+    --shadow-panel: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     /* --shadow-panel:
       0 4px 6px -1px hsla(232, 58%, 15%, 0.1),
       0 2px 4px -1px hsla(232, 58%, 15%, 0.06); */
@@ -77,8 +78,8 @@
       padding: 32px;
       background: var(--c-panel-bg);
       border-radius: 8px;
-      box-shadow: var(--shadow-panel);
-      border: 2px solid var(--c-panel-border);
+      /* box-shadow: var(--shadow-panel); */
+      border: 1px solid var(--c-panel-border);
 
       &.full {
         width: 100%;
@@ -161,6 +162,8 @@
 
     .form label {
       width: fit-content;
+      color: hsl(var(--hue-primary), 35%, 45%);
+      font-weight: 500;
     }
 
     .form-row {
@@ -383,7 +386,7 @@
       }
     }
     .wizard__details-list dt {
-      color: var(--c-gray-medium);
+      color: hsl(var(--hue-primary), 40%, 50%);
       margin-block-end: 4px;
 
       &::after {

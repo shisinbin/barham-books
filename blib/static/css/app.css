@@ -764,7 +764,7 @@
   }
 
   .footer {
-    background-color: gainsboro;
+    background-color: hsl(var(--hue-primary), 5%, 86%);
     .footer__top-row {
       display: grid;
       gap: 12px;
