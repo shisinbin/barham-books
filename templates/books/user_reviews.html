@@ -34,10 +34,8 @@
         </h1>
       </div>
 
-      {% if review_count > 0 %}
-        <p>
-          {{ review_count }} review{{ review_count|pluralize }}{% if review_count > 1 %} • Most recent first{% endif %}
-        </p>
+      {% if review_count > 1 %}
+        <p>{{ review_count }} reviews • Most recent first</p>
       {% endif %}
     </header>
 
