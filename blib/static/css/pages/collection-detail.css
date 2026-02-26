@@ -37,11 +37,10 @@
     }
 
     .collection__tag {
-      --color-tag-border: var(--c-gray-light);
-
       padding: 0.25rem 0.75rem;
-      border: 1px solid var(--color-tag-border);
+      border: 1px solid var(--card-border-color);
       border-radius: 100vmax;
+      background-color: var(--card-bg-color);
     }
 
     .collection__meta {
@@ -89,8 +88,8 @@
       cursor: pointer;
 
       &:hover + .collection__select-presentational {
-        background-color: hsl(var(--hue-primary), 15%, 92%);
-        border: 1px solid hsl(var(--hue-primary), 10%, 80%);
+        background-color: var(--card-bg-color-hover);
+        border-color: var(--card-border-color-hover);
       }
 
       &:focus + .collection__select-presentational {
@@ -101,8 +100,8 @@
     }
 
     .collection__select-presentational {
-      background-color: hsl(var(--hue-primary), 10%, 94%);
-      border: 1px solid hsl(var(--hue-primary), 10%, 88%);
+      background-color: var(--card-bg-color);
+      border: 1px solid var(--card-border-color);
       padding: 12px 16px;
       padding-right: 52px;
       border-radius: 8px;
@@ -120,68 +119,6 @@
       bottom: 0;
       margin: auto;
       pointer-events: none;
-    }
-
-    .collection__grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      grid-auto-rows: 1fr auto;
-      gap: 24px var(--vertical-padding, 16px);
-      list-style: none;
-      padding: 0;
-    }
-
-    .collection__book {
-      --card-bg: var(--c-white-bone, lightgray);
-
-      background-color: var(--card-bg);
-      border-radius: 12px;
-      padding: 14px 10px 24px;
-      display: grid;
-      grid-template-rows: subgrid;
-      grid-row: span 2;
-      transition: 300ms ease;
-      transition-property: transform, filter;
-
-      &:hover .collection__cover-image,
-      &:focus-within .collection__cover-image {
-        transform: scale(1.05);
-        filter: brightness(100%);
-      }
-    }
-
-    .collection__image-wrapper {
-      justify-self: center;
-      border-radius: 2px;
-      overflow: hidden;
-      width: fit-content;
-    }
-
-    .collection__cover-image {
-      height: 100%;
-      width: 100%;
-      object-fit: cover;
-      will-change: transform;
-      filter: brightness(95%);
-      transition: 150ms ease-in-out;
-      transition-property: transform, filter;
-    }
-
-    .collection__book-body {
-      text-align: center;
-    }
-
-    .collection__book-title {
-      font-size: calc(20 / 16 * 1rem);
-      font-size: var(--font-size-book-title);
-      margin-block-end: 10px;
-    }
-
-    .collection__book-link {
-    }
-
-    .collection__book-author {
-      font-size: var(--font-size-book-author);
     }
   }
 }

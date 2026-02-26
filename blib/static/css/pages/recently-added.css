@@ -36,7 +36,7 @@
     }
 
     .recent__meta-new {
-      color: hsl(var(--hue-secondary), 25%, 55%);
+      color: hsl(var(--hue-primary), 45%, 50%);
       /* text-decoration: 1px underline;
       text-underline-offset: 2px; */
     }
@@ -47,13 +47,14 @@
     }
 
     .recent__meta-tag {
-      font-size: calc(13 / 16 * 1rem);
+      font-size: calc(14 / 16 * 1rem);
       font-style: normal;
-      padding: 4px 10px;
       margin-inline-start: 12px;
       border-radius: 100vmax;
-      background: hsl(var(--hue-primary), 15%, 92%);
-      color: hsl(var(--hue-primary), 0%, 30%);
+      background: var(--card-bg-color);
+      padding: 0.25rem 0.75rem;
+      border: 1px solid var(--card-border-color);
+      color: hsl(var(--hue-primary), 14%, 35%);
     }
   }
 }

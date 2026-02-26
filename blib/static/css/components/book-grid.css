@@ -8,13 +8,9 @@
     padding: 0;
 
     .book-grid__book {
-      --card-hue: var(--hue-primary);
-      --card-bg: hsl(var(--card-hue), 10%, 94%);
-      --card-border: hsl(var(--card-hue), 10%, 88%);
-
-      background-color: var(--card-bg);
+      background-color: var(--card-bg-color);
       border-radius: 12px;
-      border: 1px solid var(--card-border);
+      border: 1px solid var(--card-border-color);
       padding: 14px 10px;
       display: grid;
       grid-template-rows: subgrid;
@@ -26,8 +22,8 @@
       transition-property: background-color, border-color;
 
       &:hover {
-        background-color: hsl(var(--card-hue), 15%, 92%);
-        border-color: hsl(var(--card-hue), 10%, 80%);
+        background-color: var(--card-bg-color-hover);
+        border-color: var(--card-border-color-hover);
       }
 
       &:hover .book-grid__cover-image {
@@ -59,18 +55,17 @@
     }
 
     .book-grid__book-title {
-      font-size: calc(20 / 16 * 1rem);
       font-size: var(--font-size-book-title);
       margin-block-end: 8px;
-      font-weight: 500;
+      font-weight: 600;
       text-underline-offset: 3px;
     }
 
     .book-grid__book-author {
       font-size: var(--font-size-book-author);
-      color: var(--c-gray-medium-light);
-      font-weight: 300;
-      letter-spacing: 0.02em;
+      color: var(--c-gray-medium);
+      font-weight: 400;
+      /* letter-spacing: 0.02em; */
     }
 
     .book-grid__remove {

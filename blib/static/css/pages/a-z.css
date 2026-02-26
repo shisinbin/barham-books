@@ -45,26 +45,40 @@
     }
 
     .a-z__nav-link {
+      --tile-bg-color: var(--card-bg-color);
+      --tile-bg-color-active: var(--c-purple);
+
+      --tile-border-color: var(--card-border-color);
+      --tile-border-color-active: transparent;
+
+      --tile-text-color: var(--color-text-dark);
+      --tile-text-color-active: var(--color-text-light);
+
       flex: 0 0 auto;
       min-width: 54px;
       min-height: 54px;
       display: grid;
       place-content: center;
       padding-inline: 2px;
-      border: 1px solid #ddd;
+
+      color: var(--tile-text-color);
+      background-color: var(--tile-bg-color);
+      border: 1px solid var(--tile-border-color);
       border-radius: 4px;
+
       transition: 150ms ease-in-out;
-      transition-property: background-color, border-color;
+      transition-property: background-color, border-color, color;
 
       &:hover:not(.is-active) {
-        background-color: #f0f0f0;
-        border-color: #bbb;
+        background-color: var(--tile-bg-color-active);
+        border-color: var(--tile-border-color-active);
+        color: var(--tile-text-color-active);
       }
 
       &.is-active {
-        background-color: var(--c-purple);
-        color: var(--color-text-light, white);
-        border-color: var(--c-purple);
+        background-color: var(--tile-bg-color-active);
+        color: var(--tile-text-color-active);
+        border-color: var(--tile-border-color-active);
         font-weight: 500;
       }
 

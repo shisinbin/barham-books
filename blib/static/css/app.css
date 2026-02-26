@@ -182,6 +182,12 @@
     --color-collections-border-hover: var(--c-gray-lighter);
 
     --shadow-gray: 0 8px 24px hsl(0 0% 0% / 0.08);
+
+    --card-hue: var(--hue-primary);
+    --card-bg-color: hsl(var(--card-hue), 5%, 94%);
+    --card-bg-color-hover: hsl(var(--card-hue), 30%, 92%);
+    --card-border-color: hsl(var(--card-hue), 15%, 84%);
+    --card-border-color-hover: hsl(var(--card-hue), 45%, 76%);
   }
 
   /* Spacing */
