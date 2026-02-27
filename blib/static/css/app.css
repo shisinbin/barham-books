@@ -193,12 +193,12 @@
   /* Spacing */
   :root {
     --vertical-padding: 16px;
-    --header-height: 54px;
+    --header-height: 56px;
     --thumbnail-cover-width: 100px;
 
     @media (width >= calc(600 / 16 * 1rem)) {
       --vertical-padding: 24px;
-      --header-height: 82px;
+      --header-height: 64px;
     }
 
     @media (width >= calc(1000 / 16 * 1rem)) {
@@ -549,13 +549,25 @@
 
   .topnav {
     position: sticky;
-    top: 0;
     z-index: 100;
-    background-color: var(--color-header-bg);
-    backdrop-filter: blur(10px) saturate(1.15);
+    top: 0;
     height: var(--header-height);
+
     display: grid;
     align-content: center;
+
+    background-color: hsl(var(--hue-primary), 60%, 47%, 0.9);
+    backdrop-filter: blur(8px) saturate(1.05);
+
+    transition: box-shadow 200ms ease-in-out;
+    transition-property:
+      box-shadow, background-color, backdrop-filter;
+
+    &:hover {
+      background-color: hsl(var(--hue-primary), 60%, 51%, 1);
+      backdrop-filter: blur(12px) saturate(1.15);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
 
     .topnav__wrapper {
       display: grid;
@@ -573,6 +585,7 @@
     .topnav__homelink {
       grid-area: logo;
       justify-self: start;
+      transition: opacity 50ms ease-in-out;
 
       &:hover {
         opacity: 0.8;
@@ -580,7 +593,7 @@
     }
 
     .topnav__logo {
-      height: 30px;
+      height: 35px;
       width: auto;
 
       @media (width >= calc(768 / 16 * 1rem)) {
@@ -628,7 +641,7 @@
       &::after {
         content: '';
         position: absolute;
-        bottom: -3px;
+        bottom: -2px;
         left: 0;
         right: 0;
         height: 2px;

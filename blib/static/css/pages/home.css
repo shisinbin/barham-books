@@ -32,7 +32,7 @@
       --pad-inline-start-input: 26px;
       --pad-inline-end-input: 8px;
 
-      --font-size-lede: var(--fs-24);
+      --font-size-lede: var(--fs-22);
       --font-size-search: var(--fs-20);
       --font-size-nav-1: var(--fs-18);
       --font-size-nav-2: var(--fs-20);
@@ -46,8 +46,8 @@
     background: linear-gradient(
       to bottom,
       hsl(var(--hue-primary), 25%, 95%) 0%,
-      hsl(var(--hue-primary), 15%, 93%) 60%,
-      hsl(var(--hue-primary), 15%, 91%) 100%
+      hsl(var(--hue-primary), 35%, 91%) 60%,
+      hsl(var(--hue-primary), 65%, 85%) 100%
     );
 
     /* Similar to previous, but more color-based shifting */
@@ -145,7 +145,7 @@
       display: grid;
 
       @media (width >= calc(600 / 16 * 1rem)) {
-        margin-block-start: var(--space-3);
+        margin-block-start: var(--space-2);
       }
     }
 
