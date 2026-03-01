@@ -29,12 +29,20 @@
     --font-size-nav-2: var(--fs-18);
     --font-size-nav-3: var(--fs-20);
 
-    --shadow-search-latent:
+    /* --shadow-search-latent:
       0 0 0 1px hsl(var(--hue-primary), 15%, 85%),
-      0 10px 25px -12px hsl(var(--hue-primary), 30%, 40%, 0.12);
+      0 10px 25px -12px hsl(var(--hue-primary), 30%, 40%, 0.12); */
+    --shadow-search-latent: 
+    /* The "carved" inner edge you liked */
+      inset 0 1px 2px hsl(var(--hue-primary), 20%, 0%, 0.06),
+      /* Sharp 1px "bottom" edge for a 3D lift */ 0 1px 1px
+        hsl(var(--hue-primary), 30%, 40%, 0.05),
+      /* Soft ambient drop */ 0 8px 20px -8px
+        hsl(var(--hue-primary), 30%, 40%, 0.12);
     --shadow-search-active:
-      0 0 0 1px hsl(var(--hue-primary), 45%, 50%, 0.5),
-      0 12px 30px -10px hsl(var(--hue-primary), 40%, 50%, 0.18);
+      inset 0 1px 2px hsl(var(--hue-primary), 20%, 0%, 0.03),
+      /* Deeper, more vertical shadow to simulate "lifting" off the page */
+        0 12px 24px -10px hsl(var(--hue-primary), 40%, 30%, 0.2);
 
     /* --p-nav-bg: hsl(var(--hue-primary), 5%, 98%); */
     --p-nav-bg: hsl(var(--hue-primary), 5%, 98%, 0.7);
@@ -47,6 +55,11 @@
 
     /* --p-nav-border-color-hover: hsl(var(--hue-primary), 45%, 75%); */
     --p-nav-border-color-hover: hsl(var(--hue-primary), 50%, 55%);
+
+    --border-search: 1px solid hsl(var(--hue-primary), 40%, 75%);
+    --border-color-search-active: hsl(var(--hue-primary), 55%, 65%);
+    --border-search-active: 1px solid
+      var(--border-color-search-active);
 
     @media (width >= calc(600 / 16 * 1rem)) {
       --br-search: 32px;
@@ -224,16 +237,17 @@
 
       overflow: hidden;
 
-      border: 1px solid hsl(var(--hue-primary), 62%, 85%);
+      border: var(--border-search);
       border-radius: var(--br-search);
       background: transparent;
       box-shadow: var(--shadow-search-latent);
 
-      transition: 50ms ease-in-out;
-      transition-property: box-shadow, border-radius;
+      transition: 150ms ease-in-out;
+      transition-property: box-shadow, border-radius, border-color;
 
       &:focus-within {
         box-shadow: var(--shadow-search-active);
+        border-color: var(--border-color-search-active);
       }
 
       &:has(+ .search__autocomplete:not([hidden])) {
@@ -344,8 +358,10 @@
       list-style: none;
       padding: 0;
 
-      border-top: none;
+      border: var(--border-search-active);
+      border-block-start: none;
       border-radius: 0 0 12px 12px;
+
       padding-block: 8px 12px;
       background: hsl(var(--hue-primary), 40%, 90%);
       text-align: start;
