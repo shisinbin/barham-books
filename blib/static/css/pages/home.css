@@ -1,4 +1,8 @@
 @layer component {
+  body {
+    --color-main-bg: var(--homepage-bg);
+  }
+
   .home {
     --space-1: 0.75rem;
     --space-2: 1.5rem;
@@ -64,12 +68,12 @@
     /* background-color: var(--color-main-bg);
 
     /* Subtle lightness-based Linear Gradient */
-    background: linear-gradient(
+    /* background: linear-gradient(
       to bottom,
       hsl(var(--hue-primary), 25%, 95%) 0%,
       hsl(var(--hue-primary), 35%, 91%) 60%,
       hsl(var(--hue-primary), 65%, 85%) 100%
-    );
+    ); */
 
     /* Similar to previous, but more color-based shifting */
     /* background: linear-gradient(
@@ -149,7 +153,7 @@
       grid-template-rows:
         auto /* brand */
         auto /* search */
-        minmax(10rem, 1fr) /* elastic space */
+        minmax(8rem, 1fr) /* elastic space */
         auto /* primary nav */
         auto; /* secondary nav */
       grid-template-areas:
@@ -332,6 +336,10 @@
       left: 0;
       right: 0;
       z-index: 1;
+
+      /* Restrict height? */
+      /* max-height: 20rem;
+      overflow-y: auto; */
 
       list-style: none;
       padding: 0;
