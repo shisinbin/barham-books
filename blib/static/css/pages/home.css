@@ -9,6 +9,8 @@
     --br-search: 8px;
     --br-nav: 8px;
 
+    --bg-search: hsl(0, 0%, 98%);
+
     --clear-button-height: calc(32 / 16 * 1rem);
     --clear-icon-size: calc(20 / 16 * 1rem);
 
@@ -22,6 +24,25 @@
     --font-size-nav-1: var(--fs-16);
     --font-size-nav-2: var(--fs-18);
     --font-size-nav-3: var(--fs-20);
+
+    --shadow-search-latent:
+      0 0 0 1px hsl(var(--hue-primary), 15%, 85%),
+      0 10px 25px -12px hsl(var(--hue-primary), 30%, 40%, 0.12);
+    --shadow-search-active:
+      0 0 0 1px hsl(var(--hue-primary), 45%, 50%, 0.5),
+      0 12px 30px -10px hsl(var(--hue-primary), 40%, 50%, 0.18);
+
+    /* --p-nav-bg: hsl(var(--hue-primary), 5%, 98%); */
+    --p-nav-bg: hsl(var(--hue-primary), 5%, 98%, 0.7);
+
+    /* --p-nav-bg-hover: hsl(var(--hue-primary), 30%, 96%); */
+    --p-nav-bg-hover: hsl(var(--hue-primary), 100%, 98%, 1);
+
+    /* --p-nav-border-color: hsl(var(--hue-primary), 15%, 85%); */
+    --p-nav-border-color: hsl(var(--hue-primary), 30%, 65%);
+
+    /* --p-nav-border-color-hover: hsl(var(--hue-primary), 45%, 75%); */
+    --p-nav-border-color-hover: hsl(var(--hue-primary), 50%, 55%);
 
     @media (width >= calc(600 / 16 * 1rem)) {
       --br-search: 32px;
@@ -101,13 +122,13 @@
     .home__account-icon {
       width: calc(28 / 16 * 1rem);
       fill: transparent;
-      stroke: hsl(var(--hue-primary), 22%, 70%);
+      stroke: hsl(var(--hue-primary), 40%, 70%);
       transition: 100ms ease-in-out;
       transition-property: fill, stroke;
 
       &:hover {
-        fill: hsl(var(--hue-primary), 28%, 60%);
-        stroke: hsl(var(--hue-primary), 28%, 60%);
+        fill: hsl(var(--hue-primary), 90%, 75%);
+        stroke: hsl(var(--hue-primary), 90%, 75%);
       }
 
       @media (width >= calc(600 / 16 * 1rem)) {
@@ -163,16 +184,17 @@
       color: hsl(var(--hue-primary), 14%, 35%);
       max-width: 42ch;
       justify-self: center;
-      line-height: 1.5;
+      line-height: 1.4;
       font-size: var(--font-size-lede);
 
       @media (width >= calc(600 / 16 * 1rem)) {
-        margin-block-start: var(--space-2);
+        /* margin-block-start: var(--space-2); */
+        margin-block-start: 1rem; /* logo image has some excess  */
       }
     }
 
     .home__name {
-      text-decoration: 2px underline hsl(var(--hue-primary), 90%, 85%);
+      text-decoration: 2px underline hsl(var(--hue-primary), 90%, 75%);
       text-underline-offset: 6px;
     }
 
@@ -186,7 +208,7 @@
     }
 
     .home__form {
-      max-width: 800px;
+      max-width: calc(800 / 16 * 1rem);
       margin-inline: auto;
       position: relative;
     }
@@ -196,21 +218,18 @@
       grid-template-columns: 1fr auto auto;
       align-items: center;
 
-      border-radius: var(--br-search);
       overflow: hidden;
 
-      background: white;
-      box-shadow:
-        0 0 0 1px hsl(var(--hue-primary), 15%, 85%),
-        0 10px 25px -12px hsl(var(--hue-primary), 30%, 40%, 0.12);
+      border: 1px solid hsl(var(--hue-primary), 62%, 85%);
+      border-radius: var(--br-search);
+      background: transparent;
+      box-shadow: var(--shadow-search-latent);
 
       transition: 50ms ease-in-out;
       transition-property: box-shadow, border-radius;
 
       &:focus-within {
-        box-shadow:
-          0 0 0 1px hsl(var(--hue-primary), 45%, 50%, 0.5),
-          0 12px 30px -10px hsl(var(--hue-primary), 40%, 50%, 0.18);
+        box-shadow: var(--shadow-search-active);
       }
 
       &:has(+ .search__autocomplete:not([hidden])) {
@@ -221,7 +240,7 @@
 
     .home__search-input {
       border: none;
-      background: transparent;
+      background: var(--bg-search);
 
       padding-inline: var(--pad-inline-start-input)
         var(--pad-inline-end-input);
@@ -231,29 +250,39 @@
       outline: none;
       min-width: 0;
 
-      &:not(:placeholder-shown) + .home__clear-button {
+      &:not(:placeholder-shown)
+        + .home__clear-button-wrapper
+        .home__clear-button {
         opacity: 1;
         pointer-events: auto;
       }
     }
 
+    .home__clear-button-wrapper {
+      background: var(--bg-search);
+      height: 100%;
+      display: grid;
+      place-content: center;
+      padding-inline-end: 8px;
+    }
+
     .home__clear-button {
-      background: transparent;
       border: none;
       cursor: pointer;
 
       height: var(--clear-button-height);
       width: var(--clear-button-height);
-      margin-inline-end: 8px;
+
       display: grid;
       place-content: center;
+
       pointer-events: none;
       opacity: 0;
       transition: 100ms ease-in-out;
       transition-property: opacity;
 
       &:hover .search__clear-icon path {
-        stroke: var(--color-clear-button-hover);
+        stroke: hsl(var(--hue-primary), 58%, 55%);
       }
 
       &:focus {
@@ -263,7 +292,6 @@
     }
 
     .search__clear-icon {
-      height: var(--clear-icon-size);
       width: var(--clear-icon-size);
 
       & path {
@@ -272,14 +300,16 @@
     }
 
     .home__submit-button-wrapper {
-      background: hsl(var(--hue-primary), 60%, 92%);
+      /* background: hsl(var(--hue-primary), 60%, 92%); */
+      background: hsl(var(--hue-primary), 62%, 90%);
       height: 100%;
       transition: 150ms ease-in-out;
       transition-property: background;
 
       &:hover,
       &:focus-within {
-        background: hsl(var(--hue-primary), 60%, 88%);
+        /* background: hsl(var(--hue-primary), 60%, 88%); */
+        background: hsl(var(--hue-primary), 65%, 85%);
       }
     }
 
@@ -301,6 +331,7 @@
       top: 100%;
       left: 0;
       right: 0;
+      z-index: 1;
 
       list-style: none;
       padding: 0;
@@ -311,9 +342,7 @@
       background: hsl(var(--hue-primary), 40%, 90%);
       text-align: start;
 
-      box-shadow:
-        0 0 0 1px hsl(var(--hue-primary), 45%, 50%, 0.5),
-        0 12px 30px -10px hsl(var(--hue-primary), 40%, 50%, 0.18);
+      box-shadow: var(--shadow-search-active);
     }
 
     .search__autocomplete li {
@@ -338,7 +367,7 @@
       grid-auto-rows: 1fr;
       gap: 12px;
       grid-template-columns: repeat(2, 1fr);
-      max-width: 640px;
+      max-width: calc(640 / 16 * 1rem);
       margin-inline: auto;
       padding: 0;
       list-style: none;
@@ -353,31 +382,27 @@
       font-size: var(--font-size-nav-2);
     }
 
-    /* .home__primary-nav li:nth-child(-n + 2) a {
-      font-weight: 600;
-      font-size: var(--font-size-nav-3);
-    } */
-
     .home__primary-nav a {
       display: grid;
       grid-template-columns: auto var(--chevron-icon-width);
       gap: 4px;
       place-content: center;
       padding: 16px;
-      background: hsl(var(--hue-primary), 5%, 98%);
-      border: 1px solid hsl(var(--hue-primary), 35%, 85%);
+      background: var(--p-nav-bg);
+      border: 1px solid var(--p-nav-border-color);
       border-radius: var(--br-nav);
       text-decoration: none;
-      color: inherit;
+      color: hsl(var(--hue-primary), 14%, 35%);
       font-weight: 500;
       transition: 150ms ease-in-out;
-      transition-property: background, border-color;
+      transition-property: background, border-color, color;
       height: 100%;
       word-break: break-word;
 
       &:hover {
-        background: hsl(var(--hue-primary), 30%, 96%);
-        border-color: hsl(var(--hue-primary), 45%, 75%);
+        background: var(--p-nav-bg-hover);
+        border-color: var(--p-nav-border-color-hover);
+        color: hsl(var(--hue-primary), 24%, 40%);
       }
 
       @media (hover: hover) {
@@ -402,10 +427,10 @@
 
     .home__secondary-nav {
       grid-area: nav-secondary;
-      margin-block: var(--space-3) var(--space-2);
+      margin-block: var(--space-2) var(--space-2);
 
       @media (width >= calc(600 / 16 * 1rem)) {
-        margin-block: var(--space-4) var(--space-2);
+        margin-block: var(--space-3) var(--space-2);
       }
     }
 
@@ -429,13 +454,13 @@
       font-size: var(--font-size-nav-1);
       font-weight: 600;
       text-decoration: none;
-      color: hsl(var(--hue-primary), 14%, 60%);
+      color: hsl(var(--hue-primary), 35%, 38%);
       margin: 0 0.75rem;
       text-underline-offset: 3px;
       transition: color 100ms ease-in-out;
 
       &:hover {
-        color: hsl(var(--hue-primary), 14%, 40%);
+        color: hsl(var(--hue-primary), 50%, 30%);
         text-decoration: 2px underline;
       }
     }
