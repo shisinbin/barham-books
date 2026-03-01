@@ -149,7 +149,7 @@
       grid-template-rows:
         auto /* brand */
         auto /* search */
-        1fr /* elastic space */
+        minmax(10rem, 1fr) /* elastic space */
         auto /* primary nav */
         auto; /* secondary nav */
       grid-template-areas:
@@ -359,7 +359,6 @@
 
     .home__primary-nav {
       grid-area: nav-primary;
-      margin-block-start: var(--space-4);
     }
 
     .home__primary-nav ul {
