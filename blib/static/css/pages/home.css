@@ -29,20 +29,13 @@
     --font-size-nav-2: var(--fs-18);
     --font-size-nav-3: var(--fs-20);
 
-    /* --shadow-search-latent:
-      0 0 0 1px hsl(var(--hue-primary), 15%, 85%),
-      0 10px 25px -12px hsl(var(--hue-primary), 30%, 40%, 0.12); */
-    --shadow-search-latent: 
-    /* The "carved" inner edge you liked */
+    --shadow-search-latent:
       inset 0 1px 2px hsl(var(--hue-primary), 20%, 0%, 0.06),
-      /* Sharp 1px "bottom" edge for a 3D lift */ 0 1px 1px
-        hsl(var(--hue-primary), 30%, 40%, 0.05),
-      /* Soft ambient drop */ 0 8px 20px -8px
-        hsl(var(--hue-primary), 30%, 40%, 0.12);
+      0 1px 1px hsl(var(--hue-primary), 30%, 40%, 0.05),
+      0 8px 20px -8px hsl(var(--hue-primary), 30%, 40%, 0.12);
     --shadow-search-active:
       inset 0 1px 2px hsl(var(--hue-primary), 20%, 0%, 0.03),
-      /* Deeper, more vertical shadow to simulate "lifting" off the page */
-        0 12px 24px -10px hsl(var(--hue-primary), 40%, 30%, 0.2);
+      0 12px 24px -10px hsl(var(--hue-primary), 40%, 30%, 0.2);
 
     /* --p-nav-bg: hsl(var(--hue-primary), 5%, 98%); */
     --p-nav-bg: hsl(var(--hue-primary), 5%, 98%, 0.7);
@@ -56,8 +49,8 @@
     /* --p-nav-border-color-hover: hsl(var(--hue-primary), 45%, 75%); */
     --p-nav-border-color-hover: hsl(var(--hue-primary), 50%, 55%);
 
-    --border-search: 1px solid hsl(var(--hue-primary), 40%, 75%);
-    --border-color-search-active: hsl(var(--hue-primary), 55%, 65%);
+    --border-search: 1px solid hsl(var(--hue-primary), 40%, 70%);
+    --border-color-search-active: hsl(var(--hue-primary), 55%, 60%);
     --border-search-active: 1px solid
       var(--border-color-search-active);
 

@@ -443,21 +443,21 @@
     gap: 10px;
   }
 
-  /* @keyframes fadeIn {
+  @keyframes fadeIn {
     from {
       opacity: 0;
     }
-  } */
+  }
 
-  /* .noise {
+  .noise {
     background-image: url('../img/noise.png');
     position: absolute;
     inset: 0;
     background-size: calc(2px * 64);
     pointer-events: none;
-    opacity: 0.012;
+    opacity: 0.007;
     animation: fadeIn 4s;
-  } */
+  }
 
   #app {
     display: grid;
@@ -574,7 +574,7 @@
     &:hover {
       background-color: hsl(var(--hue-primary), 60%, 51%, 1);
       backdrop-filter: blur(12px) saturate(1.15);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     }
 
     .topnav__wrapper {
