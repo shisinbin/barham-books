@@ -450,11 +450,19 @@
   }
 
   .noise {
-    background-image: url('../img/noise.png');
-    position: absolute;
-    inset: 0;
-    background-size: calc(2px * 64);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    z-index: 300;
     pointer-events: none;
+
+    background-image: url('../img/noise.png');
+    background-repeat: repeat;
+    background-size: calc(2 * 64px);
+    mix-blend-mode: multiply;
     opacity: 0.007;
     animation: fadeIn 4s;
   }
