@@ -54,7 +54,7 @@ COLLECTIONS = {
 
   "romance-love-stories": {
     "title": "Romance & Love Stories",
-    "description": "Love stories and romantic fiction — funny, heartfelt and escapist.",
+    "description": "Love stories and romantic fiction - funny, heartfelt and escapist.",
     "tags": [
         "romance",
         "chick lit",
@@ -79,18 +79,18 @@ COLLECTIONS = {
     "featured": True,
   },
 
-  "love-life-relationships": {
-    "title": "Love & Relationships",
-    "description": "Stories of love, family and human connection, from contemporary romance to domestic drama.",
-    "tags": [
-      "romance", "chick lit", "family drama",
-      "relationships", "lad lit",
-      "domestic fiction", "new adult",
-      "historical romance",
-    ],
-    "min_match": 1,
-    "featured": True,
-  },
+#   "love-life-relationships": {
+#     "title": "Love & Relationships",
+#     "description": "Stories of love, family and human connection, from contemporary romance to domestic drama.",
+#     "tags": [
+#       "romance", "chick lit", "family drama",
+#       "relationships", "lad lit",
+#       "domestic fiction", "new adult",
+#       "historical romance",
+#     ],
+#     "min_match": 1,
+#     "featured": True,
+#   },
 
   "literary-fiction": {
     "title": "Literary & Psychological Fiction",
