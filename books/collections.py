@@ -16,9 +16,10 @@ COLLECTIONS = {
     "title": "Fantasy, Sci-Fi & Speculative",
     "description": "Epic fantasy, science fiction and imaginative worlds.",
     "tags": [
-      "sci-fi", "fantasy", "epic fantasy", "speculative",
-      "dystopian", "paranormal", "supernatural", "vampires",
-      "time travel", "space opera", "steampunk"
+      "sci-fi", "fantasy", "epic fantasy",
+      "speculative", "dystopian", "aliens",
+      "time travel", "space opera", "steampunk",
+    #   "paranormal", "supernatural", "vampires",
     ],
     "min_match": 1,
     "featured": True,
@@ -146,9 +147,7 @@ COLLECTIONS = {
     "title": "Adventure & Action",
     "description": "Fast-paced, high-stakes stories featuring physical thrills, perilous journeys, and daring exploits.",
     "tags": [
-        "adventure",
-        "action",
-        "saga"
+        "adventure", "action",
     ],
     "min_match": 1
   },
@@ -168,6 +167,15 @@ COLLECTIONS = {
     "description": "Sharp, witty and laugh-out-loud books that skewer society, politics and everyday life.",
     "tags": [
       "humour", "satire"
+    ],
+    "min_match": 1,
+  },
+
+  "memoir-life-stories": {
+    "title": "Memoir & Life Stories",
+    "description": "Personal stories, reflections and lived experiences.",
+    "tags": [
+        "memoir",
     ],
     "min_match": 1,
   },
