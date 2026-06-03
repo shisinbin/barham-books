@@ -10,6 +10,7 @@ db.sqlite3
 /static
 /logs
 #/data
+/docs
 .DS_Store
 .python-version
 
