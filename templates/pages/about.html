@@ -23,14 +23,20 @@
         <section class="about__section">
           <h2 class="about__section-title">About the library</h2>
 
-          <p>Friends of Barham Library is a volunteer-run community library based in Wembley, UK. The library is operated by a registered charity and has been serving the local community since 2011. Today, it continues thanks to the time, care and enthusiasm of its volunteers.</p>
+          <p>Friends of Barham Library is a <strong>volunteer-run</strong> community library based in Wembley, UK. The library is operated by a registered charity and has been serving the local community since 2011. Today, it continues thanks to the time, care and enthusiasm of its volunteers.</p>
 
-          <p>
+          <p>Barham Library is more than just a place to borrow books. It is an <strong>active community space</strong>, hosting a wide range of activities and events, and offering the library as a venue for one-off or regular hires.</p>
+
+          <p>Full details about the library's <strong>activities</strong>, <strong>opening hours</strong>, and <strong>shop</strong> can be found on the following Tumblr website:</p>
+
+          <a href="https://barhamlibrary.tumblr.com/" class="about__link about__tumblr-link" target="_blank" rel="noopener noreferrer">👉 Visit the Friends of Barham Library website</a>
+
+          {% comment %} <p>
             This website focuses primarily on <strong>the library's general book collection</strong>, making it easier to explore what's on the shelves and discover new reads.
-          </p>
+          </p> {% endcomment %}
         </section>
 
-        <section class="about__section">
+        {% comment %} <section class="about__section">
           <h2 class="about__section-title">Beyond the books</h2>
 
           <p>
@@ -58,13 +64,13 @@
           <a href="https://barhamlibrary.tumblr.com/" class="about__link about__tumblr-link" target="_blank" rel="noopener noreferrer">👉 Visit the Friends of Barham Library website</a>
 
           <p>This ensures the most up-to-date information is always available in one place.</p>
-        </section>
+        </section> {% endcomment %}
 
         <section class="about__section">
           <h2 class="about__section-title">Get in touch</h2>
 
           <p>
-            If you have a question about the library, the book collection, or this website, please feel free to get in touch via <a href="{% url 'contact' %}" class="about__link">the contact page</a>.
+            If you have any questions about Barham Library please feel free to get in touch via <a href="{% url 'contact' %}" class="about__link">the contact page</a>.
           </p>
         </section>
 
@@ -72,7 +78,7 @@
           <h3 class="about__aside-title">About this website</h3>
 
           <p>
-            This website was created by a volunteer at Friends of Barham Library to support and showcase the library's book collection. You can visit their Github profile <a href="https://github.com/shisinbin" class="about__link" target="_blank" rel="noopener noreferrer">here</a>.
+            This website was created by a volunteer at Barham Library to support and showcase the library's book collection. You can visit their Github profile <a href="https://github.com/shisinbin" class="about__link" target="_blank" rel="noopener noreferrer">here</a>.
           </p>
 
           <p>Further technical details and background on the project will be shared separately in the future.</p>
