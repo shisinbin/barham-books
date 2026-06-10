@@ -26,3 +26,10 @@ a_z = {
     'y': 'y',
     'z': 'z',
 }
+
+language_choices = {
+    'English': 'English',
+    'Hindi': 'Hindi',
+    'Russian': 'Russian',
+    'Spanish': 'Spanish',
+}

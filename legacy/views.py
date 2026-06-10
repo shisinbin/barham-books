@@ -1,13 +1,14 @@
 import random
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
+from django.db.models import Count
 
-from books.models import Book, Category
+from books.models import Book, Category, BookTags
 from authors.models import Author
-from .forms import SearchForm
-from staff.forms import AddBookCopy
+# from .forms import SearchForm
+# from staff.forms import AddBookCopy
 from .fake_data import FAKE_REVIEWS, FAKE_COPIES
-from .choices import a_z
+from .choices import a_z, language_choices
 
 def index(request):
     return render(request, 'legacy/index.html')
@@ -44,72 +45,6 @@ def book(request):
         'is_recently_created': False,
         'legacy': True,
     }
-
-    '''
-    # LEGACY CODE
-    
-    book = get_object_or_404(Book, pk=book_id)
-
-    try:
-        copies = BookInstance2.objects.filter(book=book)
-    except:
-        copies = None
-    try:
-        available_copies = copies.filter(status='a')
-    except:
-        available_copies = None
-
-    # other books in series
-    other_books_in_series = None
-    if book.series:
-        other_books_in_series = Book.objects.filter(series=book.series).exclude(id=book.id).order_by('series_num')
-
-    # similar books
-    similar_books_initial = book.book_tags.similar_objects()
-
-    # exclude other books in series from similar books
-    if other_books_in_series:
-        for other_book in other_books_in_series:
-            if other_book in similar_books_initial:
-                similar_books_initial.remove(other_book)
-
-    # build new list only including same category
-    similar_books = []
-    if similar_books_initial:
-        for bk in similar_books_initial:
-            if bk.category == book.category:
-                similar_books.append(bk)
-            if len(similar_books) == 12:
-                break
-    del similar_books_initial
-
-    # redundant code, but doing no harm really
-    similar_books = similar_books[:12]
-
-    # review stuff
-    reviews = Review.objects.filter(book=book)
-    has_not_reviewed = True
-    if request.user.is_authenticated:
-        if reviews.filter(user=request.user):
-            has_not_reviewed = False
-
-    copy_form = AddBookCopy()
-
-    # determine if book was created with last week, for basic staff
-    is_recently_created = book.created >= timezone.now() - timedelta(weeks=4)
-
-    context = {
-        'book': book,
-        'copies': copies,
-        'available_copies': available_copies,
-        'reviews': reviews,
-        'has_not_reviewed': has_not_reviewed,
-        'other_books_in_series': other_books_in_series,
-        'similar_books': similar_books,
-        'copy_form': copy_form,
-        'is_recently_created': is_recently_created,
-    }
-    '''
 
     return render(request, 'legacy/book.html', context)
 
@@ -160,8 +95,77 @@ def books_filtered(request, letter_choice=None, tag_slug=None):
         'books': paged_books,
         'alphabet': a_z,
         'num_results': num_results,
+        'legacy': True,
     }
 
     return render(request,
                   'legacy/books_filtered.html',
                   context)
+
+def filter_by_tags(request):
+    tags = Book.book_tags.all()
+
+    dropdown_tags = tags.order_by('name')
+
+    tags_popular = (
+        tags
+        .annotate(num_times=Count('book_tags'))
+        .order_by('-num_times')[:50]
+    )
+
+    context = {
+        'tags': tags,
+        'tags_popular': tags_popular,
+        'dropdown_tags': dropdown_tags,
+        'legacy': True,
+    }
+
+    return render(request, 'legacy/tags.html', context)
+
+def tag_search(request):
+    queryset_list = Book.objects.all()
+    selected_tags = []
+    tag_strings = []
+    search_path = 'tag_search?'
+
+    if 'tag' in request.GET:
+        tag_strings = request.GET.getlist('tag')
+
+        for tag_string in tag_strings:
+            search_path = search_path + 'tag=' + tag_string + '&'
+
+            tag = get_object_or_404(BookTags, name=tag_string)
+            selected_tags.append(tag)
+
+            queryset_list = queryset_list.filter(book_tags__in=[tag])
+
+    if 'language' in request.GET:
+        language = request.GET['language']
+        search_path = search_path + 'language=' + language
+
+        if language != 'any':
+            queryset_list = queryset_list.filter(language__icontains=language)
+
+    queryset_list = queryset_list.distinct()
+
+    num_results = queryset_list.count()
+
+    paginator = Paginator(queryset_list, 30)
+    page = request.GET.get('page')
+    paged_books = paginator.get_page(page)
+
+    tags = Book.book_tags.order_by('name')
+
+    context = {
+        'tags': tags,
+        'selected_tags': selected_tags,
+        'tag_strings': tag_strings,
+        'num_results': num_results,
+        'language_choices': language_choices,
+        'books': paged_books,
+        'values': request.GET,
+        'search_path': search_path,
+        'legacy': True,
+    }
+
+    return render(request, 'legacy/tag_search.html', context)

@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Tags | 
+{% endblock %}
+
+{% block extra_css %}
+  <!-- Bootstrap Select -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css" />
+{% endblock %}
+
+{% block content %}
+  <section id="tag-splash" class="bg-dark text-white text-center">
+    <div class="container">
+      <div class="col-md-12">
+        <h1 class="display-4">Filter Books By Tags</h1>
+        <p class="lead">
+          <h3 class="mt-2">
+            <a href="#" data-toggle="modal" data-target="#tagModal" class="btn btn-outline-secondary">
+            <span>
+              Select a single tag &raquo;
+            </span>
+            </a>
+          </h3>
+        </p>
+        <p class="lead">
+          Or select <strong>multiple</strong> tags from the dropdown below
+        </p>
+        
+        <!-- Alerts -->
+        {% include 'partials/_alerts.html' %}
+
+        <!-- Form row -->
+        <form action="{% url 'legacy:tag_search' %}">
+          <div class="row no-gutters mb-3">
+            <div class="col">
+              <label class="sr-only">Tags</label>
+              <!--  turned off the search thing, which was:
+                multiple data-live-search="true" -->
+              <select name="tag" id="tag" class="selectpicker" multiple="multiple" data-width="100%" data-container="body" data-size="10" required="true">
+                {% for tag in dropdown_tags %}
+                  <option value="{{ tag.name }}">
+                    {{ tag.name|title }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-outline-light border-left-0 rounded-right" type="submit">
+                <i class="fa fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <p class="lead mb-1">Most popular tags</p>
+        {% if tags_popular %}
+          {% for tag in tags_popular %}
+            <a href="{% url 'legacy:books_by_tag' tag_slug=tag.slug %}"
+            {% if tag.band == 1 %}
+              class="badge badge-pill badge-primary  mb-1"
+            {% elif tag.band == 2 %}
+              class="badge badge-pill badge-light mb-1"
+            {% elif tag.band == 3 %}
+              class="badge badge-pill badge-info mb-1"
+            {% elif tag.band == 4 %}
+              class="badge badge-pill badge-danger mb-1"
+            {% elif tag.band == 5 %}
+              class="badge badge-pill badge-secondary mb-1"
+            {% elif tag.band == 6 %}
+              class="badge badge-pill badge-warning mb-1"
+            {% else %}
+              class="badge badge-pill badge-dark mb-1"
+            {% endif %}
+            >
+              <p class="mb-1 mt-1">
+                {{ tag.name|title }} <span class="badge badge-light">{{ tag.num_times }}</span>
+              </p>
+            </a>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Tag Modal -->
+  <div class="modal fade" id="tagModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content text-center">
+        <div class="modal-header">
+          <h5 class="modal-title" id="inquiryModalLabel">Select Tag</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {% for tag in tags %}
+            <a href="{% url 'legacy:books_by_tag' tag_slug=tag.slug %}"
+            {% if tag.band == 1 %}
+              class="badge badge-pill badge-primary mb-1"
+            {% elif tag.band == 2 %}
+              class="badge badge-pill badge-light mb-1"
+            {% elif tag.band == 3 %}
+              class="badge badge-pill badge-info mb-1"
+            {% elif tag.band == 4 %}
+              class="badge badge-pill badge-danger mb-1"
+            {% elif tag.band == 5 %}
+              class="badge badge-pill badge-secondary mb-1"
+            {% elif tag.band == 6 %}
+              class="badge badge-pill badge-warning mb-1"
+            {% else %}
+              class="badge badge-pill badge-dark mb-1"
+            {% endif %}
+            >
+              <!--<span style="font-size:14px; font-weight: lighter;">-->
+              <p class="mb-1 mt-1">
+                {{ tag.name|title }}
+              </p>
+              <!--</span>-->
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block extrascripts %}
+  <!-- Bootstrap select -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+{% endblock extrascripts %}

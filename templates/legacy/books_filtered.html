@@ -54,11 +54,11 @@
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="#">Home</a>
+            <a href="{% url 'legacy:index' %}">Home</a>
           </li>
           {% if tag %}
             <li class="breadcrumb-item">
-                <a href="#">Tags</a>
+                <a href="{% url 'legacy:filter_by_tags' %}">Tags</a>
             </li>
             <li class="breadcrumb-item active">
               {{ tag.name|title }}
@@ -124,7 +124,7 @@
           <ul class="pagination">
             {% if books.has_previous %}
               <li class="page-item">
-                <a href="#" class="page-link" aria-label="Previous">&laquo;</a>
+                <a href="?page={{books.previous_page_number}}" class="page-link" aria-label="Previous">&laquo;</a>
               </li>
             {% else %}
               <li class="page-item disabled">
@@ -139,13 +139,13 @@
                 </li>
               {% else %}
                 <li class="page-item">
-                  <a href="#" class="page-link">{{i}}</a>
+                  <a href="?page={{i}}" class="page-link">{{i}}</a>
                 </li>
               {% endif %}
             {% endfor %}
             {% if books.has_next %}
               <li class="page-item">
-                <a href="#" class="page-link" aria-label="Next">&raquo;</a>
+                <a href="?page={{books.next_page_number}}" class="page-link" aria-label="Next">&raquo;</a>
               </li>
             {% else %}
               <li class="page-item disabled">
@@ -174,7 +174,7 @@
           </div>
           <div class="modal-body">
             {% for a_tag in all_tags %}
-              <a href="#"
+              <a href="{% url 'legacy:books_by_tag' tag_slug=a_tag.slug %}"
               {% if a_tag.band == 1 %}
                 class="badge badge-pill badge-primary mb-1"
               {% elif a_tag.band == 2 %}
