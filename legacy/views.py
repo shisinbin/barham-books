@@ -1,7 +1,7 @@
 import random
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
-from django.db.models import Count, Q
+from django.db.models import Count, Q, F
 from django.db.models.functions import Lower
 from django.contrib.admin.views.decorators import staff_member_required
 
@@ -216,7 +216,8 @@ def category(request):
 
 @staff_member_required
 def users(request):
-    users = User.objects.order_by(Lower('username'))
+    # users = User.objects.order_by(Lower('username'))
+    users = User.objects.order_by(F('last_login').desc(nulls_last=True))
 
     print(f"Value of keyword parameter: '{request.GET.get('keyword')}'")
 
