@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-  Legacy version |
+  Legacy |
 {% endblock %}
 
 {% block extra_css %}
@@ -29,5 +29,16 @@
     <li>
       <a href="{% url 'legacy:filter_by_tags' %}">Tags</a>
     </li>
+    <li>
+      <a href="{% url 'legacy:category' %}">Category</a>
+    </li>
+    {% if user.is_superuser %}
+      <li>
+        <a href="{% url 'legacy:add_book' %}">Add book form</a>
+      </li>
+      <li>
+        <a href="{% url 'legacy:users' %}">Users</a>
+      </li>
+    {% endif %}
   </ul>
 {% endblock %}

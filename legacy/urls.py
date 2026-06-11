@@ -14,4 +14,7 @@ urlpatterns = [
     path('tags/', views.filter_by_tags, name='filter_by_tags'),
     path('tags/tag_search/', views.tag_search, name='tag_search'),
     path('tags/<slug:tag_slug>/', views.books_filtered, name='books_by_tag'),
+    path('category/', views.category, name='category'),
+    path('users/', views.users, name='users'),
+    path('add-book/', views.add_book, name='add_book'),
 ]

@@ -3,7 +3,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
   <div class="container">
-    <a class="navbar-brand" href="{% url 'index' %}">
+    <a class="navbar-brand" href="{% url 'legacy:index' %}">
       <img src="{% static 'img/logo.png' %}" class="logo" alt="">
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup">
@@ -22,16 +22,6 @@
             <a class="nav-link" href="{% url 'staff' %}">Staff</a>
           </li>
         {% endif %}
-        <!-- Removing link to home page from nav bar below-->
-        <!--<li
-        	{% if '/' == request.path %}
-            class="nav-item active mr-3"
-          {% else %}
-            class="nav-item mr-3"
-          {% endif %}
-        >
-          <a class="nav-link" href="{% url 'index' %}">Home</a>
-        </li>-->
         <li
           {% if 'books/tags/' not in request.path and 'books/all/' not in request.path and 'books/books-for-sale/' not in request.path and 'books' in request.path %}
             class="nav-item active mr-3"
@@ -39,9 +29,9 @@
             class="nav-item mr-3"
           {% endif %}
         >
-          <a class="nav-link" href="{% url 'books' %}">Books</a>
+          <a class="nav-link" href="{% url 'legacy:books' %}">Books</a>
         </li>
-        <li
+        {% comment %} <li
           {% if 'books/books-for-sale/' in request.path %}
             class="nav-item active mr-3"
           {% else %}
@@ -49,7 +39,7 @@
           {% endif %}
         >
           <a class="nav-link" href="{% url 'books_for_sale_list' %}">Shop</a>
-        </li>
+        </li> {% endcomment %}
         <li
           {% if 'books/all/' in request.path %}
             class="nav-item active mr-3"
@@ -57,7 +47,7 @@
             class="nav-item mr-3"
           {% endif %}
         >
-          <a class="nav-link" href="{% url 'books_all' %}">A-Z</a>
+          <a class="nav-link" href="{% url 'legacy:books_all' %}">A-Z</a>
         </li>
         <li
           {% if 'tags/' in request.path %}
@@ -66,7 +56,7 @@
             class="nav-item mr-3"
           {% endif %}
         >
-          <a class="nav-link" href="{% url 'filter_by_tags' %}">Tags</a>
+          <a class="nav-link" href="{% url 'legacy:filter_by_tags' %}">Tags</a>
         </li>
         {% if user.is_superuser %}
           <li
@@ -79,19 +69,11 @@
             <a class="nav-link" href="{% url 'post_list' %}">Blog</a>
           </li>
         {% endif %}
-        <!--<li
-          {% if 'about' in request.path %}
-            class="nav-item active mr-3"
-          {% else %}
-            class="nav-item mr-3"
-          {% endif %}
-        >
-          <a class="nav-link" href="{% url 'about' %}">About</a>
-        </li>-->
       </ul>
 
       <div class="d-flex flex-grow-1 mr-2">
-        <form class="mr-2 my-auto w-100 d-inline order-1" method="get" action="{% url 'book_search' %}">
+        {% comment %} <form class="mr-2 my-auto w-100 d-inline order-1" method="get" action="{% url 'book_search' %}"> {% endcomment %}
+        <form class="mr-2 my-auto w-100 d-inline order-1" method="get" action="#" onsubmit="return false;">
           <div class="input-group">
             <input type="text" pattern=".{3,60}" required title="3 characters minimum" class="form-control border border-right-0" name="navbar_query" placeholder="Search books" required>
             <span class="input-group-append">
@@ -112,12 +94,11 @@
               class="nav-item mr-3"
             {% endif %}
           >
-            {% comment %} <a class="nav-link" href="{% url 'dashboard' %}">
-             <!--<i class="fas fa-user"></i> -->Dashboard
-            </a> {% endcomment %}
+            {% comment %} <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a> {% endcomment %}
           </li>
           <li class="nav-item mr-3">
-            <a href="javascript:{document.getElementById('logout').submit()}" class="nav-link">Logout</a> 
+            {% comment %} <a href="javascript:{document.getElementById('logout').submit()}" class="nav-link">Logout</a>  {% endcomment %}
+            <a href="#" class="nav-link">Logout</a> 
             <form action="{% url 'logout' %}" method="POST" id="logout">
               {% csrf_token %}
               <input type="hidden">
@@ -131,7 +112,8 @@
               class="nav-item mr-3"
             {% endif %}
           >
-            <a class="nav-link" href="{% url 'register' %}">Register</a>
+            {% comment %} <a class="nav-link" href="{% url 'register' %}">Register</a> {% endcomment %}
+            <a class="nav-link" href="#">Register</a>
           </li>
           <li
             {% if 'login' in request.path %}
@@ -140,8 +122,8 @@
               class="nav-item mr-3"
             {% endif %}
           >
-            <a class="nav-link" href="{% url 'login' %}">
-              <!--<i class="fas fa-sign-in-alt"></i> -->Login</a>
+            {% comment %} <a class="nav-link" href="{% url 'login' %}">Login</a> {% endcomment %}
+            <a class="nav-link" href="#">Login</a>
           </li>
         {% endif %}
       </ul>

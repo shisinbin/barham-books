@@ -1,9 +1,12 @@
 import random
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
-from django.db.models import Count
+from django.db.models import Count, Q
+from django.db.models.functions import Lower
+from django.contrib.admin.views.decorators import staff_member_required
 
-from books.models import Book, Category, BookTags
+from django.contrib.auth.models import User
+from books.models import Book, Category, BookTags, Series
 from authors.models import Author
 # from .forms import SearchForm
 # from staff.forms import AddBookCopy
@@ -169,3 +172,90 @@ def tag_search(request):
     }
 
     return render(request, 'legacy/tag_search.html', context)
+
+def category(request):
+    categories = Category.objects.all()
+
+    category = get_object_or_404(Category, code="GEN")
+
+    category_books = Book.objects.filter(category=category)
+    featured_books = category_books.filter(is_featured=True)
+
+    if len(featured_books) % 4 == 0:
+        num_slides = int(len(featured_books) / 4)
+    else:
+        num_slides = int(len(featured_books) // 4) + 1
+    
+    num_slides_string = ''
+    for i in range(num_slides):
+        num_slides_string = num_slides_string + str(i)
+
+    popular_authors = (
+        Author.objects
+        .annotate(num_times=Count('books', filter=Q(books__in=category_books)))
+        .order_by('-num_times')[:10]
+    )
+        
+    series_with_multiple_books = (
+        Series.objects
+        .annotate(num_times=Count('books', filter=Q(books__in=category_books)))
+        .order_by('-num_times')[:10]
+    ) 
+
+    context = {
+        'category': category,
+        'categories': categories,
+        'category_books': category_books,
+        'featured_books': featured_books,
+        'popular_authors': popular_authors,
+        'series_with_multiple_books': series_with_multiple_books,
+        'num_slides_string': num_slides_string,
+        'legacy': True,
+    }
+    return render(request, 'legacy/category.html', context)
+
+@staff_member_required
+def users(request):
+    users = User.objects.order_by(Lower('username'))
+
+    print(f"Value of keyword parameter: '{request.GET.get('keyword')}'")
+
+    keyword = request.GET.get('keyword', '').strip()
+
+    if keyword:
+        users_username = users.filter(username__icontains=keyword)
+        users_last_name = users.filter(last_name__icontains=keyword)
+        users = (users_username | users_last_name).distinct()
+
+    # pagination
+    paginator = Paginator(users, 10)
+    page = request.GET.get('page')
+    paged_users = paginator.get_page(page)
+
+    context = {
+        'users': paged_users,
+        'query': keyword,
+    }
+    
+    return render(request, 'legacy/users.html', context)
+
+@staff_member_required
+def add_book(request):
+    book_types = {
+        'p': 'Paperback',
+        'h': 'Hardcover',
+        'o': 'Oversized',
+    }
+
+    context = {
+        'authors': Author.objects.all(),
+        'categories': Category.objects.all(),
+        'series': Series.objects.all(),
+        'book_types': book_types,
+        'main_tags': BookTags.objects.filter(band=1),
+        'form_data': {},
+        'selected_tags': [],
+        'legacy': True,
+    }
+
+    return render(request, 'legacy/add_book.html', context)
