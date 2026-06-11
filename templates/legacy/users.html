@@ -83,6 +83,7 @@
 	              <tr>
 	                <!-- <th scope="col">#</th> -->
 	                <th scope="col">Username</th>
+	                <th scope="col">Email</th>
                   <th scope="col">Surname</th>
                   <th scope="col">Last login</th>
                   <th scope="col">Member since</th>
@@ -92,6 +93,7 @@
 	              {% for account in users %}
 	                <tr class="table-primary">
 	                  <td>{{ account.username }}</td>
+	                  <td>{% if account.email %}{{ account.email }}{% endif %}</td>
                     <td>{% if account.last_name %}{{ account.last_name }}{% endif %}</td>
                     <td>{% if account.last_login %}{{ account.last_login|naturaltime }}{% else %}Never{% endif %}</td>
                     <td>{{ account.date_joined|naturalday }}</td>
