@@ -1394,7 +1394,7 @@ def book_search_redux(request):
     raw = request.GET.get('q', '')[:80].strip()
     terms = normalise_query(raw)
     if not terms:
-        return redirect('explore_books')
+        return redirect('index')
 
     q = build_search_filter(terms)
 
