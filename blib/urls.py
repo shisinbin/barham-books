@@ -8,7 +8,7 @@ urlpatterns = [
 	path('books/', include('books.urls')),
 	path('authors/', include('authors.urls')),
 	path('accounts/', include('accounts.urls')),
-	path('reservations/', include('reservations.urls')),
+	# path('reservations/', include('reservations.urls')),
 	path('staff/', include('staff.urls')),
 	path('blog/', include('blog.urls')),
 	path('legacy/', include('legacy.urls')),

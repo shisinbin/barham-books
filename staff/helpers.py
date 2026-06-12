@@ -18,15 +18,6 @@ def extract_isbns_from_ia(ia_list):
             matches.append(m.group(1))
     return matches
 
-def choose_best_isbn(isbns):
-    for i in isbns:
-        if len(i) == 13:
-            return i
-    for i in isbns:
-        if len(i) == 10:
-            return i
-    return ""
-
 def format_book_title(title):
     # Define minor words to leave in lowercase (except the first word)
     minor_words = {'the', 'of', 'with', 'from', 'a', 'an', 'on', 'at', 'for', 'and', 'but', 'in', 'to', 'by', 'or', 'nor', 'as', 'so', 'yet', 'is'}
