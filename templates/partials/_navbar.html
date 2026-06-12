@@ -3,7 +3,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
   <div class="container">
-    <a class="navbar-brand" href="{% url 'legacy:index' %}">
+    <a class="navbar-brand" href="{% url 'index' %}">
       <img src="{% static 'img/logo.png' %}" class="logo" alt="">
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup">
@@ -11,7 +11,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <ul class="navbar-nav">
-        {% if user.is_staff %}
+        {% comment %} {% if user.is_staff %}
           <li
             {% if 'staff/' in request.path %}
               class="nav-item active mr-3"
@@ -19,11 +19,20 @@
               class="nav-item mr-3"
             {% endif %}
           >
-            <a class="nav-link" href="#">Staff</a>
+            <a class="nav-link" href="{% url 'staff' %}">Staff</a>
           </li>
-        {% endif %}
+        {% endif %} {% endcomment %}
         <li
-          {% if 'books/tags/' not in request.path and 'books/all/' not in request.path and 'books/books-for-sale/' not in request.path and 'books' in request.path %}
+          {% if 'legacy' in request.path %}
+            class="nav-item active mr-3"
+          {% else %}
+            class="nav-item mr-3"
+          {% endif %}
+        >
+          <a class="nav-link" href="{% url 'legacy:index' %}">Legacy</a>
+        </li>
+        <li
+          {% if 'legacy/tags/' not in request.path and 'legacy/all/' not in request.path and 'books/books-for-sale/' not in request.path and 'books' in request.path %}
             class="nav-item active mr-3"
           {% else %}
             class="nav-item mr-3"
@@ -41,7 +50,7 @@
           <a class="nav-link" href="{% url 'books_for_sale_list' %}">Shop</a>
         </li> {% endcomment %}
         <li
-          {% if 'books/all/' in request.path %}
+          {% if 'legacy/all/' in request.path %}
             class="nav-item active mr-3"
           {% else %}
             class="nav-item mr-3"
