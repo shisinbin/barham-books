@@ -1,10 +1,10 @@
 import time
+from smtplib import SMTPException
+
 from django.shortcuts import render, redirect
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-from django.core.mail import EmailMultiAlternatives
-from smtplib import SMTPException
 from django.http import HttpResponse
 from django.conf import settings
 from django.contrib import messages

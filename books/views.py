@@ -128,14 +128,15 @@ def is_valid_image(file):
         return False
 
 def index(request):
-    categories = Category.objects.all()
-    form = SearchForm()
+    # categories = Category.objects.all()
+    # form = SearchForm()
 
-    context = {
-        'form': form,
-        'categories': categories,
-    }
-    return render(request, 'books/books.html', context)
+    # context = {
+    #     'form': form,
+    #     'categories': categories,
+    # }
+    # return render(request, 'books/books.html', context)
+    return redirect('index')
 
 def autocomplete_books(request):
     MAX_NUM_RESULTS = 10
