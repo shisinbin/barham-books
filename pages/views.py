@@ -10,6 +10,7 @@ from django.conf import settings
 from django.contrib import messages
 
 from books.collections import COLLECTIONS
+from common.decorators import superuser_required
 from .forms import ContactForm
 
 def send_formatted_email(data) -> bool:
@@ -39,6 +40,7 @@ def send_formatted_email(data) -> bool:
     except SMTPException:
         return False
 
+@superuser_required
 def home(request):
     featured_collections = {
         slug: c

@@ -7,5 +7,7 @@ urlpatterns = [
 	path('about/', views.about, name='about'),
 	path('contact/', views.contact, name='contact'),
 	path('contact/thanks/', views.contact_thanks, name='contact_thanks'),
+
+    # Magazine-style homepage
     path('home/', views.home, name='home'),
 ]

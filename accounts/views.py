@@ -10,6 +10,7 @@ from .forms import RegisterForm
 
 class CustomLoginView(LoginView):
     template_name = "accounts/login.html"
+    redirect_authenticated_user = True
 
     def form_valid(self, form):
         messages.success(self.request, "You are now logged in.")

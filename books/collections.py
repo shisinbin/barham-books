@@ -50,7 +50,7 @@ COLLECTIONS = {
     "tags": [
       "cultural", "cross-cultural", "sense of place", "travel"
     ],
-    "min-match": 1,
+    "min_match": 1,
   },
 
   "romance-love-stories": {
@@ -77,7 +77,6 @@ COLLECTIONS = {
         "psychological fiction"
     ],
     "min_match": 1,
-    "featured": True,
   },
 
 #   "love-life-relationships": {
