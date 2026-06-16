@@ -1,0 +1,23 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block title %}
+  Something went wrong - Barham Books
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/error-page.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="error-page">
+    <div class="wrapper">
+      <p class="error-page__eyebrow">500</p>
+      <h1 class="error-page__title">Something went wrong</h1>
+
+      <p class="error-page__text medium">Sorry, something went wrong on our side. Please try again later.</p>
+
+      <a href="{% url 'index' %}" class="error-page__link">Go to homepage</a>
+    </div>
+  </section>
+{% endblock %}

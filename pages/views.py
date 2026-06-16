@@ -13,6 +13,13 @@ from books.collections import COLLECTIONS
 from common.decorators import superuser_required
 from .forms import ContactForm
 
+
+def index(request):
+    return render(request, 'pages/index.html')
+
+def about(request):
+	return render(request, 'pages/about.html')
+
 def send_formatted_email(data) -> bool:
     """
     Returns True if the email was sent successfully, otherwise False.
@@ -39,20 +46,6 @@ def send_formatted_email(data) -> bool:
 
     except SMTPException:
         return False
-
-@superuser_required
-def home(request):
-    featured_collections = {
-        slug: c
-        for slug, c in COLLECTIONS.items()
-        if c.get("featured") is True
-    }
-    
-    return render(request, 'pages/home_magazine.html', { 'featured_collections': featured_collections})
-
-def about(request):
-	return render(request, 'pages/about.html')
-
 
 def contact(request):
     last_submit = request.session.get('contact_last_submit')
@@ -85,5 +78,27 @@ def contact(request):
 def contact_thanks(request):
     return render(request, 'pages/contact_thanks.html')
 
-def index(request):
-    return render(request, 'pages/index.html')
+
+# ---------- Magazine-style homepage ----------
+
+@superuser_required
+def home(request):
+    featured_collections = {
+        slug: c
+        for slug, c in COLLECTIONS.items()
+        if c.get("featured") is True
+    }
+    
+    return render(request, 'pages/home_magazine.html', { 'featured_collections': featured_collections})
+
+
+# ---------- Custom error pages ----------
+
+def custom_403(request, exception):
+    return render(request, "403.html", status=403)
+
+def custom_404(request, exception):
+    return render(request, "404.html", status=404)
+
+def custom_500(request):
+    return render(request, "500.html", status=500)

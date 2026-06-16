@@ -1,0 +1,47 @@
+@layer component {
+  .error-page {
+    .error-page__eyebrow {
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.15;
+      font-size: clamp(2rem, 0.5714rem + 4.5714vw, 3rem);
+    }
+
+    .error-page__text {
+      max-width: 32.5rem;
+      line-height: 1.6;
+      margin-block: 2rem 2.5rem;
+    }
+
+    .error-page__link {
+      font-size: var(--fs-24);
+      position: relative;
+      transition: color 150ms ease-in-out;
+
+      &:hover {
+        color: var(--c-magenta);
+        text-decoration: none;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: var(--color-text-dark);
+        opacity: 1;
+        transition: opacity 100ms ease-in-out;
+      }
+
+      &:hover::after {
+        opacity: 0;
+      }
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        font-size: var(--fs-28);
+      }
+    }
+  }
+}

@@ -16,3 +16,7 @@ urlpatterns = [
     #path('select2/', include('django_select2.urls')),
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+handler403 = "pages.views.custom_403"
+handler404 = "pages.views.custom_404"
+handler500 = "pages.views.custom_500"
