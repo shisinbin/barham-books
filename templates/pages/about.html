@@ -21,15 +21,19 @@
         <img src="{% static 'img/about.jpg' %}" alt="Barham Library building frontage" class="about__image" />
 
         <section class="about__section">
-          <h2 class="about__section-title">About the library</h2>
+          <h2 class="about__section-title">About</h2>
 
-          <p>Barham Library is a <strong>volunteer-run</strong> community library based in Wembley, UK. The library is operated by a registered charity (Friends of Barham Library) and has been serving the local community since 2011. Today, it continues thanks to the time, care and enthusiasm of its volunteers.</p>
+          <p>
+            Barham Community Library is a <strong>volunteer-run</strong> community library based in Wembley, UK. It is operated by Friends of Barham Library, a registered charity, and continues thanks to the time, care and enthusiasm of local volunteers.
+          </p>
 
-          <p>The library is an <strong>active community space</strong>, hosting a wide range of activities and events, and offering itself as a venue for one-off or regular hires.</p>
+          <p>
+            More than a book collection, the library is also a <strong>community space</strong> for activities, events and room hire.
+          </p>
 
-          <p>Full details about the library's <strong>activities</strong>, <strong>opening hours</strong>, <strong>shop</strong>, and more can be found on the following Tumblr website:</p>
+          <p>For opening hours, activities, shop details and the latest updates please visit the Friends of Barham Library website.</p>
 
-          <a href="https://barhamlibrary.tumblr.com/" class="about__link about__tumblr-link" target="_blank" rel="noopener noreferrer">👉 Visit the Barham Library Tumblr website</a>
+          <a href="https://barhamlibrary.tumblr.com/" class="about__link about__tumblr-link" target="_blank" rel="noopener noreferrer">👉 Visit the Friends of Barham Library website</a>
 
           {% comment %} <p>
             This website focuses primarily on <strong>the library's general book collection</strong>, making it easier to explore what's on the shelves and discover new reads.
@@ -70,15 +74,21 @@
           <h2 class="about__section-title">Get in touch</h2>
 
           <p>
-            If you have any questions about Barham Library please feel free to get in touch via <a href="{% url 'contact' %}" class="about__link">the contact page</a>.
+            If you have a question about the library, the book collection, venue hire, volunteering or this website, please use <a href="{% url 'contact' %}" class="about__link">the contact page</a>.
           </p>
         </section>
 
         <aside class="about__aside">
           <h3 class="about__aside-title">About this website</h3>
 
+          <p>This website is primarily a catalogue for Barham Community Library's book collection. It was created by a library volunteer to make it easier to explore what is on the shelves, discover new reads and showcase the collection online.</p>
+
           <p>
-            This website was created by a volunteer at Barham Library to support and showcase the library's book collection. You can visit their Github profile <a href="https://github.com/shisinbin" class="about__link" target="_blank" rel="noopener noreferrer">here</a>.
+            You can visit the developer's Github profile <a href="https://github.com/shisinbin" class="about__link" target="_blank" rel="noopener noreferrer">here</a>.
+          </p>
+
+          <p>
+            A preserved <a href="{% url 'legacy:index' %}" class="about__link">legacy version</a> of the earlier catalogue pages is also available for reference.
           </p>
 
           <p>Further technical details and background on the project will be shared separately in the future.</p>

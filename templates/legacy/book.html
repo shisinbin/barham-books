@@ -33,10 +33,10 @@
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="#">Home</a>
+            <a href="{% url 'legacy:index' %}">Legacy</a>
           </li>
           <li class="breadcrumb-item">
-            <a href="#">Books</a>
+            <a href="{% url 'legacy:books' %}">Books</a>
           </li>
           <li class="breadcrumb-item active">{{ book.title }}</li>
         </ol>

@@ -5,40 +5,64 @@
   Legacy |
 {% endblock %}
 
-{% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/base.css' %}" />
-{% endblock %}
-
 {% block content %}
-  <ul>
-    <li>
-      <a href="{% url 'legacy:books' %}">Homepage</a>
-    </li>
-    <li>
-      <a href="{% url 'legacy:about' %}">About</a>
-    </li>
-    <li>
-      <a href="{% url 'legacy:book' %}">Book</a>
-    </li>
-    <li>
-      <a href="{% url 'legacy:author' %}">Author</a>
-    </li>
-    <li>
-      <a href="{% url 'legacy:books_by_alphabet' 's' %}">A-Z</a>
-    </li>
-    <li>
-      <a href="{% url 'legacy:filter_by_tags' %}">Tags</a>
-    </li>
-    <li>
-      <a href="{% url 'legacy:category' %}">Category</a>
-    </li>
-    {% if user.is_superuser %}
-      <li>
-        <a href="{% url 'legacy:add_book' %}">Add book form</a>
-      </li>
-      <li>
-        <a href="{% url 'legacy:users' %}">Users</a>
-      </li>
-    {% endif %}
-  </ul>
+  <section id="showcase-inner" class="py-5 text-white" style="background-size:cover;">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-12">
+          <h1 class="display-4">Legacy</h1>
+          <p class="lead">Snapshots of what the app used to look like between 2020-2025</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Breadcrumb -->
+  <section id="bc" class="mt-3">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item active">
+            <i class="fas fa-home"></i> Legacy
+          </li>
+          {% comment %} <li class="breadcrumb-item active">Legacy</li> {% endcomment %}
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <section class="mt-3 mb-5">
+    <div class="container">
+      {% comment %} <div class="row my-4">
+        <div class="col">
+          <h2 class="mb-3">Once upon a time...</h2>
+          <p class="lead">This web app recently underwent a refactor in early 2026. If you want to revisit how the app used to look before this period, below are some notable pages for you can check out.</p>
+        </div>
+      </div> {% endcomment %}
+
+      <div class="list-group">
+        <a href="{% url 'legacy:books' %}" class="list-group-item list-group-item-action">Homepage</a>
+
+        <a href="{% url 'legacy:about' %}" class="list-group-item list-group-item-action">About</a>
+
+        <a href="{% url 'legacy:book' %}" class="list-group-item list-group-item-action">Book</a>
+
+        <a href="{% url 'legacy:author' %}" class="list-group-item list-group-item-action">Author</a>
+
+        <a href="{% url 'legacy:books_by_alphabet' 's' %}" class="list-group-item list-group-item-action">A-Z</a>
+
+        <a href="{% url 'legacy:filter_by_tags' %}" class="list-group-item list-group-item-action">Tags</a>
+
+        {% if user.is_superuser %}
+          <a href="{% url 'legacy:add_book' %}" class="list-group-item list-group-item-action">Add book</a>
+
+          <a href="{% url 'legacy:users' %}" class="list-group-item list-group-item-action">Users</a>
+
+          <a href="{% url 'explore_books' %}" class="list-group-item list-group-item-action">Explore</a>
+
+          <a href="{% url 'home' %}" class="list-group-item list-group-item-action">Home magazine</a>
+        {% endif %}
+      </div>
+    </div>
+  </section>
 {% endblock %}

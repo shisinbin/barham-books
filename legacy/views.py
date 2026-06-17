@@ -1,17 +1,19 @@
 import random
-from django.shortcuts import render, get_object_or_404
+
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models import Count, Q, F
 from django.db.models.functions import Lower
-from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import render, get_object_or_404
 
-from django.contrib.auth.models import User
-from books.models import Book, Category, BookTags, Series
 from authors.models import Author
+from books.models import Book, Category, BookTags, Series
 # from .forms import SearchForm
 # from staff.forms import AddBookCopy
-from .fake_data import FAKE_REVIEWS, FAKE_COPIES
 from .choices import a_z, language_choices
+from common.decorators import superuser_required
+from .fake_data import FAKE_REVIEWS, FAKE_COPIES
 
 def index(request):
     return render(request, 'legacy/index.html')
@@ -214,7 +216,7 @@ def category(request):
     }
     return render(request, 'legacy/category.html', context)
 
-@staff_member_required
+@superuser_required
 def users(request):
     # users = User.objects.order_by(Lower('username'))
     users = User.objects.order_by(F('last_login').desc(nulls_last=True))
@@ -240,7 +242,7 @@ def users(request):
     
     return render(request, 'legacy/users.html', context)
 
-@staff_member_required
+@superuser_required
 def add_book(request):
     book_types = {
         'p': 'Paperback',
