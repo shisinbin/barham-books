@@ -5,16 +5,14 @@ from books.models import Book, BookForSale
 
 class BooksInline(admin.TabularInline):
 	model = Book
-	#exclude = ['other_authors', 'summary', 'language', 'isbn', 'photo', 'is_featured']
-	fields = ['title', 'publish_date']
-	readonly_fields = ('title', 'publish_date')
+	fields = ['title', 'year']
+	readonly_fields = ('title', 'year')
 	extra = 0
 	show_change_link = True
 	can_delete = False
 
 class BooksForSaleInline(admin.TabularInline):
 	model = BookForSale
-	#exclude = ['other_authors', 'summary', 'language', 'isbn', 'photo', 'is_featured']
 	fields = ['title', 'sale_category']
 	readonly_fields = ('title', 'sale_category')
 	extra = 0
@@ -23,9 +21,22 @@ class BooksForSaleInline(admin.TabularInline):
 
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
-	list_display = ('last_name', 'slug', 'first_name', 'dob', 'dod')
-	# how and what fields appear in the add author page
-	fields = [('first_name', 'middle_names', 'last_name'), 'biography', ('dob', 'dod'), ('photo',)]
-	inlines = [BooksInline, BooksForSaleInline]
-	list_per_page = 10
-	search_fields = ('last_name', 'middle_names', 'first_name')
+    list_display = ('id', 'formal_name', 'slug', 'dob', 'dod')
+    list_display_links = ('formal_name',)
+    fields = [
+        ('first_name', 'middle_names', 'last_name'),
+        'slug',
+        'biography',
+        ('dob', 'dod'),
+        'photo',
+    ]
+    readonly_fields = ('slug',)
+    inlines = [BooksInline, BooksForSaleInline]
+    list_per_page = 50
+    search_fields = ('last_name', 'middle_names', 'first_name')
+
+    def formal_name(self, obj):
+        return obj.formal()
+
+    formal_name.short_description = "Author"
+    formal_name.admin_order_field = "last_name"
