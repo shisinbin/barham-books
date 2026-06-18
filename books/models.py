@@ -1,21 +1,17 @@
-from django.db import models
-from django.contrib.auth.models import User
+import os
+from datetime import timedelta
+from taggit.managers import TaggableManager
+from taggit.models import TagBase, ItemBase
 
-from datetime import date, timedelta
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.postgres.fields import ArrayField
+from django.db import models
+from django.urls import reverse
+from django.utils.text import slugify
 
 from authors.models import Author
 
-import os
-from django.conf import settings
-from django.urls import reverse
-
-from django.utils.text import slugify
-
-from taggit.managers import TaggableManager
-from taggit.models import TaggedItemBase, TagBase, ItemBase
-
-from django.contrib.postgres.fields import ArrayField
-    
 
 def upload_location(instance, filename):
     if '.' in filename:
@@ -25,15 +21,23 @@ def upload_location(instance, filename):
 
     if instance.title:
         truncated_title = slugify(instance.title[:40])
-        new_filename = f"books/{instance.title[:1].upper()}/{truncated_title}-{slugify(instance.author.last_name)}.{ext}"
+        author_part = 'unknown-author'
+
+        if instance.author and instance.author.last_name:
+            author_part = slugify(instance.author.last_name)
+
+        first_letter = instance.title[:1].upper()
+
+        new_filename = f"books/{first_letter}/{truncated_title}-{author_part}.{ext}"
     else:
         new_filename = f"books/{filename}.{ext}"
 
     new_image_path = os.path.join(settings.MEDIA_ROOT, new_filename)
-    if instance.pk: # Only applicable to updates
+
+    # Only applicable to updates
+    if instance.pk and os.path.exists(new_image_path):
         # Remove any file already occupying the new image path
-        if os.path.exists(new_image_path):
-            os.remove(new_image_path)
+        os.remove(new_image_path)
 
     return new_filename
 
@@ -92,10 +96,6 @@ class Series(models.Model):
                 tag_set.add(tag)
         return tag_set
 
-class TaggedBook(TaggedItemBase):
-    content_object = models.ForeignKey('Book',
-                                       on_delete=models.CASCADE)
-
 
 class BookTags(TagBase):
 
@@ -119,6 +119,7 @@ class BookTags(TagBase):
         verbose_name_plural = "book tags"
         ordering = ('band', 'name',)
 
+
 class BookTag(ItemBase):
     content_object = models.ForeignKey('Book',
                                        on_delete=models.CASCADE)
@@ -135,7 +136,8 @@ class BookTag(ItemBase):
         constraints = [
             models.UniqueConstraint(fields=["content_object", "tag"], name="uniq_booktag"),
         ]
-    
+
+
 class SaleCategory(models.Model):
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=3, unique=True)  # For URL/slugs or other use
@@ -147,6 +149,7 @@ class SaleCategory(models.Model):
     def __str__(self):
         return self.name
     
+
 class BookForSale(models.Model):
     title = models.CharField(max_length=250, db_index=True)
     author = models.ForeignKey(Author,
@@ -226,8 +229,6 @@ class Book(models.Model):
     slug = models.SlugField(max_length=250,
                             default='',
                             editable=False)
-    tags = TaggableManager(through=TaggedBook,
-                           blank=True)
     book_tags = TaggableManager(through=BookTag,
                                 blank=True,
                                 verbose_name='book tags')
@@ -282,45 +283,6 @@ class Book(models.Model):
         return self.title
 
 
-#import uuid
-# ###### this is the corrupted model #######
-# class BookInstance(models.Model):
-#     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-#     book = models.ForeignKey('Book', on_delete=models.CASCADE, null=True)
-#     pages = models.IntegerField(blank=True)
-#     publisher = models.CharField(max_length=200)
-#     due_back= models.DateField(null=True, blank=True)
-#     LOAN_STATUS = (
-#         ('m', 'Maintenance'),
-#         ('o', 'On loan'),
-#         ('a', 'Available'),
-#         ('r', 'Reserved'),
-#     )
-#     status = models.CharField(
-#         max_length=1,
-#         choices=LOAN_STATUS,
-#         blank=True,
-#         default='a',
-#     )
-#     borrower = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-#     created = models.DateTimeField(auto_now_add=True)
-#     updated = models.DateTimeField(auto_now=True)
-# ############################################################
-#     @property
-#     def is_overdue(self):
-#         if self.due_back and date.today() > self.due_back:
-#             return True
-#         return False
-# ####################################################################
-#     class Meta:
-#         ordering = ['due_back']
-#         # permissions = (("can_mark_returned", "Set book as returned"),)
-# ##################################################################
-#     def __str__(self):
-#         """String for representing the Model object."""
-#         return f'{self.id}' # ({self.book.title})'
-# #########################################################
-
 class BookInstance2(models.Model):
     book = models.ForeignKey('Book',
                              related_name="instances",
@@ -348,7 +310,8 @@ class BookInstance2(models.Model):
 
     class Meta:
         ordering = ['book__title']
-        verbose_name = 'Book Instance'
+        verbose_name = 'book copy'
+        verbose_name_plural = 'book copies'
 
     def __str__(self):
         return f'{self.book.title} (#{self.id})'
@@ -367,6 +330,7 @@ class BookInstance2(models.Model):
         else:
             return self.isbn13
 
+
 class Review(models.Model):
     book = models.ForeignKey('Book', on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews")
@@ -383,6 +347,7 @@ class Review(models.Model):
       (5, 'Excellent'),
     )
     rating = models.IntegerField(choices=RATING_CHOICES, blank=True, null=True)
+
     class Meta:
         ordering = ('-created',)
         constraints = [
@@ -390,8 +355,10 @@ class Review(models.Model):
         ]
     def __str__(self):
         return f"Review by {self.user} on {self.book}"
+
     def is_edited(self):
         return self.updated > self.created + timedelta(minutes=30)
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -408,21 +375,10 @@ class Category(models.Model):
     class Meta:
         ordering = ['order']
         verbose_name_plural = 'categories'
+
     def __str__(self):
         return self.name
-    def get_absolute_url(self):
-        return reverse('category',
-                       args=[self.code])
 
-# def update_tags_in_cat_globally():
-#     # flush the arrayfields
-#     for cat in Category.objects.all():
-#         cat.tags_included.clear()
-#         cat.save()
-#     # then grind through every book - 
-#     # could do this for a category instead to save cpu
-#     for book in Book.objects.all():
-#         update_tags_in_categories(book)
 
 class BookInterest(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='interests')

@@ -1299,9 +1299,6 @@ from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from staff.forms import AddBookCopy
 
 def filter_by_tags(request):
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-    # changed 'books_taggedbook_items' to 'book_tags' - 
-    # which i think is because of the related name used
     tags = Book.book_tags.all()
     dropdown_tags = tags.order_by('name')
     tags_popular = tags.annotate(
