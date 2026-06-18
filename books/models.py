@@ -5,7 +5,6 @@ from taggit.models import TagBase, ItemBase
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
@@ -59,27 +58,6 @@ def upload_book_for_sale_image_location(instance, filename):
             os.remove(new_image_path)
     
     return new_filename
-
-# iterates through all book_tags belonging to a book
-# and checks to see if that tag is in the arrayfield 'tags_included' -
-# (basically a list of all book_tags in books belonging to category)
-# if it isn't, then it adds the book_tag's name(so just a string)
-# to the arrayfield
-def update_tags_in_categories(book):
-    if book.category:
-        category = book.category
-
-        # redundant check now that I've changed the default=list on this tags_included field in Category class
-        if category.tags_included is None:
-            category.tags_included = []
-
-        if book.book_tags.all():
-            for tag in book.book_tags.all():
-                if (tag.name not in category.tags_included) and (len(tag.name) <= 30):
-                    #print('adding ' + tag.name + ' to ' + category.name)
-                    category.tags_included.append(tag.name)
-                    category.tags_included.sort()
-                    category.save()
 
 
 class Series(models.Model):
@@ -274,7 +252,6 @@ class Book(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title, allow_unicode=True)
         super().save(*args, **kwargs)
-        update_tags_in_categories(self)
     
     def get_display_tags(self, limit=3):
         return self.book_tags.all().order_by('band', 'name')[:limit]
@@ -367,10 +344,6 @@ class Category(models.Model):
     order = models.PositiveIntegerField(unique=True)
     description = models.TextField(max_length=2000,
                                    blank=True)
-    tags_included = ArrayField(
-                    models.CharField(max_length=30),
-                    blank=True, default=list
-                    )
 
     class Meta:
         ordering = ['order']

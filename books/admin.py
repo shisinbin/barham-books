@@ -2,6 +2,7 @@ import csv
 import datetime
 
 from django.contrib import admin
+from django.db.models import Count
 from django.http import HttpResponse
 
 from .models import Book, BookInstance2, BookTags, BookInterest, Review, Series, Category
@@ -116,8 +117,20 @@ class SeriesAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('order', 'code', 'name')
-    readonly_fields = ('tags_included',)
+    list_display = ('name', 'order', 'code')
+    readonly_fields = ('tag_summary',)
+
+    def tag_summary(self, obj):
+        tags = (
+            BookTags.objects
+            .filter(book_tags__content_object__category=obj)
+            .distinct()
+            .order_by('band', 'name')
+            .values_list('name', flat=True)
+        )
+        return ', '.join(tags) or '—'
+
+    tag_summary.short_description = 'Tags used by books in this category'
 
 @admin.register(BookTags)
 class BookTagsAdmin(admin.ModelAdmin):
