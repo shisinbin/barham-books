@@ -1,127 +1,138 @@
-from django.contrib import admin
-
-from .models import Book, BookInstance2, Review, Series, Category
-from taggit.models import Tag
-
-########### csv stuff
 import csv
 import datetime
+
+from django.contrib import admin
 from django.http import HttpResponse
 
-def export_to_csv(modeladmin, request, queryset):
-    opts = modeladmin.model._meta
+from .models import Book, BookInstance2, BookTags, BookInterest, Review, Series, Category
+
+
+def export_book_copies_to_csv(modeladmin, request, queryset):
     date = datetime.date.today()
-    content_disposition = f'attachment; filename=selected_books_{date}.csv'
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = content_disposition
+    response['Content-Disposition'] = f'attachment; filename=book_copies_{date}.csv'
+
     writer = csv.writer(response)
 
-    fields = [field for field in opts.get_fields() if not field.many_to_many and not field.one_to_many]
+    writer.writerow([
+        'book_id',
+        'copy_id',
+        'title',
+        'author',
+        'category',
+        'series',
+        'series_number',
+        'year',
+        'isbn10',
+        'isbn13',
+        'publisher',
+        'pages',
+        # 'format',
+        'tags',
+        'book_url',
+    ])
 
+    queryset = (
+        queryset
+        .select_related('book', 'book__author', 'book__category', 'book__series')
+        .prefetch_related('book__book_tags')
+    )
 
-    # Write a first row with header information
-    # writer.writerow([field.verbose_name for field in fields])
-    writer.writerow(['title', 'author','isbn10','isbn13', 'category','tags'])
+    for copy in queryset:
+        book = copy.book
+        tags = ', '.join(tag.name for tag in book.book_tags.all()) if book else ''
 
-    # write data rows
-    for obj in queryset:
+        writer.writerow([
+            book.id if book else '',
+            copy.id,
+            book.title if book else '',
+            book.author if book and book.author else '',
+            book.category if book and book.category else '',
+            book.series if book and book.series else '',
+            book.series_num if book else '',
+            book.year if book else '',
+            copy.isbn10 or '',
+            copy.isbn13 or '',
+            copy.publisher or '',
+            copy.pages or '',
+            # copy.get_book_type_display() if copy.book_type else '',
+            tags,
+            book.get_absolute_url() if book else '',
+        ])
 
-        tags=[]
-        if obj.book.book_tags:
-            for tag in obj.book.book_tags.all():
-                tags.append(str(tag))
-
-        data_row = []
-
-        data_row.append(obj.book.title)
-        data_row.append(obj.book.author)
-        data_row.append(obj.isbn10)
-        data_row.append(obj.isbn13)
-        data_row.append(obj.book.category)
-        if tags:
-            data_row.append(','.join(tags))
-
-        # for field in fields:
-        #     value = getattr(obj, field.name)
-        #     if isinstance(value, datetime.datetime):
-        #         value = value.strftime('%d/%m/%Y')
-        #     data_row.append(value)
-
-        writer.writerow(data_row)
     return response
 
-export_to_csv.short_description = 'Export to CSV'
-########### end of csv stuff
+export_book_copies_to_csv.short_description = 'Export selected book copies to CSV'
 
 
 class BookInstance2Inline(admin.TabularInline):
     model = BookInstance2
     extra = 0
-    # readonly_fields = ('id', 'pages', 'publisher')
+    fields = ('publisher', 'pages', 'isbn10', 'isbn13', 'book_type')
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'slug', 'author', 'category',)
     list_display_links = ('id', 'title')
-    #list_editable = ('is_featured',)
-    exclude = ['tags'] # cos this is redundant - should really remove from model
+    list_filter = ('category', 'is_featured', 'created')
     search_fields = ('title',)
     list_per_page = 50
+    readonly_fields = ('slug', 'created', 'updated')
     inlines = [BookInstance2Inline]
-    #actions = [export_to_csv]
 
 @admin.register(BookInstance2)
 class BookInstance2Admin(admin.ModelAdmin):
-    # list_filter = ('status', 'due_back')
-    list_display = ('id', 'book')
+    list_display = ('id', 'book', 'isbn10', 'isbn13', 'publisher')
     list_display_links = ('id', 'book')
+    search_fields = ('book__title', 'isbn10', 'isbn13')
+    actions = [export_book_copies_to_csv]
 
-    # how and what fields appear in the add book instance page
     fieldsets = (
         (None, {
-            'fields': ('book', 'publisher', 'pages') # 'id'
+            'fields': ('book', 'publisher', 'pages')
         }),
-        # ('Availability', {
-        #     'fields': ('status', 'due_back', 'borrower')
-        #     }),
         ('Extra', {
             'fields': ('isbn10', 'isbn13', 'book_type')
         }),
     )
-    actions = [export_to_csv]
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ('title', 'user', 'book', 'created', 'active')
     list_filter = ('active', 'created', 'updated')
-    search_fields = ('user', 'book', 'body')
+    search_fields = ('title', 'body', 'user__username', 'book__title')
 
 class BookInlineForSeries(admin.TabularInline):
     model = Book
     extra = 0
-    exclude = ['other_authors', 'summary', 'tags', 'user_tags', 'secondary_tags', 'language', 'publish_date', 'photo', 'is_featured', 'users_like', 'series_num', 'category']
-    readonly_fields = ('author', 'title')
-
-class BookInlineForCategory(admin.TabularInline):
-    model = Book
-    extra = 0
-    exclude = ['other_authors', 'summary', 'tags', 'user_tags', 'secondary_tags', 'language', 'publish_date', 'photo', 'is_featured', 'users_like', 'series_num', 'series']
-    readonly_fields = ('author', 'title')
+    fields = ('title', 'author', 'category', 'series_num')
+    readonly_fields = ('author', 'title', 'category', 'series_num')
+    can_delete = False
+    show_change_link = True
 
 @admin.register(Series)
 class SeriesAdmin(admin.ModelAdmin):
     inlines = [BookInlineForSeries]
-
-from django.forms import Textarea
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('order', 'code', 'name')
     readonly_fields = ('tags_included',)
 
-from .models import BookTags
-admin.site.register(BookTags)
+@admin.register(BookTags)
+class BookTagsAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug', 'band')
+    list_filter = ('band',)
+    search_fields = ('name',)
 
+@admin.register(BookInterest)
+class BookInterestAdmin(admin.ModelAdmin):
+    list_display = ('book', 'user', 'created', 'handled')
+    list_filter = ('handled', 'created')
+    search_fields = ('book__title', 'user__username', 'user__email')
+
+
+# ------------- Books for sale -----------------
 from .models import BookForSale, SaleCategory
 
 @admin.register(BookForSale)
@@ -129,12 +140,9 @@ class BookForSaleAdmin(admin.ModelAdmin):
     # list_display = ('slug', 'title', 'author')
     # prepopulated_fields = { 'slug': ('title',)}
     readonly_fields = ('slug',)
-    search_fields = ('title', 'author__name')
+    search_fields = ('title', 'author__first_name', 'author__last_name')
 
 @admin.register(SaleCategory)
 class SaleCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'code')
     search_fields = ('name',)
-
-from .models import BookInterest
-admin.site.register(BookInterest)
