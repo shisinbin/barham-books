@@ -72,22 +72,22 @@ class BookAdmin(admin.ModelAdmin):
 
 @admin.register(BookInstance2)
 class BookInstance2Admin(admin.ModelAdmin):
-    list_filter = ('status', 'due_back')
-    list_display = ('id', 'book', 'status', 'due_back') #'id'
+    # list_filter = ('status', 'due_back')
+    list_display = ('id', 'book')
     list_display_links = ('id', 'book')
 
     # how and what fields appear in the add book instance page
     fieldsets = (
         (None, {
             'fields': ('book', 'publisher', 'pages') # 'id'
-            }),
-        ('Availability', {
-            'fields': ('status', 'due_back', 'borrower')
-            }),
+        }),
+        # ('Availability', {
+        #     'fields': ('status', 'due_back', 'borrower')
+        #     }),
         ('Extra', {
             'fields': ('isbn10', 'isbn13', 'book_type')
-            }),
-        )
+        }),
+    )
     actions = [export_to_csv]
 
 @admin.register(Review)

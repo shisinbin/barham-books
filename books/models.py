@@ -330,7 +330,7 @@ class BookInstance2(models.Model):
     isbn10 = models.CharField(max_length=10, blank=True, null=True)
     isbn13 = models.CharField(max_length=13, blank=True, null=True, db_index=True)
     publisher = models.CharField(max_length=200, blank=True)
-    due_back= models.DateField(null=True, blank=True)
+
     BOOK_TYPE_CHOICES = (
         ('p', 'Paperback'),
         ('h', 'Hardcover'),
@@ -342,46 +342,27 @@ class BookInstance2(models.Model):
         blank=True,
         default='p',
     )
-    LOAN_STATUS = (
-        ('m', 'Maintenance'),
-        ('o', 'On loan'),
-        ('a', 'Available'),
-        ('r', 'Reserved'),
-    )
-    status = models.CharField(
-        max_length=1,
-        choices=LOAN_STATUS,
-        blank=True,
-        default='a',
-        db_index=True,
-    )
+
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    borrower = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-
-    @property
-    def is_overdue(self):
-        if self.due_back and date.today() > self.due_back:
-            return True
-        return False
 
     class Meta:
-        ordering = ['status', 'book__title']
+        ordering = ['book__title']
         verbose_name = 'Book Instance'
-        # permissions = (("can_mark_returned", "Set book as returned"),)
 
     def __str__(self):
-        """String for representing the Model object."""
         return f'{self.book.title} (#{self.id})'
+
     def get_formatted_isbn10(self):
         i = self.isbn10
-        if len(i) == 10:
+        if i and len(i) == 10:
             return f"{i[0]}-{i[1:4]}-{i[4:9]}-{i[-1]}"
         else:
             return self.isbn10
+
     def get_formatted_isbn13(self):
         i = self.isbn13
-        if len(i) == 13:
+        if i and len(i) == 13:
             return f"{i[:3]}-{i[3:5]}-{i[5:10]}-{i[10:12]}-{i[-1]}"
         else:
             return self.isbn13
