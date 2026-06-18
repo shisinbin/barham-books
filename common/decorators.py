@@ -1,4 +1,3 @@
-# a decorator to ensure a request is AJAX
 from functools import wraps
 
 from django.contrib import messages
