@@ -1,6 +1,6 @@
 # Barham Books
 
-![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white) ![CSS](https://img.shields.io/badge/css-%23663399.svg?style=for-the-badge&logo=css&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white) ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![CSS](https://img.shields.io/badge/css-%23663399.svg?style=for-the-badge&logo=css&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 
 <p style="text-align:left" width="100%">
     <img width="80%" src="bb-homepage.png">
@@ -32,7 +32,7 @@ This app was originally built in mid-2020, where it had LMS features such as boo
 
 ## Credits
 
-The first two links helped a lot back when I originally built the app and didn't know anything about web development. The last link helped to motivate and inspire me to recently refactor the app most recently.
+The first two links helped a lot back when I originally built the app and didn't know anything about web development. The last link helped to motivate and inspire me to refactor the app most recently.
 
 - [Python Django Dev To Deployment by Brad Traversy](https://www.udemy.com/course/python-django-dev-to-deployment/?couponCode=KEEPLEARNING)
 - [Django 3 By Example by Antonio Melé](https://www.packtpub.com/en-us/product/django-3-by-example-9781838989323)
