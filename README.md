@@ -37,3 +37,13 @@ The first two links helped a lot back when I originally built the app and didn't
 - [Python Django Dev To Deployment by Brad Traversy](https://www.udemy.com/course/python-django-dev-to-deployment/?couponCode=KEEPLEARNING)
 - [Django 3 By Example by Antonio Melé](https://www.packtpub.com/en-us/product/django-3-by-example-9781838989323)
 - [Build a Responsive Website by Jessica Chan](https://coder-coder.teachable.com/p/brw-ultimate-course)
+
+Also, when doing the refactor, much inspiration was gained by visiting the following book-related website's:
+
+- [BookShop](https://uk.bookshop.org/)
+- [Waterstones](https://www.waterstones.com/category/crime-thrillers-mystery)
+- [University of London's Library Search](https://search.libraries.london.ac.uk/discovery/search?vid=44SHL_INST:MAIN&lang=en)
+- The StoryGraph's very cool [homepage](https://thestorygraph.com/) and nifty [book search](https://app.thestorygraph.com/browse)
+- [PenguinRandomHouse](https://www.penguinrandomhouse.com/books/)
+- [OpenLibrary](https://openlibrary.org/)
+- [Ethical Consumer](https://www.ethicalconsumer.org/) (not book-related, but has a responsively cool header section)

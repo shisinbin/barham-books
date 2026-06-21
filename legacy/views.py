@@ -63,7 +63,8 @@ def author(request):
     })
 
 def books_filtered(request, letter_choice=None, tag_slug=None):
-    books = Book.objects.filter(instances__isnull=False).distinct()
+    # books = Book.objects.filter(instances__isnull=False).distinct()
+    books = Book.objects.all()
 
     tag = None
     letter = None
