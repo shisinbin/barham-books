@@ -103,9 +103,9 @@ class BookTags(TagBase):
     BAND_SUBGENRES = 30
     BAND_THEMES_RELATIONSHIPS = 40
     BAND_SETTING_HISTORY = 50
-    BAND_SUBJECTS_INTERESTS = 60
-    BAND_FORM_STYLE_FORMAT = 70
-    BAND_SFF_SUPERNATURAL = 80
+    BAND_FORM_STYLE_FORMAT = 60
+    BAND_SFF_SUPERNATURAL = 70
+    BAND_SUBJECTS_INTERESTS = 80
     BAND_UNASSIGNED = 99
 
     BANDS = (
@@ -114,9 +114,9 @@ class BookTags(TagBase):
         (BAND_SUBGENRES, 'Subgenres & genre flavours'),
         (BAND_THEMES_RELATIONSHIPS, 'Themes & relationships'),
         (BAND_SETTING_HISTORY, 'Setting, place & history'),
-        (BAND_SUBJECTS_INTERESTS, 'Subjects & interests'),
         (BAND_FORM_STYLE_FORMAT, 'Form, style & format'),
         (BAND_SFF_SUPERNATURAL, 'SFF / supernatural elements'),
+        (BAND_SUBJECTS_INTERESTS, 'Subjects & interests'),
         (BAND_UNASSIGNED, 'Unassigned / needs review'),
     )
 
