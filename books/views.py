@@ -364,6 +364,15 @@ def collection_detail(request, slug):
         .filter(matched_tags__gte=MIN_MATCH)
     )
 
+    include_categories = collection.get("include_categories")
+    exclude_categories = collection.get("exclude_categories")
+
+    if include_categories:
+        books_qs = books_qs.filter(category__name__in=include_categories)
+
+    if exclude_categories:
+        books_qs = books_qs.exclude(category__name__in=exclude_categories)
+
     sort = request.GET.get('sort', 'relevance')
 
     if sort == 'title':

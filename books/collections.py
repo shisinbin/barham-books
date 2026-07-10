@@ -4,25 +4,29 @@ COLLECTIONS = {
     "description": "Gripping mysteries, crime novels and page-turning thrillers.",
     "tags": [
       "crime", "mystery", "thriller", "suspense",
-      "police procedural", "nordic noir",
+      "police procedural", "cosy mystery",
+      "nordic noir", "tartan noir",
       "psychological thriller", "spy fiction",
-      "legal story", "techno-thriller", "historical mystery"
+      "legal story", "techno-thriller",
+      "historical mystery"
     ],
     "min_match": 2,
     "featured": True,
+    "exclude_categories": ["Non-fiction"],
   },
 
   "fantasy-sci-fi": {
-    "title": "Fantasy, Sci-Fi & Speculative",
+    "title": "Fantasy & Sci-Fi",
     "description": "Epic fantasy, science fiction and imaginative worlds.",
     "tags": [
-      "sci-fi", "fantasy", "epic fantasy",
-      "speculative", "dystopian", "aliens",
+      "fantasy", "sci-fi", "epic fantasy",
+      "dystopian", "post-apocalyptic",
       "time travel", "space opera", "steampunk",
-    #   "paranormal", "supernatural", "vampires",
+      "aliens", "biotech"
     ],
     "min_match": 1,
     "featured": True,
+    "exclude_categories": ["Non-fiction"],
   },
 
   "historical-fiction": {
@@ -33,22 +37,27 @@ COLLECTIONS = {
     ],
     "min_match": 1,
     "featured": True,
+    "exclude_categories": ["Non-fiction"],
   },
 
-  "war-saga": {
-    "title": "War Stories & Sagas",
-    "description": "Grand, often multi-generational stories of conflict, survival and personal struggle.",
+  "war-fiction": {
+    "title": "War, Home Front & Military Fiction",
+    "description": "Stories of conflict, courage and survival - from battlefield action to civilian life during wartime.",
     "tags": [
-      "war story", "saga"
+      "war story", "homefront", "military fiction",
+      "world war i", "world war ii", "holocaust"
     ],
     "min_match": 1,
+    "exclude_categories": ["Non-fiction"],
   },
 
-  "stories-across-cultures": {
-    "title": "Stories Across Cultures",
+  "place-culture-identity": {
+    "title": "Place, Culture & Identity",
     "description": "Books shaped by culture, identity and setting - from cross-cultural stories to vivid sense-of-place reads.",
     "tags": [
-      "cultural", "cross-cultural", "sense of place", "travel"
+      "sense of place", "cross-cultural",
+      "black authors", "lgbt", "feminism",
+      "society"
     ],
     "min_match": 1,
   },
@@ -57,108 +66,57 @@ COLLECTIONS = {
     "title": "Romance & Love Stories",
     "description": "Love stories and romantic fiction - funny, heartfelt and escapist.",
     "tags": [
-        "romance",
-        "chick lit",
-        "new adult",
-        "historical romance"
+      "romance", "chick lit", "new adult",
+      "historical romance", "paranormal romance"
     ],
     "min_match": 1,
     "featured": True,
+    "exclude_categories": ["Non-fiction"],
   },
 
-  "family-home-relationships": {
-    "title": "Family, Home & Relationships",
+  "family-relationships": {
+    "title": "Family & Relationships",
     "description": "Domestic drama, family life and the messy business of human connection.",
     "tags": [
-        "family drama",
-        "domestic fiction",
-        "relationships",
-        "abuse",
-        "psychological fiction"
+      "family drama", "relationships",
+      "abuse", "mental health"
     ],
     "min_match": 1,
+    "exclude_categories": ["Non-fiction"],
   },
 
-#   "love-life-relationships": {
-#     "title": "Love & Relationships",
-#     "description": "Stories of love, family and human connection, from contemporary romance to domestic drama.",
-#     "tags": [
-#       "romance", "chick lit", "family drama",
-#       "relationships", "lad lit",
-#       "domestic fiction", "new adult",
-#       "historical romance",
-#     ],
-#     "min_match": 1,
-#     "featured": True,
-#   },
-
-  "literary-fiction": {
+  "literary-psychological-fiction": {
     "title": "Literary & Psychological Fiction",
     "description": "Thought-provoking fiction that explores the inner lives of characters and the human condition.",
     "tags": [
-      "psychological fiction", "literary fiction",
-      "postmodern literature", "magical realism"
+      "literary fiction", "psychological fiction",
+      "postmodern literature", "magical realism",
+      "bildungsroman"
     ],
     "min_match": 1,
+    "exclude_categories": ["Non-fiction"],
   },
-
-#   "modern-contemporary": {
-#     "title": "Modern & Contemporary",
-#     "description": "Modern fiction that reflects contemporary life, culture and society.",
-#     "tags": [
-#       "contemporary", "contemporary classics", "cultural"
-#     ],
-#     "min_match": 1,
-#   },
-
-#   "culture-society-memoir": {
-#     "title": "Culture, Society & Memoir",
-#     "description": "Books exploring identity, culture, belief and lived experience.",
-#     "tags": [
-#       "memoir", "cultural", "philosophy", "feminism",
-#       "black authors", "lgbt", "mental health",
-#       "politics", "religion"
-#     ],
-#     "min_match": 1,
-#   },
-
-#   "food-travel-lifestyle": {
-#     "title": "Food, Travel & Lifestyle",
-#     "description": "Books to inspire curiosity, creativity and wellbeing - from kitchens to far-flung places.",
-#     "tags": [
-#       "food and drink", "travel", "horticulture",
-#       "environment", "animals", "sports",
-#       "music and arts"
-#     ],
-#     "min_match": 1,
-#   },
-
-#   "seasonal": {
-#     "title": "Tales of Christmas",
-#     "description": "Festive stories for the winter season, from heart-warming classics to dark seasonal tales.",
-#     "tags": [
-#       "christmas" # horror, humour, erotica, gothic, paranormal, vampires
-#     ],
-#     "min_match": 1,
-#   },
 
   "adventure-action": {
     "title": "Adventure & Action",
     "description": "Fast-paced, high-stakes stories featuring physical thrills, perilous journeys, and daring exploits.",
     "tags": [
-        "adventure", "action",
+      "adventure", "action", "westerns"
     ],
-    "min_match": 1
+    "min_match": 1,
+    "exclude_categories": ["Non-fiction"],
   },
 
-  "supernatural-paranormal": {
-    "title": "Supernatural & Paranormal",
-    "description": "Vampires, werewolves, ghosts, monsters, and magic in tales of the unexpected.",
+  "supernatural-fiction": {
+    "title": "Supernatural Fiction",
+    "description": "Ghosts, vampires, demons, magical beings, or other phenomena beyond ordinary reality/science.",
     "tags": [
-      "paranormal", "supernatural",
-      "vampires", "horror"
+      "supernatural", "paranormal romance",
+      "ghosts", "vampires", "witches",
+      "angels and demons"
     ],
-    "min_match": 1
+    "min_match": 1,
+    "exclude_categories": ["Non-fiction"],
   },
 
   "humour-satire": {
@@ -174,9 +132,10 @@ COLLECTIONS = {
     "title": "Memoir & Life Stories",
     "description": "Personal stories, reflections and lived experiences.",
     "tags": [
-        "memoir",
+        "memoir", "biography"
     ],
     "min_match": 1,
+    "include_categories": ["Non-fiction"],
   },
 
   "books-film-tv": {
@@ -192,7 +151,7 @@ COLLECTIONS = {
     "title": "Short Stories & Novellas",
     "description": "Concise stories with focused narratives.",
     "tags": [
-      "short stories", "novella", "epistolary"
+      "short stories", "novella"
     ],
     "min_match": 1
   },
@@ -216,130 +175,3 @@ COLLECTIONS = {
     "min_match": 1,
   },
 }
-
-# COLLECTIONS = {
-#   {
-#     "slug": "crime-mystery-thrillers",
-#     "title": "Crime, Mystery & Thrillers",
-#     "description": "Gripping mysteries, crime novels and page-turning thrillers.",
-#     "tags": [
-#       "crime", "mystery", "thriller", "suspense",
-#       "police procedural", "nordic noir",
-#       "psychological thriller", "spy fiction", "true crime",
-#       "techno-thriller"
-#     ],
-#   },
-
-#   {
-#     "slug": "fantasy-sci-fi",
-#     "title": "Fantasy, Sci-Fi & Speculative",
-#     "description": "Epic fantasy, science fiction and imaginative worlds.",
-#     "tags": [
-#       "fantasy", "epic fantasy", "sci-fi", "speculative",
-#       "dystopian", "paranormal", "supernatural",
-#       "time travel", "space opera"
-#     ],
-#   },
-
-#   {
-#     "slug": "historical-saga-war",
-#     "title": "War, Sagas & Historical Fiction",
-#     "description": "Historical description goes here",
-#     "tags": [
-#       "historical fiction", "historical romance",
-#       "historical mystery", "saga", "war story",
-#       "mythology", "westerns"
-#     ],
-#   },
-
-#   {
-#     "slug": "love-life-relationships",
-#     "title": "Love & Relationships",
-#     "description": "Love description goes here",
-#     "tags": [
-#       "romance", "chick lit", "family drama",
-#       "relationships", "contemporary", "lad lit",
-#       "domestic fiction", "new adult"
-#     ],
-#   },
-
-#   {
-#     "slug": "psychological-literary",
-#     "title": "Psychological & Literary Fiction",
-#     "description": "Psychological description goes here",
-#     "tags": [
-#       "psychological fiction", "literary fiction",
-#       "postmodern literature", "satire", "novella",
-#       "short stories", "epistolary", "magical realism"
-#     ],
-#   },
-
-#   {
-#     "slug": "children-young-adult",
-#     "title": "Children's and Young Adult",
-#     "description": "Children and YA description goes here",
-#     "tags": [
-#       "children's", "middle grade",
-#       "teen", "young adult"
-#     ],
-#   },
-
-#   {
-#     "slug": "modern-contemporary",
-#     "title": "Modern & Contemporary Classics",
-#     "description": "Modern description goes here",
-#     "tags": [
-#       "contemporary", "contemporary classics",
-#       "adapted to screen", "cultural"
-#     ],
-#   },
-
-#   {
-#     "slug": "culture-society-memoir",
-#     "title": "Culture, Society & Memoir",
-#     "description": "Culture description goes here",
-#     "tags": [
-#       "memoir", "cultural", "philosophy", "feminism",
-#       "black authors", "lgbt", "mental health",
-#       "politics", "religion"
-#     ],
-#   },
-
-#   {
-#     "slug": "food-travel-lifestyle",
-#     "title": "Food, Travel & Lifestyle",
-#     "description": "Food description goes here",
-#     "tags": [
-#       "food and drink", "travel", "horticulture",
-#       "environment", "animals", "sports",
-#       "music and arts"
-#     ],
-#   },
-
-#   {
-#     "slug": "books-film-tv",
-#     "title": "From Page to Screen",
-#     "description": "Film description goes here",
-#     "tags": [
-#       "adapted to screen", "novelisation"
-#     ],
-#   },
-
-#   {
-#     "slug": "seasonal",
-#     "title": "Tales of Christmas",
-#     "description": "A seasonal description goes here",
-#     "tags": [
-#       "christmas" # horror, humour, erotica, gothic, paranormal, vampires
-#     ],
-#   },
-
-#   {
-#     "slug": "humour-satire",
-#     "title": "Humour & Satire",
-#     "description": "Humourous description goes here",
-#     "tags": [
-#       "humour", "satire"
-#     ],
-#   },
-# }
