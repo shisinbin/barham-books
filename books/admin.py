@@ -132,11 +132,20 @@ class CategoryAdmin(admin.ModelAdmin):
 
     tag_summary.short_description = 'Tags used by books in this category'
 
+# @admin.register(BookTags)
+# class BookTagsAdmin(admin.ModelAdmin):
+#     list_display = ('name', 'slug', 'band')
+#     list_filter = ('band',)
+#     search_fields = ('name',)
+
 @admin.register(BookTags)
 class BookTagsAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug', 'band')
+    list_editable = ('band',)
     list_filter = ('band',)
     search_fields = ('name',)
+    ordering = ('band', 'name')
+    list_per_page = 100
 
 @admin.register(BookInterest)
 class BookInterestAdmin(admin.ModelAdmin):

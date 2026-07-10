@@ -125,7 +125,8 @@ class BookDraftForm(forms.Form):
     book_type = forms.ChoiceField(choices=BookInstance2.BOOK_TYPE_CHOICES)
 
     book_tags = forms.ModelMultipleChoiceField(
-        queryset=BookTags.objects.all(),
+        # queryset=BookTags.objects.all(),
+        queryset=BookTags.objects.order_by('name'),
         required=False,
     )
 
@@ -493,7 +494,8 @@ class AddBookQuickForm(forms.Form):
     is_featured = forms.BooleanField(required=False, label="Check box to make book featured")
 
     book_tags = forms.ModelMultipleChoiceField(
-        queryset=BookTags.objects.filter(band=1),
+        # queryset=BookTags.objects.filter(band=1),
+        queryset=BookTags.objects.filter(band=BookTags.BAND_BROAD_GENRES),
         required=False,
         label="Book Tags (optional)"
     )

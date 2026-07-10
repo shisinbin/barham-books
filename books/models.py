@@ -75,27 +75,62 @@ class Series(models.Model):
         return tag_set
 
 
+# class BookTags(TagBase):
+
+#     BANDS = (
+#         (1, 'General fiction main'),
+#         (2, 'General fiction secondary'),
+#         (3, 'Non-fiction'),
+#         (4, 'Sci-fi and Fantasy'),
+#         (5, 'Children and Middle Grade'),
+#         (6, 'Teen and Young adult'),
+#     )
+
+#     band = models.PositiveIntegerField(
+#         choices=BANDS,
+#         blank=True,
+#         default=99,
+#         help_text='Tag Band'
+#     )
+#     class Meta:
+#         verbose_name = "book tag"
+#         verbose_name_plural = "book tags"
+#         ordering = ('band', 'name',)
+
 class BookTags(TagBase):
+    BAND_AUDIENCE = 10
+    BAND_BROAD_GENRES = 20
+    BAND_SUBGENRES = 30
+    BAND_THEMES_RELATIONSHIPS = 40
+    BAND_SETTING_HISTORY = 50
+    BAND_SUBJECTS_INTERESTS = 60
+    BAND_FORM_STYLE_FORMAT = 70
+    BAND_SFF_SUPERNATURAL = 80
+    BAND_UNASSIGNED = 99
 
     BANDS = (
-        (1, 'General fiction main'),
-        (2, 'General fiction secondary'),
-        (3, 'Non-fiction'),
-        (4, 'Sci-fi and Fantasy'),
-        (5, 'Children and Middle Grade'),
-        (6, 'Teen and Young adult'),
+        (BAND_AUDIENCE, 'Audience / age'),
+        (BAND_BROAD_GENRES, 'Broad genres'),
+        (BAND_SUBGENRES, 'Subgenres & genre flavours'),
+        (BAND_THEMES_RELATIONSHIPS, 'Themes & relationships'),
+        (BAND_SETTING_HISTORY, 'Setting, place & history'),
+        (BAND_SUBJECTS_INTERESTS, 'Subjects & interests'),
+        (BAND_FORM_STYLE_FORMAT, 'Form, style & format'),
+        (BAND_SFF_SUPERNATURAL, 'SFF / supernatural elements'),
+        (BAND_UNASSIGNED, 'Unassigned / needs review'),
     )
 
-    band = models.PositiveIntegerField(
+    band = models.PositiveSmallIntegerField(
         choices=BANDS,
-        blank=True,
-        default=99,
-        help_text='Tag Band'
+        default=BAND_UNASSIGNED,
+        db_index=True,
+        help_text='Tag band'
     )
+
     class Meta:
         verbose_name = "book tag"
         verbose_name_plural = "book tags"
-        ordering = ('band', 'name',)
+        ordering = ('band', 'name')
 
 
 class BookTag(ItemBase):

@@ -92,11 +92,11 @@ def books_filtered(request, letter_choice=None, tag_slug=None):
     page_number = request.GET.get('page')
     paged_books = paginator.get_page(page_number)
     
-    all_tags = Book.book_tags.all()
+    modal_tags = BookTags.objects.all()
 
     context = {
         'tag': tag,
-        'all_tags': all_tags,
+        'modal_tags': modal_tags,
         'letter': letter,
         'books': paged_books,
         'alphabet': a_z,
@@ -109,9 +109,7 @@ def books_filtered(request, letter_choice=None, tag_slug=None):
                   context)
 
 def filter_by_tags(request):
-    tags = Book.book_tags.all()
-
-    dropdown_tags = tags.order_by('name')
+    tags = BookTags.objects.all()
 
     tags_popular = (
         tags
@@ -120,9 +118,9 @@ def filter_by_tags(request):
     )
 
     context = {
-        'tags': tags,
+        'modal_tags': tags,
         'tags_popular': tags_popular,
-        'dropdown_tags': dropdown_tags,
+        'dropdown_tags': tags.order_by('name'),
         'legacy': True,
     }
 
@@ -160,10 +158,10 @@ def tag_search(request):
     page = request.GET.get('page')
     paged_books = paginator.get_page(page)
 
-    tags = Book.book_tags.order_by('name')
+    dropdown_tags = BookTags.objects.order_by('name')
 
     context = {
-        'tags': tags,
+        'tags': dropdown_tags,
         'selected_tags': selected_tags,
         'tag_strings': tag_strings,
         'num_results': num_results,
@@ -256,7 +254,8 @@ def add_book(request):
         'categories': Category.objects.all(),
         'series': Series.objects.all(),
         'book_types': book_types,
-        'main_tags': BookTags.objects.filter(band=1),
+        # 'main_tags': BookTags.objects.filter(band=1),
+        'main_tags': BookTags.objects.filter(band=BookTags.BAND_BROAD_GENRES),
         'form_data': {},
         'selected_tags': [],
         'legacy': True,

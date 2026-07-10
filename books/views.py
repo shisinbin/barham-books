@@ -1670,7 +1670,8 @@ def add_book(request):
         categories = Category.objects.all()
         series = Series.objects.all()
         # tags = BookTags.objects.all()
-        main_tags = BookTags.objects.filter(band=1)
+        # main_tags = BookTags.objects.filter(band=1)
+        main_tags = BookTags.objects.filter(band=BookTags.BAND_BROAD_GENRES)
 
         selected_tags = []
         if form_data and 'main_tags' in form_data:
