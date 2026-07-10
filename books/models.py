@@ -101,7 +101,7 @@ class BookTags(TagBase):
     BAND_AUDIENCE = 10
     BAND_BROAD_GENRES = 20
     BAND_SUBGENRES = 30
-    BAND_THEMES_RELATIONSHIPS = 40
+    BAND_THEMES_PERSPECTIVES = 40
     BAND_SETTING_HISTORY = 50
     BAND_FORM_STYLE_FORMAT = 60
     BAND_SFF_SUPERNATURAL = 70
@@ -112,7 +112,7 @@ class BookTags(TagBase):
         (BAND_AUDIENCE, 'Audience / age'),
         (BAND_BROAD_GENRES, 'Broad genres'),
         (BAND_SUBGENRES, 'Subgenres & genre flavours'),
-        (BAND_THEMES_RELATIONSHIPS, 'Themes & relationships'),
+        (BAND_THEMES_PERSPECTIVES, 'Themes & perspectives'),
         (BAND_SETTING_HISTORY, 'Setting, place & history'),
         (BAND_FORM_STYLE_FORMAT, 'Form, style & format'),
         (BAND_SFF_SUPERNATURAL, 'SFF / supernatural elements'),
