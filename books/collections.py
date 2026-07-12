@@ -67,7 +67,8 @@ COLLECTIONS = {
     "description": "Love stories and romantic fiction - funny, heartfelt and escapist.",
     "tags": [
       "romance", "chick lit", "new adult",
-      "historical romance", "paranormal romance"
+      "historical romance", "paranormal romance",
+    #   "erotica"
     ],
     "min_match": 1,
     "featured": True,
@@ -175,3 +176,29 @@ COLLECTIONS = {
     "min_match": 1,
   },
 }
+
+# Potential additions:
+# ADDITIONAL = {
+#   "history-war-crime": {
+#     "title": "History, War & True Crime",
+#     "description": "",
+#     "tags": [
+#       "history", "british history",
+#       "world war i", "world war ii",
+#       "holocaust", "true crime"
+#     ],
+#     "min_match": 1,
+#     "include_categories": ["Non-fiction"],
+#   },
+
+#   "food-travel-arts-interests": {
+#     "title": "Food, Travel, Arts & Interests",
+#     "tags": [
+#       "travel", "food and drink", "music and arts",
+#       "animals", "sports", "environment",
+#       "horticulture"
+#     ],
+#     "min_match": 1,
+#     "include_categories": ["Non-fiction"],
+#   }
+# }
