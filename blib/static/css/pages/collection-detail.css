@@ -21,7 +21,7 @@
     }
 
     .collection__header {
-      margin-block-end: 40px;
+      margin-block-end: 24px;
     }
 
     .collection__description {
@@ -41,6 +41,72 @@
       border: 1px solid var(--card-border-color);
       border-radius: 100vmax;
       background-color: var(--card-bg-color);
+    }
+
+    .collection__filters {
+      margin-block-end: 24px;
+    }
+
+    .collection__filters-title {
+      font-size: var(--fs-18);
+      margin-block-end: 12px;
+    }
+
+    .collection__filter-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5em;
+      list-style: none;
+      padding: 0;
+    }
+
+    .collection__filter {
+      display: inline-flex;
+      padding: 0.35rem 0.85rem;
+      border: 1px solid var(--card-border-color);
+      border-radius: 100vmax;
+      background-color: var(--card-bg-color);
+      transition: 150ms ease-in-out;
+      transition-property: background-color, border-color;
+
+      &:hover {
+        background-color: var(--card-bg-color-hover);
+        border-color: var(--card-border-color-hover);
+        text-decoration: none;
+      }
+    }
+
+    .collection__filter--active {
+      background-color: var(--color-text-dark);
+      border-color: var(--color-text-dark);
+      color: var(--c-white);
+
+      &:hover {
+        background-color: var(--color-text-dark);
+        border-color: var(--color-text-dark);
+        color: var(--c-white);
+
+        cursor: default;
+      }
+    }
+
+    .collection__clear-filter {
+      display: inline-block;
+      margin-block-start: 12px;
+      font-size: var(--fs-14);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .collection__tag-details {
+      margin-block: 16px;
+      font-size: var(--fs-14);
+    }
+
+    .collection__tag-details summary {
+      cursor: pointer;
+      color: var(--color-text-muted);
+      margin-block-end: 8px;
     }
 
     .collection__meta {

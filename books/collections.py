@@ -13,6 +13,43 @@ COLLECTIONS = {
     "min_match": 2,
     "featured": True,
     "exclude_categories": ["Non-fiction"],
+    "filters": [
+        {
+            "key": "cosy-mysteries",
+            "title": "Cosy Mysteries",
+            "tags": ["cosy mystery"],
+        },
+        {
+            "key": "historical-mysteries",
+            "title": "Historical Mysteries",
+            "tags": ["historical mystery"],
+        },
+        {
+            "key": "police-procedurals",
+            "title": "Police Procedurals",
+            "tags": ["police procedural"],
+        },
+        {
+            "key": "tartan-noir",
+            "title": "Tartan Noir",
+            "tags": ["tartan noir"],
+        },
+        {
+            "key": "nordic-noir",
+            "title": "Nordic Noir",
+            "tags": ["nordic noir"],
+        },
+        {
+            "key": "psychological-thrillers",
+            "title": "Psychological Thrillers",
+            "tags": ["psychological thriller", "psychological fiction"],
+        },
+        {
+            "key": "spy-fiction",
+            "title": "Spy Fiction",
+            "tags": ["spy fiction"],
+        },
+    ],
   },
 
   "fantasy-sci-fi": {
@@ -27,6 +64,28 @@ COLLECTIONS = {
     "min_match": 1,
     "featured": True,
     "exclude_categories": ["Non-fiction"],
+    "filters": [
+        {
+            "key": "epic-fantasy",
+            "title": "Epic Fantasy",
+            "tags": ["epic fantasy"],
+        },
+        {
+            "key": "dystopian",
+            "title": "Dystopian",
+            "tags": ["dystopian"],
+        },
+        {
+            "key": "post-apocalyptic",
+            "title": "Post-apocalyptic",
+            "tags": ["post-apocalyptic"],
+        },
+        {
+            "key": "space-opera",
+            "title": "Space Opera",
+            "tags": ["space opera"],
+        },
+    ],
   },
 
   "historical-fiction": {
@@ -38,6 +97,33 @@ COLLECTIONS = {
     "min_match": 1,
     "featured": True,
     "exclude_categories": ["Non-fiction"],
+    "filters": [
+        {
+            "key": "ancient-world",
+            "title": "Ancient World",
+            "tags": ["ancient world"],
+        },
+        {
+            "key": "medieval",
+            "title": "Medieval",
+            "tags": ["medieval"],
+        },
+        {
+            "key": "tudor",
+            "title": "Tudor",
+            "tags": ["tudor"],
+        },
+        {
+            "key": "victorian",
+            "title": "Victorian",
+            "tags": ["victorian"],
+        },
+        {
+            "key": "world-wars",
+            "title": "World Wars",
+            "tags": ["world war i", "world war ii"],
+        },
+    ],
   },
 
   "war-fiction": {
@@ -49,6 +135,23 @@ COLLECTIONS = {
     ],
     "min_match": 1,
     "exclude_categories": ["Non-fiction"],
+    "filters": [
+        {
+            "key": "world-wars",
+            "title": "World Wars",
+            "tags": ["world war i", "world war ii"],
+        },
+        {
+            "key": "military-fiction",
+            "title": "Military Fiction",
+            "tags": ["military fiction"],
+        },
+        {
+            "key": "homefront",
+            "title": "Home Front",
+            "tags": ["homefront"],
+        },
+    ],
   },
 
   "place-culture-identity": {
@@ -60,6 +163,23 @@ COLLECTIONS = {
       "society"
     ],
     "min_match": 1,
+    "filters": [
+        {
+            "key": "sense-of-place",
+            "title": "Sense Of Place",
+            "tags": ["sense of place"],
+        },
+        {
+            "key": "cross-cultural",
+            "title": "Cross-Cultural",
+            "tags": ["cross-cultural"],
+        },
+        {
+            "key": "lgbt",
+            "title": "LGBT",
+            "tags": ["lgbt"],
+        },
+    ],
   },
 
   "romance-love-stories": {
@@ -68,11 +188,33 @@ COLLECTIONS = {
     "tags": [
       "romance", "chick lit", "new adult",
       "historical romance", "paranormal romance",
-    #   "erotica"
+      "erotica"
     ],
     "min_match": 1,
     "featured": True,
     "exclude_categories": ["Non-fiction"],
+    "filters": [
+        {
+            "key": "chick-lit",
+            "title": "Chick Lit",
+            "tags": ["chick lit"],
+        },
+        {
+            "key": "historical-romance",
+            "title": "Historical Romance",
+            "tags": ["historical romance"],
+        },
+        {
+            "key": "paranormal-romance",
+            "title": "Paranormal Romance",
+            "tags": ["paranormal romance"],
+        },
+        {
+            "key": "erotica",
+            "title": "Erotica",
+            "tags": ["erotica"],
+        },
+    ],
   },
 
   "family-relationships": {
@@ -84,6 +226,28 @@ COLLECTIONS = {
     ],
     "min_match": 1,
     "exclude_categories": ["Non-fiction"],
+    "filters": [
+        {
+            "key": "family-drama",
+            "title": "Family Drama",
+            "tags": ["family drama"],
+        },
+        {
+            "key": "relationships",
+            "title": "Relationships",
+            "tags": ["relationships"],
+        },
+        {
+            "key": "abuse",
+            "title": "Abuse",
+            "tags": ["abuse"],
+        },
+        {
+            "key": "mental-health",
+            "title": "Mental Health",
+            "tags": ["mental health"],
+        },
+    ],
   },
 
   "literary-psychological-fiction": {
@@ -96,6 +260,28 @@ COLLECTIONS = {
     ],
     "min_match": 1,
     "exclude_categories": ["Non-fiction"],
+    "filters": [
+        {
+            "key": "literary-fiction",
+            "title": "Literary Fiction",
+            "tags": ["literary fiction"],
+        },
+        {
+            "key": "psychological-fiction",
+            "title": "Psychological Fiction",
+            "tags": ["psychological fiction"],
+        },
+        {
+            "key": "bildungsroman",
+            "title": "Coming Of Age",
+            "tags": ["bildungsroman"],
+        },
+        {
+            "key": "magical-realism",
+            "title": "Magical Realism",
+            "tags": ["magical realism"],
+        },
+    ],
   },
 
   "adventure-action": {
@@ -106,18 +292,57 @@ COLLECTIONS = {
     ],
     "min_match": 1,
     "exclude_categories": ["Non-fiction"],
+    "filters": [
+        {
+            "key": "adventure",
+            "title": "Adventure",
+            "tags": ["adventure"],
+        },
+        {
+            "key": "action",
+            "title": "Action",
+            "tags": ["action"],
+        },
+        {
+            "key": "westerns",
+            "title": "Westerns",
+            "tags": ["westerns"],
+        },
+    ],
   },
 
   "supernatural-fiction": {
     "title": "Supernatural Fiction",
     "description": "Ghosts, vampires, demons, magical beings, or other phenomena beyond ordinary reality/science.",
     "tags": [
-      "supernatural", "paranormal romance",
+      "supernatural",
       "ghosts", "vampires", "witches",
       "angels and demons"
     ],
     "min_match": 1,
     "exclude_categories": ["Non-fiction"],
+    "filters": [
+        {
+            "key": "ghosts",
+            "title": "Ghost Stories",
+            "tags": ["ghosts"],
+        },
+        {
+            "key": "vampires",
+            "title": "Vampire Lore",
+            "tags": ["vampires"],
+        },
+        {
+            "key": "witches",
+            "title": "Witch Lit",
+            "tags": ["witches"],
+        },
+        {
+            "key": "angels-demons",
+            "title": "Angels and Demons",
+            "tags": ["angels and demons"],
+        },
+    ],
   },
 
   "humour-satire": {
@@ -154,7 +379,19 @@ COLLECTIONS = {
     "tags": [
       "short stories", "novella"
     ],
-    "min_match": 1
+    "min_match": 1,
+    "filters": [
+        {
+            "key": "short-stories",
+            "title": "Short Stories",
+            "tags": ["short stories"],
+        },
+        {
+            "key": "novella",
+            "title": "Novellas",
+            "tags": ["novella"],
+        },
+    ],
   },
 
   "children-young-adult": {
@@ -165,6 +402,18 @@ COLLECTIONS = {
       "teen", "young adult"
     ],
     "min_match": 1,
+    "filters": [
+        {
+            "key": "children-middle-grade",
+            "title": "Children's to Middle Grade",
+            "tags": ["children's", "middle grade"],
+        },
+        {
+            "key": "teen-ya",
+            "title": "Teen to YA",
+            "tags": ["teen", "young adult"],
+        },
+    ],
   },
 
   "classics": {

@@ -341,19 +341,63 @@ def collections_index(request):
     }
     return render(request, 'books/collections.html', context)
 
+def get_collection_filter(collection, filter_key):
+    if not filter_key:
+        return None
+
+    for collection_filter in collection.get("filters", []):
+        if collection_filter.get("key") == filter_key:
+            return collection_filter
+
+    return None
+
+
+def build_collection_filter_links(request, collection, active_filter, sort):
+    filters = []
+
+    for collection_filter in collection.get("filters", []):
+        params = {
+            "filter": collection_filter["key"],
+        }
+
+        if sort and sort != "relevance":
+            params["sort"] = sort
+
+        filters.append({
+            **collection_filter,
+            "is_active": (
+                active_filter
+                and active_filter["key"] == collection_filter["key"]
+            ),
+            "url": f"{request.path}?{urlencode(params)}",
+        })
+
+    clear_params = {}
+
+    if sort and sort != "relevance":
+        clear_params["sort"] = sort
+
+    clear_filter_url = request.path
+    if clear_params:
+        clear_filter_url = f"{request.path}?{urlencode(clear_params)}"
+
+    return filters, clear_filter_url
+
 def collection_detail(request, slug):
     try:
         collection = COLLECTIONS[slug]
     except KeyError:
         raise Http404('Collection not found')
 
-    MIN_MATCH = collection.get('min_match', 1)
+    min_match = collection.get('min_match', 1)
 
-    tags = BookTags.objects.filter(name__in=collection['tags'])
+    tags = BookTags.objects.filter(name__in=collection["tags"])
 
     books_qs = (
         Book.objects
         .filter(book_tags__in=tags)
+        .select_related("author", "category")
+        .prefetch_related("book_tags")
         .annotate(
             matched_tags=Count(
                 'book_tags',
@@ -361,7 +405,7 @@ def collection_detail(request, slug):
                 distinct=True
             )
         )
-        .filter(matched_tags__gte=MIN_MATCH)
+        .filter(matched_tags__gte=min_match)
     )
 
     include_categories = collection.get("include_categories")
@@ -373,6 +417,14 @@ def collection_detail(request, slug):
     if exclude_categories:
         books_qs = books_qs.exclude(category__name__in=exclude_categories)
 
+    active_filter_key = request.GET.get("filter")
+    active_filter = get_collection_filter(collection, active_filter_key)
+
+    if active_filter:
+        filter_tags = BookTags.objects.filter(name__in=active_filter["tags"])
+        print(filter_tags)
+        books_qs = books_qs.filter(book_tags__in=filter_tags).distinct()
+
     sort = request.GET.get('sort', 'relevance')
 
     if sort == 'title':
@@ -382,21 +434,36 @@ def collection_detail(request, slug):
     else:
         books_qs = books_qs.order_by('-matched_tags', 'title')
 
+    total_books = books_qs.count()
+
     paginator = Paginator(books_qs, 30)
     page = request.GET.get('page')
     page_obj = paginator.get_page(page)
 
-    total_books = books_qs.count()
 
     base_params = {}
+
     if (sort and sort != 'relevance'):
         base_params['sort'] = sort
+
+    if active_filter:
+        base_params["filter"] = active_filter["key"]
+
+    collection_filters, clear_filter_url = build_collection_filter_links(
+        request=request,
+        collection=collection,
+        active_filter=active_filter,
+        sort=sort,
+    )
 
     context = {
         'collection': collection,
         'books': page_obj,
         'total_books': total_books,
         'sort': sort,
+        'active_filter': active_filter,
+        'collection_filters': collection_filters,
+        'clear_filter_url': clear_filter_url,
         'base_querystring': urlencode(base_params),
     }
 

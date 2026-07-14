@@ -3,6 +3,7 @@
 {% load thumbnail %}
 
 {% block title %}
+  {% if active_filter %}{{ active_filter.title }} - {% endif %}
   {{ collection.title }} - Barham Books
 {% endblock %}
 
@@ -25,20 +26,68 @@
       <h1 class="collection__title">{{ collection.title }}</h1>
       <p class="collection__description medium">{{ collection.description }}</p>
 
-      <span class="visually-hidden" id="book-tags-label">Book tags prevalent in this collection</span>
+      {% comment %} <span class="visually-hidden" id="book-tags-label">Book tags prevalent in this collection</span>
       <ul class="collection__tags" aria-labelledby="book-tags-label">
         {% for tag in collection.tags %}
           <li class="collection__tag">{{ tag }}</li>
         {% endfor %}
-      </ul>
+      </ul> {% endcomment %}
     </header>
+
+    {% if collection_filters %}
+      <section class="collection__filters" aria-labelledby="collection-filters-title">
+        <h2 class="collection__filters-title" id="collection-filters-title">
+          Refine this collection
+        </h2>
+
+        <ul class="collection__filter-list">
+          {% for filter in collection_filters %}
+            <li>
+              <a
+                href="{{ filter.url }}"
+                class="collection__filter{% if filter.is_active %} collection__filter--active{% endif %}"
+                {% if filter.is_active %}aria-current="true"{% endif %}
+              >
+                {{ filter.title }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+
+        {% if active_filter %}
+          <a href="{{ clear_filter_url }}" class="collection__clear-filter">
+            Clear filter
+          </a>
+        {% endif %}
+      </section>
+    {% endif %}
+
+    {% if not active_filter %}
+      <details class="collection__tag-details">
+        <summary>Tags used for this collection</summary>
+
+        <ul class="collection__tags" aria-label="Book tags used for this collection">
+          {% for tag in collection.tags %}
+            <li class="collection__tag">{{ tag }}</li>
+          {% endfor %}
+        </ul>
+      </details>
+    {% endif %}
 
     <div class="collection__meta">
       <p class="collection__count">
-        {{ total_books }} book{{ total_books|pluralize }} in this collection
+        {% if active_filter %}
+          {{ total_books }} book{{ total_books|pluralize }} matching {{ active_filter.title }}
+        {% else %}
+          {{ total_books }} book{{ total_books|pluralize }} in this collection
+        {% endif %}
       </p>
 
       <form method="get" class="collection__sort">
+        {% if active_filter %}
+          <input type="hidden" name="filter" value="{{ active_filter.key }}">
+        {% endif %}
+
         <label class="collection__select-label" for="sort">Sort by</label>
 
         <div class="collection__select">
