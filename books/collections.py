@@ -171,7 +171,7 @@ COLLECTIONS = {
         },
         {
             "key": "cross-cultural",
-            "title": "Cross-Cultural",
+            "title": "Cross-cultural",
             "tags": ["cross-cultural"],
         },
         {
