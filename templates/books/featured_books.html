@@ -18,45 +18,13 @@
 
 {% block content %}
   <div class="featured">
-    {% comment %} <div class="hero-featured">
-      <div class="hero__bg">
-        <div class="wrapper hero__wrapper">
-          <article class="hero__article">
-            <h1 class="hero__title">Barham Recommends</h1>
-
-            <p class="hero__lede hero__lede-one">{{ hero_one.copy|truncatewords:75 }}</p>
-
-            <figure class="hero__book-figure hero__figure-one">
-              <a href="{{ hero_one.book.get_absolute_url }}" class="hero__overlay-link"><span class="visually-hidden">{{ hero_one.book.title }}</span></a>
-              <img class="hero__book-image" src="{{ hero_one.book.photo.url }}" alt="Book cover for {{ hero_one.book.title }} by {{ hero_one.book.author }}" />
-              <figcaption class="hero__book-text">
-                <h3 class="hero__book-title">{{ hero_one.book.title }}</h3>
-                <span class="hero__book-author"><a href="{{ hero_one.book.author.get_absolute_url }}" class="hero__author-link">{{ hero_one.book.author }}</a></span>
-              </figcaption>
-            </figure>
-
-            <p class="hero__lede hero__lede-two">{{ hero_two.copy|truncatewords:75 }}</p>
-
-            <figure class="hero__book-figure hero__figure-two">
-              <a href="{{ hero_two.book.get_absolute_url }}" class="hero__overlay-link"><span class="visually-hidden">{{ hero_two.book.title }}</span></a>
-              <img class="hero__book-image" src="{{ hero_two.book.photo.url }}" alt="Book cover for {{ hero_two.book.title }} by {{ hero_two.book.author }}" />
-              <figcaption class="hero__book-text">
-                <h3 class="hero__book-title">{{ hero_two.book.title }}</h3>
-                <span class="hero__book-author"><a href="{{ hero_two.book.author.get_absolute_url }}" class="hero__author-link">{{ hero_two.book.author }}</a></span>
-              </figcaption>
-            </figure>
-          </article>
-
-          {% include 'components/carousel.html' with books=featured_books title='Other Recommendations' tag='section' %}
-        </div>
-      </div>
-    </div> {% endcomment %}
+    <h1 class="visually-hidden">Featured Library Books</h1>
 
     <section class="staff-picks">
       <div class="staff-picks__bg">
         <div class="wrapper staff-picks__wrapper">
-          <header class="staff-picks__header">
-            <h1 class="staff-picks__title">Staff Picks</h1>
+          <header class="featured__header">
+            <h2 class="featured__title">Staff Picks</h2>
 
             <p class="staff-picks__lede medium">Handpicked recommendations from our library team.</p>
           </header>
@@ -67,8 +35,8 @@
             {% endfor %}
           </div>
 
-          <a href="{% url 'user_reviews' 'barhamlibrary' %}" class="staff-picks__all-link">
-            View all staff reviews<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right staff-picks__arrow-link-icon" aria-hidden="true">
+          <a href="{% url 'user_reviews' 'barhamlibrary' %}" class="featured__link">
+            View all staff reviews<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right featured__arrow-link-icon" aria-hidden="true">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
@@ -79,14 +47,37 @@
 
     <div class="highlights">
       <div class="wrapper">
-        {% include 'components/carousel.html' with books=featured_books title='Other Library Highlights' tag='section' %}
+        {% include 'components/carousel.html' with books=featured_books heading='h2' title='Other Library Highlights' tag='article' %}
+      </div>
+    </div>
+
+    <div class="genre-spotlights">
+      <div class="wrapper">
+        <header class="featured__header">
+          <h2 class="featured__title">Genre Spotlights</h2>
+          <p class="genre-spotlights__lede medium">
+            {% comment %}A closer look at a few distinctive <em class="genre-spotlights__flavour">flavours</em> from across the collection.{% endcomment %}A closer look at a few distinctive genres from across the collection.
+          </p>
+        </header>
+        <div class="genre-spotlights__list">
+          {% for spotlight in genre_spotlights %}
+            {% include 'components/carousel.html' with books=spotlight.books heading='h3' title=spotlight.title tag='article' %}
+          {% endfor %}
+
+          <a href="{% url 'collections' %}" class="featured__link">
+            Explore more in Collections<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right featured__arrow-link-icon" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </div>
       </div>
     </div>
 
     <div class="popular">
       <div class="wrapper popular-wrapper">
         <section class="authors">
-          <h2 class="popular__title">Popular Authors</h2>
+          <h2 class="popular__title">Authors with more to explore</h2>
 
           <ul class="popular__list">
             {% for pop_author in popular_authors %}
@@ -122,7 +113,7 @@
         </section>
 
         <section class="series">
-          <h2 class="popular__title">Popular Series</h2>
+          <h2 class="popular__title">Series with more to explore</h2>
 
           <ul class="popular__list">
             {% for pop_series in popular_series %}
@@ -159,8 +150,8 @@
       </div>
     </div>
 
-    <div class="wrapper short-reads__wrapper">
+    {% comment %} <div class="wrapper short-reads__wrapper">
       {% include 'components/carousel.html' with books=short_reads title='Short Reads' tag='section' %}
-    </div>
+    </div> {% endcomment %}
   </div>
 {% endblock %}

@@ -10,6 +10,22 @@
       background: var(--color-picks-bg);
     }
 
+    .featured__header {
+      text-align: center;
+      display: grid;
+      gap: 16px;
+      margin-block-end: 32px;
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        gap: 24px;
+        margin-block-end: 48px;
+      }
+    }
+
+    .featured__title {
+      font-size: var(--font-size-featured-title);
+    }
+
     .staff-picks {
       min-height: calc(100dvh - var(--header-height));
       background: linear-gradient(
@@ -46,23 +62,13 @@
     }
 
     .staff-picks__header {
-      text-align: center;
-      display: grid;
-      gap: 16px;
-      margin-block-end: 24px;
-
-      @media (width >= calc(600 / 16 * 1rem)) {
-        gap: 24px;
-        margin-block-end: 32px;
-      }
     }
 
     .staff-picks__lede {
     }
 
-    .staff-picks__all-link {
+    .featured__link {
       align-self: center;
-      margin-block-start: 48px;
       width: fit-content;
       padding: 12px 24px;
       border-radius: 12px;
@@ -84,12 +90,12 @@
         border-color: hsl(var(--hue-picks), 60%, 82%);
       }
 
-      &:hover .staff-picks__arrow-link-icon {
+      &:hover .featured__arrow-link-icon {
         transform: translateX(4px);
       }
     }
 
-    .staff-picks__arrow-link-icon {
+    .featured__arrow-link-icon {
       display: inline-block;
       stroke-width: 2;
       width: calc(20 / 16 * 1rem);
@@ -101,6 +107,7 @@
     .staff-picks__grid {
       display: grid;
       gap: 48px;
+      margin-block-end: 48px;
     }
 
     /* .hero__bg {
@@ -274,6 +281,45 @@
       );
     }
 
+    .genre-spotlights {
+    }
+
+    .genre-spotlights__header {
+      text-align: center;
+      display: grid;
+      gap: 16px;
+      margin-block-end: 24px;
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        gap: 24px;
+        margin-block-end: 32px;
+      }
+    }
+
+    .genre-spotlights__title {
+    }
+
+    .genre-spotlights__lede {
+    }
+
+    .genre-spotlights__flavour {
+      letter-spacing: 0.025em;
+    }
+
+    .genre-spotlights__list {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+
+      @media (width >= calc(600 / 16 * 1rem)) {
+        gap: 48px;
+      }
+
+      & .featured__link {
+        margin-block-start: 16px;
+      }
+    }
+
     .popular {
     }
 
@@ -283,6 +329,7 @@
       padding-block-start: 64px;
       display: flex;
       flex-direction: column;
+      margin-block-end: 48px;
 
       @media (width < calc(1000 / 16 * 1rem)) {
         & > *:not(:last-child) {
@@ -314,6 +361,7 @@
     .popular__title {
       font-size: calc(28 / 16 * 1rem);
       margin-block-end: 24px;
+      padding-inline: 16px;
     }
 
     .popular__list {

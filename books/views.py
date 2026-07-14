@@ -30,7 +30,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from authors.models import Author
 from common.decorators import superuser_required
 from .collections import COLLECTIONS
-from .editorial import FALLBACK_FEATURES, GENERIC_FALLBACK_COPY
+from .editorial import FALLBACK_FEATURES, GENERIC_FALLBACK_COPY, GENRE_SPOTLIGHTS
 from .forms import ReviewForm, AddCopyForm
 from .models import Book, BookInstance2, Review, Category, BookTags, Series, BookInterest
 from .search import normalise_query, build_search_filter, score_book, is_confident_redirect
@@ -430,6 +430,87 @@ def books_a_z(request, letter='A'):
 
     return render(request, 'books/books_a_z.html', context)
 
+def get_pick_book(pick):
+    """
+    Staff picks can be real Review objects or fallback dicts from build_fallback_review().
+    This helper lets the rest of the view treat both shapes consistently.
+    """
+    if isinstance(pick, dict):
+        return pick.get("book")
+    return getattr(pick, "book", None)
+
+
+def get_pick_book_ids(picks):
+    ids = set()
+
+    for pick in picks:
+        book = get_pick_book(pick)
+        if book:
+            ids.add(book.id)
+
+    return ids
+
+
+def build_staff_picks(limit):
+    staff_picks = (
+        Review.objects
+        .filter(user__is_staff=True, active=True)
+        .select_related("book", "book__author", "user")
+        .order_by("-updated")[:limit]
+    )
+
+    staff_picks_list = list(staff_picks)
+
+    if len(staff_picks_list) < limit:
+        existing_slugs = {
+            book.slug
+            for book in (get_pick_book(pick) for pick in staff_picks_list)
+            if book
+        }
+
+        for fallback in FALLBACK_FEATURES:
+            if fallback["slug"] in existing_slugs:
+                continue
+
+            book = (
+                Book.objects
+                .select_related("author")
+                .filter(slug=fallback["slug"])
+                .first()
+            )
+
+            if not book:
+                continue
+
+            staff_picks_list.append(
+                build_fallback_review(book, fallback["copy"])
+            )
+            existing_slugs.add(book.slug)
+
+            if len(staff_picks_list) == limit:
+                break
+
+    # In case fallbacks don't work, replenish with random books.
+    # This branch should rarely be used.
+    if len(staff_picks_list) < limit:
+        needed = limit - len(staff_picks_list)
+
+        existing_ids = get_pick_book_ids(staff_picks_list)
+
+        replacements = (
+            Book.objects
+            .select_related("author")
+            .exclude(id__in=existing_ids)
+            .order_by("?")[:needed]
+        )
+
+        for book in replacements:
+            staff_picks_list.append(
+                build_fallback_review(book, GENERIC_FALLBACK_COPY)
+            )
+
+    return staff_picks_list
+
 def build_fallback_review(book, copy):
     return {
         "is_fallback": True,
@@ -439,69 +520,77 @@ def build_fallback_review(book, copy):
         "user": None,
     }
 
+def build_genre_spotlights(limit):
+    spotlights = []
+    displayed_book_ids = set()
+
+    for spotlight in GENRE_SPOTLIGHTS:
+        books_qs = (
+            Book.objects
+            .filter(book_tags__name__in=spotlight["tags"])
+            .select_related("author", "category")
+            .prefetch_related("book_tags")
+            .distinct()
+        )
+
+        include_categories = spotlight.get("include_categories")
+        exclude_categories = spotlight.get("exclude_categories")
+
+        if include_categories:
+            books_qs = books_qs.filter(category__name__in=include_categories)
+
+        if exclude_categories:
+            books_qs = books_qs.exclude(category__name__in=exclude_categories)
+
+        books = list(
+            books_qs
+            .order_by("-is_featured", "-updated", "-created", "title")[:limit]
+        )
+
+        displayed_book_ids.update(book.id for book in books)
+
+        spotlights.append({
+            **spotlight,
+            "books": books,
+        })
+
+    return spotlights, displayed_book_ids
+
 def featured_books(request):
     STAFF_PICK_COUNT = 2
+    GENRE_SPOTLIGHT_COUNT = 16
     FEATURED_COUNT = 16
     AUTHOR_COUNT = 10
     SERIES_COUNT = 10
-    SHORT_READS_COUNT = 16
+    # SHORT_READS_COUNT = 16
 
-    staff_picks = (
-        Review.objects
-        .filter(user__is_staff=True, active=True)
-        .select_related('book', 'user')
-        .order_by('-updated')[:STAFF_PICK_COUNT]
+    # Buld staff picks
+    staff_picks = build_staff_picks(STAFF_PICK_COUNT)
+    staff_pick_book_ids = get_pick_book_ids(staff_picks)
+
+    # Build genre spotlights
+    genre_spotlights, genre_spotlight_book_ids = build_genre_spotlights(
+        GENRE_SPOTLIGHT_COUNT
     )
 
-    staff_picks_list = list(staff_picks)
-
-    if len(staff_picks_list) < STAFF_PICK_COUNT:
-        existing_slugs = {r.book.slug for r in staff_picks_list}
-
-        for fallback in FALLBACK_FEATURES:
-            if fallback["slug"] in existing_slugs:
-                continue
-            
-            try:
-                book = Book.objects.get(slug=fallback["slug"])
-            except Book.DoesNotExist:
-                continue
-            
-            staff_picks_list.append(
-                build_fallback_review(book, fallback["copy"])
-            )
-
-            if len(staff_picks_list) == STAFF_PICK_COUNT:
-                break
-
-    # In case fallbacks don't work, replenish with random books
-    if len(staff_picks_list) < STAFF_PICK_COUNT:
-        needed = STAFF_PICK_COUNT - len(staff_picks_list)
-
-        existing_slugs = {r.book.slug for r in staff_picks_list}
-
-        replacements = Book.objects.exclude(slug__in=existing_slugs).order_by('?')[:needed]
-
-        for book in replacements:
-            staff_picks_list.append(
-                build_fallback_review(book, GENERIC_FALLBACK_COPY)
-            )
-    
-    staff_picks_slugs = {r.book.slug for r in staff_picks_list}
+    # Extract book ids to exclude from featured list
+    excluded_featured_ids = staff_pick_book_ids | genre_spotlight_book_ids
     featured_books = (
         Book.objects
         .filter(is_featured=True)
-        .exclude(slug__in=staff_picks_slugs)
-        .order_by('-updated', '-created')[:FEATURED_COUNT]
+        .exclude(id__in=excluded_featured_ids)
+        .select_related("author")
+        .prefetch_related("book_tags")
+        .order_by("-updated", "-created")[:FEATURED_COUNT]
     )
 
+    # Build authors and series lists
     popular_authors = (
         Author.objects
         .annotate(num_books=Count('books'))
         .filter(num_books__gte=2)
         .order_by('-num_books')[:AUTHOR_COUNT]
     )
-
     popular_series = (
         Series.objects
         .annotate(num_books=Count('books'))
@@ -509,22 +598,21 @@ def featured_books(request):
         .order_by('-num_books')[:SERIES_COUNT]
     )
 
-    short_reads = (
-        Book.objects
-        .filter(instances__pages__isnull=False)
-        .annotate(min_pages=Min('instances__pages'))
-        .filter(min_pages__lte=200)
-        .order_by('min_pages')[:SHORT_READS_COUNT]
-    )
+    # short_reads = (
+    #     Book.objects
+    #     .filter(instances__pages__isnull=False)
+    #     .annotate(min_pages=Min('instances__pages'))
+    #     .filter(min_pages__lte=200)
+    #     .order_by('min_pages')[:SHORT_READS_COUNT]
+    # )
 
     context = {
-        # 'hero_one': hero_books[0],
-        # 'hero_two': hero_books[1],
-        'staff_picks': staff_picks_list,
+        'staff_picks': staff_picks,
         'featured_books': featured_books,
+        'genre_spotlights': genre_spotlights,
         'popular_authors': popular_authors,
         'popular_series': popular_series,
-        'short_reads': short_reads,
+        # 'short_reads': short_reads,
     }
     return render(request, 'books/featured_books.html', context)
 

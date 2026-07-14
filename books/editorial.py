@@ -14,3 +14,41 @@ FALLBACK_FEATURES = [
 ]
 
 GENERIC_FALLBACK_COPY = "A compelling and thoughtfully written story that draws readers into its world from the very first page. With memorable characters and carefully built tension, this book offers a rewarding reading experience that lingers long after the final chapter."
+
+GENRE_SPOTLIGHTS = [
+    {
+        "title": "Cosy Mysteries",
+        "description": "Gentler mysteries with charm, humour and amateur sleuthing.",
+        "tags": ["cosy mystery"],
+        # "limit": 12,
+        "exclude_categories": ["Non-fiction"],
+    },
+    {
+        "title": "Paranormal Romance",
+        "description": "Love stories with vampires, witches, angels and supernatural twists.",
+        "tags": ["paranormal romance"],
+        # "limit": 12,
+        "exclude_categories": ["Non-fiction"],
+    },
+    {
+        "title": "Dystopian & Post-Apocalyptic",
+        "description": "Bleak futures, broken societies and survival after catastrophe.",
+        "tags": ["dystopian", "post-apocalyptic"],
+        # "limit": 12,
+        "exclude_categories": ["Non-fiction"],
+    },
+    # {
+    #     "title": "Tartan Noir",
+    #     "description": "Dark, gritty Scottish crime fiction, often hard-boiled or psychologically bleak.",
+    #     "tags": ["tartan noir"],
+    #     # "limit": 12,
+    #     "exclude_categories": ["Non-fiction"],
+    # },
+    # {
+    #     "title": "Gothic",
+    #     "description": "Dark, atmospheric fiction involving secrets, dread, old houses, hauntings, decay, obsession, or melodrama.",
+    #     "tags": ["gothic"],
+    #     # "limit": 12,
+    #     "exclude_categories": ["Non-fiction"],
+    # },
+]

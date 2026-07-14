@@ -1,16 +1,16 @@
 {% load static %}
 {% load thumbnail %}
 
-{% with title=title|default:"" tag=tag|default:"section" books=books|slice:":20" extra_class=extra_class|default:"" %}
+{% with title=title|default:"" tag=tag|default:"section" heading=heading|default:"h2" books=books|slice:":20" extra_class=extra_class|default:"" %}
   <{{ tag }} class="carousel {{extra_class}}" data-carousel>
     <header class="carousel__header">
-      <h2 class="carousel__title">
+      <{{ heading }} class="carousel__title">
         {% if title %}
           {{ title }}
         {% else %}
           <span class="visually-hidden">A Book List in a Carousel</span>
         {% endif %}
-      </h2>
+      </{{ heading }}>
       <div class="carousel__controls">
         <button class="carousel__btn prev">
           <svg class="carousel__arrow-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left" aria-hidden="true">

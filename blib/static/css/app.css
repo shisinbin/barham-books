@@ -90,6 +90,7 @@
     --font-size-form: var(--fs-18);
     --font-size-search-heading: var(--fs-36);
     --font-size-book-card-heading: var(--fs-22);
+    --font-size-featured-title: var(--fs-34);
 
     @media (width >= calc(600 / 16 * 1rem)) {
       --font-size-topnav: var(--fs-20);
@@ -104,6 +105,7 @@
       --font-size-form-label: var(--fs-24);
       --font-size-search-heading: var(--fs-48);
       --font-size-book-card-heading: var(--fs-24);
+      --font-size-featured-title: var(--fs-48);
     }
   }
 
