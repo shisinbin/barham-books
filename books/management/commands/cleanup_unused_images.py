@@ -28,7 +28,7 @@ class Command(BaseCommand):
     used_thumbnails = set()
     for file in used_files:
       base, ext = os.path.splitext(file)
-      used_thumbnails.add(f"{base}{ext}.100x0_q85{ext}")
+      used_thumbnails.add(f"{base}{ext}.180x0_q85{ext}")
     self.stdout.write(f"Generated thumbnails: {len(used_thumbnails)}")
 
     # Iterate through every books media folder
