@@ -1,0 +1,104 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block title %}
+  Catalogue data - Barham Books
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/pages/catalogue-data.css' %}" />
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/catalogue-data.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+  <div class="catalogue-data">
+    <div class="wrapper">
+      <div class="narrow-container">
+        <header class="catalogue-data__header">
+          <h1 class="catalogue-data__title">Catalogue data</h1>
+
+          <p class="catalogue-data__lede medium">Download a CSV snapshot of selected book-level catalogue data from Barham Books.</p>
+        </header>
+
+        <section class="catalogue-data__section">
+          <h2 class="catalogue-data__section-title">About the file</h2>
+
+          <p>This dataset includes selected information about books in the catalogue, including titles, authors, descriptions, tags, categories, series details and original publication years where available.</p>
+
+          <p>It may be useful for developers, researchers, book enthusiasts or anyone interested in exploring the collection in a structured format.</p>
+        </section>
+
+        <section class="catalogue-data__section">
+          <h2 class="catalogue-data__section-title">Download</h2>
+
+          {% if export.available %}
+            <dl class="catalogue-data__meta">
+              {% if export.generated_at %}
+                <div>
+                  <dt>Last updated</dt>
+                  <dd>{{ export.generated_at|date:'j F Y' }}</dd>
+                </div>
+              {% endif %}
+
+              {% if export.row_count %}
+                <div>
+                  <dt>Books included</dt>
+                  <dd>{{ export.row_count }}</dd>
+                </div>
+              {% endif %}
+
+              <div>
+                <dt>Format</dt>
+                <dd>CSV</dd>
+              </div>
+            </dl>
+
+            {% if export.is_stale %}
+              <p class="catalogue-data__note">
+                This export may not reflect the very latest catalogue changes. If you need a newer copy, please send a quick message through
+                <a href="{% url 'contact' %}" class="catalogue-data__link">the contact page</a>.
+              </p>
+            {% endif %}
+
+            <form method="post" class="catalogue-data__form">
+              {% csrf_token %}
+
+              {{ form.non_field_errors }}
+              {{ form.website }}
+
+              <div class="catalogue-data__turnstile">{{ form.turnstile }}
+                {{ form.turnstile.errors }}</div>
+
+              <button type="submit" class="button primary catalogue-data__button">Download CSV</button>
+            </form>
+          {% else %}
+            <p>
+              The catalogue data export is not available right now. Please check back later, or send a message through
+              <a href="{% url 'contact' %}" class="catalogue-data__link">the contact page</a>.
+            </p>
+          {% endif %}
+        </section>
+
+        <section class="catalogue-data__section">
+          <h2 class="catalogue-data__section-title">Notes on the data</h2>
+
+          <p>
+            The catalogue has been built and maintained by volunteers, with book information checked and refined from a range of sources including the
+            <a href="https://developers.google.com/books" class="catalogue-data__link" target="_blank" rel="noopener noreferrer">Google Books API</a>,
+            <a href="https://openlibrary.org/" class="catalogue-data__link" target="_blank" rel="noopener noreferrer">Open Library</a>, publisher websites and other book-related resources.
+          </p>
+
+          {% comment %} <p>The file is a maintained snapshot rather than a live API. Some records may contain gaps, corrections-in-progress or catalogue-specific editorial choices.</p> {% endcomment %}
+
+          <p>
+            The descriptive tags are a major part of the dataset. They help power the site's collections and related-book suggestions, and can be explored through the
+            <a href="{% url 'legacy:filter_by_tags' %}" class="catalogue-data__link">legacy tags page</a>.
+          </p>
+        </section>
+      </div>
+    </div>
+  </div>
+{% endblock %}

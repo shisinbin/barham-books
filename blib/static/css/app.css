@@ -842,6 +842,7 @@
     }
 
     .footer__link {
+      color: var(--color-text-dark);
       cursor: pointer;
       font-size: calc(16 / 16 * 1rem);
       transition: color 150ms ease-in-out;

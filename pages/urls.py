@@ -10,4 +10,7 @@ urlpatterns = [
 
     # Magazine-style homepage
     path('home/', views.home, name='home'),
+
+    # Data download page
+    path('data/', views.catalogue_data, name='catalogue_data'),
 ]

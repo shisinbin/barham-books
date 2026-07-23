@@ -208,6 +208,12 @@ THUMBNAIL_ALIASES = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
+# Data download settings
+PRIVATE_EXPORT_ROOT = os.path.join(BASE_DIR, "private_exports")
+BOOK_EXPORT_FILENAME = "barham-books-catalogue.csv"
+BOOK_EXPORT_METADATA_FILENAME = "barham-books-catalogue-metadata.json"
+DATA_DOWNLOAD_COOLDOWN_SECONDS = 30
+BOOK_EXPORT_STALE_AFTER_DAYS = 180
 
 try:
     from .local_settings import *
