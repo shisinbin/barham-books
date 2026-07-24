@@ -793,7 +793,7 @@ def register_interest(request):
     mail_sent = False
 
     if created:
-        subject = f'Barham Library: Interest registered — "{book.title}"'
+        subject = f'Book Interest registered — "{book.title}"'
 
         data = {
             "username": request.user.get_username(),
