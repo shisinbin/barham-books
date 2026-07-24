@@ -7,7 +7,7 @@ from datetime import timedelta
 from django.db.models import F
 from django.conf import settings
 from django.contrib import messages
-from django.core.mail import send_mail, EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse, FileResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
@@ -43,7 +43,7 @@ def send_formatted_email(data) -> bool:
         email = EmailMultiAlternatives(
             subject=subject,
             body=text_content,
-            from_email=settings.EMAIL_HOST_USER,
+            from_email=settings.DEFAULT_FROM_EMAIL,
             to=settings.EMAIL_STAFF_RECIPIENTS,
             reply_to=reply_to,
         )

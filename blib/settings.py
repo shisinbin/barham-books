@@ -202,7 +202,11 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 THUMBNAIL_ALIASES = {
     '': {
-        'default': {'size': (180, 0), 'crop': False},
+        'default': {
+            'size': (180, 0),
+            'crop': False,
+            # 'quality': 85, # 85 is the default anyway
+        },
     }
 }
 
