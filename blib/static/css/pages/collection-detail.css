@@ -77,13 +77,13 @@
     }
 
     .collection__filter--active {
-      background-color: var(--color-text-dark);
-      border-color: var(--color-text-dark);
+      background-color: var(--card-bg-color-active);
+      border-color: var(--card-border-color-active);
       color: var(--c-white);
 
       &:hover {
-        background-color: var(--color-text-dark);
-        border-color: var(--color-text-dark);
+        background-color: var(--card-bg-color-active);
+        border-color: var(--card-border-color-active);
         color: var(--c-white);
 
         cursor: default;

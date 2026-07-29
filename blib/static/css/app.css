@@ -197,6 +197,28 @@
       hsl(var(--hue-primary), 35%, 91%) 60%,
       hsl(var(--hue-primary), 65%, 85%) 100%
     );
+
+    /* Experimentation */
+    --color-main-bg: hsl(var(--hue-primary), 14%, 95%);
+
+    --surface-bg: hsl(var(--hue-primary), 18%, 98%);
+    --surface-bg-hover: hsl(var(--hue-primary), 35%, 97%);
+    --surface-bg-active: hsl(var(--hue-primary), 60%, 50%);
+
+    /* --surface-muted-bg: hsl(var(--hue-primary), 16%, 93%); */
+
+    --border-subtle: hsl(var(--hue-primary), 16%, 84%);
+    --border-hover: hsl(var(--hue-primary), 42%, 74%);
+    --border-active: hsl(var(--hue-primary), 50%, 40%);
+
+    --card-bg-color: var(--surface-bg);
+    --card-bg-color-hover: var(--surface-bg-hover);
+    --card-bg-color-active: var(--surface-bg-active);
+
+    --card-border-color: var(--border-subtle);
+    --card-border-color-hover: var(--border-hover);
+    /* --card-border-color-active: var(--border-active); */
+    --card-border-color-active: var(--surface-bg-active);
   }
 
   /* Spacing */
