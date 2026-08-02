@@ -118,7 +118,7 @@
     .carousel__image-wrapper {
       /* background-color: hsl(25, 41%, 81%); */
       display: grid;
-      place-content: center;
+      place-content: end;
       padding-block: 4px;
     }
 
