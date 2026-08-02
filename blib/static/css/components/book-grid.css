@@ -33,6 +33,16 @@
       /* &:hover .book-grid__book-title {
         text-decoration: 1px underline;
       } */
+
+      &:has(a:focus-visible) {
+        outline: 3px solid AccentColor;
+        outline: 3px solid -webkit-focus-ring-color;
+        outline-offset: 3px;
+
+        :focus {
+          outline: none;
+        }
+      }
     }
 
     .book-grid__image-wrapper {

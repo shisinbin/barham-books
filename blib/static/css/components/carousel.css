@@ -103,6 +103,16 @@
       &:hover .carousel__slide-title {
         text-decoration: 1px underline;
       }
+
+      &:has(a:focus-visible) {
+        outline: 2px solid AccentColor;
+        outline: 2px solid -webkit-focus-ring-color;
+        outline-offset: -2px;
+
+        :focus {
+          outline: none;
+        }
+      }
     }
 
     .carousel__image-wrapper {

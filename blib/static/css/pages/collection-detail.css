@@ -107,6 +107,7 @@
       cursor: pointer;
       color: var(--color-text-muted);
       margin-block-end: 8px;
+      width: fit-content;
     }
 
     .collection__meta {
