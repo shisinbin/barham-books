@@ -29,12 +29,12 @@
     .collections__card {
       --collection-card-hue: var(--hue-primary);
       --card-bg: hsl(var(--collection-card-hue), 25%, 92%);
-      --card-bg-hover: hsl(var(--collection-card-hue), 42%, 90%);
+      --card-bg-hover: hsl(var(--collection-card-hue), 42%, 95%);
       --card-border-color: hsl(var(--collection-card-hue), 28%, 78%);
       --card-border-color-hover: hsl(
         var(--collection-card-hue),
         50%,
-        66%
+        70%
       );
       /* --card-bg: hsl(var(--hue-primary), 15%, 85%);
       --card-bg-hover: hsl(var(--hue-primary), 15%, 90%); */

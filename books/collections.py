@@ -2,6 +2,7 @@ COLLECTIONS = {
   "crime-mystery-thrillers": {
     "title": "Crime, Mystery & Thrillers",
     "description": "Gripping mysteries, crime novels and page-turning thrillers.",
+    "short_description": "Mysteries, crime novels and page-turning suspense.",
     "tags": [
       "crime", "mystery", "thriller", "suspense",
       "police procedural", "cosy mystery",
@@ -53,8 +54,9 @@ COLLECTIONS = {
   },
 
   "fantasy-sci-fi": {
-    "title": "Fantasy & Sci-Fi",
+    "title": "Fantasy &\nSci-Fi",
     "description": "Epic fantasy, science fiction and imaginative worlds.",
+    "short_description": "Fantasy worlds, future societies and speculative ideas.",
     "tags": [
       "fantasy", "sci-fi", "epic fantasy",
       "dystopian", "post-apocalyptic",
@@ -89,8 +91,9 @@ COLLECTIONS = {
   },
 
   "historical-fiction": {
-    "title": "Historical Fiction",
+    "title": "Historical\nFiction",
     "description": "Stories set well in the past, blending fictional characters with well researched detail about the period.",
+    "short_description": "Past lives, period detail and historical drama.",
     "tags": [
       "historical fiction"
     ],
@@ -129,6 +132,7 @@ COLLECTIONS = {
   "war-fiction": {
     "title": "War, Home Front & Military Fiction",
     "description": "Stories of conflict, courage and survival - from battlefield action to civilian life during wartime.",
+    "short_description": "Conflict, courage and lives shaped by wartime.",
     "tags": [
       "war story", "homefront", "military fiction",
       "world war i", "world war ii", "holocaust"
@@ -157,6 +161,7 @@ COLLECTIONS = {
   "place-culture-identity": {
     "title": "Place, Culture & Identity",
     "description": "Books shaped by culture, identity and setting - from cross-cultural stories to vivid sense-of-place reads.",
+    "short_description": "Stories shaped by place, culture and belonging.",
     "tags": [
       "sense of place", "cross-cultural",
       "black authors", "lgbt", "feminism",
@@ -183,8 +188,9 @@ COLLECTIONS = {
   },
 
   "romance-love-stories": {
-    "title": "Romance & Love Stories",
+    "title": "Romance &\nLove Stories",
     "description": "Love stories and romantic fiction - funny, heartfelt and escapist.",
+    "short_description": "Love stories from heartfelt to escapist.",
     "tags": [
       "romance", "chick lit", "new adult",
       "historical romance", "paranormal romance",
@@ -218,8 +224,9 @@ COLLECTIONS = {
   },
 
   "family-relationships": {
-    "title": "Family & Relationships",
+    "title": "Family &\nRelationships",
     "description": "Domestic drama, family life and the messy business of human connection.",
+    "short_description": "Family life, relationships and human connection.",
     "tags": [
       "family drama", "relationships",
       "abuse", "mental health"
@@ -253,6 +260,7 @@ COLLECTIONS = {
   "literary-psychological-fiction": {
     "title": "Literary & Psychological Fiction",
     "description": "Thought-provoking fiction that explores the inner lives of characters and the human condition.",
+    "short_description": "Character-led fiction with emotional depth.",
     "tags": [
       "literary fiction", "psychological fiction",
       "postmodern literature", "magical realism",
@@ -285,8 +293,9 @@ COLLECTIONS = {
   },
 
   "adventure-action": {
-    "title": "Adventure & Action",
+    "title": "Adventure &\nAction",
     "description": "Fast-paced, high-stakes stories featuring physical thrills, perilous journeys, and daring exploits.",
+    "short_description": "Fast-paced journeys, danger and high stakes.",
     "tags": [
       "adventure", "action", "westerns"
     ],
@@ -312,8 +321,9 @@ COLLECTIONS = {
   },
 
   "supernatural-fiction": {
-    "title": "Supernatural Fiction",
+    "title": "Supernatural\nFiction",
     "description": "Ghosts, vampires, demons, magical beings, or other phenomena beyond ordinary reality/science.",
+    "short_description": "Ghosts, vampies and things beyond the ordinary.",
     "tags": [
       "supernatural",
       "ghosts", "vampires", "witches",
@@ -346,8 +356,9 @@ COLLECTIONS = {
   },
 
   "humour-satire": {
-    "title": "Humour & Satire",
+    "title": "Humour &\nSatire",
     "description": "Sharp, witty and laugh-out-loud books that skewer society, politics and everyday life.",
+    "short_description": "Funny, sharp and satirical reads.",
     "tags": [
       "humour", "satire"
     ],
@@ -355,8 +366,9 @@ COLLECTIONS = {
   },
 
   "memoir-life-stories": {
-    "title": "Memoir & Life Stories",
+    "title": "Memoir &\nLife Stories",
     "description": "Personal stories, reflections and lived experiences.",
+    "short_description": "Real lives, reflections and personal stories.",
     "tags": [
         "memoir", "biography"
     ],
@@ -367,6 +379,7 @@ COLLECTIONS = {
   "books-film-tv": {
     "title": "From Page to Screen",
     "description": "Books that made the leap from page to film or television.",
+    "short_description": "Books adapted for film and television.",
     "tags": [
       "adapted to screen", "novelisation"
     ],
@@ -376,6 +389,7 @@ COLLECTIONS = {
   "short-fiction": {
     "title": "Short Stories & Novellas",
     "description": "Concise stories with focused narratives.",
+    "short_description": "Short stories, novellas and compact reads.",
     "tags": [
       "short stories", "novella"
     ],
@@ -395,8 +409,9 @@ COLLECTIONS = {
   },
 
   "children-young-adult": {
-    "title": "Children's & Young Adult",
+    "title": "Children's &\nYoung Adult",
     "description": "Beloved children's stories and young adult fiction for curious, adventurous readers.",
+    "short_description": "Stories for younger and teen readers.",
     "tags": [
       "children's", "middle grade",
       "teen", "young adult"
@@ -419,6 +434,7 @@ COLLECTIONS = {
   "classics": {
     "title": "Classics",
     "description": "Enduring works that are widely regarded as part of the literary canon.",
+    "short_description": "Enduring works from across the literary canon.",
     "tags": [
       "classics"
     ],
