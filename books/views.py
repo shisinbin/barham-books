@@ -257,7 +257,14 @@ def autocomplete_books(request):
     books_qs = (
         Book.objects
         .select_related("author")
-        .only("id", "slug", "title", "author__first_name", "author__last_name")
+        .only(
+            "id",
+            "slug",
+            "title",
+            "author__first_name",
+            "author__middle_names",
+            "author__last_name"
+        )
         .filter(q)
         .distinct()[:20]
     )
@@ -291,7 +298,14 @@ def book_search_redux(request):
     books_qs = (
         Book.objects
         .select_related("author")
-        .only("id", "slug", "title", "author__first_name", "author__last_name")
+        .only(
+            "id",
+            "slug",
+            "title",
+            "author__first_name",
+            "author__middle_names",
+            "author__last_name"
+        )
         .filter(q)
     )
 
