@@ -377,7 +377,7 @@ COLLECTIONS = {
   },
 
   "books-film-tv": {
-    "title": "From Page to Screen",
+    "title": "From Page\nto Screen",
     "description": "Books that made the leap from page to film or television.",
     "short_description": "Books adapted for film and television.",
     "tags": [
