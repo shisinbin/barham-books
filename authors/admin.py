@@ -33,7 +33,11 @@ class AuthorAdmin(admin.ModelAdmin):
     readonly_fields = ('slug',)
     inlines = [BooksInline, BooksForSaleInline]
     list_per_page = 50
-    search_fields = ('last_name', 'middle_names', 'first_name')
+    search_fields = (
+        "first_name__unaccent",
+        "middle_names__unaccent",
+        "last_name__unaccent",
+    )
 
     def formal_name(self, obj):
         return obj.formal()

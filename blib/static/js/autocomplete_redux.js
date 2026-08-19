@@ -7,12 +7,13 @@ function normaliseQuery(q) {
   return q
     .toLowerCase()
     .normalize('NFKD') // normalises accents
-    .replace(/[^\w\s]/g, ' ') // remove special characters
+    .replace(/[\u0300-\u036f]/g, '') // remove accent marks
+    .replace(/[^\w\s]/g, ' ') // remove remaining special characters
     .split(/\s+/) // split into words
     .filter(
       (word) =>
         word.length >= 3 && // keeps words >= 3 chars
-        !STOPWORDS.includes(word) // filters stopwords
+        !STOPWORDS.includes(word), // filters stopwords
     )
     .join(' ')
     .trim();
@@ -110,7 +111,7 @@ function initAutocomplete(container) {
 
       const res = await fetch(
         `${endpoint}?term=${encodeURIComponent(effectiveQuery)}`,
-        { signal: controller.signal }
+        { signal: controller.signal },
       );
       const data = await res.json();
 
@@ -149,7 +150,7 @@ function initAutocomplete(container) {
     if (e.key === 'Enter' && selectedIndex >= 0) {
       e.preventDefault();
       suggestions[selectedIndex].dispatchEvent(
-        new MouseEvent('mousedown')
+        new MouseEvent('mousedown'),
       );
     }
 
@@ -161,7 +162,7 @@ function initAutocomplete(container) {
     (e) => {
       if (!container.contains(e.target)) clear();
     },
-    true
+    true,
   );
 
   input.addEventListener('focus', () => {
