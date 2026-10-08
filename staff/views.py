@@ -118,7 +118,7 @@ class AddBookLookupView(FormView):
         # No results
         messages.info(
             self.request,
-            "No results found. Try again or proceed to manual entry."
+            "No book data found. Try again using just title/author (no ISBN), or proceed to manual entry."
         )
         return self.form_invalid(form)
 
